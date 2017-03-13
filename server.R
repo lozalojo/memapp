@@ -92,7 +92,7 @@ output$memdf <- renderPrint({
       if(grep(input$K2, colnames(dat_funk())) < grep(input$K, colnames(dat_funk()))-1){
       
     
-        nam.t <- epimem(dat_funk()[,c(grep(input$K2, 
+        nam.t <- memmodel(dat_funk()[,c(grep(input$K2, 
                                                   colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
                                i.type.threshold=as.numeric(input$i.type.threshold), 
                                i.method = as.numeric(input$i.method))
@@ -143,7 +143,7 @@ print(ggplotly(g.plot, tooltip = "text"))
     #start
   }else if(input$mem_knapp=="TRUE" & 
            (grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))>1 & is.null(input$K3) & input$mem_intensitet=="FALSE"){
-    epi <- epimem(datfile[,c(grep(input$K2, 
+    epi <- memmodel(datfile[,c(grep(input$K2, 
                                   colnames(datfile)):(grep(input$K, 
                                                            colnames(datfile))-1))], 
                   i.type.threshold=as.numeric(input$i.type.threshold), 
@@ -162,7 +162,7 @@ print(ggplotly(g.plot, tooltip = "text"))
         ggthemes::theme_few(), tooltip = "text"))
   }else if(input$mem_knapp=="FALSE" & 
            (grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))>1 & is.null(input$K3) & input$mem_intensitet=="TRUE"){
-    epi <- epimem(datfile[,c(grep(input$K2, 
+    epi <- memmodel(datfile[,c(grep(input$K2, 
                                   colnames(datfile)):(grep(input$K, 
                                                            colnames(datfile))-1))], 
                   i.type.threshold=as.numeric(input$i.type.threshold), 
@@ -187,7 +187,7 @@ print(ggplotly(g.plot, tooltip = "text"))
         ggthemes::theme_few(), tooltip = "text"))
   }else if(input$mem_knapp=="TRUE" & 
            (grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))>1 & is.null(input$K3) & input$mem_intensitet=="TRUE"){
-    epi <- epimem(datfile[,c(grep(input$K2, 
+    epi <- memmodel(datfile[,c(grep(input$K2, 
                                   colnames(datfile)):(grep(input$K, 
                                                            colnames(datfile))-1))], 
                   i.type.threshold=as.numeric(input$i.type.threshold), 
@@ -250,7 +250,7 @@ plotInput2 <-function(){
     dat3 <- datfile
     datafil <- dat3
          #for(i in input$K:input$K2){
-          epi.plot <- epitiming(dat3[,kol],
+          epi.plot <- memtiming(dat3[,kol],
                                 i.method = as.numeric(input$i.method))
           plot(epi.plot)
     }
