@@ -293,7 +293,7 @@ session$onSessionEnded(function() {
 
 # custom functions
 
-read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=T,i.n.max.temp=10,i.season.limits=NA,i.naweeks.to.remove=1){
+read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.max.temp=NA,i.season.limits=NA,i.naweeks.to.remove=1){
   
   if (!file.exists(i.file)) stop("file not found")
   
