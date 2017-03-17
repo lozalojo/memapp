@@ -249,15 +249,49 @@ plotInput2 <-function(){
   DLM <- function(kol){
     dat3 <- datfile
     datafil <- dat3
-         #for(i in input$K:input$K2){
-          epi.plot <- memtiming(dat3[,kol],
-                                i.method = as.numeric(input$i.method))
-          plot(epi.plot)
-    }
+    #for(i in input$K:input$K2){
+    epi.plot <- memtiming(dat3[,kol],
+                          i.method = as.numeric(input$i.method))
+    plot(epi.plot)
+  }
   DLM(input$K4)
 }
-  
-    
+
+# plotSeries <-function(){
+#   datfile <- dat_funk()
+#   FSG <- function(){
+#     dat3 <- datfile
+#     datafil <- dat3
+#     full.series.graph(dat3[,c(grep(input$K2, 
+#                                    colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
+#                       i.method = as.numeric(input$i.method),i.graph.file = F, i.plot.timing = T,
+#                       i.plot.intensity = T)
+#   }
+#   FSG()
+# }
+plotSeries <-function(){
+  datfile <- dat_funk()
+  rownames(datfile)<-datfile$vecka
+  datfile$vecka<-NULL
+  full.series.graph(datfile[,c(grep(input$K2, 
+                                       colnames(datfile)):(grep(input$K, colnames(datfile))))],
+                    i.method = as.numeric(input$i.method),i.graph.file = F, i.plot.timing = T,
+                    i.plot.intensity = T)
+}
+
+plotSurveillance <-function(){
+  datfile <- dat_funk()
+  rownames(datfile)<-datfile$vecka
+  datfile$vecka<-NULL
+  epi<-memmodel(datfile[,c(grep(input$K2, 
+                                   colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
+                i.type.threshold=as.numeric(input$i.type.threshold), 
+                i.method = as.numeric(input$i.method))
+  e.thr<-epi$epidemic.thresholds
+  i.thr<-epi$intensity.thresholds
+
+  memsurveillance(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.graph.file=F, i.pos.epidemic = T)
+}
 
 output$distPlot <- renderPlotly({
   datfile <- dat_funk()
@@ -275,6 +309,39 @@ output$distPlot2 <- renderPlot({
   plotInput2()
 })
 
+output$distSeries <- renderPlot({
+  plotSeries()
+})
+
+output$distSurveillance <- renderPlot({
+  plotSurveillance()
+})
+
+output$distAnimated <- renderImage({
+  datfile <- dat_funk()
+  rownames(datfile)<-datfile$vecka
+  datfile$vecka<-NULL
+  epi<-memmodel(datfile[,c(grep(input$K2, 
+                                colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
+                i.type.threshold=as.numeric(input$i.type.threshold), 
+                i.method = as.numeric(input$i.method))
+  e.thr<-epi$epidemic.thresholds
+  i.thr<-epi$intensity.thresholds
+  
+  memsurveillance.animated(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.remove = F,
+                           i.graph.file.name = "animated", i.output = tempdir(), i.pos.epidemic = T)
+  
+  cat(tempdir(),"./animated.gif\n")
+  
+  list(src = "animated.gif",
+       contentType = 'image/gif',
+       width = 800,
+       height = 600,
+       alt = "This is alternate text")
+}, deleteFile = TRUE)
+
+
+
 output$tb <- renderUI({
   if(is.null(dat_funk())){return()}
   else
@@ -282,7 +349,10 @@ output$tb <- renderUI({
                 tabPanel("Data", tableOutput("table")),
                 tabPanel("Plot", plotlyOutput("distPlot")),
                 tabPanel("MEM", verbatimTextOutput("memdf")),
-                tabPanel("Epi-timing",plotOutput("distPlot2")))
+                tabPanel("Timing",plotOutput("distPlot2")),
+                tabPanel("Series",plotOutput("distSeries")),
+                tabPanel("Surveillance",plotOutput("distSurveillance")),
+                tabPanel("Animated",imageOutput("distAnimated")))
 })
 
 
