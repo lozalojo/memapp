@@ -94,7 +94,8 @@ output$memdf <- renderPrint({
     
         nam.t <- memmodel(dat_funk()[,c(grep(input$K2, 
                                                   colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
-                               i.type.threshold=as.numeric(input$i.type.threshold), 
+                               i.type.threshold=as.numeric(input$i.type.threshold),
+                               i.type.intensity=as.numeric(input$i.type.intensity),
                                i.method = as.numeric(input$i.method))
         nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
                          c("",paste0("Threshold ", 
