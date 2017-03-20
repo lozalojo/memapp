@@ -1,6 +1,7 @@
 library(shiny)
 
 shinyServer(function(input, output, session) {
+  
 dat_funk <- reactive({
   file1 <- input$file
   if(is.null(file1)){return()}
@@ -46,6 +47,7 @@ observe({
   ## Decide later what to do with the data, here we just fill
   updateSelectInput(session, "K2", choices = names(dt)[2:ncol(dt)])
 })
+
 observe({
   file1 <- input$file
   inFile<-input$file
@@ -76,6 +78,19 @@ observe({
   updateSelectInput(session, "K4", choices = names(dt)[2:ncol(dt)])
 })
 
+# Define main output structure
+output$tb <- renderUI({
+  if(is.null(dat_funk())){return()}
+  else
+    tabsetPanel(tabPanel("File name", tableOutput("filedf")),
+                tabPanel("Data", tableOutput("table")),
+                tabPanel("Plot", plotlyOutput("distPlot")),
+                tabPanel("MEM", verbatimTextOutput("memdf")),
+                tabPanel("Timing",plotOutput("distPlot2")),
+                tabPanel("Series",plotOutput("distSeries")),
+                tabPanel("Surveillance",plotOutput("distSurveillance")),
+                tabPanel("Animated",imageOutput("distAnimated")))
+})
 
 output$filedf <- renderTable({
   if(is.null(dat_funk())){return()}
@@ -86,6 +101,15 @@ output$table <- renderTable({
   if(is.null(dat_funk())){return()}
   dat_funk()[,-c(ncol(dat_funk()))]
 })  
+
+output$distPlot <- renderPlotly({
+  datfile <- dat_funk()
+  p <- plotInput()
+  z <- plotly_build(p)
+  for(j in 1:length(z$x$data)){
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+  z
+})
 
 output$memdf <- renderPrint({
     if(grep(input$K, colnames(dat_funk()))>1){
@@ -119,6 +143,42 @@ output$memdf <- renderPrint({
             names(war.text) <- NULL
               print(noquote(war.text), row.names = FALSE)}
   })
+
+output$distPlot2 <- renderPlot({
+  plotInput2()
+})
+
+output$distSeries <- renderPlot({
+  plotSeries()
+})
+
+output$distSurveillance <- renderPlot({
+  plotSurveillance()
+})
+
+output$distAnimated <- renderImage({
+  datfile <- dat_funk()
+  rownames(datfile)<-datfile$vecka
+  datfile$vecka<-NULL
+  epi<-memmodel(datfile[,c(grep(input$K2, 
+                                colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
+                i.type.threshold=as.numeric(input$i.type.threshold), 
+                i.method = as.numeric(input$i.method))
+  e.thr<-epi$epidemic.thresholds
+  i.thr<-epi$intensity.thresholds
+  
+  sura<-memsurveillance.animated(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.remove = F,
+                           i.animated.graph.file.name = "animated", i.output = tempdir(), i.pos.epidemic = T)
+  
+  imgfile<-sura$graph.name
+  cat(imgfile,"\n")
+  
+  list(src = imgfile,
+       contentType = 'image/gif',
+       width = 800,
+       height = 600,
+       alt = "This is alternate text")
+}, deleteFile = TRUE)
 
 plotInput <-function(){
   datfile <- dat_funk()
@@ -240,11 +300,6 @@ print(ggplotly(g.plot, tooltip = "text"))
   
 }
 
-  
-
-
-
-
 plotInput2 <-function(){
   datfile <- dat_funk()
   DLM <- function(kol){
@@ -258,18 +313,6 @@ plotInput2 <-function(){
   DLM(input$K4)
 }
 
-# plotSeries <-function(){
-#   datfile <- dat_funk()
-#   FSG <- function(){
-#     dat3 <- datfile
-#     datafil <- dat3
-#     full.series.graph(dat3[,c(grep(input$K2, 
-#                                    colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
-#                       i.method = as.numeric(input$i.method),i.graph.file = F, i.plot.timing = T,
-#                       i.plot.intensity = T)
-#   }
-#   FSG()
-# }
 plotSeries <-function(){
   datfile <- dat_funk()
   rownames(datfile)<-datfile$vecka
@@ -293,69 +336,6 @@ plotSurveillance <-function(){
 
   memsurveillance(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.graph.file=F, i.pos.epidemic = T)
 }
-
-output$distPlot <- renderPlotly({
-  datfile <- dat_funk()
-   p <- plotInput()
-   z <- plotly_build(p)
-   for(j in 1:length(z$x$data)){
-     z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
-   z
-   })
-
-# for(i in 1:length(z)){z$x$data[[1]]$text <- print(paste("Y:", round(z$x$data[[1]]$y,1),"\nWeek:", z$x$data[[1]]$x)) z}
-
-
-output$distPlot2 <- renderPlot({
-  plotInput2()
-})
-
-output$distSeries <- renderPlot({
-  plotSeries()
-})
-
-output$distSurveillance <- renderPlot({
-  plotSurveillance()
-})
-
-output$distAnimated <- renderImage({
-  datfile <- dat_funk()
-  rownames(datfile)<-datfile$vecka
-  datfile$vecka<-NULL
-  epi<-memmodel(datfile[,c(grep(input$K2, 
-                                colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
-                i.type.threshold=as.numeric(input$i.type.threshold), 
-                i.method = as.numeric(input$i.method))
-  e.thr<-epi$epidemic.thresholds
-  i.thr<-epi$intensity.thresholds
-  
-  memsurveillance.animated(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.remove = F,
-                           i.graph.file.name = "animated", i.output = tempdir(), i.pos.epidemic = T)
-  
-  cat(tempdir(),"./animated.gif\n")
-  
-  list(src = "animated.gif",
-       contentType = 'image/gif',
-       width = 800,
-       height = 600,
-       alt = "This is alternate text")
-}, deleteFile = TRUE)
-
-
-
-output$tb <- renderUI({
-  if(is.null(dat_funk())){return()}
-  else
-    tabsetPanel(tabPanel("File name", tableOutput("filedf")),
-                tabPanel("Data", tableOutput("table")),
-                tabPanel("Plot", plotlyOutput("distPlot")),
-                tabPanel("MEM", verbatimTextOutput("memdf")),
-                tabPanel("Timing",plotOutput("distPlot2")),
-                tabPanel("Series",plotOutput("distSeries")),
-                tabPanel("Surveillance",plotOutput("distSurveillance")),
-                tabPanel("Animated",imageOutput("distAnimated")))
-})
-
 
 session$onSessionEnded(function() {
   stopApp()
