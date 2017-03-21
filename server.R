@@ -89,7 +89,9 @@ output$tb <- renderUI({
                 tabPanel("Timing",plotOutput("distPlot2")),
                 tabPanel("Series",plotOutput("distSeries")),
                 tabPanel("Surveillance",plotOutput("distSurveillance")),
-                tabPanel("Animated",imageOutput("distAnimated")))
+                tabPanel("Animated",imageOutput("distAnimated")),
+                tabPanel("Goodness",tableOutput("tableGoodness"))
+                )
 })
 
 output$filedf <- renderTable({
@@ -162,7 +164,8 @@ output$distAnimated <- renderImage({
   datfile$vecka<-NULL
   epi<-memmodel(datfile[,c(grep(input$K2, 
                                 colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
-                i.type.threshold=as.numeric(input$i.type.threshold), 
+                i.type.threshold=as.numeric(input$i.type.threshold),
+                i.type.intensity=as.numeric(input$i.type.intensity), 
                 i.method = as.numeric(input$i.method))
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
@@ -179,6 +182,26 @@ output$distAnimated <- renderImage({
        height = 600,
        alt = "This is alternate text")
 }, deleteFile = TRUE)
+
+
+output$tableGoodness<-renderTable({
+  datfile <- dat_funk()
+  rownames(datfile)<-datfile$vecka
+  datfile$vecka<-NULL
+  datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
+  
+  if(length(datacolumns)>2){
+  good<-memgoodness(datfile[,datacolumns],
+                    i.type.threshold=as.numeric(input$i.type.threshold),
+                    i.type.intensity=as.numeric(input$i.type.intensity), 
+                    i.method = as.numeric(input$i.method),i.graph=F, i.seasons=NA, i.min.seasons = length(datacolumns))
+  good.table<-as.data.frame(good$validity.data)
+  good.table$Total<-good$results    
+  }else{
+    good.table<-data.frame(Error="Number of columns must be greater than 2")  
+  }
+  good.table
+}, rownames = T, digits = 2, na = ".")
 
 plotInput <-function(){
   datfile <- dat_funk()
@@ -207,7 +230,8 @@ print(ggplotly(g.plot, tooltip = "text"))
     epi <- memmodel(datfile[,c(grep(input$K2, 
                                   colnames(datfile)):(grep(input$K, 
                                                            colnames(datfile))-1))], 
-                  i.type.threshold=as.numeric(input$i.type.threshold), 
+                  i.type.threshold=as.numeric(input$i.type.threshold),
+                  i.type.intensity=as.numeric(input$i.type.intensity), 
                   i.method = as.numeric(input$i.method))
     print(ggplotly(
       ggplot(dat3) +
@@ -226,7 +250,8 @@ print(ggplotly(g.plot, tooltip = "text"))
     epi <- memmodel(datfile[,c(grep(input$K2, 
                                   colnames(datfile)):(grep(input$K, 
                                                            colnames(datfile))-1))], 
-                  i.type.threshold=as.numeric(input$i.type.threshold), 
+                  i.type.threshold=as.numeric(input$i.type.threshold),
+                  i.type.intensity=as.numeric(input$i.type.intensity), 
                   i.method = as.numeric(input$i.method))
     col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
     print(ggplotly(
@@ -251,7 +276,8 @@ print(ggplotly(g.plot, tooltip = "text"))
     epi <- memmodel(datfile[,c(grep(input$K2, 
                                   colnames(datfile)):(grep(input$K, 
                                                            colnames(datfile))-1))], 
-                  i.type.threshold=as.numeric(input$i.type.threshold), 
+                  i.type.threshold=as.numeric(input$i.type.threshold),
+                  i.type.intensity=as.numeric(input$i.type.intensity), 
                   i.method = as.numeric(input$i.method))
     col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
     print(ggplotly(
@@ -329,7 +355,8 @@ plotSurveillance <-function(){
   datfile$vecka<-NULL
   epi<-memmodel(datfile[,c(grep(input$K2, 
                                    colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
-                i.type.threshold=as.numeric(input$i.type.threshold), 
+                i.type.threshold=as.numeric(input$i.type.threshold),
+                i.type.intensity=as.numeric(input$i.type.intensity), 
                 i.method = as.numeric(input$i.method))
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
