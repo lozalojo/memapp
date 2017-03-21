@@ -90,7 +90,8 @@ output$tb <- renderUI({
                 tabPanel("Series",plotOutput("distSeries")),
                 tabPanel("Surveillance",plotOutput("distSurveillance")),
                 tabPanel("Animated",imageOutput("distAnimated")),
-                tabPanel("Goodness",tableOutput("tableGoodness"))
+                tabPanel("Goodness",tableOutput("tableGoodness")),
+                tabPanel("Optimize",tableOutput("tableOptimize"))
                 )
 })
 
@@ -202,6 +203,29 @@ output$tableGoodness<-renderTable({
   }
   good.table
 }, rownames = T, digits = 2, na = ".")
+
+output$tableOptimize<-renderTable({
+  datfile <- dat_funk()
+  rownames(datfile)<-datfile$vecka
+  datfile$vecka<-NULL
+  datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
+  
+  if(length(datacolumns)>2){
+    roca<-roc.analysis(datfile[,datacolumns],
+                       i.param.values = seq(2, 3, 0.1), 
+                       i.graph.file = F,
+                      i.type.threshold=as.numeric(input$i.type.threshold),
+                      i.type.intensity=as.numeric(input$i.type.intensity), 
+                      i.seasons=NA, 
+                      i.min.seasons = length(datacolumns))
+    roca.table<-as.data.frame(t(roca$optimum))
+    names(roca.table)<-"Optimum"    
+  }else{
+    roca.table<-data.frame(Error="Number of columns must be greater than 2")  
+  }
+  roca.table
+}, rownames = T, digits = 2, na = ".")
+
 
 plotInput <-function(){
   datfile <- dat_funk()
