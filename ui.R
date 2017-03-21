@@ -1,6 +1,15 @@
 library(shiny)
 shinyUI(dashboardPage(skin = "blue",
+                      
+  ###################################
+  ### HEADER SECTION              ###
+  ###################################
+                      
   dashboardHeader(title = "Dashboard"),
+  
+  ###################################
+  ### LEFT PANEL SECTION          ###
+  ###################################
   
   dashboardSidebar(width='250px', 
                    fileInput("file", label = h5("Load data (.CSV)")),
@@ -71,16 +80,34 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "right", 
                              trigger = "hover", 
                              options = list(container = "body"))),
+  
+  ###################################
+  ### BODY/MAIN SECTION           ###
+  ###################################
+  
   dashboardBody(
     fluidPage(
-       
-  
+
   # Application title
   titlePanel(h1("Moving Epidemic Method")),
   
   fluidRow(
+    
+    ###################################
+    ### BODY/MAIN SECTION           ###
+    ###   FIRST COLUMN DEFINITION   ###
+    ###################################
+    
     # Show a plot of the generated distribution
+
   column(9,
+         
+         #######################################
+         ### BODY/MAIN SECTION               ###
+         ###   FIRST COLUMN DEFINITION       ###
+         ###      FIRST PART: GRAPH OPTIONS  ###
+         #######################################
+         
          box(title="Graph options", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
                       collapsible = TRUE, collapsed=TRUE,
              fluidRow(column(2, selectInput("colOBS",
@@ -133,8 +160,22 @@ shinyUI(dashboardPage(skin = "blue",
                                            size=1,
                                            selectize = FALSE,
                                            selected = 1)))),
+         
+         #######################################
+         ### BODY/MAIN SECTION               ###
+         ###   FIRST COLUMN DEFINITION       ###
+         ###      SECOND PART: OUTPUTS       ###
+         #######################################
+         
          box(title="Outputs", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
              collapsible = FALSE, uiOutput("tb")),
+         
+         #######################################
+         ### BODY/MAIN SECTION               ###
+         ###   FIRST COLUMN DEFINITION       ###
+         ###      THIRD PART: MEM OPTIONS    ###
+         #######################################
+         
          box(title="MEM options", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
              collapsible = TRUE, collapsed=TRUE,
              fluidRow(column(3, selectInput("i.method",
@@ -148,12 +189,13 @@ shinyUI(dashboardPage(skin = "blue",
                                                            "Second derivative method"=4),
                                             size=1,
                                             selectize = FALSE,
-                                            selected = 3),
+                                            selected = 2),
                              bsPopover(id = "q12", title = "Method for epidemic timing",
                                        content = "The original method uses the process shown in the original paper. The fixed criterium method uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value. The slope method calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope. The second derivative method calculates the second derivative and equals to zero to search an inflexion point in the original curve.",
                                        placement = "right", 
                                        trigger = "hover", 
                                        options = list(container = "body"))),
+                      column(3,numericInput("memparameter", "Slope parameter:", 2.8, step=0.1)),
                       column(6, selectInput("i.type.threshold",
                                             h5("C.I. epidemic thr.", 
                                                tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
@@ -195,6 +237,12 @@ shinyUI(dashboardPage(skin = "blue",
                                        trigger = "hover", 
                                        options = list(container = "body")))
                       ))),
+  
+  ###################################
+  ### BODY/MAIN SECTION           ###
+  ###   SECOND COLUMN DEFINITION  ###
+  ###################################
+  
   column(3,
         box(title="Graph text", status = "primary", solidHeader = TRUE, width = 7,  background = "black",
             collapsible = FALSE,

@@ -123,7 +123,8 @@ output$memdf <- renderPrint({
                                                   colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
                                i.type.threshold=as.numeric(input$i.type.threshold),
                                i.type.intensity=as.numeric(input$i.type.intensity),
-                               i.method = as.numeric(input$i.method))
+                               i.method = as.numeric(input$i.method),
+                               i.param = as.numeric(input$memparameter))
         nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
                          c("",paste0("Threshold ", 
                                      round(nam.t$"pre.post.intervals"[1,3],2)," ", 
@@ -167,7 +168,8 @@ output$distAnimated <- renderImage({
                                 colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
                 i.type.threshold=as.numeric(input$i.type.threshold),
                 i.type.intensity=as.numeric(input$i.type.intensity), 
-                i.method = as.numeric(input$i.method))
+                i.method = as.numeric(input$i.method),
+                i.param = as.numeric(input$memparameter))
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
   
@@ -195,7 +197,8 @@ output$tableGoodness<-renderTable({
   good<-memgoodness(datfile[,datacolumns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),i.graph=F, i.seasons=NA, i.min.seasons = length(datacolumns))
+                    i.method = as.numeric(input$i.method),
+                    i.param = as.numeric(input$memparameter),i.graph=F, i.seasons=NA, i.min.seasons = length(datacolumns))
   good.table<-as.data.frame(good$validity.data)
   good.table$Total<-good$results    
   }else{
@@ -256,7 +259,8 @@ print(ggplotly(g.plot, tooltip = "text"))
                                                            colnames(datfile))-1))], 
                   i.type.threshold=as.numeric(input$i.type.threshold),
                   i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method))
+                  i.method = as.numeric(input$i.method),
+                  i.param = as.numeric(input$memparameter))
     print(ggplotly(
       ggplot(dat3) +
         geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
@@ -276,7 +280,8 @@ print(ggplotly(g.plot, tooltip = "text"))
                                                            colnames(datfile))-1))], 
                   i.type.threshold=as.numeric(input$i.type.threshold),
                   i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method))
+                  i.method = as.numeric(input$i.method),
+                  i.param = as.numeric(input$memparameter))
     col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
     print(ggplotly(
       ggplot(dat3) +
@@ -302,7 +307,8 @@ print(ggplotly(g.plot, tooltip = "text"))
                                                            colnames(datfile))-1))], 
                   i.type.threshold=as.numeric(input$i.type.threshold),
                   i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method))
+                  i.method = as.numeric(input$i.method),
+                  i.param = as.numeric(input$memparameter))
     col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
     print(ggplotly(
       ggplot(dat3) +
@@ -357,7 +363,8 @@ plotInput2 <-function(){
     datafil <- dat3
     #for(i in input$K:input$K2){
     epi.plot <- memtiming(dat3[,kol],
-                          i.method = as.numeric(input$i.method))
+                          i.method = as.numeric(input$i.method),
+                          i.param = as.numeric(input$memparameter))
     plot(epi.plot)
   }
   DLM(input$K4)
@@ -369,8 +376,8 @@ plotSeries <-function(){
   datfile$vecka<-NULL
   full.series.graph(datfile[,c(grep(input$K2, 
                                        colnames(datfile)):(grep(input$K, colnames(datfile))))],
-                    i.method = as.numeric(input$i.method),i.graph.file = F, i.plot.timing = T,
-                    i.plot.intensity = T)
+                    i.method = as.numeric(input$i.method),
+                    i.param = as.numeric(input$memparameter),i.graph.file = F, i.plot.timing = T, i.plot.intensity = T)
 }
 
 plotSurveillance <-function(){
@@ -381,7 +388,8 @@ plotSurveillance <-function(){
                                    colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
                 i.type.threshold=as.numeric(input$i.type.threshold),
                 i.type.intensity=as.numeric(input$i.type.intensity), 
-                i.method = as.numeric(input$i.method))
+                i.method = as.numeric(input$i.method),
+                i.param = as.numeric(input$memparameter))
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
 
