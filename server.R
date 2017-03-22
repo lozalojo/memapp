@@ -12,17 +12,17 @@ dat_funk <- reactive({
   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
   dat<-read.data(i.file=file1$datapath, i.extension=fileextension)
   dat$vecka<-rownames(dat)
-  dat<-dat[c(NCOL(dat),1:(NCOL(dat)-1))]    
+  dat<-dat[c(NCOL(dat),1:(NCOL(dat)-1))]
   dat$num <- 1:nrow(dat)
-  dat <- apply(dat, 2, function(x) as.numeric(x))
-  dat <- as.data.frame(dat)
+  dat2 <- as.data.frame(apply(dat, 2, function(x) as.numeric(x)))
+  rownames(dat2) <- rownames(dat)
+  dat2
 })
 
 observe({
   file1 <- input$file
   inFile<-input$file
-  if(is.null(inFile))
-    return(NULL)
+  if(is.null(inFile)) return(NULL)
   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
@@ -36,8 +36,7 @@ observe({
 observe({
   file1 <- input$file
   inFile<-input$file
-  if(is.null(inFile))
-    return(NULL)
+  if(is.null(inFile)) return(NULL)
   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
@@ -51,8 +50,7 @@ observe({
 observe({
   file1 <- input$file
   inFile<-input$file
-  if(is.null(inFile))
-    return(NULL)
+  if(is.null(inFile)) return(NULL)
   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
@@ -66,8 +64,7 @@ observe({
 observe({
   file1 <- input$file
   inFile<-input$file
-  if(is.null(inFile))
-    return(NULL)
+  if(is.null(inFile)) return(NULL)
   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
@@ -77,6 +74,24 @@ observe({
   ## Decide later what to do with the data, here we just fill
   updateSelectInput(session, "K4", choices = names(dt)[2:ncol(dt)])
 })
+
+observe({
+  file1 <- input$file
+  inFile <- input$file
+  if(is.null(inFile)) return(NULL)
+  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
+  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
+  dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
+  dt$vecka<-rownames(dt)
+  dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]
+  updateSelectInput(session, "SelectFrom", choices = names(dt)[2:ncol(dt)])
+  updateSelectInput(session, "SelectTo", choices = names(dt)[2:ncol(dt)])
+  updateSelectInput(session, "SelectExclude", choices = names(dt)[2:ncol(dt)])
+  updateSelectInput(session, "SelectSurveillance", choices = names(dt)[2:ncol(dt)])
+  updateSelectInput(session, "SelectSurveillanceWeek", choices = rownames(dt))
+  updateSelectInput(session, "SelectSeasons", choices = names(dt)[2:ncol(dt)])
+})
+
 
 # Define main output structure
 output$tb <- renderUI({
@@ -101,9 +116,36 @@ output$filedf <- renderTable({
 }) 
 
 output$table <- renderTable({
-  if(is.null(dat_funk())){return()}
-  dat_funk()[,-c(ncol(dat_funk()))]
-})  
+  datfile <- dat_funk()
+  cat(rownames(datfile),"\n")
+  if(is.null(datfile)){return()}
+  # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
+  #cat("---->",paste(c(input$K,input$K3,input$K4),collapse="*",sep=""),"<----\n",length(c(input$K,input$K3,input$K4)),"\n")
+  toinclude<-input$SelectSurveillance
+  if (!is.null(input$SelectSeasons)) toinclude<-c(toinclude,input$SelectSeasons)
+  # print(is.character(input$K))
+  # print(is.character(input$K3))
+  # print(is.character(input$K4))
+  # print(is.character(toinclude))
+  # print(length(toinclude))
+  # cat("-",toinclude[1],"-",toinclude[2],"-","\n",sep="")
+  selectedcolumns<-select.columns(i.names=names(datfile), 
+                 i.from=input$SelectFrom, 
+                 i.to=input$SelectTo, 
+                 i.exclude=input$SelectExclude,
+                 i.include=toinclude,
+                 i.pandemic=as.logical(input$SelectPandemic),
+                 i.seasons=input$SelectMaximum)
+  cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  cat("i.from:->",input$SelectFrom,"<-\n",sep="")
+  cat("i.to:->",input$SelectTo,"<-\n",sep="")
+  cat("i.exclude:->",input$SelectExclude,"<-\n",sep="")
+  cat("i.include:->",as.character(c(input$K,input$K4)),"<-\n",sep="")
+  cat("i.pandemic:->",as.logical(input$SelectPandemic),"<-\n",sep="")
+  cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
+  cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
+}, rownames = T, digits = 2)  
 
 output$distPlot <- renderPlotly({
   datfile <- dat_funk()
@@ -115,16 +157,28 @@ output$distPlot <- renderPlotly({
 })
 
 output$memdf <- renderPrint({
-    if(grep(input$K, colnames(dat_funk()))>1){
-      if(grep(input$K2, colnames(dat_funk())) < grep(input$K, colnames(dat_funk()))-1){
-      
+  datfile <- dat_funk()
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), 
+                                  i.from=input$SelectFrom, 
+                                  i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude,
+                                  i.include="",
+                                  i.pandemic=as.logical(input$SelectPandemic),
+                                  i.seasons=input$SelectMaximum)
+  
+  if (length(selectedcolumns)>1){
+  datfile.model<-datfile[selectedcolumns]
     
-        nam.t <- memmodel(dat_funk()[,c(grep(input$K2, 
-                                                  colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
+    # if(grep(input$K, colnames(dat_funk()))>1){
+    #   if(grep(input$K2, colnames(dat_funk())) < grep(input$K, colnames(dat_funk()))-1){
+    nam.t <- memmodel(datfile.model,
+        # nam.t <- memmodel(dat_funk()[,c(grep(input$K2, 
+        #                                           colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
                                i.type.threshold=as.numeric(input$i.type.threshold),
                                i.type.intensity=as.numeric(input$i.type.intensity),
                                i.method = as.numeric(input$i.method),
-                               i.param = as.numeric(input$memparameter))
+                               i.param = as.numeric(input$memparameter), i.seasons = NA)
         nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
                          c("",paste0("Threshold ", 
                                      round(nam.t$"pre.post.intervals"[1,3],2)," ", 
@@ -139,10 +193,11 @@ output$memdf <- renderPrint({
         nam.ttt <- format(nam.ttt, justify = "left")
         nam.ttt <- as.data.frame(nam.ttt)
         names(nam.ttt) <- NULL 
-        print(noquote(nam.ttt), row.names = FALSE)
-      }else{war.text <- as.data.frame("MEM needs at least two seasons.")
-              names(war.text) <- NULL 
-                print(noquote(war.text), row.names = FALSE)}
+        #print(noquote(nam.ttt), row.names = FALSE)
+        summary(nam.t)
+      # }else{war.text <- as.data.frame("MEM needs at least two seasons.")
+      #         names(war.text) <- NULL 
+      #           print(noquote(war.text), row.names = FALSE)}
     }else{war.text <- as.data.frame("MEM needs at least two seasons.")
             names(war.text) <- NULL
               print(noquote(war.text), row.names = FALSE)}
@@ -161,73 +216,94 @@ output$distSurveillance <- renderPlot({
 })
 
 output$distAnimated <- renderImage({
+  # datfile <- dat_funk()
+  # rownames(datfile)<-datfile$vecka
+  # datfile$vecka<-NULL
   datfile <- dat_funk()
-  rownames(datfile)<-datfile$vecka
-  datfile$vecka<-NULL
-  epi<-memmodel(datfile[,c(grep(input$K2, 
-                                colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
-                i.type.threshold=as.numeric(input$i.type.threshold),
-                i.type.intensity=as.numeric(input$i.type.intensity), 
-                i.method = as.numeric(input$i.method),
-                i.param = as.numeric(input$memparameter))
-  e.thr<-epi$epidemic.thresholds
-  i.thr<-epi$intensity.thresholds
-  
-  sura<-memsurveillance.animated(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.remove = F,
-                           i.animated.graph.file.name = "animated", i.output = tempdir(), i.pos.epidemic = T)
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  datfile.model<-datfile[selectedcolumns]
+  if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
+    epi <- memmodel(datfile.model,
+                    i.type.threshold=as.numeric(input$i.type.threshold),
+                    i.type.intensity=as.numeric(input$i.type.intensity), 
+                    i.method = as.numeric(input$i.method),
+                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+    e.thr<-epi$epidemic.thresholds
+    i.thr<-epi$intensity.thresholds
+    range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
+   sura<-memsurveillance.animated(datfile[input$SelectSurveillance], e.thr, i.thr, i.remove = T,
+                           i.animated.graph.file.name = "animated", i.output = tempdir(), i.pos.epidemic = T, i.range.x=range.x)
   
   imgfile<-sura$graph.name
   cat(imgfile,"\n")
   
-  list(src = imgfile,
+  outdistAnimated<-list(src = imgfile,
        contentType = 'image/gif',
        width = 800,
        height = 600,
        alt = "This is alternate text")
+  }else{
+    outdistAnimated<-NULL
+  }
+  outdistAnimated
 }, deleteFile = TRUE)
 
 
 output$tableGoodness<-renderTable({
-  datfile <- dat_funk()
-  rownames(datfile)<-datfile$vecka
-  datfile$vecka<-NULL
-  datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
+  # datfile <- dat_funk()
+  # rownames(datfile)<-datfile$vecka
+  # datfile$vecka<-NULL
+  # datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
   
-  if(length(datacolumns)>2){
-  good<-memgoodness(datfile[,datacolumns],
+  datfile <- dat_funk()
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  if (length(selectedcolumns)>2){
+  good<-memgoodness(datfile[,selectedcolumns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
                     i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter),i.graph=F, i.seasons=NA, i.min.seasons = length(datacolumns))
+                    i.param = as.numeric(input$memparameter),i.graph=F, i.seasons=NA, i.min.seasons = length(selectedcolumns))
   good.table<-as.data.frame(good$validity.data)
   good.table$Total<-good$results    
   }else{
     good.table<-data.frame(Error="Number of columns must be greater than 2")  
   }
   good.table
-}, rownames = T, digits = 2, na = ".")
+}, rownames = T, digits = 2)
 
 output$tableOptimize<-renderTable({
-  datfile <- dat_funk()
-  rownames(datfile)<-datfile$vecka
-  datfile$vecka<-NULL
-  datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
-  
-  if(length(datacolumns)>2){
-    roca<-roc.analysis(datfile[,datacolumns],
+  # datfile <- dat_funk()
+  # rownames(datfile)<-datfile$vecka
+  # datfile$vecka<-NULL
+  # datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
+  # 
+  # if(length(datacolumns)>2){
+    datfile <- dat_funk()
+    if(is.null(datfile)){return()}
+    selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                    i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+    if (length(selectedcolumns)>2){
+      
+    
+    
+    roca<-roc.analysis(datfile[,selectedcolumns],
                        i.param.values = seq(2, 3, 0.1), 
                        i.graph.file = F,
                       i.type.threshold=as.numeric(input$i.type.threshold),
                       i.type.intensity=as.numeric(input$i.type.intensity), 
                       i.seasons=NA, 
-                      i.min.seasons = length(datacolumns))
+                      i.min.seasons = length(selectedcolumns))
     roca.table<-as.data.frame(t(roca$optimum))
     names(roca.table)<-"Optimum"    
   }else{
     roca.table<-data.frame(Error="Number of columns must be greater than 2")  
   }
   roca.table
-}, rownames = T, digits = 2, na = ".")
+}, rownames = T, digits = 2)
 
 
 plotInput <-function(){
@@ -260,7 +336,7 @@ print(ggplotly(g.plot, tooltip = "text"))
                   i.type.threshold=as.numeric(input$i.type.threshold),
                   i.type.intensity=as.numeric(input$i.type.intensity), 
                   i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter))
+                  i.param = as.numeric(input$memparameter), i.seasons = NA)
     print(ggplotly(
       ggplot(dat3) +
         geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
@@ -281,7 +357,7 @@ print(ggplotly(g.plot, tooltip = "text"))
                   i.type.threshold=as.numeric(input$i.type.threshold),
                   i.type.intensity=as.numeric(input$i.type.intensity), 
                   i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter))
+                  i.param = as.numeric(input$memparameter), i.seasons = NA)
     col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
     print(ggplotly(
       ggplot(dat3) +
@@ -308,7 +384,7 @@ print(ggplotly(g.plot, tooltip = "text"))
                   i.type.threshold=as.numeric(input$i.type.threshold),
                   i.type.intensity=as.numeric(input$i.type.intensity), 
                   i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter))
+                  i.param = as.numeric(input$memparameter), i.seasons = NA)
     col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
     print(ggplotly(
       ggplot(dat3) +
@@ -362,38 +438,51 @@ plotInput2 <-function(){
     dat3 <- datfile
     datafil <- dat3
     #for(i in input$K:input$K2){
-    epi.plot <- memtiming(dat3[,kol],
+    epi.plot <- memtiming(dat3[kol],
                           i.method = as.numeric(input$i.method),
                           i.param = as.numeric(input$memparameter))
     plot(epi.plot)
   }
-  DLM(input$K4)
+  DLM(input$SelectSurveillance)
 }
 
 plotSeries <-function(){
   datfile <- dat_funk()
-  rownames(datfile)<-datfile$vecka
-  datfile$vecka<-NULL
-  full.series.graph(datfile[,c(grep(input$K2, 
-                                       colnames(datfile)):(grep(input$K, colnames(datfile))))],
+  if(is.null(datfile)){return()}
+  toinclude<-input$SelectSurveillance
+  if (!is.null(input$SelectSeasons)) toinclude<-c(toinclude,input$SelectSeasons)
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include=toinclude, i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  datfile<-datfile[selectedcolumns]
+  range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
+  if (length(selectedcolumns)>1) full.series.graph(datfile,
                     i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter),i.graph.file = F, i.plot.timing = T, i.plot.intensity = T)
+                    i.param = as.numeric(input$memparameter),i.graph.file = F, i.plot.timing = T, i.plot.intensity = T,
+                    i.range.x=range.x)
 }
 
 plotSurveillance <-function(){
+  # datfile <- dat_funk()
+  # rownames(datfile)<-datfile$vecka
+  # datfile$vecka<-NULL
+  
   datfile <- dat_funk()
-  rownames(datfile)<-datfile$vecka
-  datfile$vecka<-NULL
-  epi<-memmodel(datfile[,c(grep(input$K2, 
-                                   colnames(datfile)):(grep(input$K, colnames(datfile))-1))],
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  datfile.model<-datfile[selectedcolumns]
+  if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
+    epi <- memmodel(datfile.model,
                 i.type.threshold=as.numeric(input$i.type.threshold),
                 i.type.intensity=as.numeric(input$i.type.intensity), 
                 i.method = as.numeric(input$i.method),
-                i.param = as.numeric(input$memparameter))
+                i.param = as.numeric(input$memparameter), i.seasons = NA)
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
-
-  memsurveillance(datfile[grep(input$K,colnames(datfile))], e.thr, i.thr, i.graph.file=F, i.pos.epidemic = T)
+  range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
+  memsurveillance(datfile[input$SelectSurveillance], 
+                  e.thr, i.thr, i.graph.file=F, i.pos.epidemic = T, i.range.x =range.x, i.week.report = input$SelectSurveillanceWeek)
+  }
 }
 
 session$onSessionEnded(function() {
@@ -534,5 +623,32 @@ read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.ma
   
   names(data.final)<-seasons.final$season    
   return(data.final)
+}
+
+# Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
+
+select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pandemic=T,i.seasons=NA){
+  indexes<-1:length(i.names)
+  toinclude<-indexes[i.names %in% i.include]
+  if (!(i.from=="" | is.na(i.from) | is.null(i.from)) & (i.from %in% i.names)) from<-grep(i.from,i.names,fixed=T) else from<-1  
+  if (!(i.to=="" | is.na(i.to) | is.null(i.to)) & (i.to %in% i.names)) to<-grep(i.to,i.names,fixed=T) else to<-length(i.names)
+  if (to<from) to<-from
+  seasons<-data.frame(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+  names(seasons)<-c("season.original","anioi","aniof","aniow")
+  seasons[is.na(seasons)]<-""
+  seasonsname<-seasons$anioi
+  seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
+  seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],seasons$aniow[seasons$aniow!=""],sep="/")
+  seasons$season<-seasonsname
+  pandemic<-grep("2009",seasons$anioi,fixed=T)
+  indexes<-from:to
+  if (!is.null(i.pandemic)) if (!i.pandemic & length(pandemic)>0) indexes<-indexes[pandemic!=indexes]
+  if (length(indexes)>0){
+    if (!is.null(i.exclude)) if (any(i.exclude!="") & any(!is.na(i.exclude))) indexes<-indexes[!(i.names[indexes] %in% i.exclude)]
+    if (!is.null(i.seasons)) if (!is.na(i.seasons)) indexes<-indexes[(max(length(indexes)-i.seasons+1,1)):length(indexes)]
+  }
+  if (length(toinclude)>0) indexes<-unique(c(indexes,toinclude))
+  indexes<-indexes[order(indexes)]
+  return(indexes)
 }
 

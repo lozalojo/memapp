@@ -12,9 +12,18 @@ shinyUI(dashboardPage(skin = "blue",
   ###################################
   
   dashboardSidebar(width='250px', 
+                   
+                   ################################
+                   ###    Load data          ######
+                   ################################
+                   
                    fileInput("file", label = h5("Load data (.CSV)")),
                    # selectInput("K", h5("    Apply MEM on season"), size=1,
                    #             selectize = FALSE, choices = ""),
+                   
+                   ################################
+                   ###  Apply MEM on season    ####
+                   ################################
                    
                    selectInput("K", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                        bsButton("q1", label = "", 
@@ -26,6 +35,10 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "top", 
                              trigger = "hover", 
                              options = list(container = "body")),
+
+                   ######################################
+                   ###  Calculate MEM from season    ####
+                   ######################################
                    
                    selectInput("K2", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                         bsButton("q2", label = "", 
@@ -37,6 +50,11 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "right", 
                              trigger = "hover", 
                              options = list(container = "body")),
+                   
+                   ######################################
+                   ###  Add seasons to graph         ####
+                   ######################################
+
                    selectInput('K3', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                         bsButton("q3", label = "", 
                                                  icon = icon("question"), 
@@ -47,6 +65,10 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "right", 
                              trigger = "hover", 
                              options = list(container = "body")),
+
+                   ######################################
+                   ###  Check epi-timing for seasons ####
+                   ######################################
                    
                    selectInput('K4', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                         bsButton("q4", label = "", 
@@ -59,6 +81,11 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "right", 
                              trigger = "hover", 
                              options = list(container = "body")),
+                   
+                   ##########################################
+                   ###  Include MEM-thresholds in graph  ####
+                   ##########################################
+                   
                    checkboxInput("mem_knapp", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                                          bsButton("q5", label = "", 
                                                                   icon = icon("question"), 
@@ -70,6 +97,11 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "right", 
                              trigger = "hover", 
                              options = list(container = "body")),
+                   
+                   ##########################################
+                   ###  Include intensity                ####
+                   ##########################################
+                   
                    checkboxInput("mem_intensitet", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                                               bsButton("q7", label = "", 
                                                                        icon = icon("question"), 
@@ -79,7 +111,55 @@ shinyUI(dashboardPage(skin = "blue",
                              content = "Click if you would like to include the intensity of the desease. The intensity is a geometrical mean of the seasons you have choosen for calculating MEM. You can change graphical parameters for the displayed intensity unde Graph options",
                              placement = "right", 
                              trigger = "hover", 
-                             options = list(container = "body"))),
+                             options = list(container = "body"))
+                   
+                   ### This portion is experimental
+                   ,
+                   # From
+                   selectInput("SelectFrom", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "From"), size=1, selectize = FALSE, choices = ""),
+                   # To
+                   selectInput("SelectTo", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "To"), size=1, selectize = FALSE, choices = ""),
+                   # Excluding
+                   selectInput('SelectExclude', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Exclude"), multiple = TRUE, choices = NULL),
+                   # Pandemic
+                   checkboxInput("SelectPandemic", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Pandemic"), value = FALSE),
+                   # Maximum seasons
+                   numericInput("SelectMaximum", "Max. seasons:", 10, step=1),
+                   # Surveillance
+                   selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                       bsButton("ssb", label = "", 
+                                                icon = icon("question"), 
+                                                style = "info", size = "extra-small"), "Surveillance"), size=1,
+                               selectize = FALSE, choices = ""),
+                   bsPopover(id = "ssb", title = "Current season",
+                             content = "Choose a season to apply MEM thresholds on. Your choosen seasen will be excluded when calculating the MEM thresholds for pre- and post season.",
+                             placement = "top", 
+                             trigger = "hover", 
+                             options = list(container = "body")),
+                   # Surveillance week
+                   selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                                        bsButton("sswb", label = "", 
+                                                                 icon = icon("question"), 
+                                                                 style = "info", size = "extra-small"), "Surveillance Week"), size=1,
+                               selectize = FALSE, choices = ""),
+                   bsPopover(id = "sswb", title = "Current season",
+                             content = "Choose a season to apply MEM thresholds on. Your choosen seasen will be excluded when calculating the MEM thresholds for pre- and post season.",
+                             placement = "top", 
+                             trigger = "hover", 
+                             options = list(container = "body")),                   
+                   # Add seasons
+                   selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                        bsButton("spb", label = "", 
+                                                 icon = icon("question"), 
+                                                 style = "info", size = "extra-small"), "Add seasons to graph"),
+                               choices = NULL, multiple = TRUE),
+                   bsPopover(id = "spb", title = "Multiple seasons",
+                             content = "By clicking at the seasons you can display multiple seasons in the graph. To delete a season click on it and press delete on your keyboard. You cannot apply MEM on this graph. To get MEM back delete the choices you have made.",
+                             placement = "right", 
+                             trigger = "hover", 
+                             options = list(container = "body"))
+                   
+                   ),
   
   ###################################
   ### BODY/MAIN SECTION           ###
