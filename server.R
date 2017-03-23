@@ -100,6 +100,7 @@ output$tb <- renderUI({
     tabsetPanel(tabPanel("File name", tableOutput("filedf")),
                 tabPanel("Data", tableOutput("table")),
                 tabPanel("Plot", plotlyOutput("distPlot")),
+                tabPanel("Seasons", plotlyOutput("distSeasons")),
                 tabPanel("MEM", verbatimTextOutput("memdf")),
                 tabPanel("Timing",plotOutput("distPlot2")),
                 tabPanel("Series",plotOutput("distSeries")),
@@ -150,6 +151,16 @@ output$table <- renderTable({
 output$distPlot <- renderPlotly({
   datfile <- dat_funk()
   p <- plotInput()
+  z <- plotly_build(p)
+  for(j in 1:length(z$x$data)){
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+  z
+})
+
+output$distSeasons <- renderPlotly({
+  datfile <- dat_funk()
+  if(is.null(input$SelectSeasons)){return()}
+  p <- plotSeasons()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
@@ -472,6 +483,76 @@ plotInput <-function(){
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
       ggthemes::theme_few()
     print(ggplotly(g.plot, tooltip = "text"))    
+  }
+  
+}
+
+plotSeasons <-function(){
+  datfile <- dat_funk()
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  datfile.model<-datfile[selectedcolumns]
+  datfile.seasons<-datfile[input$SelectSeasons]
+  if (NCOL(datfile.model)>1){
+    epi <- memmodel(datfile.model,
+                    i.type.threshold=as.numeric(input$i.type.threshold),
+                    i.type.intensity=as.numeric(input$i.type.intensity), 
+                    i.method = as.numeric(input$i.method),
+                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+    e.thr<-epi$epidemic.thresholds
+    i.thr<-epi$intensity.thresholds
+  }
+  
+  # Axis format for all the graphs
+  # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
+  axis.x.range.original <- c(min(datfile$num),max(datfile$num))
+  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2],T,T)  
+  axis.x.range <- axis.x.otick$range
+  axis.x.values <- as.numeric(datfile$num)
+  axis.x.ticks <- axis.x.otick$tickmarks
+  axis.x.labels <- rownames(datfile)[axis.x.otick$tickmarks]
+  # Same, for 10 tickmarks in the y-axis
+  axis.y.range.original <- c(0,1.05*max(cbind(datfile.model, datfile.seasons), na.rm=T))
+  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+  axis.y.range <- axis.y.otick$range
+  axis.y.ticks <- axis.y.otick$tickmarks
+  axis.y.labels <- axis.y.otick$tickmarks
+
+  if (length(input$SelectSeasons)>0){
+    lis<-melt(datfile, id.vars="num", measure.vars=input$SelectSeasons, variable.name='Season', value.name='Rates')     
+    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
+    col.ser <- colorRampPalette(brewer.pal(length(input$SelectSeasons),input$colpalseries))(length(input$SelectSeasons))
+    # Basic plot structure
+    g.plot <- 
+      ggplot(lis) +
+      ggtitle(input$textMain) +
+      theme(plot.title = element_text(hjust = 0.1, size=22)) +
+      labs(x=input$textX,y=input$textY, color='Season')
+    # Add intensity, this goes first not to overwrite the series
+    if(input$mem_intensitet=="TRUE" & NCOL(datfile.model)>1){
+      g.plot <- g.plot + 
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))
+    }
+    # Add all series selected
+    g.plot <- g.plot +
+      geom_line(aes(x=num, y=Rates, group=Season, color=Season)) + 
+      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels) +
+      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range) +
+      scale_color_manual(values=col.ser, labels=input$SelectSurveillance)
+    # Add epidemic thresholds
+    if(input$mem_knapp=="TRUE" & NCOL(datfile.model)>1){
+      g.plot <- g.plot +
+        geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
+        geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop)
+    }
+    # Finishing
+    g.plot <- g.plot + 
+      ggthemes::theme_few()
+    print(ggplotly(g.plot, tooltip = "text"))
   }
   
 }
