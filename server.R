@@ -307,127 +307,171 @@ output$tableOptimize<-renderTable({
 
 
 plotInput <-function(){
+  # datfile <- dat_funk()
+  # dat3 <- datfile
+  # datafil <- dat3
+  
   datfile <- dat_funk()
-  dat3 <- datfile
-  datafil <- dat3
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  datfile.model<-datfile[selectedcolumns]
+  datfile.seasons<-datfile[input$SelectSeasons]
+
+  if (NCOL(datfile.model)>1){
+    epi <- memmodel(datfile.model,
+                    i.type.threshold=as.numeric(input$i.type.threshold),
+                    i.type.intensity=as.numeric(input$i.type.intensity), 
+                    i.method = as.numeric(input$i.method),
+                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+    e.thr<-epi$epidemic.thresholds
+    i.thr<-epi$intensity.thresholds
+  }
+
+  # Axis format for all the graphs
+  # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
+  axis.x.range.original <- c(min(datfile$num),max(datfile$num))
+  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2],T,T)  
+  axis.x.range <- axis.x.otick$range
+  axis.x.values <- as.numeric(datfile$num)
+  axis.x.ticks <- axis.x.otick$tickmarks
+  axis.x.labels <- rownames(datfile)[axis.x.otick$tickmarks]
+  # Same, for 10 tickmarks in the y-axis
+  axis.y.range.original <- c(0,1.05*max(cbind(datfile.model, datfile.seasons), na.rm=T))
+  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+  axis.y.range <- axis.y.otick$range
+  axis.y.ticks <- axis.y.otick$tickmarks
+  axis.y.labels <- axis.y.otick$tickmarks
+  
+  cat(paste(axis.y.ticks,collapse=","),"\n",sep="")
   #########Graf med observerade data
   
-  if((grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))<2 & is.null(input$K3)|(input$mem_knapp=="FALSE" & is.null(input$K3) & input$mem_intensitet=="FALSE"))
+  # CASE 1: if there are no 2 seasons to calculate thresholds AND addmoreplots=NOT
+  # OR
+  # addintensity=NOT AND addthreshold=NOT and addmoreplots=NOT
+  if(NCOL(datfile.model)<2 & is.null(input$SelectSeasons)|(input$mem_knapp=="FALSE" & is.null(input$SelectSeasons) & input$mem_intensitet=="FALSE"))
   {
+    cat("Case #1\n")
     g.plot <- 
-      ggplot(dat3) +
-        geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
+      ggplot(datfile) +
+      #geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
         ggtitle(input$textMain) +
         theme(plot.title = element_text(hjust = 0.1, size=22))+
+        geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
         labs(x=input$textX, y=input$textY, color='Season') +
-        scale_y_continuous(limits = c(0, max(dat3[,2:(ncol(dat3)-1)]*1.4, na.rm=T)))+
-        scale_x_continuous(breaks=seq(1,52,3),
-                           labels=c(as.character(dat3$vecka[seq(1,52,3)])))+
-        scale_color_manual(values="black", labels=input$K)+
+        scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
+        scale_color_manual(values="black", labels=input$SelectSurveillance)+
         ggthemes::theme_few()
-
-print(ggplotly(g.plot, tooltip = "text"))
+    print(ggplotly(g.plot, tooltip = "text"))
     #start
+# CASE 2: addthreshold=YES AND 2 or more seasons AND addmoreplots=NOT and addintensity=NOT
   }else if(input$mem_knapp=="TRUE" & 
-           (grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))>1 & is.null(input$K3) & input$mem_intensitet=="FALSE"){
-    epi <- memmodel(datfile[,c(grep(input$K2, 
-                                  colnames(datfile)):(grep(input$K, 
-                                                           colnames(datfile))-1))], 
-                  i.type.threshold=as.numeric(input$i.type.threshold),
-                  i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter), i.seasons = NA)
-    print(ggplotly(
-      ggplot(dat3) +
-        geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
-        geom_hline(aes(yintercept=epi$pre.post.intervals[1,3]), color = input$colMEMstart) +
-        geom_hline(aes(yintercept=epi$pre.post.intervals[2,3]), color = input$colMEMstop) +
+           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$mem_intensitet=="FALSE"){
+    cat("Case #2\n")
+    # epi <- memmodel(datfile[,c(grep(input$K2, 
+    #                               colnames(datfile)):(grep(input$K, 
+    #                                                        colnames(datfile))-1))], 
+    #               i.type.threshold=as.numeric(input$i.type.threshold),
+    #               i.type.intensity=as.numeric(input$i.type.intensity), 
+    #               i.method = as.numeric(input$i.method),
+    #               i.param = as.numeric(input$memparameter), i.seasons = NA)
+    g.plot <-
+      ggplot(datfile) +
         ggtitle(input$textMain) +
+        theme(plot.title = element_text(hjust = 0.1, size=22))+
+        geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
         labs(x=input$textX,y=input$textY, color='Season') +
-        scale_y_continuous(limits = c(0, max(dat3[,2:(ncol(dat3)-1)]*1.4, na.rm=T)))+
-        scale_x_continuous(breaks=seq(1,52,3),
-                           labels=c(as.character(dat3$vecka[seq(1,52,3)])))+
-        scale_color_manual(values="black", labels=input$K)+
-        ggthemes::theme_few(), tooltip = "text"))
+        scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
+        scale_color_manual(values="black", labels=input$SelectSurveillance)+
+        geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
+        geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop) +
+        ggthemes::theme_few()
+    print(ggplotly(g.plot, tooltip = "text"))
+    # CASE 3: addthreshold=NO AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
   }else if(input$mem_knapp=="FALSE" & 
-           (grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))>1 & is.null(input$K3) & input$mem_intensitet=="TRUE"){
-    epi <- memmodel(datfile[,c(grep(input$K2, 
-                                  colnames(datfile)):(grep(input$K, 
-                                                           colnames(datfile))-1))], 
-                  i.type.threshold=as.numeric(input$i.type.threshold),
-                  i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter), i.seasons = NA)
-    col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
-    print(ggplotly(
-      ggplot(dat3) +
-        annotate("rect", xmin = 1, xmax = nrow(dat3), ymin = 0, ymax = epi$"epi.intervals"[1,4], 
-                 fill = col.pal[1], alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = 1, xmax = nrow(dat3), ymin = epi$"epi.intervals"[1,4], ymax = epi$"epi.intervals"[2,4],
-                 fill = col.pal[2], alpha=as.numeric(input$colpalTran))+
-      annotate("rect", xmin = 1, xmax = nrow(dat3), ymin = epi$"epi.intervals"[2,4], ymax = epi$"epi.intervals"[3,4],
-               fill = col.pal[3], alpha=as.numeric(input$colpalTran))+
+           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$mem_intensitet=="TRUE"){
+    # epi <- memmodel(datfile[,c(grep(input$K2, 
+    #                               colnames(datfile)):(grep(input$K, 
+    #                                                        colnames(datfile))-1))], 
+    #               i.type.threshold=as.numeric(input$i.type.threshold),
+    #               i.type.intensity=as.numeric(input$i.type.intensity), 
+    #               i.method = as.numeric(input$i.method),
+    #               i.param = as.numeric(input$memparameter), i.seasons = NA)
+    cat("Case #3\n")
+    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
+    g.plot <-
+      ggplot(datfile) +
         ggtitle(input$textMain) +
+        theme(plot.title = element_text(hjust = 0.1, size=22))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))+
+        geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
         labs(x=input$textX,y=input$textY, color='Season') +
-        geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
-        scale_y_continuous(limits = c(0, max(dat3[,2:(ncol(dat3)-1)]*1.4, na.rm=T)))+
-        scale_color_manual(values="black", labels=input$K)+
-        scale_x_continuous(breaks=seq(1,52,3),
-                           labels=c(as.character(dat3$vecka[seq(1,52,3)])))+
-        ggtitle(input$textMain) +
-        ggthemes::theme_few(), tooltip = "text"))
+        scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
+        scale_color_manual(values="black", labels=input$SelectSurveillance)+
+        ggthemes::theme_few()
+    print(ggplotly(g.plot, tooltip = "text"))
+    # CASE 4: addthreshold=YES AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
   }else if(input$mem_knapp=="TRUE" & 
-           (grep(input$K,colnames(datfile))-grep(input$K2,colnames(datfile)))>1 & is.null(input$K3) & input$mem_intensitet=="TRUE"){
-    epi <- memmodel(datfile[,c(grep(input$K2, 
-                                  colnames(datfile)):(grep(input$K, 
-                                                           colnames(datfile))-1))], 
-                  i.type.threshold=as.numeric(input$i.type.threshold),
-                  i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter), i.seasons = NA)
-    col.pal <- colorRampPalette(brewer.pal(3,input$colpal))(3)
-    print(ggplotly(
-      ggplot(dat3) +
-        annotate("rect", xmin = 1, xmax = nrow(dat3), ymin = 0, ymax = epi$"epi.intervals"[1,4], 
-                 fill = col.pal[1], alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = 1, xmax = nrow(dat3), ymin = epi$"epi.intervals"[1,4], ymax = epi$"epi.intervals"[2,4],
-                 fill = col.pal[2],alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = 1, xmax = nrow(dat3), ymin = epi$"epi.intervals"[2,4], ymax = epi$"epi.intervals"[3,4],
-                 fill = col.pal[3],alpha=as.numeric(input$colpalTran))+
-        geom_hline(aes(yintercept=epi$pre.post.intervals[1,3]), color = input$colMEMstart) +
-        geom_hline(aes(yintercept=epi$pre.post.intervals[2,3]), color = input$colMEMstop) +
-        ggtitle(input$textMain) +
-        labs(x=input$textX,y=input$textY, color='Season') +
-        geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K))+
-        scale_x_continuous(breaks=seq(1,52,3),
-                           labels=c(as.character(dat3$vecka[seq(1,52,3)])))+
-        ggtitle(input$textMain) +
-        scale_y_continuous(limits = c(0, max(dat3[,2:(ncol(dat3)-1)]*1.4, na.rm=T)))+
-        scale_color_manual(values="blue", labels=round(epi$"epi.intervals"[1,4]))+
-        scale_color_manual(values="black", labels=input$K)+
-        ggthemes::theme_few()))
-
-    
+           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$mem_intensitet=="TRUE"){
+    # epi <- memmodel(datfile[,c(grep(input$K2, 
+    #                               colnames(datfile)):(grep(input$K, 
+    #                                                        colnames(datfile))-1))], 
+    #               i.type.threshold=as.numeric(input$i.type.threshold),
+    #               i.type.intensity=as.numeric(input$i.type.intensity), 
+    #               i.method = as.numeric(input$i.method),
+    #               i.param = as.numeric(input$memparameter), i.seasons = NA)
+    cat("Case #4\n")
+    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
+    g.plot <-
+      ggplot(datfile) +
+      ggtitle(input$textMain) +
+      theme(plot.title = element_text(hjust = 0.1, size=22))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))+
+      geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
+      labs(x=input$textX,y=input$textY, color='Season') +
+      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
+      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
+      scale_color_manual(values="black", input$SelectSurveillance)+
+      geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
+      geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop) +
+      #scale_color_manual(values="blue", labels=round(i.thr[1]))+
+      ggthemes::theme_few()
+    print(ggplotly(g.plot, tooltip = "text"))
+# Condition: CASE 5
   }else{
-    lis <- list()
-    for(i in input$K3){
-      dat3$tid <- rownames(dat3)
-      selectedxaxis = colnames(dat3)[ncol(dat3)]
-      selectedcolumns = colnames(dat3)[which(colnames(dat3)==i)]
-      widedata = subset(dat3, select = c(selectedxaxis, selectedcolumns))
-      
-      longdata = melt(widedata, id.vars=selectedxaxis, variable.name='Cases', value.name='Count')
-      lis <- rbind(lis, longdata)
-      
-      p <- ggplotly(ggplot(lis) + geom_line(aes(x=as.numeric(tid), y=Count, group=Cases, color=Cases, linetype = Cases))+ 
-                      scale_x_continuous(breaks=seq(1,52,3),
-                                         labels=c(as.character(dat3$vecka[seq(1,52,3)])))+
-                      ggtitle(input$textMain) +
-                      labs(x=input$textX,y=input$textY, color='Season') +
-                      ggthemes::theme_few())
-      
-    }
-    print(p)
+    # lis <- list()
+    # for(i in input$SelectSeasons){
+    #   dat3 <- datfile
+    #   dat3$tid <- rownames(dat3)
+    #   selectedxaxis = colnames(dat3)[ncol(dat3)]
+    #   selectedcolumns = colnames(dat3)[which(colnames(dat3)==i)]
+    #   widedata = subset(dat3, select = c(selectedxaxis, selectedcolumns))
+    #   longdata = melt(widedata, id.vars=selectedxaxis, variable.name='Cases', value.name='Count')
+    #   lis <- rbind(lis, longdata)
+    # }
+    cat("Case #5\n")
+    lis<-melt(datfile, id.vars="num", measure.vars=input$SelectSeasons, variable.name='Season', value.name='Rates')     
+    g.plot <- 
+      ggplot(lis) + 
+      ggtitle(input$textMain) +
+      theme(plot.title = element_text(hjust = 0.1, size=22))+
+      geom_line(aes(x=num, y=Rates, group=Season, color=Season, linetype = Season))+ 
+      labs(x=input$textX,y=input$textY, color='Season') +
+      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
+      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
+      ggthemes::theme_few()
+    print(ggplotly(g.plot, tooltip = "text"))    
   }
   
 }
@@ -471,6 +515,7 @@ plotSurveillance <-function(){
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
   datfile.model<-datfile[selectedcolumns]
+  datfile.surveillance<-datfile[input$SelectSurveillance]
   if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
     epi <- memmodel(datfile.model,
                 i.type.threshold=as.numeric(input$i.type.threshold),
@@ -480,7 +525,7 @@ plotSurveillance <-function(){
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
   range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
-  memsurveillance(datfile[input$SelectSurveillance], 
+  memsurveillance(datfile.surveillance, 
                   e.thr, i.thr, i.graph.file=F, i.pos.epidemic = T, i.range.x =range.x, i.week.report = input$SelectSurveillanceWeek)
   }
 }
@@ -650,5 +695,51 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
   if (length(toinclude)>0) indexes<-unique(c(indexes,toinclude))
   indexes<-indexes[order(indexes)]
   return(indexes)
+}
+
+#' Find tickmarks for a given range of the y-axis that best fit an optimal number of tickmarks
+#' you decide. f.i: what if i want to have a graph with 8 tickmarks in a range of 34 to 345
+
+optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
+                            i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
+                            i.include.min=F,i.include.max=F){
+  # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
+  # Opcion 1: libre, puedo poner ticks fuera de c(i.min,i.max)
+  if (!i.include.min){
+    ticks.min<-floor(i.min/i.valid.ticks)
+    ticks.max<-ceiling(i.max/i.valid.ticks)
+    ticks.maxmin<-ticks.max-ticks.min+1
+    n.valid.ticks<-length(i.valid.ticks)
+    posicion.ticks<-(1:n.valid.ticks)[min(abs(ticks.maxmin-i.number.ticks))==abs(ticks.maxmin-i.number.ticks)][1]
+    ini<-(ticks.min*i.valid.ticks)[posicion.ticks]
+    fin<-(ticks.max*i.valid.ticks)[posicion.ticks]
+    salto<-i.valid.ticks[posicion.ticks]
+    # Tickmarks
+    tickmarks<-seq(ini,fin,salto)
+    # El número de ticks resultante
+    numero.ticks<-length(tickmarks)
+    # Rango
+    range.y<-c(ini,fin)
+  }else{
+    # Opcion 2: restringida, el primer tick se debe corresponder a i.min
+    ticks.maxmin<-1+floor((i.max-i.min)/i.valid.ticks)
+    n.valid.ticks<-length(i.valid.ticks)
+    posicion.ticks<-which.min(abs(ticks.maxmin-i.number.ticks))
+    ini<-i.min
+    fin<-i.min+((ticks.maxmin-1)*i.valid.ticks)[posicion.ticks]
+    salto<-i.valid.ticks[posicion.ticks]
+    # Tickmarks
+    tickmarks<-seq(ini,fin,salto)
+    # El número de ticks resultante
+    numero.ticks<-length(tickmarks)
+    if (i.include.max) {
+      fin<-i.max
+      tickmarks[numero.ticks]<-i.max
+    }
+    # Rango
+    range.y<-c(ini,fin)
+  }  
+  # Y la secuencia para definir el eje Y final
+  return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
 }
 
