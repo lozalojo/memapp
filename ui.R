@@ -17,7 +17,7 @@ shinyUI(dashboardPage(skin = "blue",
                    ###    Load data          ######
                    ################################
                    
-                   fileInput("file", label = h5("Load data (.CSV)")),
+                   fileInput("file", label = h5("Load data")),
                    # selectInput("K", h5("    Apply MEM on season"), size=1,
                    #             selectize = FALSE, choices = ""),
                    
@@ -84,16 +84,18 @@ shinyUI(dashboardPage(skin = "blue",
                    
                    
                    ### This portion is experimental
+                   h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Model"),
                    # From
-                   selectInput("SelectFrom", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "From"), size=1, selectize = FALSE, choices = ""),
+                   selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "From"), size=1, selectize = FALSE, choices = ""),
                    # To
-                   selectInput("SelectTo", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "To"), size=1, selectize = FALSE, choices = ""),
+                   selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "To"), size=1, selectize = FALSE, choices = ""),
                    # Excluding
-                   selectInput('SelectExclude', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Exclude"), multiple = TRUE, choices = NULL),
+                   selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Exclude"), multiple = TRUE, choices = NULL),
                    # Pandemic
                    checkboxInput("SelectPandemic", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Pandemic"), value = FALSE),
                    # Maximum seasons
                    numericInput("SelectMaximum", "Max. seasons:", 10, step=1),
+                   h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Surveillance"),
                    # Surveillance
                    selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                        bsButton("ssb", label = "", 
@@ -115,7 +117,8 @@ shinyUI(dashboardPage(skin = "blue",
                              content = "Choose a season to apply MEM thresholds on. Your choosen seasen will be excluded when calculating the MEM thresholds for pre- and post season.",
                              placement = "top", 
                              trigger = "hover", 
-                             options = list(container = "body")),                   
+                             options = list(container = "body")),
+                   h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Visualize"),
                    # Add seasons
                    selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                         bsButton("spb", label = "", 
@@ -258,8 +261,17 @@ shinyUI(dashboardPage(skin = "blue",
          ###      SECOND PART: OUTPUTS       ###
          #######################################
          
-         box(title="Outputs", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
-             collapsible = FALSE, uiOutput("tb")),
+         # box(title="Outputs", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
+         #     collapsible = FALSE, uiOutput("tb")),
+         
+         tabBox(
+           # Title can include an icon
+           title = "Outputs", width = 12,
+           tabPanel("Data", "Loaded data", uiOutput("tbData")),
+           tabPanel("Model", "MEM modelling", uiOutput("tbModel")),
+           tabPanel("Surveillance", "Surveillance", uiOutput("tbSurveillance")),
+           tabPanel("Visualize", "Visualize data", uiOutput("tbVisualize"))
+         ),
          
          #######################################
          ### BODY/MAIN SECTION               ###
