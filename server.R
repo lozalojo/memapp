@@ -218,7 +218,7 @@ output$tbdSeasons <- renderPlotly({
     i.thr<-NA
   }
   datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
-  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.epidemic = T, i.intensity = T)
+  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
@@ -237,7 +237,7 @@ output$tbdSeries <- renderPlot({
                     i.param = as.numeric(input$memparameter), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
-    ei.thr<-T
+    ei.thr<-as.logical(input$intensitythr)
   }else{
     e.thr<-NA
     i.thr<-NA
@@ -299,7 +299,7 @@ output$tbmSeasons <- renderPlotly({
     i.thr<-NA
   }
   datfile.plot<-datfile[model.columns]
-  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.epidemic = T, i.intensity = T)
+  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
@@ -318,7 +318,7 @@ output$tbmSeries <- renderPlot({
                     i.param = as.numeric(input$memparameter), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
-    ei.thr<-T
+    ei.thr<-as.logical(input$intensitythr)
   }else{
     e.thr<-NA
     i.thr<-NA
@@ -494,7 +494,7 @@ output$tbsSeasons <- renderPlotly({
   if (length(selectedcolumns)==0){return()}
   cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
   cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
-  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.epidemic = T, i.intensity = T)
+  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
@@ -527,9 +527,15 @@ output$tbsAnimated <- renderImage({
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
     range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
+    
+    if (!as.logical(input$preepidemicthr)) e.thr<-NA
+
    sura<-memsurveillance.animated(datfile[input$SelectSurveillance], e.thr, i.thr, i.remove = T,
-                           i.animated.graph.file.name = "animated", i.output = tempdir(), i.pos.epidemic = T, i.range.x=range.x)
-  
+                           i.animated.graph.file.name = "animated", 
+                           i.output = tempdir(), 
+                           i.pos.epidemic = as.logical(input$postepidemicthr), 
+                           i.range.x=range.x,
+                           i.no.intensity=!as.logical(input$intensitythr))
   imgfile<-sura$graph.name
   cat(imgfile,"\n")
   
@@ -609,7 +615,7 @@ output$tbvSeasons <- renderPlotly({
   datfile.plot<-datfile[selectedcolumns]
   cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
   cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
-  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.epidemic = as.logical(input$mem_knapp), i.intensity = as.logical(input$mem_intensitet))
+  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
@@ -628,7 +634,7 @@ output$tbvSeries <- renderPlot({
                     i.param = as.numeric(input$memparameter), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
-    ei.thr<-T
+    ei.thr<-as.logical(input$intensitythr)
   }else{
     e.thr<-NA
     i.thr<-NA
@@ -645,7 +651,7 @@ output$tbvSeries <- renderPlot({
                                   i.seasons=NA)
   if (length(selectedcolumns)==0){return()}
   datfile.plot<-datfile[selectedcolumns]
-  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr & as.logical(input$mem_intensitet))
+  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
 })
 
 
@@ -692,7 +698,7 @@ plotInput <-function(){
   # CASE 1: if there are no 2 seasons to calculate thresholds AND addmoreplots=NOT
   # OR
   # addintensity=NOT AND addthreshold=NOT and addmoreplots=NOT
-  if(NCOL(datfile.model)<2 & is.null(input$SelectSeasons)|(input$mem_knapp=="FALSE" & is.null(input$SelectSeasons) & input$mem_intensitet=="FALSE"))
+  if(NCOL(datfile.model)<2 & is.null(input$SelectSeasons)|(input$preepidemicthr=="FALSE" & is.null(input$SelectSeasons) & input$intensitythr=="FALSE"))
   {
     cat("Case #1\n")
     g.plot <- 
@@ -709,8 +715,8 @@ plotInput <-function(){
     print(ggplotly(g.plot, tooltip = "text"))
     #start
 # CASE 2: addthreshold=YES AND 2 or more seasons AND addmoreplots=NOT and addintensity=NOT
-  }else if(input$mem_knapp=="TRUE" & 
-           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$mem_intensitet=="FALSE"){
+  }else if(input$preepidemicthr=="TRUE" & 
+           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="FALSE"){
     cat("Case #2\n")
     # epi <- memmodel(datfile[,c(grep(input$K2, 
     #                               colnames(datfile)):(grep(input$K, 
@@ -733,8 +739,8 @@ plotInput <-function(){
         ggthemes::theme_few()
     print(ggplotly(g.plot, tooltip = "text"))
     # CASE 3: addthreshold=NO AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
-  }else if(input$mem_knapp=="FALSE" & 
-           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$mem_intensitet=="TRUE"){
+  }else if(input$preepidemicthr=="FALSE" & 
+           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="TRUE"){
     # epi <- memmodel(datfile[,c(grep(input$K2, 
     #                               colnames(datfile)):(grep(input$K, 
     #                                                        colnames(datfile))-1))], 
@@ -761,8 +767,8 @@ plotInput <-function(){
         ggthemes::theme_few()
     print(ggplotly(g.plot, tooltip = "text"))
     # CASE 4: addthreshold=YES AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
-  }else if(input$mem_knapp=="TRUE" & 
-           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$mem_intensitet=="TRUE"){
+  }else if(input$preepidemicthr=="TRUE" & 
+           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="TRUE"){
     # epi <- memmodel(datfile[,c(grep(input$K2, 
     #                               colnames(datfile)):(grep(input$K, 
     #                                                        colnames(datfile))-1))], 
@@ -819,7 +825,7 @@ plotInput <-function(){
   
 }
 
-plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.epidemic=TRUE, i.intensity=TRUE){
+plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epidemic=TRUE, i.post.epidemic=TRUE, i.intensity=TRUE){
   #cat("plotSeasons function\n")
   if(is.null(i.data)){return()}
   dataplot<-i.data
@@ -836,7 +842,8 @@ plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.epidemi
   # Same, for 10 tickmarks in the y-axis
   
   temp1<-max(i.data,na.rm=T)
-  if (length(i.epidemic.thr)==2) temp1<-max(c(temp1,i.epidemic.thr),na.rm=T)
+  if (length(i.epidemic.thr)==2 & i.pre.epidemic) temp1<-max(c(temp1,i.epidemic.thr[1]),na.rm=T)
+  if (length(i.epidemic.thr)==2 & i.post.epidemic) temp1<-max(c(temp1,i.epidemic.thr[2]),na.rm=T)
   if (length(i.intensity.thr)==3) temp1<-max(c(temp1,i.intensity.thr),na.rm=T)
   axis.y.range.original <- c(0,1.05*temp1)
   rm("temp1")
@@ -870,10 +877,14 @@ plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.epidemi
       scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range) +
       scale_color_manual(values=col.ser, labels=names(i.data))
-    # Add epidemic thresholds
-    if(i.epidemic & length(i.epidemic.thr)==2){
+    # Add pre-epidemic thresholds
+    if(i.pre.epidemic & length(i.epidemic.thr)==2){
       g.plot <- g.plot +
-        geom_hline(aes(yintercept=i.epidemic.thr[1]), color = input$colMEMstart) +
+        geom_hline(aes(yintercept=i.epidemic.thr[1]), color = input$colMEMstart)
+    }
+    # Add postepidemic thresholds
+    if(i.post.epidemic & length(i.epidemic.thr)==2){
+      g.plot <- g.plot +
         geom_hline(aes(yintercept=i.epidemic.thr[2]), color = input$colMEMstop)
     }
     # Finishing
@@ -926,7 +937,7 @@ plotSeasons.OLD <-function(){
       theme(plot.title = element_text(hjust = 0.1, size=22)) +
       labs(x=input$textX,y=input$textY, color='Season')
     # Add intensity, this goes first not to overwrite the series
-    if(input$mem_intensitet=="TRUE" & NCOL(datfile.model)>1){
+    if(input$intensitythr=="TRUE" & NCOL(datfile.model)>1){
       g.plot <- g.plot + 
         annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran)) +
         annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran)) +
@@ -941,7 +952,7 @@ plotSeasons.OLD <-function(){
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range) +
       scale_color_manual(values=col.ser, labels=input$SelectSurveillance)
     # Add epidemic thresholds
-    if(input$mem_knapp=="TRUE" & NCOL(datfile.model)>1){
+    if(input$preepidemicthr=="TRUE" & NCOL(datfile.model)>1){
       g.plot <- g.plot +
         geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
         geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop)
@@ -1002,8 +1013,10 @@ plotSurveillance <-function(){
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
   range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
+
+  if (!as.logical(input$preepidemicthr)) e.thr<-NA
   memsurveillance(datfile.surveillance, 
-                  e.thr, i.thr, i.graph.file=F, i.pos.epidemic = T, i.range.x =range.x, i.week.report = input$SelectSurveillanceWeek)
+                  e.thr, i.thr, i.graph.file=F, i.pos.epidemic = as.logical(input$postepidemicthr), i.range.x =range.x, i.week.report = input$SelectSurveillanceWeek, i.no.intensity=!as.logical(input$intensitythr))
   }
 }
 
