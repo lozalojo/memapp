@@ -92,7 +92,7 @@ shinyUI(dashboardPage(skin = "blue",
                    # Excluding
                    selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Exclude"), multiple = TRUE, choices = NULL),
                    # Pandemic
-                   checkboxInput("SelectPandemic", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Pandemic"), value = FALSE),
+                   # checkboxInput("SelectPandemic", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Pandemic"), value = FALSE),
                    # Maximum seasons
                    numericInput("SelectMaximum", "Max. seasons:", 10, step=1),
                    h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Surveillance"),

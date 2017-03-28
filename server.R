@@ -180,7 +180,7 @@ output$tbdData <- renderTable({
                  i.to="", 
                  i.exclude="",
                  i.include="",
-                 i.pandemic=as.logical("TRUE"),
+                 i.pandemic=T,
                  i.seasons=NA)
   # cat("i.from:->",input$SelectFrom,"<-\n",sep="")
   # cat("i.to:->",input$SelectTo,"<-\n",sep="")
@@ -188,7 +188,7 @@ output$tbdData <- renderTable({
   # cat("i.include:->",as.character(c(input$K,input$K4)),"<-\n",sep="")
   # cat("i.pandemic:->",as.logical(input$SelectPandemic),"<-\n",sep="")
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
-  cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
 }, rownames = T, digits = 2)  
 
@@ -204,7 +204,10 @@ output$tbdPlot <- renderPlotly({
 output$tbdSeasons <- renderPlotly({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T, 
+                                i.seasons=input$SelectMaximum)
   if (length(model.columns)>1){
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
@@ -228,7 +231,10 @@ output$tbdSeasons <- renderPlotly({
 output$tbdSeries <- renderPlot({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T,
+                                i.seasons=input$SelectMaximum)
   if (length(model.columns)>1){
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
@@ -260,9 +266,10 @@ output$tbmData <- renderTable({
                                   i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude,
                                   i.include="",
-                                  i.pandemic=as.logical(input$SelectPandemic),
+                                  #i.pandemic=as.logical(input$SelectPandemic),
+                                  i.pandemic=T,
                                   i.seasons=input$SelectMaximum)
-  cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   # cat("i.from:->",input$SelectFrom,"<-\n",sep="")
   # cat("i.to:->",input$SelectTo,"<-\n",sep="")
   # cat("i.exclude:->",input$SelectExclude,"<-\n",sep="")
@@ -285,7 +292,10 @@ output$tbmPlot <- renderPlotly({
 output$tbmSeasons <- renderPlotly({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T,
+                                i.seasons=input$SelectMaximum)
   if (length(model.columns)>1){
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
@@ -309,8 +319,13 @@ output$tbmSeasons <- renderPlotly({
 output$tbmSeries <- renderPlot({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T,
+                                i.seasons=input$SelectMaximum)
+  cat(model.columns,"-",length(model.columns),"\n")
   if (length(model.columns)>1){
+    cat("1\n")
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
@@ -320,6 +335,7 @@ output$tbmSeries <- renderPlot({
     i.thr<-epi$intensity.thresholds
     ei.thr<-as.logical(input$intensitythr)
   }else{
+    cat("2\n")
     e.thr<-NA
     i.thr<-NA
     ei.thr<-F
@@ -337,7 +353,8 @@ output$tbmMem <- renderPrint({
                                   i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude,
                                   i.include="",
-                                  i.pandemic=as.logical(input$SelectPandemic),
+                                  #i.pandemic=as.logical(input$SelectPandemic),
+                                  i.pandemic=T,
                                   i.seasons=input$SelectMaximum)
   
   if (length(selectedcolumns)>1){
@@ -385,7 +402,10 @@ output$tbmGoodness<-renderTable({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
   if (length(selectedcolumns)>2){
     good<-memgoodness(datfile[,selectedcolumns],
                       i.type.threshold=as.numeric(input$i.type.threshold),
@@ -410,7 +430,10 @@ output$tbmOptimize<-renderTable({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
   if (length(selectedcolumns)>2){
     
     
@@ -454,7 +477,7 @@ output$tbsData <- renderTable({
   # cat("i.include:->",as.character(c(input$K,input$K4)),"<-\n",sep="")
   # cat("i.pandemic:->",as.logical(input$SelectPandemic),"<-\n",sep="")
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
-  cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
 }, rownames = T, digits = 2)  
 
@@ -470,7 +493,10 @@ output$tbsPlot <- renderPlotly({
 output$tbsSeasons <- renderPlotly({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T,
+                                i.seasons=input$SelectMaximum)
   if (length(model.columns)>1){
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
@@ -492,8 +518,8 @@ output$tbsSeasons <- renderPlotly({
                                   i.seasons=NA)
   datfile.plot<-datfile[selectedcolumns]
   if (length(selectedcolumns)==0){return()}
-  cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
-  cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
+  #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
+  #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
@@ -516,7 +542,10 @@ output$tbsAnimated <- renderImage({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
   datfile.model<-datfile[selectedcolumns]
   if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
     epi <- memmodel(datfile.model,
@@ -537,7 +566,7 @@ output$tbsAnimated <- renderImage({
                            i.range.x=range.x,
                            i.no.intensity=!as.logical(input$intensitythr))
   imgfile<-sura$graph.name
-  cat(imgfile,"\n")
+  #cat(imgfile,"\n")
   
   outdistAnimated<-list(src = imgfile,
        contentType = 'image/gif',
@@ -573,7 +602,7 @@ output$tbvData <- renderTable({
   # cat("i.include:->",as.character(c(input$K,input$K4)),"<-\n",sep="")
   # cat("i.pandemic:->",as.logical(input$SelectPandemic),"<-\n",sep="")
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
-  cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
 }, rownames = T, digits = 2)  
 
@@ -589,7 +618,10 @@ output$tbvPlot <- renderPlotly({
 output$tbvSeasons <- renderPlotly({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T,
+                                i.seasons=input$SelectMaximum)
   if (length(model.columns)>1){
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
@@ -613,8 +645,8 @@ output$tbvSeasons <- renderPlotly({
                                   i.seasons=NA)
   if (length(selectedcolumns)==0){return()}
   datfile.plot<-datfile[selectedcolumns]
-  cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
-  cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
+  #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
+  #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
@@ -625,7 +657,10 @@ output$tbvSeasons <- renderPlotly({
 output$tbvSeries <- renderPlot({
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                #i.pandemic=as.logical(input$SelectPandemic), 
+                                i.pandemic=T,
+                                i.seasons=input$SelectMaximum)
   if (length(model.columns)>1){
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
@@ -663,7 +698,10 @@ plotInput <-function(){
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
   datfile.model<-datfile[selectedcolumns]
   datfile.seasons<-datfile[input$SelectSeasons]
 
@@ -692,7 +730,7 @@ plotInput <-function(){
   axis.y.ticks <- axis.y.otick$tickmarks
   axis.y.labels <- axis.y.otick$tickmarks
   
-  cat(paste(axis.y.ticks,collapse=","),"\n",sep="")
+  #cat(paste(axis.y.ticks,collapse=","),"\n",sep="")
   #########Graf med observerade data
   
   # CASE 1: if there are no 2 seasons to calculate thresholds AND addmoreplots=NOT
@@ -700,7 +738,7 @@ plotInput <-function(){
   # addintensity=NOT AND addthreshold=NOT and addmoreplots=NOT
   if(NCOL(datfile.model)<2 & is.null(input$SelectSeasons)|(input$preepidemicthr=="FALSE" & is.null(input$SelectSeasons) & input$intensitythr=="FALSE"))
   {
-    cat("Case #1\n")
+    #cat("Case #1\n")
     g.plot <- 
       ggplot(datfile) +
       #geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
@@ -717,7 +755,7 @@ plotInput <-function(){
 # CASE 2: addthreshold=YES AND 2 or more seasons AND addmoreplots=NOT and addintensity=NOT
   }else if(input$preepidemicthr=="TRUE" & 
            NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="FALSE"){
-    cat("Case #2\n")
+    #cat("Case #2\n")
     # epi <- memmodel(datfile[,c(grep(input$K2, 
     #                               colnames(datfile)):(grep(input$K, 
     #                                                        colnames(datfile))-1))], 
@@ -748,7 +786,7 @@ plotInput <-function(){
     #               i.type.intensity=as.numeric(input$i.type.intensity), 
     #               i.method = as.numeric(input$i.method),
     #               i.param = as.numeric(input$memparameter), i.seasons = NA)
-    cat("Case #3\n")
+    #cat("Case #3\n")
     col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
     g.plot <-
       ggplot(datfile) +
@@ -776,7 +814,7 @@ plotInput <-function(){
     #               i.type.intensity=as.numeric(input$i.type.intensity), 
     #               i.method = as.numeric(input$i.method),
     #               i.param = as.numeric(input$memparameter), i.seasons = NA)
-    cat("Case #4\n")
+    #cat("Case #4\n")
     col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
     g.plot <-
       ggplot(datfile) +
@@ -809,7 +847,7 @@ plotInput <-function(){
     #   longdata = melt(widedata, id.vars=selectedxaxis, variable.name='Cases', value.name='Count')
     #   lis <- rbind(lis, longdata)
     # }
-    cat("Case #5\n")
+    #cat("Case #5\n")
     lis<-melt(datfile, id.vars="num", measure.vars=input$SelectSeasons, variable.name='Season', value.name='Rates')     
     g.plot <- 
       ggplot(lis) + 
@@ -898,7 +936,10 @@ plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epi
 plotSeasons.OLD <-function(){
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
   datfile.model<-datfile[selectedcolumns]
   datfile.seasons<-datfile[input$SelectSeasons]
   if (NCOL(datfile.model)>1){
@@ -1001,7 +1042,10 @@ plotSurveillance <-function(){
   datfile <- dat_funk()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", i.pandemic=as.logical(input$SelectPandemic), i.seasons=input$SelectMaximum)
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
   datfile.model<-datfile[selectedcolumns]
   datfile.surveillance<-datfile[input$SelectSurveillance]
   if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
@@ -1162,21 +1206,21 @@ read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.ma
 
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 
-select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pandemic=T,i.seasons=NA){
-  cat("Select columns function\n")
-  cat("i.from:->",i.from,"<-\n",sep="")
-  cat("i.to:->",i.to,"<-\n",sep="")
-  cat("i.exclude:->",paste(i.exclude,collapse=","),"<-\n",sep="")
-  cat("i.include:->",paste(i.include,collapse=","),"<-\n",sep="")
-  cat("i.pandemic:->",i.pandemic,"<-\n",sep="")
-  cat("i.seasons:->",i.seasons,"<-\n",sep="")
+select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pandemic=T, i.seasons=NA){
+  # cat("Select columns function\n")
+  # cat("i.from:->",i.from,"<-\n",sep="")
+  # cat("i.to:->",i.to,"<-\n",sep="")
+  # cat("i.exclude:->",paste(i.exclude,collapse=","),"<-\n",sep="")
+  # cat("i.include:->",paste(i.include,collapse=","),"<-\n",sep="")
+  # cat("i.pandemic:->",i.pandemic,"<-\n",sep="")
+  # cat("i.seasons:->",i.seasons,"<-\n",sep="")
   indexes<-1:length(i.names)
   toinclude<-indexes[i.names %in% i.include]
   if (!(i.from=="" | is.na(i.from) | is.null(i.from)) & (i.from %in% i.names)) from<-grep(i.from,i.names,fixed=T) else from<-1  
   if (!(i.to=="" | is.na(i.to) | is.null(i.to)) & (i.to %in% i.names)) to<-grep(i.to,i.names,fixed=T) else to<-length(i.names)
   if (to<from) to<-from
-  cat(to,"-",from,"\n")
-  cat(i.names,"\n")
+  #cat(to,"-",from,"\n")
+  #cat(i.names,"\n")
   seasons<-data.frame(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
   names(seasons)<-c("season.original","anioi","aniof","aniow")
   seasons[is.na(seasons)]<-""
@@ -1194,7 +1238,7 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
   if (length(toinclude)>0) indexes<-unique(c(indexes,toinclude))
   indexes<-indexes[order(indexes)]
   indexes<-indexes[!(i.names[indexes] %in% c("num","vecka"))]
-  cat(paste(indexes,collapse=","),"\n")
+  #cat(paste(indexes,collapse=","),"\n")
   return(indexes)
 }
 
@@ -1205,7 +1249,7 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
                             i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
                             i.include.min=F,i.include.max=F){
   # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
-  # Opcion 1: libre, puedo poner ticks fuera de c(i.min,i.max)
+  # Option 1: free, I can put tickmarks outside c(i.min,i.max)
   if (!i.include.min){
     ticks.min<-floor(i.min/i.valid.ticks)
     ticks.max<-ceiling(i.max/i.valid.ticks)
@@ -1217,12 +1261,12 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
     salto<-i.valid.ticks[posicion.ticks]
     # Tickmarks
     tickmarks<-seq(ini,fin,salto)
-    # El número de ticks resultante
+    # Number of ticks
     numero.ticks<-length(tickmarks)
-    # Rango
+    # Rank
     range.y<-c(ini,fin)
   }else{
-    # Opcion 2: restringida, el primer tick se debe corresponder a i.min
+    # Opcion 2: restricted, first tickmark must be i.min, and the last one i.max (if i.include.max=T, else it is the lastest tickmark not greater than i.max)
     ticks.maxmin<-1+floor((i.max-i.min)/i.valid.ticks)
     n.valid.ticks<-length(i.valid.ticks)
     posicion.ticks<-which.min(abs(ticks.maxmin-i.number.ticks))
@@ -1231,16 +1275,16 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
     salto<-i.valid.ticks[posicion.ticks]
     # Tickmarks
     tickmarks<-seq(ini,fin,salto)
-    # El número de ticks resultante
+    # Number of ticks
     numero.ticks<-length(tickmarks)
     if (i.include.max) {
       fin<-i.max
       tickmarks[numero.ticks]<-i.max
     }
-    # Rango
+    # Rank
     range.y<-c(ini,fin)
   }  
-  # Y la secuencia para definir el eje Y final
+  # Returning
   return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
 }
 
