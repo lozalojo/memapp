@@ -16,6 +16,16 @@ dat_funk <- reactive({
   dat$num <- 1:nrow(dat)
   dat2 <- as.data.frame(apply(dat, 2, function(x) as.numeric(x)))
   rownames(dat2) <- rownames(dat)
+
+  datanames<-names(dat2)[!(names(dat2) %in% c("vecka","num"))]  
+  
+  lapply(datanames, function(s){
+                                            output[[paste0("timing_",s)]] <- renderPlot({
+                                              plotTiming(s)
+                                            })
+                                          })
+  
+  
   dat2
 })
 
@@ -119,9 +129,10 @@ output$tbData <- renderUI({
   else
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
                 tabPanel("Data", tableOutput("tbdData")),
-                tabPanel("Plot", plotlyOutput("tbdPlot")),
+                #tabPanel("Plot", plotlyOutput("tbdPlot")),
                 tabPanel("Seasons", plotlyOutput("tbdSeasons")),
-                tabPanel("Series",plotOutput("tbdSeries"))
+                tabPanel("Series",plotOutput("tbdSeries")),
+                tabPanel("Timing",uiOutput("tbdTiming"))
     )
 })
 
@@ -129,7 +140,7 @@ output$tbModel <- renderUI({
   if(is.null(dat_funk())){return()}
   else
     tabsetPanel(tabPanel("Data", tableOutput("tbmData")),
-                tabPanel("Plot", plotlyOutput("tbmPlot")),
+                #tabPanel("Plot", plotlyOutput("tbmPlot")),
                 tabPanel("Seasons", plotlyOutput("tbmSeasons")),
                 tabPanel("Series",plotOutput("tbmSeries")),
                 tabPanel("Series2",plotlyOutput("tbmSeries2")),
@@ -143,7 +154,7 @@ output$tbSurveillance <- renderUI({
   if(is.null(dat_funk())){return()}
   else
     tabsetPanel(tabPanel("Data", tableOutput("tbsData")),
-                tabPanel("Plot", plotlyOutput("tbsPlot")),
+                #tabPanel("Plot", plotlyOutput("tbsPlot")),
                 tabPanel("Seasons", plotlyOutput("tbsSeasons")),
                 tabPanel("Timing",plotOutput("tbsTiming")),
                 tabPanel("Surveillance",plotOutput("tbsSurveillance")),
@@ -155,7 +166,7 @@ output$tbVisualize <- renderUI({
   if(is.null(dat_funk())){return()}
   else
     tabsetPanel(tabPanel("Data", tableOutput("tbvData")),
-                tabPanel("Plot", plotlyOutput("tbvPlot")),
+                #tabPanel("Plot", plotlyOutput("tbvPlot")),
                 tabPanel("Seasons", plotlyOutput("tbvSeasons")),
                 tabPanel("Series",plotOutput("tbvSeries"))
     )
@@ -252,6 +263,32 @@ output$tbdSeries <- renderPlot({
   }
   datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
   plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
+})
+
+output$tbdTiming = renderUI({
+  datfile <- dat_funk()
+  if(is.null(datfile)) {return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), 
+                                  i.from="", 
+                                  i.to="", 
+                                  i.exclude="",
+                                  i.include="",
+                                  i.pandemic=T,
+                                  i.seasons=NA)
+  datfileplot<-datfile[selectedcolumns]
+  tabnames<-names(datfileplot)
+  # tbdTiming = lapply(names(datfileplot), tabPanel)
+  # do.call(tabsetPanel, tbdTiming)
+
+  do.call(tabsetPanel,
+          ## Create a set of tabPanel functions dependent on tabnames
+          lapply(tabnames,function(s){
+            ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
+            ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
+            call("tabPanel",s,call('plotOutput',paste0("timing_",s)))
+          })
+  )
+
 })
 
 #####################################
@@ -560,7 +597,7 @@ output$tbsSeasons <- renderPlotly({
 })
 
 output$tbsTiming <- renderPlot({
-  plotTiming()
+  plotTiming(input$SelectSurveillance)
 })
 
 output$tbsSurveillance <- renderPlot({
@@ -1238,18 +1275,15 @@ plotSeasons.OLD <-function(){
   }
 }
 
-plotTiming <-function(){
+plotTiming <-function(kol){
   datfile <- dat_funk()
-  DLM <- function(kol){
-    dat3 <- datfile
-    datafil <- dat3
+    #dat3 <- datfile
+    #datafil <- dat3
     #for(i in input$K:input$K2){
-    epi.plot <- memtiming(dat3[kol],
+    epi.plot <- memtiming(datfile[kol],
                           i.method = as.numeric(input$i.method),
                           i.param = as.numeric(input$memparameter))
     plot(epi.plot)
-  }
-  DLM(input$SelectSurveillance)
 }
 
 plotSeries <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timing=TRUE, i.threholds=TRUE){

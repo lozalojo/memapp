@@ -279,7 +279,7 @@ shinyUI(dashboardPage(skin = "blue",
          tabBox(
            # Title can include an icon
            title = "Outputs", width = 12,
-           tabPanel("Data", "Loaded data", uiOutput("tbData")),
+           tabPanel("Series & Timing", "Series & Timing", uiOutput("tbData")),
            tabPanel("Model", "MEM modelling", uiOutput("tbModel")),
            tabPanel("Surveillance", "Surveillance", uiOutput("tbSurveillance")),
            tabPanel("Visualize", "Visualize data", uiOutput("tbVisualize"))
