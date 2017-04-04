@@ -185,7 +185,7 @@ shinyUI(dashboardPage(skin = "blue",
     fluidPage(
 
   # Application title
-  titlePanel(h1("Moving Epidemic Method")),
+  titlePanel(h1("Moving Epidemics Method")),
   
   fluidRow(
     

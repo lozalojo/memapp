@@ -2,7 +2,7 @@ library(shiny)
 
 shinyServer(function(input, output, session) {
   
-dat_funk <- reactive({
+data_read <- reactive({
   file1 <- input$file
   if(is.null(file1)){return()}
   else
@@ -19,14 +19,78 @@ dat_funk <- reactive({
 
   datanames<-names(dat2)[!(names(dat2) %in% c("vecka","num"))]  
   
-  lapply(datanames, function(s){
-                                            output[[paste0("timing_",s)]] <- renderPlot({
-                                              plotTiming(s)
-                                            })
-                                          })
-  
-  
+  lapply(datanames, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlot({plotTiming(s)})})
+  lapply(datanames, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlot({plotTiming(s)})})
+  lapply(datanames, function(s){output[[paste0("tbvTiming_",s)]] <- renderPlot({plotTiming(s)})})
+
   dat2
+})
+
+data_model <- reactive({
+  datfile <- data_read()
+  if(is.null(datfile)){return()}
+  # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
+  selectedcolumns<-select.columns(i.names=names(datfile), 
+                                  i.from=input$SelectFrom, 
+                                  i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude,
+                                  i.include="",
+                                  #i.pandemic=as.logical(input$SelectPandemic),
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
+  #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  # cat("i.from:->",input$SelectFrom,"<-\n",sep="")
+  # cat("i.to:->",input$SelectTo,"<-\n",sep="")
+  # cat("i.exclude:->",input$SelectExclude,"<-\n",sep="")
+  # cat("i.include:->",as.character(c(input$K,input$K4)),"<-\n",sep="")
+  # cat("i.pandemic:->",as.logical(input$SelectPandemic),"<-\n",sep="")
+  # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
+  # cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
+  if (length(selectedcolumns)<2){return()}
+  epi <- memmodel(datfile[selectedcolumns],
+                  i.type.threshold=as.numeric(input$i.type.threshold),
+                  i.type.intensity=as.numeric(input$i.type.intensity), 
+                  i.method = as.numeric(input$i.method),
+                  i.param = as.numeric(input$memparameter), i.seasons = NA)
+  epi
+})
+
+
+data_good <- reactive({
+  datfile <- data_read()
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
+  if (length(selectedcolumns)<3){return()}
+  
+  good<-memgoodness(datfile[,selectedcolumns],
+                    i.type.threshold=as.numeric(input$i.type.threshold),
+                    i.type.intensity=as.numeric(input$i.type.intensity), 
+                    i.method = as.numeric(input$i.method),
+                    i.param = as.numeric(input$memparameter),i.graph=F, i.seasons=NA, i.min.seasons = length(selectedcolumns))
+  good
+})
+
+data_optim <- reactive({
+  datfile <- data_read()
+  if(is.null(datfile)){return()}
+  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+                                  i.exclude=input$SelectExclude, i.include="", 
+                                  #i.pandemic=as.logical(input$SelectPandemic), 
+                                  i.pandemic=T,
+                                  i.seasons=input$SelectMaximum)
+  if (length(selectedcolumns)<3){return()}
+  roca<-roc.analysis(datfile[,selectedcolumns],
+                     i.param.values = seq(2, 3, 0.1), 
+                     i.graph.file = F,
+                     i.type.threshold=as.numeric(input$i.type.threshold),
+                     i.type.intensity=as.numeric(input$i.type.intensity), 
+                     i.seasons=NA, 
+                     i.min.seasons = length(selectedcolumns))
+  roca
 })
 
 observe({
@@ -94,17 +158,19 @@ observe({
   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
   dt$vecka<-rownames(dt)
   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]
-  updateSelectInput(session, "SelectFrom", choices = names(dt)[2:ncol(dt)])
-  updateSelectInput(session, "SelectTo", choices = names(dt)[2:ncol(dt)])
-  updateSelectInput(session, "SelectExclude", choices = names(dt)[2:ncol(dt)])
-  updateSelectInput(session, "SelectSurveillance", choices = names(dt)[2:ncol(dt)])
-  updateSelectInput(session, "SelectSurveillanceWeek", choices = rownames(dt))
-  updateSelectInput(session, "SelectSeasons", choices = names(dt)[2:ncol(dt)])
+  seasons<-names(dt)[2:ncol(dt)]
+  weeks<-rownames(dt)
+  updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
+  updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
+  updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
+  updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=rev(seasons)[1])
+  updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
+  updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
 })
 
 # Define main output structure
 # output$tb <- renderUI({
-#   if(is.null(dat_funk())){return()}
+#   if(is.null(data_read())){return()}
 #   else
 #     tabsetPanel(tabPanel("File name", tableOutput("filedf")),
 #                 tabPanel("Data", tableOutput("table")),
@@ -125,7 +191,7 @@ observe({
 #####################################
 
 output$tbData <- renderUI({
-  if(is.null(dat_funk())){return()}
+  if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
                 tabPanel("Data", tableOutput("tbdData")),
@@ -137,21 +203,22 @@ output$tbData <- renderUI({
 })
 
 output$tbModel <- renderUI({
-  if(is.null(dat_funk())){return()}
+  if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Data", tableOutput("tbmData")),
                 #tabPanel("Plot", plotlyOutput("tbmPlot")),
                 tabPanel("Seasons", plotlyOutput("tbmSeasons")),
                 tabPanel("Series",plotOutput("tbmSeries")),
                 tabPanel("Series2",plotlyOutput("tbmSeries2")),
-                tabPanel("MEM", verbatimTextOutput("tbmMem")),
-                tabPanel("Goodness",tableOutput("tbmGoodness")),
-                tabPanel("Optimize",tableOutput("tbmOptimize"))
+                tabPanel("Timing",uiOutput("tbmTiming")),
+                tabPanel("MEM", uiOutput("tbmMem")),
+                tabPanel("Goodness",uiOutput("tbmGoodness")),
+                tabPanel("Optimize",uiOutput("tbmOptimize"))
     )
 })
 
 output$tbSurveillance <- renderUI({
-  if(is.null(dat_funk())){return()}
+  if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Data", tableOutput("tbsData")),
                 #tabPanel("Plot", plotlyOutput("tbsPlot")),
@@ -163,12 +230,13 @@ output$tbSurveillance <- renderUI({
 })
 
 output$tbVisualize <- renderUI({
-  if(is.null(dat_funk())){return()}
+  if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Data", tableOutput("tbvData")),
                 #tabPanel("Plot", plotlyOutput("tbvPlot")),
                 tabPanel("Seasons", plotlyOutput("tbvSeasons")),
-                tabPanel("Series",plotOutput("tbvSeries"))
+                tabPanel("Series",plotOutput("tbvSeries")),
+                tabPanel("Timing",uiOutput("tbvTiming"))
     )
 })
 
@@ -177,12 +245,12 @@ output$tbVisualize <- renderUI({
 #####################################
 
 output$tbdFile <- renderTable({
-  if(is.null(dat_funk())){return()}
+  if(is.null(data_read())){return()}
   input$file[1]
 }) 
 
 output$tbdData <- renderTable({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   #toinclude<-names(datfile)
@@ -205,16 +273,16 @@ output$tbdData <- renderTable({
 }, rownames = T, digits = 2)  
 
 output$tbdPlot <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
 output$tbdSeasons <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -236,12 +304,12 @@ output$tbdSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
 output$tbdSeries <- renderPlot({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -266,7 +334,7 @@ output$tbdSeries <- renderPlot({
 })
 
 output$tbdTiming = renderUI({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)) {return()}
   selectedcolumns<-select.columns(i.names=names(datfile), 
                                   i.from="", 
@@ -275,17 +343,14 @@ output$tbdTiming = renderUI({
                                   i.include="",
                                   i.pandemic=T,
                                   i.seasons=NA)
-  datfileplot<-datfile[selectedcolumns]
-  tabnames<-names(datfileplot)
-  # tbdTiming = lapply(names(datfileplot), tabPanel)
-  # do.call(tabsetPanel, tbdTiming)
-
+  datfile.plot<-datfile[selectedcolumns]
+  tabnames<-names(datfile.plot)
   do.call(tabsetPanel,
           ## Create a set of tabPanel functions dependent on tabnames
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotOutput',paste0("timing_",s)))
+            call("tabPanel",s,call('plotOutput',paste0("tbdTiming_",s)))
           })
   )
 
@@ -296,17 +361,17 @@ output$tbdTiming = renderUI({
 #####################################
 
 output$tbmData <- renderTable({
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
+  #datfile <- data_read()
+  #if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
-  selectedcolumns<-select.columns(i.names=names(datfile), 
-                                  i.from=input$SelectFrom, 
-                                  i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude,
-                                  i.include="",
-                                  #i.pandemic=as.logical(input$SelectPandemic),
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
+  # selectedcolumns<-select.columns(i.names=names(datfile), 
+  #                                 i.from=input$SelectFrom, 
+  #                                 i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude,
+  #                                 i.include="",
+  #                                 #i.pandemic=as.logical(input$SelectPandemic),
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   # cat("i.from:->",input$SelectFrom,"<-\n",sep="")
   # cat("i.to:->",input$SelectTo,"<-\n",sep="")
@@ -315,145 +380,240 @@ output$tbmData <- renderTable({
   # cat("i.pandemic:->",as.logical(input$SelectPandemic),"<-\n",sep="")
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
   # cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
-  if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
+  datamodel<-data_model()
+  if(is.null(datamodel)) datatoshow<-data.frame(Message="No data selected",row.names = NULL) else datatoshow<-datamodel$param.data
+  datatoshow
 }, rownames = T, digits = 2)  
 
 output$tbmPlot <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
 output$tbmSeasons <- renderPlotly({
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                #i.pandemic=as.logical(input$SelectPandemic), 
-                                i.pandemic=T,
-                                i.seasons=input$SelectMaximum)
-  if (length(model.columns)>1){
-    epi <- memmodel(datfile[model.columns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
-  }else{
-    e.thr<-NA
-    i.thr<-NA
-  }
-  datfile.plot<-datfile[model.columns]
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T,
+  #                               i.seasons=input$SelectMaximum)
+  # if (length(model.columns)>1){
+  #   epi <- memmodel(datfile[model.columns],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  datfile.plot<-datamodel$param.data
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
+  #datfile.plot<-datfile[model.columns]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", rownames(datfile.plot)))}
   z
 })
 
 output$tbmSeries <- renderPlot({
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                #i.pandemic=as.logical(input$SelectPandemic), 
-                                i.pandemic=T,
-                                i.seasons=input$SelectMaximum)
-  cat(model.columns,"-",length(model.columns),"\n")
-  if (length(model.columns)>1){
-    cat("1\n")
-    epi <- memmodel(datfile[model.columns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
-    ei.thr<-as.logical(input$intensitythr)
-  }else{
-    cat("2\n")
-    e.thr<-NA
-    i.thr<-NA
-    ei.thr<-F
-  }
-  datfile.plot<-datfile[model.columns]
-  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
-  
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T,
+  #                               i.seasons=input$SelectMaximum)
+  # cat(model.columns,"-",length(model.columns),"\n")
+  # if (length(model.columns)>1){
+  #   cat("1\n")
+  #   epi <- memmodel(datfile[model.columns],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  #   ei.thr<-as.logical(input$intensitythr)
+  # }else{
+  #   cat("2\n")
+  #   e.thr<-NA
+  #   i.thr<-NA
+  #   ei.thr<-F
+  # }
+  # datfile.plot<-datfile[model.columns]
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  datfile.plot<-datamodel$param.data
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
+  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = as.logical(input$intensitythr))
 })
 
 output$tbmSeries2 <- renderPlotly({
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                #i.pandemic=as.logical(input$SelectPandemic), 
-                                i.pandemic=T,
-                                i.seasons=input$SelectMaximum)
-  if (length(model.columns)>1){
-    epi <- memmodel(datfile[model.columns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
-  }else{
-    e.thr<-NA
-    i.thr<-NA
-  }
-  datfile.plot<-datfile[model.columns]
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T,
+  #                               i.seasons=input$SelectMaximum)
+  # if (length(model.columns)>1){
+  #   epi <- memmodel(datfile[model.columns],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  # datfile.plot<-datfile[model.columns]
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  datfile.plot<-datamodel$param.data
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
   p <- plotSeries2(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                    i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
                    i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
   z <- plotly_build(p)
   # for(j in 1:length(z$x$data)){
-  #   z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+  #   z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste("Y:", round(z$x$data[[j]]$y,1)))}
+    z$x$data[[j]]$text <- print(paste("Y:", roundF(z$x$data[[j]]$y,1)))}
   z
 })
 
-output$tbmMem <- renderPrint({
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), 
-                                  i.from=input$SelectFrom, 
-                                  i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude,
-                                  i.include="",
-                                  #i.pandemic=as.logical(input$SelectPandemic),
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
+output$tbmTiming = renderUI({
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T,
+  #                               i.seasons=input$SelectMaximum)
+  # if (length(model.columns)<1){return()}
+  # datfile.plot<-datfile[model.columns]
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  datfile.plot<-datamodel$param.data
+  tabnames<-names(datfile.plot)
+  do.call(tabsetPanel,
+          ## Create a set of tabPanel functions dependent on tabnames
+          lapply(tabnames,function(s){
+            ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
+            ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
+            call("tabPanel",s,call('plotOutput',paste0("tbmTiming_",s)))
+          })
+  )
   
-  if (length(selectedcolumns)>1){
-  datfile.model<-datfile[selectedcolumns]
+})
+
+output$tbmMem <- renderUI({
+  if(is.null(data_read())){return()}
+  else
+    tabsetPanel(tabPanel("Summary", uiOutput("tbmMemSummary")),
+                tabPanel("Output", verbatimTextOutput("tbmMemOutput")),
+                tabPanel("Graph",plotOutput("tbmMemModel"))
+    )
+})
+
+output$tbmMemSummary <- renderUI({
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # selectedcolumns<-select.columns(i.names=names(datfile), 
+  #                                 i.from=input$SelectFrom, 
+  #                                 i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude,
+  #                                 i.include="",
+  #                                 #i.pandemic=as.logical(input$SelectPandemic),
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
+  # 
+  # if (length(selectedcolumns)<2){return()}
+  # datfile.model<-datfile[selectedcolumns]
+  # nam.t <- memmodel(datfile.model,
+  #                     # nam.t <- memmodel(data_read()[,c(grep(input$K2, 
+  #                     #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
+  #                     i.type.threshold=as.numeric(input$i.type.threshold),
+  #                     i.type.intensity=as.numeric(input$i.type.intensity),
+  #                     i.method = as.numeric(input$i.method),
+  #                     i.param = as.numeric(input$memparameter), i.seasons = NA) 
+  
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+
+  #roundF(t(object$pre.post.intervals[1:2,3]),2)
+  #roundF(object$epi.intervals[,1]*100,1)
+  #100*object$param.level
+
+  fluidRow(
+    valueBox(datamodel$n.seasons, "Number of seasons", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(datamodel$ci.length[1,2],1), "Epidemic length", icon = icon("heartbeat"), width=3, color="green"),
+    valueBox(paste0(roundF(datamodel$ci.percent[2],1), "%"), "Epidemic percentage", icon = icon("heartbeat"), width=3, color="green"),
+    valueBox(datamodel$ci.start[2,2], "Mean start", icon = icon("heartbeat"), width=3, color="maroon"),
+    valueBox(roundF(datamodel$pre.post.intervals[1,3],1), "Epidemic threshold", icon = icon("thermometer-1"), width=3, color="aqua"),
+    valueBox(roundF(datamodel$epi.intervals[1,4],1), "Medium threshold", icon = icon("thermometer-2"), width=3, color="light-blue"),
+    valueBox(roundF(datamodel$epi.intervals[2,4],1), "High threshold", icon = icon("thermometer-3"), width=3, color="blue"),
+    valueBox(roundF(datamodel$epi.intervals[3,4],1), "Very high threshold", icon = icon("thermometer-4"), width=3, color="navy")
+  )
+})
+
+output$tbmMemOutput <- renderPrint({
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # selectedcolumns<-select.columns(i.names=names(datfile), 
+  #                                 i.from=input$SelectFrom, 
+  #                                 i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude,
+  #                                 i.include="",
+  #                                 #i.pandemic=as.logical(input$SelectPandemic),
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
+  # 
+  # if (length(selectedcolumns)>1){
+  # datfile.model<-datfile[selectedcolumns]
     
-    # if(grep(input$K, colnames(dat_funk()))>1){
-    #   if(grep(input$K2, colnames(dat_funk())) < grep(input$K, colnames(dat_funk()))-1){
-    nam.t <- memmodel(datfile.model,
-        # nam.t <- memmodel(dat_funk()[,c(grep(input$K2, 
-        #                                           colnames(dat_funk())):(grep(input$K, colnames(dat_funk()))-1))],
-                               i.type.threshold=as.numeric(input$i.type.threshold),
-                               i.type.intensity=as.numeric(input$i.type.intensity),
-                               i.method = as.numeric(input$i.method),
-                               i.param = as.numeric(input$memparameter), i.seasons = NA)
+  datamodel<-data_model()
+  if(!is.null(datamodel)){
+  
+  nam.t<-datamodel
+  
+    #if(grep(input$K, colnames(data_read()))>1){
+    #   if(grep(input$K2, colnames(data_read())) < grep(input$K, colnames(data_read()))-1){
+    # nam.t <- memmodel(datfile.model,
+    #     # nam.t <- memmodel(data_read()[,c(grep(input$K2, 
+    #     #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
+    #                            i.type.threshold=as.numeric(input$i.type.threshold),
+    #                            i.type.intensity=as.numeric(input$i.type.intensity),
+    #                            i.method = as.numeric(input$i.method),
+    #                            i.param = as.numeric(input$memparameter), i.seasons = NA)
         nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
                          c("",paste0("Threshold ", 
-                                     round(nam.t$"pre.post.intervals"[1,3],2)," ", 
-                                     round(nam.t$"pre.post.intervals"[2,3],2))),
+                                     roundF(nam.t$"pre.post.intervals"[1,3],2)," ", 
+                                     roundF(nam.t$"pre.post.intervals"[2,3],2))),
                          c("", ""),
                          c("Intensity thresholds:",""),
                          c("                  Threshold", ""),
-                         c(paste0("Medium (40%)          ", round(nam.t$"epi.intervals"[1,4],2)), ""),
-                         c(paste0("High (90%)            ", round(nam.t$"epi.intervals"[2,4],2)), ""),
-                         c(paste0("Very high (97.5%)     ", round(nam.t$"epi.intervals"[3,4],2)), ""))
+                         c(paste0("Medium (40%)          ", roundF(nam.t$"epi.intervals"[1,4],2)), ""),
+                         c(paste0("High (90%)            ", roundF(nam.t$"epi.intervals"[2,4],2)), ""),
+                         c(paste0("Very high (97.5%)     ", roundF(nam.t$"epi.intervals"[3,4],2)), ""))
         
         nam.ttt <- format(nam.ttt, justify = "left")
         nam.ttt <- as.data.frame(nam.ttt)
         names(nam.ttt) <- NULL 
         #print(noquote(nam.ttt), row.names = FALSE)
-        summary(nam.t)
+        summary(datamodel)
       # }else{war.text <- as.data.frame("MEM needs at least two seasons.")
       #         names(war.text) <- NULL 
       #           print(noquote(war.text), row.names = FALSE)}
@@ -462,72 +622,231 @@ output$tbmMem <- renderPrint({
               print(noquote(war.text), row.names = FALSE)}
   })
 
-output$tbmGoodness<-renderTable({
-  # datfile <- dat_funk()
+output$tbmMemModel <- renderPlot({
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # selectedcolumns<-select.columns(i.names=names(datfile), 
+  #                                 i.from=input$SelectFrom, 
+  #                                 i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude,
+  #                                 i.include="",
+  #                                 #i.pandemic=as.logical(input$SelectPandemic),
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
+  # 
+  # if (length(selectedcolumns)<3){return()}
+  # datfile.model<-datfile[selectedcolumns]
+  # nam.t <- memmodel(datfile.model,
+  #                   # nam.t <- memmodel(data_read()[,c(grep(input$K2, 
+  #                   #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity),
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  plot(datamodel)
+})
+
+output$tbmGoodness <- renderUI({
+  if(is.null(data_read())){return()}
+  else
+    tabsetPanel(tabPanel("Summary", uiOutput("tbmGoodnessSummary")),
+                tabPanel("By season", tableOutput("tbmGoodnessDetail"))
+    )
+})
+
+output$tbmGoodnessSummary <- renderUI({
+  good <- data_good()
+  if(is.null(good)){return()}
+  fluidRow(
+    valueBox(roundF(good$results["Sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(good$results["Specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(good$results["Positive predictive value"],2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(good$results["Negative predictive value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(good$results["Percent agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+    valueBox(roundF(good$results["Matthews correlation coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+  )
+})
+
+
+output$tbmGoodnessDetail<-renderTable({
+  # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
   # datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
   
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  if (length(selectedcolumns)>2){
-    good<-memgoodness(datfile[,selectedcolumns],
-                      i.type.threshold=as.numeric(input$i.type.threshold),
-                      i.type.intensity=as.numeric(input$i.type.intensity), 
-                      i.method = as.numeric(input$i.method),
-                      i.param = as.numeric(input$memparameter),i.graph=F, i.seasons=NA, i.min.seasons = length(selectedcolumns))
+  good <- data_good()
+  if(!is.null(good)){
     good.table<-as.data.frame(good$validity.data)
-    good.table$Total<-good$results    
+    good.table$Total<-good$results
+    good.table<-as.data.frame(t(good.table))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
   }else{
-    good.table<-data.frame(Error="Number of columns must be greater than 2")  
+    good.table<-data.frame(Error="Number of columns must be greater than 2")
   }
   good.table
 }, rownames = T, digits = 2)
 
-output$tbmOptimize<-renderTable({
-  # datfile <- dat_funk()
+output$tbmOptimize <- renderUI({
+  if(is.null(data_read())){return()}
+  else
+    tabsetPanel(tabPanel("Summary", uiOutput("tbmOptimizeSummary")),
+                tabPanel("Detail", tableOutput("tbmOptimizeDetail")),
+                tabPanel("Graph",plotOutput("tbmOptimizeGraph"))
+    )
+})
+
+output$tbmOptimizeSummary <- renderUI({
+  dataoptim <- data_optim()
+  if(is.null(dataoptim)){return()}
+  doptim<-dataoptim$roc.data
+  optim<-doptim[doptim$value==as.numeric(dataoptim$optimum["matthews"]),]
+  fluidRow(
+    valueBox(roundF(optim["sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(optim["specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(optim["positive.predictive.value"],2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(optim["negative.predictive.value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+    valueBox(roundF(optim["percent.agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+    valueBox(roundF(optim["matthews.correlation.coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+    valueBox(roundF(input$memparameter,1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
+    valueBox(roundF(as.numeric(dataoptim$optimum["matthews"]),1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
+  )
+})
+
+output$tbmOptimizeDetail<-renderTable({
+  # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
   # datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
   # 
   # if(length(datacolumns)>2){
-  datfile <- dat_funk()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  if (length(selectedcolumns)>2){
-    
-    
-    
-    roca<-roc.analysis(datfile[,selectedcolumns],
-                       i.param.values = seq(2, 3, 0.1), 
-                       i.graph.file = F,
-                       i.type.threshold=as.numeric(input$i.type.threshold),
-                       i.type.intensity=as.numeric(input$i.type.intensity), 
-                       i.seasons=NA, 
-                       i.min.seasons = length(selectedcolumns))
-    roca.table<-as.data.frame(t(roca$optimum))
-    names(roca.table)<-"Optimum"    
+  # datfile <- data_read()
+  # if(is.null(datfile)){return()}
+  # selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude, i.include="", 
+  #                                 #i.pandemic=as.logical(input$SelectPandemic), 
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
+  
+  dataoptim <- data_optim()
+  if(!is.null(dataoptim)){
+  
+  # if (length(selectedcolumns)>2){
+  #   
+  #   
+  #   
+  #   roca<-roc.analysis(datfile[,selectedcolumns],
+  #                      i.param.values = seq(2, 3, 0.1), 
+  #                      i.graph.file = F,
+  #                      i.type.threshold=as.numeric(input$i.type.threshold),
+  #                      i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                      i.seasons=NA, 
+  #                      i.min.seasons = length(selectedcolumns))
+    roca.table<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+    names(roca.table)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")    
   }else{
     roca.table<-data.frame(Error="Number of columns must be greater than 2")  
   }
   roca.table
-}, rownames = T, digits = 2)
+}, rownames = F, digits = 2)
+
+output$tbmOptimizeGraph<- renderPlot({
+
+  dataoptim <- data_optim()
+  if(is.null(dataoptim)){return()}
+  
+  resultados<-dataoptim$roc.data
+  i.graph.title<-""
+  i.graph.subtitle<-""
+  
+  colores<-c("#EBEAEA","#5B9BD5","#ED7D31")
+  
+  opar<-par(mar=c(5,3,3,3)+0.1,mgp=c(3,0.5,0),xpd=T,mfrow=c(2,2))
+  
+  if (any(!is.na(resultados$sensitivity)) & any(!is.na(resultados$specificity))){
+    d.x<-resultados$value
+    d.y<-cbind(resultados$sensitivity,resultados$specificity)
+    etiquetas<-c("Sensitivity","Specificity")
+    otick<-optimal.tickmarks(0,1,10)
+    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
+    points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
+    points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
+    axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+    mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
+    mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
+    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+    legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
+    
+  }
+  
+  if (any(!is.na(resultados$positive.predictive.value)) & any(!is.na(resultados$negative.predictive.value))){
+    
+    d.x<-resultados$value
+    d.y<-cbind(resultados$positive.predictive.value,resultados$negative.predictive.value)
+    etiquetas<-c("Positive predictive value","Negative predictive value")
+    otick<-optimal.tickmarks(0,1,10)
+    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
+    points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
+    points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
+    axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+    mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
+    mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
+    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+    legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
+  }
+  
+  if (any(!is.na(resultados$percent.agreement)) & any(!is.na(resultados$matthews.correlation.coefficient))){
+    
+    d.x<-resultados$value
+    d.y<-cbind(resultados$percent.agreement,resultados$matthews.correlation.coefficient)
+    etiquetas<-c("Percent agreement","Matthews correlation coefficient")
+    otick<-optimal.tickmarks(0,1,10)
+    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
+    points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
+    points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
+    axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+    mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
+    mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
+    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+    legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
+  }
+  
+  if (any(!is.na(resultados$specificity)) & any(!is.na(resultados$sensitivity))){
+    d.x<-1-resultados$specificity
+    d.y<-resultados$sensitivity[order(d.x)]
+    d.x<-d.x[order(d.x)]
+    otick<-optimal.tickmarks(0,1,10)
+    range.x<-c(otick$range[1],otick$range[2]+otick$by/2)
+    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,xlim=range.x,ylim=range.y,main=i.graph.title)
+    points(d.x,d.y,pch=19,type="p",col=colores[2],cex=0.5)
+    axis(1,at=otick$tickmarks,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+    mtext(1,text="1 - specificity",line=1.3,cex=0.8,col="#000040")
+    mtext(2,text="Sensitivity",line=1.3,cex=0.8,col="#000040")
+    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+  }
+  par(opar)
+  
+  
+})
 
 #####################################
 ### SURVEILLANCE TAB
 #####################################
 
 output$tbsData <- renderTable({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   # toinclude<-names(datfile)
@@ -551,16 +870,16 @@ output$tbsData <- renderTable({
 }, rownames = T, digits = 2)  
 
 output$tbsPlot <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
 output$tbsSeasons <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -592,7 +911,7 @@ output$tbsSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
@@ -605,10 +924,10 @@ output$tbsSurveillance <- renderPlot({
 })
 
 output$tbsAnimated <- renderImage({
-  # datfile <- dat_funk()
+  # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude, i.include="", 
@@ -653,7 +972,7 @@ output$tbsAnimated <- renderImage({
 #####################################
 
 output$tbvData <- renderTable({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   if (is.null(input$SelectSeasons)) {return()}
@@ -676,16 +995,16 @@ output$tbvData <- renderTable({
 }, rownames = T, digits = 2)  
 
 output$tbvPlot <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
 output$tbvSeasons <- renderPlotly({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -719,12 +1038,12 @@ output$tbvSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", round(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   z
 })
 
 output$tbvSeries <- renderPlot({
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -758,13 +1077,27 @@ output$tbvSeries <- renderPlot({
   plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
 })
 
+output$tbvTiming = renderUI({
+  tabnames<-input$SelectSeasons
+  do.call(tabsetPanel,
+          ## Create a set of tabPanel functions dependent on tabnames
+          lapply(tabnames,function(s){
+            ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
+            ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
+            call("tabPanel",s,call('plotOutput',paste0("tbvTiming_",s)))
+          })
+  )
+  
+})
+
+
 
 plotInput <-function(){
-  # datfile <- dat_funk()
+  # datfile <- data_read()
   # dat3 <- datfile
   # datafil <- dat3
   
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude, i.include="", 
@@ -901,7 +1234,7 @@ plotInput <-function(){
       scale_color_manual(values="black", input$SelectSurveillance)+
       geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
       geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop) +
-      #scale_color_manual(values="blue", labels=round(i.thr[1]))+
+      #scale_color_manual(values="blue", labels=roundF(i.thr[1]))+
       ggthemes::theme_few()
     print(ggplotly(g.plot, tooltip = "text"))
 # Condition: CASE 5
@@ -1141,9 +1474,11 @@ plotSeries2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T,
   if (is.numeric(i.range.y)){
     temp1<-i.range.y
   }else if (i.intensity){
-    temp1<-c(0,max.fix.na(c(data.y.fixed,intensity)))
+    #temp1<-c(0,max.fix.na(c(data.y.fixed,intensity)))
+    temp1<-c(0,max(c(data.y.fixed,intensity, na.rm=T)))
   }else{
-    temp1<-c(0,max.fix.na(data.y.fixed))
+    #temp1<-c(0,max.fix.na(data.y.fixed))
+    temp1<-c(0,max(data.y.fixed, na.rm=T))
   }
   if (length(epidemic)==2 & i.pre.epidemic) temp1<-max(c(temp1,epidemic[1]),na.rm=T)
   if (length(epidemic)==2 & i.post.epidemic) temp1<-max(c(temp1,epidemic[2]),na.rm=T)
@@ -1204,7 +1539,7 @@ plotSeries2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T,
 
 
 plotSeasons.OLD <-function(){
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                   #i.pandemic=as.logical(input$SelectPandemic), 
@@ -1276,7 +1611,7 @@ plotSeasons.OLD <-function(){
 }
 
 plotTiming <-function(kol){
-  datfile <- dat_funk()
+  datfile <- data_read()
     #dat3 <- datfile
     #datafil <- dat3
     #for(i in input$K:input$K2){
@@ -1302,11 +1637,11 @@ plotSeries <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timing=TR
 }
 
 plotSurveillance <-function(){
-  # datfile <- dat_funk()
+  # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
   
-  datfile <- dat_funk()
+  datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude, i.include="", 
@@ -1330,11 +1665,6 @@ plotSurveillance <-function(){
                   e.thr, i.thr, i.graph.file=F, i.pos.epidemic = as.logical(input$postepidemicthr), i.range.x =range.x, i.week.report = input$SelectSurveillanceWeek, i.no.intensity=!as.logical(input$intensitythr))
   }
 }
-
-session$onSessionEnded(function() {
-  stopApp()
-})
-})
 
 # custom functions
 
@@ -1554,4 +1884,14 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
   # Returning
   return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
 }
+
+# roundF and format
+
+roundF <- function(x, k) format(round(x, k), nsmall=k)
+
+
+session$onSessionEnded(function() {
+  stopApp()
+})
+})
 
