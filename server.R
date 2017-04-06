@@ -1007,13 +1007,13 @@ output$tbsSurveillanceAnimated <- renderImage({
                              i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
                              i.intensity.thr = i.thr, i.range.y=c(0,max.y))
      imgfile<-paste(tempdir(),"/animatedplot_",i,".png",sep="")
-     ggsave(imgfile, plot=p, width=4, height=3, dpi=150)
+     ggsave(imgfile, plot=p, width=8, height=6, dpi=150)
      if (i==1) imgfilem<-image_read(imgfile) else imgfilem<-c(imgfilem,image_read(imgfile))
      cat(imgfile,"\n")
  }
   #frames <- image_morph(imgfilem, frames = 10)
   imgfilegif<-paste(tempdir(),"/animated.gif",sep="")
-  anim <- image_animate(imgfilem)
+  anim <- image_animate(imgfilem, fps = 2)
   image_write(anim,path=imgfilegif)
   cat(imgfilegif,"\n")
   outdistAnimated<-list(src = paste(tempdir(),"/animated.gif",sep=""),
