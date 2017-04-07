@@ -33,7 +33,7 @@ ladda.paket(c("shiny",
 #-----------------------------------------------------------------------------------
 #### Paths ####
 #-----------------------------------------------------------------------------------
-script.path <- "G:/GRIPE/Umbral/Programa MEM/githubRPackage/MEM-app"
+script.path <- "."
 
 col.mine <- c("black","blue","seagreen","red","darkgoldenrod4", "darkmagenta",
               "firebrick", "gold3", "darkslategrey", "lemonchiffon4")
