@@ -172,8 +172,8 @@ observe({
 # output$tb <- renderUI({
 #   if(is.null(data_read())){return()}
 #   else
-#     tabsetPanel(tabPanel("File name", tableOutput("filedf")),
-#                 tabPanel("Data", tableOutput("table")),
+#     tabsetPanel(tabPanel("File name", DT::dataTableOutput("filedf")),
+#                 tabPanel("Data", DT::dataTableOutput("table")),
 #                 tabPanel("Plot", plotlyOutput("distPlot")),
 #                 tabPanel("Seasons", plotlyOutput("distSeasons")),
 #                 tabPanel("MEM", verbatimTextOutput("memdf")),
@@ -181,8 +181,8 @@ observe({
 #                 tabPanel("Series",plotOutput("distSeries")),
 #                 tabPanel("Surveillance",plotOutput("distSurveillance")),
 #                 tabPanel("Animated",imageOutput("distAnimated")),
-#                 tabPanel("Goodness",tableOutput("tableGoodness")),
-#                 tabPanel("Optimize",tableOutput("tableOptimize"))
+#                 tabPanel("Goodness",DT::dataTableOutput("tableGoodness")),
+#                 tabPanel("Optimize",DT::dataTableOutput("tableOptimize"))
 #                 )
 # })
 
@@ -194,7 +194,7 @@ output$tbData <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
-                tabPanel("Data", tableOutput("tbdData")),
+                tabPanel("Data", DT::dataTableOutput("tbdData")),
                 #tabPanel("Plot", plotlyOutput("tbdPlot")),
                 tabPanel("Seasons", plotlyOutput("tbdSeasons")),
                 tabPanel("Series",plotOutput("tbdSeries")),
@@ -205,7 +205,7 @@ output$tbData <- renderUI({
 output$tbModel <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Data", tableOutput("tbmData")),
+    tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbmData")),
                 #tabPanel("Plot", plotlyOutput("tbmPlot")),
                 tabPanel("Seasons", plotlyOutput("tbmSeasons")),
                 tabPanel("Series",plotOutput("tbmSeries")),
@@ -220,7 +220,7 @@ output$tbModel <- renderUI({
 output$tbSurveillance <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Data", tableOutput("tbsData")),
+    tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbsData")),
                 #tabPanel("Plot", plotlyOutput("tbsPlot")),
                 tabPanel("Seasons", plotlyOutput("tbsSeasons")),
                 tabPanel("Timing",plotOutput("tbsTiming")),
@@ -233,7 +233,7 @@ output$tbSurveillance <- renderUI({
 output$tbVisualize <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Data", tableOutput("tbvData")),
+    tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbvData")),
                 #tabPanel("Plot", plotlyOutput("tbvPlot")),
                 tabPanel("Seasons", plotlyOutput("tbvSeasons")),
                 tabPanel("Series",plotOutput("tbvSeries")),
@@ -250,7 +250,7 @@ output$tbdFile <- renderTable({
   input$file[1]
 }) 
 
-output$tbdData <- renderTable({
+output$tbdData <- DT::renderDataTable({
   datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
@@ -271,14 +271,16 @@ output$tbdData <- renderTable({
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
-}, rownames = T, digits = 2)  
+  roundF(datatoshow,2)
+},
+  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
 
 output$tbdPlot <- renderPlotly({
   datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -305,7 +307,7 @@ output$tbdSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -361,7 +363,7 @@ output$tbdTiming = renderUI({
 ### MODEL TAB
 #####################################
 
-output$tbmData <- renderTable({
+output$tbmData <- DT::renderDataTable({
   #datfile <- data_read()
   #if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
@@ -383,15 +385,16 @@ output$tbmData <- renderTable({
   # cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   datamodel<-data_model()
   if(is.null(datamodel)) datatoshow<-data.frame(Message="No data selected",row.names = NULL) else datatoshow<-datamodel$param.data
-  datatoshow
-}, rownames = T, digits = 2)  
+  roundF(datatoshow,2)
+},
+  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
 
 output$tbmPlot <- renderPlotly({
   datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -423,7 +426,7 @@ output$tbmSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", rownames(datfile.plot)))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", rownames(datfile.plot))}
   z
 })
 
@@ -500,7 +503,7 @@ output$tbmSeries2 <- renderPlotly({
   # for(j in 1:length(z$x$data)){
   #   z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste("Y:", roundF(z$x$data[[j]]$y,1)))}
+    z$x$data[[j]]$text <- paste("Y:", roundF(z$x$data[[j]]$y,1))}
   z
 })
 
@@ -661,7 +664,7 @@ output$tbmGoodness <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Summary", uiOutput("tbmGoodnessSummary")),
-                tabPanel("By season", tableOutput("tbmGoodnessDetail"))
+                tabPanel("By season", DT::dataTableOutput("tbmGoodnessDetail"))
     )
 })
 
@@ -679,7 +682,7 @@ output$tbmGoodnessSummary <- renderUI({
 })
 
 
-output$tbmGoodnessDetail<-renderTable({
+output$tbmGoodnessDetail<-DT::renderDataTable({
   # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
@@ -693,14 +696,15 @@ output$tbmGoodnessDetail<-renderTable({
   }else{
     good.table<-data.frame(Error="Number of columns must be greater than 2")
   }
-  good.table
-}, rownames = T, digits = 2)
+  roundF(good.table,2)
+},
+  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))
 
 output$tbmOptimize <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Summary", uiOutput("tbmOptimizeSummary")),
-                tabPanel("Detail", tableOutput("tbmOptimizeDetail")),
+                tabPanel("Detail", DT::dataTableOutput("tbmOptimizeDetail")),
                 tabPanel("Graph",plotOutput("tbmOptimizeGraph"))
     )
 })
@@ -722,7 +726,7 @@ output$tbmOptimizeSummary <- renderUI({
   )
 })
 
-output$tbmOptimizeDetail<-renderTable({
+output$tbmOptimizeDetail<-DT::renderDataTable({
   # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
@@ -756,8 +760,10 @@ output$tbmOptimizeDetail<-renderTable({
   }else{
     roca.table<-data.frame(Error="Number of columns must be greater than 2")  
   }
-  roca.table
-}, rownames = F, digits = 2)
+  rownames(roca.table)<-NULL
+  roundF(roca.table,2)
+},
+  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))
 
 output$tbmOptimizeGraph<- renderPlot({
 
@@ -854,7 +860,7 @@ output$tbmOptimizeGraph<- renderPlot({
 ### SURVEILLANCE TAB
 #####################################
 
-output$tbsData <- renderTable({
+output$tbsData <- DT::renderDataTable({
   datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
@@ -876,14 +882,16 @@ output$tbsData <- renderTable({
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
-}, rownames = T, digits = 2)  
+  roundF(datatoshow,2)
+},
+  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
 
 output$tbsPlot <- renderPlotly({
   datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -920,7 +928,7 @@ output$tbsSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -1063,7 +1071,7 @@ output$tbsSurveillanceWeek <- renderPlotly({
     if (z$x$data[[j]]$name=="NA") z$x$data[[j]]<-NULL
   }
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -1115,7 +1123,7 @@ output$tbsAnimated <- renderImage({
 ### VISUALIZE TAB
 #####################################
 
-output$tbvData <- renderTable({
+output$tbvData <- DT::renderDataTable({
   datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
@@ -1136,14 +1144,16 @@ output$tbvData <- renderTable({
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
-}, rownames = T, digits = 2)  
+  roundF(datatoshow,2)
+},
+  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
 
 output$tbvPlot <- renderPlotly({
   datfile <- data_read()
   p <- plotInput()
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -1182,7 +1192,7 @@ output$tbvSeasons <- renderPlotly({
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   z <- plotly_build(p)
   for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
+    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
 })
 
@@ -2278,7 +2288,7 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
 
 # roundF and format
 
-roundF <- function(x, k) format(round(x, k), nsmall=k)
+roundF <- function(x, k=2) format(round(x, k), nsmall=k)
 
 
 session$onSessionEnded(function() {
