@@ -24,7 +24,6 @@ ladda.paket(c("shiny",
               "XLConnect",
               "stringr",
               "readr",
-              #"animation",
               "magick",
               "DT"))
 
