@@ -488,23 +488,31 @@ output$tbmSeries2 <- renderPlotly({
   datfile.plot<-datamodel$param.data
   e.thr<-datamodel$epidemic.thresholds
   i.thr<-datamodel$intensity.thresholds
-  p <- plotSeries2(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
+  p <- plotSeries3(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                    i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
                    i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
-  z <- plotly_build(p)
-  # Fix legend
-  for (j in length(z$x$data):1){
-    z$x$data[[j]]$name<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$name)
-    z$x$data[[j]]$legendgroup<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$legendgroup)
-    if (z$x$data[[j]]$name=="NA") z$x$data[[j]]<-NULL
-  }
-  # Fix margins
-  z$x$layout$margin$b<-2*z$x$layout$margin$b
+  
+  
+  # z <- plotly_build(p)
+  # # Fix legend
+  # for (j in length(z$x$data):1){
+  #   z$x$data[[j]]$name<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$name)
+  #   z$x$data[[j]]$legendgroup<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$legendgroup)
+  #   if (z$x$data[[j]]$name=="NA") z$x$data[[j]]<-NULL
+  # }
+  # # Fix margins
+  # z$x$layout$margin$b<-2*z$x$layout$margin$b
+  # # for(j in 1:length(z$x$data)){
+  # #   z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
   # for(j in 1:length(z$x$data)){
-  #   z$x$data[[j]]$text <- print(paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka))}
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste("Y:", roundF(z$x$data[[j]]$y,1))}
-  z
+  #   z$x$data[[j]]$text <- paste("Y:", roundF(z$x$data[[j]]$y,1))}
+  # z
+  
+  z <- plotly_build(p$plot)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+  
+  
 })
 
 output$tbmTiming = renderUI({
@@ -1696,6 +1704,205 @@ plotSeries2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T,
   print(ggplotly(g.plot, tooltip = "text"))
 }
 
+plotSeries3<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemic=T, i.epidemic.thr=NA, 
+                      i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, ...){
+  
+  if(is.null(i.data)){return()}
+  
+  week.f<-as.numeric(rownames(i.data)[1])
+  week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
+  if (week.f>week.l){
+    i.range.x<-c(min(week.f,30),min(week.f,30)-1)
+    i.range.x.values<-data.frame(week.lab=c(min(week.f,30):52,1:(min(week.f,30)-1)),week.no=1:52)
+  }else{
+    i.range.x<-c(1,52)
+    i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
+  }
+  if (NCOL(i.data)>1){
+    epi<-memmodel(i.data, i.seasons=NA,...)
+    epidata<-epi$data
+    epiindex<-as.data.frame(epi$season.indexes[,,1])
+    rownames(epiindex)<-rownames(i.data)
+    colnames(epiindex)<-colnames(i.data)
+    epithresholds<-epi$epidemic.thresholds
+    intthresholds<-epi$intensity.thresholds
+    i.data<-i.data[names(i.data) %in% names(epi$data)]
+  }else{
+    # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
+    # the timing (which would be extracted with memtiming also)
+    epi<-memmodel(cbind(i.data,i.data), i.seasons=NA,...)
+    epidata<-epi$data[1]
+    epiindex<-as.data.frame(epi$season.indexes[,1,1])
+    rownames(epiindex)<-rownames(i.data)
+    colnames(epiindex)<-colnames(i.data)
+    epithresholds<-NA
+    intthresholds<-NA
+    i.data<-i.data[names(i.data) %in% names(epi$data)]
+  }
+  rm("epi")
+  
+  # To have continuity between seasons I have to inflate original data to the global squeme. That's it: If
+  # original data format is from 40 to 20, the inflated data would be 30 to 29, so that when a season ends
+  # at 29, next one will start at 30 and there would be continuity between both
+  
+  data.full<-i.data
+  data.full$week.lab<-rownames(data.full)
+  data.full<-merge(data.full,i.range.x.values,by="week.lab",all.y=T)
+  data.full<-data.full[order(data.full$week.no),]
+  row.names(data.full)<-data.full$week.lab
+  data.full$week.lab<-NULL
+  data.full$week.no<-NULL
+  
+  data.full.epi<-epidata
+  data.full.epi$week.lab<-rownames(data.full.epi)
+  data.full.epi<-merge(data.full.epi,i.range.x.values,by="week.lab",all.y=T)
+  data.full.epi<-data.full.epi[order(data.full.epi$week.no),]
+  row.names(data.full.epi)<-data.full.epi$week.lab
+  data.full.epi$week.lab<-NULL
+  data.full.epi$week.no<-NULL
+  
+  data.full.index<-epiindex
+  data.full.index[is.na(epidata)]<-NA
+  data.full.index$week.lab<-rownames(data.full.index)
+  data.full.index<-merge(data.full.index,i.range.x.values,by="week.lab",all.y=T)
+  data.full.index<-data.full.index[order(data.full.index$week.no),]
+  row.names(data.full.index)<-data.full.index$week.lab
+  data.full.index$week.lab<-NULL
+  data.full.index$week.no<-NULL
+  
+  # Data to plot
+  data.orig<-transformdata.back(data.full,i.name="rates",i.range.x=i.range.x,i.fun=sum)
+  data.y<-as.numeric(data.orig[,"rates"])
+  # Data to plot, filling in missing with data imputed by mem (using loess)
+  data.fixed<-transformdata.back(data.full.epi,i.name="rates",i.range.x=i.range.x,i.fun=sum)
+  data.y.fixed<-as.numeric(data.fixed[,"rates"])
+  # Data that have been imputed, to mark them as a circle with a cross
+  data.missing<-data.fixed
+  data.missing[!(is.na(data.orig) & !is.na(data.fixed))]<-NA
+  data.y.missing<-as.numeric(data.missing[,"rates"])
+  # Indexes for pre, epi and post epidemic
+  data.indexes<-transformdata.back(data.full.index,i.name="rates",i.range.x=i.range.x,i.fun=function(x,...) if (all(is.na(x))) return(NA) else if (any(x==2,...)) return(2) else if (any(x==1,...)) return(1) else return(3))
+  data.y.indexes<-as.numeric(data.indexes[,names(data.indexes)=="rates"])
+  
+  if (length(i.epidemic.thr)==2){
+    epidemic<-i.epidemic.thr
+  }else{
+    if (NCOL(i.data)>1){
+      epidemic<-as.numeric(epithresholds)
+    }else{
+      i.pre.epidemic<-F
+      i.post.epidemic<-F
+      epidemic<-NA
+    }
+  }
+  
+  if (length(i.intensity.thr)==3){
+    intensity<-i.intensity.thr
+  }else{
+    if (NCOL(i.data)>1){
+      intensity<-as.numeric(intthresholds)
+    }else{
+      i.intensity<-F
+      intensity<-NA
+    }
+  }
+  
+  labels<-c("Weekly rates","Pre-epidemic","Pre-epidemic (missing)","Epidemic","Epidemic (missing)","Post-epidemic","Post-epidemic (missing)","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
+  haspoints<-c(T,T,T,T,T,T,T,F,F,F,F,F)
+  haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
+  shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
+  colors<-c("#808080","#000000","#000000","#000000","#000000","#000000","#000000","#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1")
+  fills<-c("#000000","#00C000","#00C000","#800080","#800080","#FFB401","#FFB401","#000000","#000000")
+  sizes<-c(2,2,2,2,2,2,2,1,1,1,1,1)
+  linetypes<-c("solid","blank","blank","blank","blank","blank","blank", "dashed", "dashed", "dashed", "dashed","dashed")
+  
+  dgraf<-data.frame(rates=data.y.fixed,
+                    prer=data.y,
+                    prem=data.y.missing,
+                    epir=data.y,
+                    epim=data.y.missing,
+                    posr=data.y,
+                    posm=data.y.missing,
+                    epit=epidemic[1],
+                    medt=intensity[1],
+                    higt=intensity[2],
+                    vert=intensity[3],
+                    post=epidemic[2]
+  )
+  dgraf$prer[data.y.indexes!=1]<-NA
+  dgraf$prem[data.y.indexes!=1]<-NA
+  dgraf$epir[data.y.indexes!=2]<-NA
+  dgraf$epim[data.y.indexes!=2]<-NA
+  dgraf$posr[data.y.indexes!=3]<-NA
+  dgraf$posm[data.y.indexes!=3]<-NA
+  names(dgraf)<-labels
+  dgraf$week<-1:NROW(dgraf)
+  
+  dgrafgg<-melt(dgraf,id="week")
+  
+  selected.indicators<-1
+  if (i.plot.timing){
+    selected.indicators<-c(selected.indicators,c(2,4,6))
+    if (!all(is.na(dgraf[,3]))) selected.indicators<-c(selected.indicators,3)
+    if (!all(is.na(dgraf[,5]))) selected.indicators<-c(selected.indicators,5)
+    if (!all(is.na(dgraf[,7]))) selected.indicators<-c(selected.indicators,7)
+  }
+  if (i.pre.epidemic) selected.indicators<-c(selected.indicators,8)
+  if (i.post.epidemic) selected.indicators<-c(selected.indicators,12)
+  if (i.intensity) selected.indicators<-c(selected.indicators,9:11)
+  selected.indicators<-unique(selected.indicators)
+  selected.indicators<-selected.indicators[order(selected.indicators)]
+  
+  labels.s<-labels[selected.indicators]
+  haspoints.s<-haspoints[selected.indicators]
+  haslines.s<-haslines[selected.indicators]
+  dgrafgg.s<-subset(dgrafgg,variable %in% labels.s)
+  shapes.s<-shapes[selected.indicators]
+  colors.s<-colors[selected.indicators]
+  fills.s<-fills[selected.indicators]
+  sizes.s<-sizes[selected.indicators]
+  linetypes.s<-linetypes[selected.indicators]
+  
+  # Calculate ticks for x
+  data.x <- 1:NROW(data.orig)
+  axis.x.range <- range(data.x)
+  temp1 <- range(i.range.x.values$week.no)
+  temp2 <- optimal.tickmarks(temp1[1], temp1[2], 4, 1:temp1[2],T,F)  
+  axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+  axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+  axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+  axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
+  axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
+  rm("temp1","temp2")  
+  
+  # Range y fix
+  if (length(i.range.y)!=2){
+    i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+  }else{
+    i.range.y <- 1.05*i.range.y
+  }
+  axis.y.range.original <- i.range.y
+  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+  axis.y.range <- axis.y.otick$range
+  axis.y.ticks <- axis.y.otick$tickmarks
+  axis.y.labels <- axis.y.otick$tickmarks
+  
+  gplot<-ggplot(dgrafgg.s) +
+    geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=1) +
+    geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+    scale_shape_manual(values=shapes.s, name="Legend", labels=labels.s) + 
+    scale_color_manual(values=colors.s, name="Legend", labels=labels.s) +
+    scale_fill_manual(values=fills.s, name="Legend", labels=labels.s) +
+    scale_size_manual(values=sizes.s, name="Legend", labels=labels.s) +
+    scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) + 
+    scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+    scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+    labs(title = input$textMain, x = input$textX, y = input$textY) + 
+    ggthemes::theme_few()
+  
+  list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=paste(data.orig$week,"<br>Season: ",data.orig$season,sep=""))
+  
+}
 
 plotSeasons.OLD <-function(){
   datfile <- data_read()
@@ -2316,7 +2523,10 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   # Show all labels
   for (i in 1:nlists) i.plotly$x$data[[i]]$showlegend<-T
   # Fix x.axis labels
-  divideit<-matrix(unlist(strsplit(as.character(i.plotly$x$layout$xaxis$ticktext),"\\\n")),nrow=length(i.plotly$x$layout$xaxis$ticktext), byrow=T)
+  a<-strsplit(as.character(i.plotly$x$layout$xaxis$ticktext),"\\\n")
+  a.len <- max(sapply(a, length))
+  a.corrected <- lapply(a, function(x) {c(x, rep("", a.len - length(x)))})
+  divideit<-matrix(unlist(a.corrected),nrow=length(i.plotly$x$layout$xaxis$ticktext), byrow=T)
   i.plotly$x$layout$margin$b<-(NCOL(divideit))*i.plotly$x$layout$margin$b
   i.plotly$x$layout$xaxis$ticktext<-apply(divideit,1,paste,collapse="<br>")
   # Fix labels names
