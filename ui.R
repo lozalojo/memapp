@@ -185,7 +185,7 @@ shinyUI(dashboardPage(skin = "blue",
     fluidPage(
 
   # Application title
-  titlePanel(h1("Moving Epidemics Method")),
+  titlePanel(h1("The Moving Epidemics Method")),
   
   fluidRow(
     
@@ -275,15 +275,15 @@ shinyUI(dashboardPage(skin = "blue",
          
          # box(title="Outputs", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
          #     collapsible = FALSE, uiOutput("tb")),
-         
-         tabBox(
+         div(style = "height:1024px;", tabBox(
            # Title can include an icon
            title = "Outputs", width = 12,
            tabPanel("Series & Timing", "Series & Timing", uiOutput("tbData")),
            tabPanel("Model", "MEM modelling", uiOutput("tbModel")),
            tabPanel("Surveillance", "Surveillance", uiOutput("tbSurveillance")),
            tabPanel("Visualize", "Visualize data", uiOutput("tbVisualize"))
-         ),
+         ))
+         ,
          
          #######################################
          ### BODY/MAIN SECTION               ###

@@ -347,7 +347,7 @@ output$tbdSeries <- renderPlotly({
   p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                   i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
                   i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
-  z <- plotly_build(p$plot)
+  z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   zfix
 })
@@ -524,7 +524,7 @@ output$tbmSeries <- renderPlotly({
   #   z$x$data[[j]]$text <- paste("Y:", roundF(z$x$data[[j]]$y,1))}
   # z
   
-  z <- plotly_build(p$plot)
+  z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   zfix
   
@@ -1091,7 +1091,7 @@ output$tbsSurveillanceWeek <- renderPlotly({
                          i.intensity.thr = i.thr,
                          i.end=as.logical(input$postepidemicthr))
   
-  z <- plotly_build(p$plot)
+  z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   # Fix legend
   # for (j in length(z$x$data):1){
@@ -1282,7 +1282,7 @@ output$tbvSeries <- renderPlotly({
   p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                   i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
                   i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
-  z <- plotly_build(p$plot)
+  z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   zfix
 })
@@ -2036,7 +2036,7 @@ plotTiming <-function(i.column){
   if(is.null(datfile)){return()}
   datfile.plot<-datfile[i.column]
   p <- plotSeries(datfile.plot, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
-  z <- plotly_build(p$plot)
+  z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   zfix
 }
