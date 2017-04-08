@@ -182,6 +182,7 @@ shinyUI(dashboardPage(skin = "blue",
   ###################################
   
   dashboardBody(
+    tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
     fluidPage(
 
   # Application title
@@ -275,15 +276,14 @@ shinyUI(dashboardPage(skin = "blue",
          
          # box(title="Outputs", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
          #     collapsible = FALSE, uiOutput("tb")),
-         div(style = "height:1024px;", tabBox(
+         tabBox(
            # Title can include an icon
-           title = "Outputs", width = 12,
+           title = "Outputs", width = 12, height = "800px",
            tabPanel("Series & Timing", "Series & Timing", uiOutput("tbData")),
            tabPanel("Model", "MEM modelling", uiOutput("tbModel")),
            tabPanel("Surveillance", "Surveillance", uiOutput("tbSurveillance")),
            tabPanel("Visualize", "Visualize data", uiOutput("tbVisualize"))
-         ))
-         ,
+         ),
          
          #######################################
          ### BODY/MAIN SECTION               ###
