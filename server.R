@@ -174,12 +174,12 @@ observe({
 #   else
 #     tabsetPanel(tabPanel("File name", DT::dataTableOutput("filedf")),
 #                 tabPanel("Data", DT::dataTableOutput("table")),
-#                 tabPanel("Plot", plotlyOutput("distPlot")),
-#                 tabPanel("Seasons", plotlyOutput("distSeasons")),
+#                 tabPanel("Plot", plotlyOutput("distPlot", width ="100%", height ="100%")),
+#                 tabPanel("Seasons", plotlyOutput("distSeasons", width ="100%", height ="100%")),
 #                 tabPanel("MEM", verbatimTextOutput("memdf")),
-#                 tabPanel("Timing",plotOutput("distPlot2")),
-#                 tabPanel("Series",plotOutput("distSeries")),
-#                 tabPanel("Surveillance",plotOutput("distSurveillance")),
+#                 tabPanel("Timing",plotOutput("distPlot2", width ="100%", height ="100%")),
+#                 tabPanel("Series",plotOutput("distSeries", width ="100%", height ="100%")),
+#                 tabPanel("Surveillance",plotOutput("distSurveillance", width ="100%", height ="100%")),
 #                 tabPanel("Animated",imageOutput("distAnimated")),
 #                 tabPanel("Goodness",DT::dataTableOutput("tableGoodness")),
 #                 tabPanel("Optimize",DT::dataTableOutput("tableOptimize"))
@@ -195,9 +195,9 @@ output$tbData <- renderUI({
   else
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
                 tabPanel("Data", DT::dataTableOutput("tbdData")),
-                #tabPanel("Plot", plotlyOutput("tbdPlot")),
-                tabPanel("Seasons", plotlyOutput("tbdSeasons")),
-                tabPanel("Series",plotlyOutput("tbdSeries")),
+                #tabPanel("Plot", plotlyOutput("tbdPlot", width ="100%", height ="100%")),
+                tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
+                tabPanel("Series",plotlyOutput("tbdSeries", width ="100%", height ="100%")),
                 tabPanel("Timing",uiOutput("tbdTiming"))
     )
 })
@@ -206,10 +206,10 @@ output$tbModel <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbmData")),
-                #tabPanel("Plot", plotlyOutput("tbmPlot")),
-                tabPanel("Seasons", plotlyOutput("tbmSeasons")),
-                #tabPanel("Series",plotOutput("tbmSeries_old")),
-                tabPanel("Series",plotlyOutput("tbmSeries")),
+                #tabPanel("Plot", plotlyOutput("tbmPlot", width ="100%", height ="100%")),
+                tabPanel("Seasons", plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
+                #tabPanel("Series",plotOutput("tbmSeries_old", width ="100%", height ="100%")),
+                tabPanel("Series",plotlyOutput("tbmSeries", width ="100%", height ="100%")),
                 tabPanel("Timing",uiOutput("tbmTiming")),
                 tabPanel("MEM", uiOutput("tbmMem")),
                 tabPanel("Goodness",uiOutput("tbmGoodness")),
@@ -221,10 +221,10 @@ output$tbSurveillance <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbsData")),
-                #tabPanel("Plot", plotlyOutput("tbsPlot")),
-                tabPanel("Seasons", plotlyOutput("tbsSeasons")),
-                tabPanel("Timing",plotlyOutput("tbsTiming")),
-                #tabPanel("Surveillance",plotOutput("tbsSurveillance_old")),
+                #tabPanel("Plot", plotlyOutput("tbsPlot", width ="100%", height ="100%")),
+                tabPanel("Seasons", plotlyOutput("tbsSeasons", width ="100%", height ="100%")),
+                tabPanel("Timing",plotlyOutput("tbsTiming", width ="100%", height ="100%")),
+                #tabPanel("Surveillance",plotOutput("tbsSurveillance_old", width ="100%", height ="100%")),
                 tabPanel("Surveillance",uiOutput("tbsSurveillance"))
                 #,tabPanel("Animated",imageOutput("tbsAnimated"))
     )
@@ -234,9 +234,9 @@ output$tbVisualize <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbvData")),
-                #tabPanel("Plot", plotlyOutput("tbvPlot")),
-                tabPanel("Seasons", plotlyOutput("tbvSeasons")),
-                tabPanel("Series",plotlyOutput("tbvSeries")),
+                #tabPanel("Plot", plotlyOutput("tbvPlot", width ="100%", height ="100%")),
+                tabPanel("Seasons", plotlyOutput("tbvSeasons", width ="100%", height ="100%")),
+                tabPanel("Series",plotlyOutput("tbvSeries", width ="100%", height ="100%")),
                 tabPanel("Timing",uiOutput("tbvTiming"))
     )
 })
@@ -273,7 +273,7 @@ output$tbdData <- DT::renderDataTable({
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   roundF(datatoshow,2)
 },
-  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbdPlot <- renderPlotly({
   datfile <- data_read()
@@ -305,7 +305,7 @@ output$tbdSeasons <- renderPlotly({
   }
   datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- plotly_build(p)
+  z <- ggplotly(p, width = 800, height = 600)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
@@ -369,7 +369,7 @@ output$tbdTiming = renderUI({
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotlyOutput',paste0("tbdTiming_",s)))
+            call("tabPanel",s,call('plotlyOutput',outputId=paste0("tbdTiming_",s), width ="100%", height ="100%"))
           })
   )
 
@@ -403,7 +403,7 @@ output$tbmData <- DT::renderDataTable({
   if(is.null(datamodel)) datatoshow<-data.frame(Message="No data selected",row.names = NULL) else datatoshow<-datamodel$param.data
   roundF(datatoshow,2)
 },
-  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbmPlot <- renderPlotly({
   datfile <- data_read()
@@ -440,7 +440,7 @@ output$tbmSeasons <- renderPlotly({
   i.thr<-datamodel$intensity.thresholds
   #datfile.plot<-datfile[model.columns]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- plotly_build(p)
+  z <- ggplotly(p, width = 800, height = 600)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", rownames(datfile.plot))}
   z
@@ -549,7 +549,7 @@ output$tbmTiming = renderUI({
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotlyOutput',paste0("tbmTiming_",s)))
+            call("tabPanel",s,call('plotlyOutput',outputId=paste0("tbmTiming_",s), width ="100%", height ="100%"))
           })
   )
   
@@ -560,7 +560,7 @@ output$tbmMem <- renderUI({
   else
     tabsetPanel(tabPanel("Summary", uiOutput("tbmMemSummary")),
                 tabPanel("Output", verbatimTextOutput("tbmMemOutput")),
-                tabPanel("Graph",plotOutput("tbmMemModel"))
+                tabPanel("Graph",plotOutput("tbmMemModel", width ="100%", height ="100%"))
     )
 })
 
@@ -722,14 +722,14 @@ output$tbmGoodnessDetail<-DT::renderDataTable({
   }
   roundF(good.table,2)
 },
-  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))
 
 output$tbmOptimize <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Summary", uiOutput("tbmOptimizeSummary")),
                 tabPanel("Detail", DT::dataTableOutput("tbmOptimizeDetail")),
-                tabPanel("Graph",plotOutput("tbmOptimizeGraph"))
+                tabPanel("Graph",plotOutput("tbmOptimizeGraph", width ="100%", height ="100%"))
     )
 })
 
@@ -787,7 +787,7 @@ output$tbmOptimizeDetail<-DT::renderDataTable({
   rownames(roca.table)<-NULL
   roundF(roca.table,2)
 },
-  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))
 
 output$tbmOptimizeGraph<- renderPlot({
 
@@ -908,7 +908,7 @@ output$tbsData <- DT::renderDataTable({
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   roundF(datatoshow,2)
 },
-  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbsPlot <- renderPlotly({
   datfile <- data_read()
@@ -950,7 +950,7 @@ output$tbsSeasons <- renderPlotly({
   #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
   #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- plotly_build(p)
+  z <- ggplotly(p, width = 800, height = 600)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
@@ -968,7 +968,7 @@ output$tbsTiming <- renderPlotly({
 output$tbsSurveillance <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Week", plotlyOutput("tbsSurveillanceWeek")),
+    tabsetPanel(tabPanel("Week", plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
                 tabPanel("Animated", imageOutput("tbsSurveillanceAnimated"))
     )
 })
@@ -1176,7 +1176,7 @@ output$tbvData <- DT::renderDataTable({
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   roundF(datatoshow,2)
 },
-  options = list(scrollX = TRUE, scrollY = '300px', paging = FALSE))  
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbvPlot <- renderPlotly({
   datfile <- data_read()
@@ -1220,7 +1220,7 @@ output$tbvSeasons <- renderPlotly({
   #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
   #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- plotly_build(p)
+  z <- ggplotly(p, width = 800, height = 600)
   for(j in 1:length(z$x$data)){
     z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
   z
@@ -1295,7 +1295,7 @@ output$tbvTiming = renderUI({
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotlyOutput',paste0("tbvTiming_",s)))
+            call("tabPanel",s,call('plotlyOutput',outputId=paste0("tbvTiming_",s), width ="100%", height ="100%"))
           })
   )
   
