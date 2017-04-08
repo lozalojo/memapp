@@ -19,9 +19,9 @@ data_read <- reactive({
 
   datanames<-names(dat2)[!(names(dat2) %in% c("vecka","num"))]  
   
-  lapply(datanames, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlot({plotTiming(s)})})
-  lapply(datanames, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlot({plotTiming(s)})})
-  lapply(datanames, function(s){output[[paste0("tbvTiming_",s)]] <- renderPlot({plotTiming(s)})})
+  lapply(datanames, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlotly({plotTiming(s)})})
+  lapply(datanames, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlotly({plotTiming(s)})})
+  lapply(datanames, function(s){output[[paste0("tbvTiming_",s)]] <- renderPlotly({plotTiming(s)})})
 
   dat2
 })
@@ -197,7 +197,7 @@ output$tbData <- renderUI({
                 tabPanel("Data", DT::dataTableOutput("tbdData")),
                 #tabPanel("Plot", plotlyOutput("tbdPlot")),
                 tabPanel("Seasons", plotlyOutput("tbdSeasons")),
-                tabPanel("Series",plotOutput("tbdSeries")),
+                tabPanel("Series",plotlyOutput("tbdSeries")),
                 tabPanel("Timing",uiOutput("tbdTiming"))
     )
 })
@@ -208,8 +208,8 @@ output$tbModel <- renderUI({
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbmData")),
                 #tabPanel("Plot", plotlyOutput("tbmPlot")),
                 tabPanel("Seasons", plotlyOutput("tbmSeasons")),
-                tabPanel("Series",plotOutput("tbmSeries")),
-                tabPanel("Series2",plotlyOutput("tbmSeries2")),
+                #tabPanel("Series",plotOutput("tbmSeries_old")),
+                tabPanel("Series",plotlyOutput("tbmSeries")),
                 tabPanel("Timing",uiOutput("tbmTiming")),
                 tabPanel("MEM", uiOutput("tbmMem")),
                 tabPanel("Goodness",uiOutput("tbmGoodness")),
@@ -223,10 +223,10 @@ output$tbSurveillance <- renderUI({
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbsData")),
                 #tabPanel("Plot", plotlyOutput("tbsPlot")),
                 tabPanel("Seasons", plotlyOutput("tbsSeasons")),
-                tabPanel("Timing",plotOutput("tbsTiming")),
-                tabPanel("Surveillance",plotOutput("tbsSurveillance")),
-                tabPanel("Surveillance",uiOutput("tbsSurveillance2")),
-                tabPanel("Animated",imageOutput("tbsAnimated"))
+                tabPanel("Timing",plotlyOutput("tbsTiming")),
+                #tabPanel("Surveillance",plotOutput("tbsSurveillance_old")),
+                tabPanel("Surveillance",uiOutput("tbsSurveillance"))
+                #,tabPanel("Animated",imageOutput("tbsAnimated"))
     )
 })
 
@@ -236,7 +236,7 @@ output$tbVisualize <- renderUI({
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbvData")),
                 #tabPanel("Plot", plotlyOutput("tbvPlot")),
                 tabPanel("Seasons", plotlyOutput("tbvSeasons")),
-                tabPanel("Series",plotOutput("tbvSeries")),
+                tabPanel("Series",plotlyOutput("tbvSeries")),
                 tabPanel("Timing",uiOutput("tbvTiming"))
     )
 })
@@ -311,7 +311,7 @@ output$tbdSeasons <- renderPlotly({
   z
 })
 
-output$tbdSeries <- renderPlot({
+output$tbdSeries_old <- renderPlot({
   datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
@@ -333,7 +333,23 @@ output$tbdSeries <- renderPlot({
     ei.thr<-F
   }
   datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
-  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
+  plotSeries_old(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
+})
+
+output$tbdSeries <- renderPlotly({
+  datfile <- data_read()
+  if(is.null(datfile)){return()}
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
+  p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
+                  i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
+                  i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
+  z <- plotly_build(p$plot)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
 })
 
 output$tbdTiming = renderUI({
@@ -353,7 +369,7 @@ output$tbdTiming = renderUI({
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotOutput',paste0("tbdTiming_",s)))
+            call("tabPanel",s,call('plotlyOutput',paste0("tbdTiming_",s)))
           })
   )
 
@@ -430,7 +446,7 @@ output$tbmSeasons <- renderPlotly({
   z
 })
 
-output$tbmSeries <- renderPlot({
+output$tbmSeries_old <- renderPlot({
   # datfile <- data_read()
   # if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
@@ -460,10 +476,10 @@ output$tbmSeries <- renderPlot({
   datfile.plot<-datamodel$param.data
   e.thr<-datamodel$epidemic.thresholds
   i.thr<-datamodel$intensity.thresholds
-  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = as.logical(input$intensitythr))
+  plotSeries_old(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = as.logical(input$intensitythr))
 })
 
-output$tbmSeries2 <- renderPlotly({
+output$tbmSeries <- renderPlotly({
   # datfile <- data_read()
   # if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
@@ -488,7 +504,7 @@ output$tbmSeries2 <- renderPlotly({
   datfile.plot<-datamodel$param.data
   e.thr<-datamodel$epidemic.thresholds
   i.thr<-datamodel$intensity.thresholds
-  p <- plotSeries3(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
+  p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                    i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
                    i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
   
@@ -533,7 +549,7 @@ output$tbmTiming = renderUI({
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotOutput',paste0("tbmTiming_",s)))
+            call("tabPanel",s,call('plotlyOutput',paste0("tbmTiming_",s)))
           })
   )
   
@@ -940,15 +956,16 @@ output$tbsSeasons <- renderPlotly({
   z
 })
 
-output$tbsTiming <- renderPlot({
+output$tbsTiming <- renderPlotly({
+  #plotTiming_old(input$SelectSurveillance)
   plotTiming(input$SelectSurveillance)
 })
 
-output$tbsSurveillance <- renderPlot({
-  plotSurveillance()
-})
+# output$tbsSurveillance_old <- renderPlot({
+#   plotSurveillance_old()
+# })
 
-output$tbsSurveillance2 <- renderUI({
+output$tbsSurveillance <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Week", plotlyOutput("tbsSurveillanceWeek")),
@@ -992,7 +1009,7 @@ output$tbsSurveillanceAnimated <- renderImage({
   
   # Option 1: using animation, it uses imagemagick, needs it to be installed!
   # plot.one<-function(i){
-  #   print(plotSurveillance2(i.data=datfile.plot, i.week.report=rownames(datfile)[i], i.pre.epidemic=as.logical(input$preepidemicthr),
+  #   print(plotSurveillance(i.data=datfile.plot, i.week.report=rownames(datfile)[i], i.pre.epidemic=as.logical(input$preepidemicthr),
   #                           i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
   #                           i.intensity.thr = i.thr, i.range.y=c(0,max.y)))
   # }
@@ -1019,7 +1036,7 @@ output$tbsSurveillanceAnimated <- renderImage({
   
   # Option 2: Uses magick, its a kind of R imagemagick, should work out of the box
  for (i in 1:n.surveillance.week){
-     p<-plotSurveillance2(i.data=datfile.plot, i.week.report=rownames(datfile)[i], i.pre.epidemic=as.logical(input$preepidemicthr),
+     p<-plotSurveillance(i.data=datfile.plot, i.week.report=rownames(datfile)[i], i.pre.epidemic=as.logical(input$preepidemicthr),
                              i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
                              i.intensity.thr = i.thr, i.range.y=c(0,max.y),
                           i.end=as.logical(input$postepidemicthr))
@@ -1069,7 +1086,7 @@ output$tbsSurveillanceWeek <- renderPlotly({
   
   datfile.plot<-datfile[input$SelectSurveillance]
   
-  p <- plotSurveillance2(i.data=datfile.plot, i.week.report=input$SelectSurveillanceWeek, i.pre.epidemic=as.logical(input$preepidemicthr),
+  p <- plotSurveillance(i.data=datfile.plot, i.week.report=input$SelectSurveillanceWeek, i.pre.epidemic=as.logical(input$preepidemicthr),
                          i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
                          i.intensity.thr = i.thr,
                          i.end=as.logical(input$postepidemicthr))
@@ -1088,49 +1105,49 @@ output$tbsSurveillanceWeek <- renderPlotly({
   zfix
 })
 
-output$tbsAnimated <- renderImage({
-  # datfile <- data_read()
-  # rownames(datfile)<-datfile$vecka
-  # datfile$vecka<-NULL
-  datfile <- data_read()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  datfile.model<-datfile[selectedcolumns]
-  if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
-    epi <- memmodel(datfile.model,
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
-    range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
-    
-    if (!as.logical(input$preepidemicthr)) e.thr<-NA
-
-   sura<-memsurveillance.animated(datfile[input$SelectSurveillance], e.thr, i.thr, i.remove = T,
-                           i.animated.graph.file.name = "animated", 
-                           i.output = tempdir(), 
-                           i.pos.epidemic = as.logical(input$postepidemicthr), 
-                           i.range.x=range.x,
-                           i.no.intensity=!as.logical(input$intensitythr))
-  imgfile<-sura$graph.name
-  #cat(imgfile,"\n")
-  
-  outdistAnimated<-list(src = imgfile,
-       contentType = 'image/gif',
-       width = 800,
-       height = 600,
-       alt = "This is alternate text")
-  }else{
-    outdistAnimated<-NULL
-  }
-  outdistAnimated
-}, deleteFile = TRUE)
+# output$tbsAnimated <- renderImage({
+#   # datfile <- data_read()
+#   # rownames(datfile)<-datfile$vecka
+#   # datfile$vecka<-NULL
+#   datfile <- data_read()
+#   if(is.null(datfile)){return()}
+#   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+#                                   i.exclude=input$SelectExclude, i.include="", 
+#                                   #i.pandemic=as.logical(input$SelectPandemic), 
+#                                   i.pandemic=T,
+#                                   i.seasons=input$SelectMaximum)
+#   datfile.model<-datfile[selectedcolumns]
+#   if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
+#     epi <- memmodel(datfile.model,
+#                     i.type.threshold=as.numeric(input$i.type.threshold),
+#                     i.type.intensity=as.numeric(input$i.type.intensity), 
+#                     i.method = as.numeric(input$i.method),
+#                     i.param = as.numeric(input$memparameter), i.seasons = NA)
+#     e.thr<-epi$epidemic.thresholds
+#     i.thr<-epi$intensity.thresholds
+#     range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
+#     
+#     if (!as.logical(input$preepidemicthr)) e.thr<-NA
+# 
+#    sura<-memsurveillance.animated(datfile[input$SelectSurveillance], e.thr, i.thr, i.remove = T,
+#                            i.animated.graph.file.name = "animated", 
+#                            i.output = tempdir(), 
+#                            i.pos.epidemic = as.logical(input$postepidemicthr), 
+#                            i.range.x=range.x,
+#                            i.no.intensity=!as.logical(input$intensitythr))
+#   imgfile<-sura$graph.name
+#   #cat(imgfile,"\n")
+#   
+#   outdistAnimated<-list(src = imgfile,
+#        contentType = 'image/gif',
+#        width = 800,
+#        height = 600,
+#        alt = "This is alternate text")
+#   }else{
+#     outdistAnimated<-NULL
+#   }
+#   outdistAnimated
+# }, deleteFile = TRUE)
 
 #####################################
 ### VISUALIZE TAB
@@ -1209,7 +1226,7 @@ output$tbvSeasons <- renderPlotly({
   z
 })
 
-output$tbvSeries <- renderPlot({
+output$tbvSeries_old <- renderPlot({
   datfile <- data_read()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
@@ -1241,8 +1258,35 @@ output$tbvSeries <- renderPlot({
                                   i.seasons=NA)
   if (length(selectedcolumns)==0){return()}
   datfile.plot<-datfile[selectedcolumns]
-  plotSeries(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
+  plotSeries_old(datfile.plot, i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.timing = T, i.threholds = ei.thr)
 })
+
+output$tbvSeries <- renderPlotly({
+  datfile <- data_read()
+  if(is.null(datfile)){return()}
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
+  if (is.null(input$SelectSeasons)) {return()}
+  toinclude<-input$SelectSeasons
+  selectedcolumns<-select.columns(i.names=names(datfile), 
+                                  i.from=input$SelectSeasons[1], 
+                                  i.to=input$SelectSeasons[1], 
+                                  i.exclude="",
+                                  i.include=toinclude,
+                                  i.pandemic=as.logical("TRUE"),
+                                  i.seasons=NA)
+  if (length(selectedcolumns)==0) {return()}
+  datfile.plot<-datfile[selectedcolumns]
+  p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
+                  i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
+                  i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
+  z <- plotly_build(p$plot)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+})
+
 
 output$tbvTiming = renderUI({
   tabnames<-input$SelectSeasons
@@ -1251,7 +1295,7 @@ output$tbvTiming = renderUI({
           lapply(tabnames,function(s){
             ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
             ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-            call("tabPanel",s,call('plotOutput',paste0("tbvTiming_",s)))
+            call("tabPanel",s,call('plotlyOutput',paste0("tbvTiming_",s)))
           })
   )
   
@@ -1501,7 +1545,7 @@ plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epi
   }
 }
 
-plotSeries2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T, i.post.epidemic=T,
+plotSeries_old2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T, i.post.epidemic=T,
                       i.epidemic.thr=NA, i.intensity= T, i.intensity.thr=NA, i.range.y=NA,
                       i.color.pattern=c("#C0C0C0","#606060","#000000","#808080","#000000","#001933",
                                         "#00C000","#800080","#FFB401",
@@ -1704,8 +1748,8 @@ plotSeries2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T,
   print(ggplotly(g.plot, tooltip = "text"))
 }
 
-plotSeries3<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemic=T, i.epidemic.thr=NA, 
-                      i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, ...){
+plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemic=T, i.epidemic.thr=NA, 
+                      i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, i.tickmarks=30, ...){
   
   if(is.null(i.data)){return()}
   
@@ -1867,7 +1911,7 @@ plotSeries3<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidem
   data.x <- 1:NROW(data.orig)
   axis.x.range <- range(data.x)
   temp1 <- range(i.range.x.values$week.no)
-  temp2 <- optimal.tickmarks(temp1[1], temp1[2], 4, 1:temp1[2],T,F)  
+  temp2 <- optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2],T,F)  
   axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
   axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
   axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
@@ -1888,7 +1932,7 @@ plotSeries3<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidem
   axis.y.labels <- axis.y.otick$tickmarks
   
   gplot<-ggplot(dgrafgg.s) +
-    geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=1) +
+    geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
     geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
     scale_shape_manual(values=shapes.s, name="Legend", labels=labels.s) + 
     scale_color_manual(values=colors.s, name="Legend", labels=labels.s) +
@@ -1976,7 +2020,7 @@ plotSeasons.OLD <-function(){
   }
 }
 
-plotTiming <-function(kol){
+plotTiming_old <-function(kol){
   datfile <- data_read()
     #dat3 <- datfile
     #datafil <- dat3
@@ -1987,8 +2031,17 @@ plotTiming <-function(kol){
     plot(epi.plot)
 }
 
+plotTiming <-function(i.column){
+  datfile <- data_read()
+  if(is.null(datfile)){return()}
+  datfile.plot<-datfile[i.column]
+  p <- plotSeries(datfile.plot, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
+  z <- plotly_build(p$plot)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+}
 
-plotSeries <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timing=TRUE, i.threholds=TRUE){
+plotSeries_old <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timing=TRUE, i.threholds=TRUE){
   datfile <- i.data
   if(is.null(datfile)){return()}
   range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
@@ -2003,7 +2056,7 @@ plotSeries <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timing=TR
                     i.alternative.thresholds=intensity)
 }
 
-plotSurveillance <-function(){
+plotSurveillance_old <-function(){
   # datfile <- data_read()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
@@ -2033,7 +2086,7 @@ plotSurveillance <-function(){
   }
 }
 
-plotSurveillance2<-function(i.data,
+plotSurveillance<-function(i.data,
                       i.week.report=NA,
                       i.range.x=NA,
                       i.range.y=NA,
