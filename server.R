@@ -225,7 +225,7 @@ output$tbSurveillance <- renderUI({
                 tabPanel("Seasons", plotlyOutput("tbsSeasons")),
                 tabPanel("Timing",plotOutput("tbsTiming")),
                 tabPanel("Surveillance",plotOutput("tbsSurveillance")),
-                tabPanel("Surveillance2",uiOutput("tbsSurveillance2")),
+                tabPanel("Surveillance",uiOutput("tbsSurveillance2")),
                 tabPanel("Animated",imageOutput("tbsAnimated"))
     )
 })
@@ -1013,9 +1013,10 @@ output$tbsSurveillanceAnimated <- renderImage({
  for (i in 1:n.surveillance.week){
      p<-plotSurveillance2(i.data=datfile.plot, i.week.report=rownames(datfile)[i], i.pre.epidemic=as.logical(input$preepidemicthr),
                              i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
-                             i.intensity.thr = i.thr, i.range.y=c(0,max.y))
+                             i.intensity.thr = i.thr, i.range.y=c(0,max.y),
+                          i.end=as.logical(input$postepidemicthr))
      imgfile<-paste(tempdir(),"/animatedplot_",i,".png",sep="")
-     ggsave(imgfile, plot=p, width=8, height=6, dpi=150)
+     ggsave(imgfile, plot=p$plot, width=8, height=6, dpi=150)
      if (i==1) imgfilem<-image_read(imgfile) else imgfilem<-c(imgfilem,image_read(imgfile))
      cat(imgfile,"\n")
  }
@@ -1062,17 +1063,21 @@ output$tbsSurveillanceWeek <- renderPlotly({
   
   p <- plotSurveillance2(i.data=datfile.plot, i.week.report=input$SelectSurveillanceWeek, i.pre.epidemic=as.logical(input$preepidemicthr),
                          i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
-                         i.intensity.thr = i.thr)
-  z <- plotly_build(p)
+                         i.intensity.thr = i.thr,
+                         i.end=as.logical(input$postepidemicthr))
+  
+  z <- plotly_build(p$plot)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   # Fix legend
-  for (j in length(z$x$data):1){
-    z$x$data[[j]]$name<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$name)
-    z$x$data[[j]]$legendgroup<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$legendgroup)
-    if (z$x$data[[j]]$name=="NA") z$x$data[[j]]<-NULL
-  }
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
+  # for (j in length(z$x$data):1){
+  #   z$x$data[[j]]$name<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$name)
+  #   z$x$data[[j]]$legendgroup<-sub("\\(([^\\,]*).*","\\1",z$x$data[[j]]$legendgroup)
+  #   if (z$x$data[[j]]$name=="NA") z$x$data[[j]]<-NULL
+  # }
+  # for(j in 1:length(z$x$data)){
+  #   z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
+  # z
+  zfix
 })
 
 output$tbsAnimated <- renderImage({
@@ -1956,7 +1961,7 @@ plotSurveillance2<-function(i.data,
     post.umbrales.1<-rep(NA,semana.report+1)
     post.umbrales.2<-rep(NA,semanas)
     intensidades.1<-array(dim=c(semanas,3))
-    intensidades.2<-array(dim=c(semanas,3))
+    intensidades.2<-array(dim=c(semanas,3)) 
   }else{
     if (is.na(semana.fin)){
       # Iniciada y no finalizada
@@ -1999,6 +2004,8 @@ plotSurveillance2<-function(i.data,
   intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
   
   labels<-c("Weekly rates","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End")
+  haspoints<-c(T,F,F,F,F,F,T,T)
+  haslines<-c(T,T,T,T,T,T,F,F)
   shapes<-c(21,NA,NA,NA,NA,NA,21,21)
   colors<-c("#808080","#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1","#000000","#000000")
   fills<-c("#000000","#000000","#000000","#000000","#000000","#000000","#FF0000","#40FF40")
@@ -2016,13 +2023,17 @@ plotSurveillance2<-function(i.data,
   dgrafgg<-melt(dgraf,id="week")
   
   selected.indicators<-1
-  if (i.epidemic) selected.indicators<-c(selected.indicators,c(2,6))
+  if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2)
+  if (i.post.epidemic) selected.indicators<-c(selected.indicators,6)
   if (i.intensity) selected.indicators<-c(selected.indicators,3:5)
-  if (i.start) selected.indicators<-c(selected.indicators,7)
-  if (i.end) selected.indicators<-c(selected.indicators,8)
+  if (i.start & i.pre.epidemic) selected.indicators<-c(selected.indicators,7)
+  if (i.end & i.post.epidemic) selected.indicators<-c(selected.indicators,8)
+  selected.indicators<-unique(selected.indicators)
   selected.indicators<-selected.indicators[order(selected.indicators)]
   
   labels.s<-labels[selected.indicators]
+  haspoints.s<-haspoints[selected.indicators]
+  haslines.s<-haslines[selected.indicators]
   dgrafgg.s<-subset(dgrafgg,variable %in% labels.s)
   shapes.s<-shapes[selected.indicators]
   colors.s<-colors[selected.indicators]
@@ -2041,7 +2052,11 @@ plotSurveillance2<-function(i.data,
   axis.x.labels <- (current.season$nombre.semana)[axis.x.otick$tickmarks]
   # Same, for 10 tickmarks in the y-axis
   # Range y fix
-  if (length(i.range.y)!=2) i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+  if (length(i.range.y)!=2){
+    i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+  }else{
+    i.range.y <- 1.05*i.range.y
+  }
   axis.y.range.original <- i.range.y
   axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
   axis.y.range <- axis.y.otick$range
@@ -2058,13 +2073,14 @@ plotSurveillance2<-function(i.data,
     scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) + 
     scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
     scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-    labs(title = "Main title", x = "Week", y = "Weekly value") + 
+    labs(title = input$textMain, x = input$textX, y = input$textY) + 
     ggthemes::theme_few()
+  
     # theme(axis.text.x=element_text(size=14, col="#000040"), axis.title.x=element_text(size=16, col="#000040"),
     #    axis.text.y=element_text(size=14, col="#000040"), axis.title.y=element_text(size=16, col="#000040"),
     #    plot.title=element_text(size=20, face="bold", color="#000000", hjust=0.5))
-  
-  gplot
+  list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=current.season$nombre.semana)
+       
 }
 
 # custom functions
@@ -2289,6 +2305,47 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
 # roundF and format
 
 roundF <- function(x, k=2) format(round(x, k), nsmall=k)
+
+# Fix plotly graphs
+
+fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklabels){
+  
+  nlabels<-length(i.labels)
+  nlists<-length(i.plotly$x$data)
+  if (nlists!=2*nlabels) return(i.plotly)
+  # Show all labels
+  for (i in 1:nlists) i.plotly$x$data[[i]]$showlegend<-T
+  # Fix x.axis labels
+  divideit<-matrix(unlist(strsplit(as.character(i.plotly$x$layout$xaxis$ticktext),"\\\n")),nrow=length(i.plotly$x$layout$xaxis$ticktext), byrow=T)
+  i.plotly$x$layout$margin$b<-(NCOL(divideit))*i.plotly$x$layout$margin$b
+  i.plotly$x$layout$xaxis$ticktext<-apply(divideit,1,paste,collapse="<br>")
+  # Fix labels names
+  sequ<-1:nlists-nlabels*(floor((1:nlists-1)/nlabels))
+  for (i in 1:nlists) i.plotly$x$data[[i]]$name<-i.labels[sequ[i]]
+  # Fix text to showup
+  for (i in 1:nlists){
+    i.plotly$x$data[[i]]$text
+    dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
+    i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br>",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
+  }
+  # For those with points and labels, i modify the mode and add the marker
+  pandl<-i.points & i.lines
+  index.pandl<-(1:nlabels)[pandl]
+  for (i in 1:length(index.pandl)){
+    i.plotly$x$data[[index.pandl[i]]]$mode<-"lines+markers"
+    i.plotly$x$data[[index.pandl[i]]]$marker<-i.plotly$x$data[[index.pandl[i]+nlabels]]$marker
+  }
+  # Remove unnecesary legend entries
+  panol<-i.points & !i.lines
+  index.panol<-(1:nlabels)[panol]
+  nopal<-!i.points & i.lines
+  index.nopal<-(1:nlabels)[nopal]
+  toremove<-c(index.pandl+nlabels,index.panol,index.nopal+nlabels)
+  toremove<-toremove[order(toremove, decreasing = T)]
+  # in reverse order, since removing changes order
+  for (i in 1:length(toremove)) i.plotly$x$data[[toremove[i]]]<-NULL
+  return(i.plotly)
+}
 
 
 session$onSessionEnded(function() {
