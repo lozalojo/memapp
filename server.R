@@ -868,7 +868,8 @@ output$tbmOptimizeDetail<-DT::renderDataTable({
   rownames(roca.table)<-NULL
   roundF(roca.table,2)
 },
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))
+  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE),
+rownames= FALSE)
 
 output$tbmOptimizeGraph<- renderPlot({
 
