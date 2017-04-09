@@ -305,10 +305,14 @@ output$tbdSeasons <- renderPlotly({
   }
   datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- ggplotly(p, width = 800, height = 600)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
+  # z <- ggplotly(p, width = 800, height = 600)
+  # for(j in 1:length(z$x$data)){
+  #   z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
+  # z
+  z <- ggplotly(p$plot, width = 800, height = 600)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+  
 })
 
 output$tbdSeries_old <- renderPlot({
@@ -440,10 +444,14 @@ output$tbmSeasons <- renderPlotly({
   i.thr<-datamodel$intensity.thresholds
   #datfile.plot<-datfile[model.columns]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- ggplotly(p, width = 800, height = 600)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", rownames(datfile.plot))}
-  z
+  # z <- ggplotly(p, width = 800, height = 600)
+  # for(j in 1:length(z$x$data)){
+  #   z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", rownames(datfile.plot))}
+  # z
+  z <- ggplotly(p$plot, width = 800, height = 600)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+  
 })
 
 output$tbmSeries_old <- renderPlot({
@@ -560,7 +568,8 @@ output$tbmMem <- renderUI({
   else
     tabsetPanel(tabPanel("Summary", uiOutput("tbmMemSummary")),
                 tabPanel("Output", verbatimTextOutput("tbmMemOutput")),
-                tabPanel("Graph",plotOutput("tbmMemModel", width ="100%", height ="100%"))
+                #tabPanel("Graph",plotOutput("tbmMemModel")),
+                tabPanel("Graph",uiOutput("tbmMemGraph"))
     )
 })
 
@@ -684,6 +693,78 @@ output$tbmMemModel <- renderPlot({
   plot(datamodel)
 })
 
+output$tbmMemGraph <- renderUI({
+  if(is.null(data_read())){return()}
+  else
+    tabsetPanel(tabPanel("Moving epidemics", plotlyOutput("tbmMemGraphMoving", width ="100%", height ="100%")),
+                tabPanel("Typical curve", plotlyOutput("tbmMemGraphTypical", width ="100%", height ="100%"))
+    )
+})
+
+output$tbmMemGraphMoving <- renderPlotly({
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
+  
+  datfile.plot<-data.frame(datamodel$moving.epidemics,row.names = rownames(datamodel$param.data))
+  names(datfile.plot)<-names(datamodel$param.data)
+  datfile.plot$Typical<-datamodel$typ.curve[,2]
+  p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
+  # I add the vertical lines that mark the average start and end
+  p0<-p$plot +
+    geom_vline(xintercept = datamodel$ci.start[1,2]-0.5,
+               col=c("#FF0000"), linetype="longdash", size=0.5) +
+    geom_vline(xintercept = datamodel$ci.start[1,2]+datamodel$mean.length-1+0.5,
+               col=c("#40FF40"), linetype="longdash", size=0.5)
+  z <- ggplotly(p0, width = 800, height = 600)
+  # Typical curve, more width and dot stype
+  z$x$data[[NCOL(datfile.plot)]]$line$width<-2*z$x$data[[NCOL(datfile.plot)]]$line$width
+  z$x$data[[NCOL(datfile.plot)]]$line$dash<-"dot"
+  # Rename name and text for vertical lines I've just added
+  z$x$data[[2*length(p$labels)+1]]$name<-"Mean start"
+  z$x$data[[2*length(p$labels)+2]]$name<-"Mean end"
+  z$x$data[[2*length(p$labels)+1]]$text<-paste("Mean start: ",rownames(datfile.plot)[datamodel$ci.start[1,2]],sep="")
+  z$x$data[[2*length(p$labels)+2]]$text<-paste("Mean end: ",rownames(datfile.plot)[datamodel$ci.start[1,2]+datamodel$mean.length-1],sep="")
+  # And I need to rearrange the order of the z list for fixplotly to work
+  names(z$x$data)<-as.character(1:(2*length(p$labels)+2))
+  z$x$data<-z$x$data[as.character(c(1:length(p$labels),2*length(p$labels)+1,2*length(p$labels)+2,(length(p$labels)+1):(2*length(p$labels)),2*length(p$labels)+1,2*length(p$labels)+2))]
+  names(z$x$data)<-NULL
+  zfix<-fixplotly(z,
+                  c(p$labels,"Mean start","Mean end"),
+                  c(p$haslines,T,T),
+                  c(p$haspoints,F,F),
+                  "week","value",p$weeklabels)
+  zfix
+  
+})
+
+output$tbmMemGraphTypical <- renderPlotly({
+  datamodel<-data_model()
+  if(is.null(datamodel)){return()}
+  datfile.plot<-data.frame(typical=datamodel$typ.curve[,2],row.names = rownames(datamodel$param.data))
+  e.thr<-datamodel$epidemic.thresholds
+  i.thr<-datamodel$intensity.thresholds
+  p <- plotSurveillance(datfile.plot,
+                        i.pre.epidemic=T,
+                        i.post.epidemic=T,
+                        i.epidemic=T,
+                        i.start=T,
+                        i.end=T,
+                        i.epidemic.thr = e.thr,
+                        i.intensity= T,
+                        i.intensity.thr=i.thr,
+                        i.mean.length=datamodel$mean.length,
+                        i.force.length=T,
+                        i.force.equal=F,
+                        i.force.start=datamodel$ci.start[2,2],
+                        i.force.week.53=F)
+  z <- ggplotly(p$plot, width = 800, height = 600)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+})
+
+
 output$tbmGoodness <- renderUI({
   if(is.null(data_read())){return()}
   else
@@ -729,7 +810,7 @@ output$tbmOptimize <- renderUI({
   else
     tabsetPanel(tabPanel("Summary", uiOutput("tbmOptimizeSummary")),
                 tabPanel("Detail", DT::dataTableOutput("tbmOptimizeDetail")),
-                tabPanel("Graph",plotOutput("tbmOptimizeGraph", width ="100%", height ="100%"))
+                tabPanel("Graph",plotOutput("tbmOptimizeGraph"))
     )
 })
 
@@ -950,10 +1031,14 @@ output$tbsSeasons <- renderPlotly({
   #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
   #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- ggplotly(p, width = 800, height = 600)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
+  # z <- ggplotly(p, width = 800, height = 600)
+  # for(j in 1:length(z$x$data)){
+  #   z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
+  # z
+  z <- ggplotly(p$plot, width = 800, height = 600)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+  
 })
 
 output$tbsTiming <- renderPlotly({
@@ -1220,10 +1305,14 @@ output$tbvSeasons <- renderPlotly({
   #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
   #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
-  z <- ggplotly(p, width = 800, height = 600)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
+  # z <- ggplotly(p, width = 800, height = 600)
+  # for(j in 1:length(z$x$data)){
+  #   z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
+  # z
+  z <- ggplotly(p$plot, width = 800, height = 600)
+  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  zfix
+  
 })
 
 output$tbvSeries_old <- renderPlot({
@@ -1476,7 +1565,7 @@ plotInput <-function(){
   
 }
 
-plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epidemic=TRUE, i.post.epidemic=TRUE, i.intensity=TRUE){
+plotSeasons_old_bands <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epidemic=TRUE, i.post.epidemic=TRUE, i.intensity=TRUE){
   #cat("plotSeasons function\n")
   if(is.null(i.data)){return()}
   dataplot<-i.data
@@ -1544,6 +1633,183 @@ plotSeasons <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epi
     print(ggplotly(g.plot, tooltip = "text"))
   }
 }
+
+plotSeasons <- function(i.data, 
+                         i.pre.epidemic=TRUE, 
+                         i.post.epidemic=TRUE, 
+                         i.epidemic.thr=NA,
+                         i.intensity=TRUE,
+                         i.intensity.thr=NA, 
+                         i.range.x=NA, 
+                         i.range.y=NA, 
+                         i.tickmarks=30, ...){
+  
+  if(is.null(i.data)){return()}
+  
+  if (length(i.range.x)!=2){
+    week.f<-as.numeric(rownames(i.data)[1])
+    week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
+  }else{
+    week.f<-i.range.x[1]
+    week.l<-i.range.x[2]
+  }  
+  if (week.f>week.l){
+    i.range.x<-c(week.f,week.l)
+    i.range.x.values<-data.frame(week.lab=c(week.f:52,1:week.l))
+    i.range.x.values$week.no=1:NROW(i.range.x.values)
+  }else{
+    i.range.x<-c(1,52)
+    i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
+  }
+  if (NCOL(i.data)>1){
+    epi<-memmodel(i.data, i.seasons=NA,...)
+    epidata<-epi$data
+    epiindex<-as.data.frame(epi$season.indexes[,,1])
+    rownames(epiindex)<-rownames(i.data)
+    colnames(epiindex)<-colnames(i.data)
+    epithresholds<-epi$epidemic.thresholds
+    intthresholds<-epi$intensity.thresholds
+    i.data<-i.data[names(i.data) %in% names(epi$data)]
+  }else{
+    # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
+    # the timing (which would be extracted with memtiming also)
+    epi<-memmodel(cbind(i.data,i.data), i.seasons=NA,...)
+    epidata<-epi$data[1]
+    epiindex<-as.data.frame(epi$season.indexes[,1,1])
+    rownames(epiindex)<-rownames(i.data)
+    colnames(epiindex)<-colnames(i.data)
+    epithresholds<-NA
+    intthresholds<-NA
+    i.data<-i.data[names(i.data) %in% names(epi$data)]
+  }
+  rm("epi")
+  
+  # To have continuity between seasons I have to inflate original data to the global squeme. That's it: If
+  # original data format is from 40 to 20, the inflated data would be 30 to 29, so that when a season ends
+  # at 29, next one will start at 30 and there would be continuity between both
+  
+  data.full<-i.data
+  data.full$week.lab<-rownames(data.full)
+  data.full<-merge(data.full,i.range.x.values,by="week.lab",all.y=T)
+  data.full<-data.full[order(data.full$week.no),]
+  row.names(data.full)<-data.full$week.lab
+  data.full$week.lab<-NULL
+  data.full$week.no<-NULL
+  
+  data.full.epi<-epidata
+  data.full.epi$week.lab<-rownames(data.full.epi)
+  data.full.epi<-merge(data.full.epi,i.range.x.values,by="week.lab",all.y=T)
+  data.full.epi<-data.full.epi[order(data.full.epi$week.no),]
+  row.names(data.full.epi)<-data.full.epi$week.lab
+  data.full.epi$week.lab<-NULL
+  data.full.epi$week.no<-NULL
+  
+  data.full.missing<-data.full.epi
+  data.full.missing[!(is.na(data.full) & !is.na(data.full.epi))]<-NA
+  
+  if (length(i.epidemic.thr)==2){
+    epidemic<-i.epidemic.thr
+  }else{
+    if (NCOL(i.data)>1){
+      epidemic<-as.numeric(epithresholds)
+    }else{
+      i.pre.epidemic<-F
+      i.post.epidemic<-F
+      epidemic<-NA
+    }
+  }
+  
+  if (length(i.intensity.thr)==3){
+    intensity<-i.intensity.thr
+  }else{
+    if (NCOL(i.data)>1){
+      intensity<-as.numeric(intthresholds)
+    }else{
+      i.intensity<-F
+      intensity<-NA
+    }
+  }
+  
+  col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(data.full))),input$colpalseries))(NCOL(data.full))
+  
+  labels<-c(names(data.full),
+            paste(names(data.full)," (missing)",sep=""),
+            "Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
+  haspoints<-c(rep(F,NCOL(data.full)),rep(F,NCOL(data.full)),F,F,F,F,F)
+  haslines<-c(rep(T,NCOL(data.full)),rep(T,NCOL(data.full)),T,T,T,T,T)
+  shapes<-c(rep(NA,NCOL(data.full)),rep(NA,NCOL(data.full)),NA,NA,NA,NA,NA)
+  colors<-c(col.ser,col.ser,"#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1")
+  fills<-c(rep("#000000",NCOL(data.full)),rep("#000000",NCOL(data.full)),"#000000","#000000","#000000","#000000","#000000")
+  sizes<-c(rep(2,NCOL(data.full)),rep(2,NCOL(data.full)),1,1,1,1,1)
+  linetypes<-c(rep("solid",NCOL(data.full)),rep("solid",NCOL(data.full)), "dashed", "dashed", "dashed", "dashed","dashed")
+  
+  # Data to plot
+  
+  dgraf<-cbind(data.full.epi,data.full.missing,
+               epit=epidemic[1],
+               medt=intensity[1],
+               higt=intensity[2],
+               vert=intensity[3],
+               post=epidemic[2]
+  )
+  names(dgraf)<-labels
+  dgraf$week<-1:NROW(dgraf)
+  
+  dgrafgg<-melt(dgraf,id="week")
+  
+  selected.indicators<-(1:(2*NCOL(data.full)))[apply(dgraf[1:(2*NCOL(data.full))],2,function(x) !all(is.na(x)))]
+  if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+1)
+  if (i.post.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+5)
+  if (i.intensity) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+2:4)
+  selected.indicators<-unique(selected.indicators)
+  selected.indicators<-selected.indicators[order(selected.indicators)]
+  
+  labels.s<-labels[selected.indicators]
+  haspoints.s<-haspoints[selected.indicators]
+  haslines.s<-haslines[selected.indicators]
+  dgrafgg.s<-subset(dgrafgg,variable %in% labels.s)
+  shapes.s<-shapes[selected.indicators]
+  colors.s<-colors[selected.indicators]
+  fills.s<-fills[selected.indicators]
+  sizes.s<-sizes[selected.indicators]
+  linetypes.s<-linetypes[selected.indicators]
+  
+  # Calculate ticks for x
+  axis.x.range.original <- range(i.range.x.values$week.no)
+  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], i.tickmarks, 1:axis.x.range.original[2],T,F)
+  axis.x.range <- axis.x.otick$range
+  axis.x.ticks<- axis.x.otick$tickmarks
+  axis.x.labels<-i.range.x.values$week.lab[axis.x.otick$tickmarks]
+  
+  # Range y fix
+  if (length(i.range.y)!=2){
+    i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+  }else{
+    i.range.y <- 1.05*i.range.y
+  }
+  axis.y.range.original <- i.range.y
+  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+  axis.y.range <- axis.y.otick$range
+  axis.y.ticks <- axis.y.otick$tickmarks
+  axis.y.labels <- axis.y.otick$tickmarks
+  
+  gplot<-ggplot(dgrafgg.s) +
+    geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
+    geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+    scale_shape_manual(values=shapes.s, name="Legend", labels=labels.s) + 
+    scale_color_manual(values=colors.s, name="Legend", labels=labels.s) +
+    scale_fill_manual(values=fills.s, name="Legend", labels=labels.s) +
+    scale_size_manual(values=sizes.s, name="Legend", labels=labels.s) +
+    scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) + 
+    scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+    scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+    labs(title = input$textMain, x = input$textX, y = input$textY) + 
+    ggthemes::theme_few()
+  
+  list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=i.range.x.values$week.lab)
+  
+}
+
 
 plotSeries_old2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T, i.post.epidemic=T,
                       i.epidemic.thr=NA, i.intensity= T, i.intensity.thr=NA, i.range.y=NA,
@@ -1856,7 +2122,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
   haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
   shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
   colors<-c("#808080","#000000","#000000","#000000","#000000","#000000","#000000","#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1")
-  fills<-c("#000000","#00C000","#00C000","#800080","#800080","#FFB401","#FFB401","#000000","#000000")
+  fills<-c("#000000","#00C000","#00C000","#800080","#800080","#FFB401","#FFB401","#000000","#000000","#000000","#000000","#000000")
   sizes<-c(2,2,2,2,2,2,2,1,1,1,1,1)
   linetypes<-c("solid","blank","blank","blank","blank","blank","blank", "dashed", "dashed", "dashed", "dashed","dashed")
   
@@ -2587,16 +2853,20 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   for (i in 1:nlists) i.plotly$x$data[[i]]$name<-i.labels[sequ[i]]
   # Fix text to showup
   for (i in 1:nlists){
-    i.plotly$x$data[[i]]$text
-    dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
-    i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br>",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
+    if (length(grep(i.yname,i.plotly$x$data[[i]]$text))>0){
+      i.plotly$x$data[[i]]$text
+      dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
+      i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br>",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
+    }
   }
   # For those with points and labels, i modify the mode and add the marker
   pandl<-i.points & i.lines
   index.pandl<-(1:nlabels)[pandl]
-  for (i in 1:length(index.pandl)){
-    i.plotly$x$data[[index.pandl[i]]]$mode<-"lines+markers"
-    i.plotly$x$data[[index.pandl[i]]]$marker<-i.plotly$x$data[[index.pandl[i]+nlabels]]$marker
+  if (length(index.pandl)>0){
+    for (i in 1:length(index.pandl)){
+      i.plotly$x$data[[index.pandl[i]]]$mode<-"lines+markers"
+      i.plotly$x$data[[index.pandl[i]]]$marker<-i.plotly$x$data[[index.pandl[i]+nlabels]]$marker
+    }
   }
   # Remove unnecesary legend entries
   panol<-i.points & !i.lines
