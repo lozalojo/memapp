@@ -27,7 +27,7 @@ data_read <- reactive({
 })
 
 data_model <- reactive({
-  cat("data_model function\n")
+  # cat("data_model function\n")
   datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
@@ -77,7 +77,7 @@ data_model <- reactive({
 
 
 data_good <- reactive({
-  cat("data_good function\n")
+  # cat("data_good function\n")
   datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
@@ -103,7 +103,7 @@ data_good <- reactive({
 })
 
 data_optim <- reactive({
-  cat("data_optim function\n")
+  # cat("data_optim function\n")
   datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
@@ -1560,8 +1560,8 @@ plotInput <-function(){
         scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
         scale_color_manual(values="black", labels=input$SelectSurveillance)+
-        geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
-        geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop) +
+        geom_hline(aes(yintercept=e.thr[1]), color = input$colEpidemicStart) +
+        geom_hline(aes(yintercept=e.thr[2]), color = input$colEpidemicStop) +
         ggthemes::theme_few()
     print(ggplotly(g.plot, tooltip = "text"))
     # CASE 3: addthreshold=NO AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
@@ -1575,16 +1575,16 @@ plotInput <-function(){
     #               i.method = as.numeric(input$method),
     #               i.param = as.numeric(input$param), i.seasons = NA)
     #cat("Case #3\n")
-    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
+    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
     g.plot <-
       ggplot(datfile) +
         ggtitle(input$textMain) +
         theme(plot.title = element_text(hjust = 0.1, size=22))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency))+
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))+
         geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
         labs(x=input$textX,y=input$textY, color='Season') +
         scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
@@ -1603,22 +1603,22 @@ plotInput <-function(){
     #               i.method = as.numeric(input$method),
     #               i.param = as.numeric(input$param), i.seasons = NA)
     #cat("Case #4\n")
-    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
+    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
     g.plot <-
       ggplot(datfile) +
       ggtitle(input$textMain) +
       theme(plot.title = element_text(hjust = 0.1, size=22))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency))+
+      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))+
       geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
       labs(x=input$textX,y=input$textY, color='Season') +
       scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
       scale_color_manual(values="black", input$SelectSurveillance)+
-      geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
+      geom_hline(aes(yintercept=e.thr[1]), color = input$colEpidemicStart) +
       geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop) +
       #scale_color_manual(values="blue", labels=roundF(i.thr[1]))+
       ggthemes::theme_few()
@@ -1680,8 +1680,8 @@ plotSeasons_old_bands <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA,
   
   if (NCOL(i.data)>0){
     lis<-melt(dataplot, id.vars="num", measure.vars=names(i.data), variable.name='Season', value.name='Rates')     
-    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
-    col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(i.data))),input$colpalseries))(NCOL(i.data))
+    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
+    col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(i.data))),input$colseries))(NCOL(i.data))
     # Basic plot structure
     g.plot <- 
       ggplot(lis) +
@@ -1691,11 +1691,11 @@ plotSeasons_old_bands <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA,
     # Add intensity, this goes first not to overwrite the series
     if(i.intensity & length(i.intensity.thr)==3){
       g.plot <- g.plot + 
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = i.epidemic.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.epidemic.thr[1], ymax = i.intensity.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[1], ymax = i.intensity.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[2], ymax = i.intensity.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = i.epidemic.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.epidemic.thr[1], ymax = i.intensity.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[1], ymax = i.intensity.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[2], ymax = i.intensity.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))
     }
     # Add all series selected
     g.plot <- g.plot +
@@ -1706,12 +1706,12 @@ plotSeasons_old_bands <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA,
     # Add pre-epidemic thresholds
     if(i.pre.epidemic & length(i.epidemic.thr)==2){
       g.plot <- g.plot +
-        geom_hline(aes(yintercept=i.epidemic.thr[1]), color = input$colMEMstart)
+        geom_hline(aes(yintercept=i.epidemic.thr[1]), color = input$colEpidemicStart)
     }
     # Add postepidemic thresholds
     if(i.post.epidemic & length(i.epidemic.thr)==2){
       g.plot <- g.plot +
-        geom_hline(aes(yintercept=i.epidemic.thr[2]), color = input$colMEMstop)
+        geom_hline(aes(yintercept=i.epidemic.thr[2]), color = input$colEpidemicStop)
     }
     # Finishing
     g.plot <- g.plot + 
@@ -1838,7 +1838,7 @@ plotSeasons <- function(i.data,
     }
   }
   
-  col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(data.full))),input$colpalseries))(NCOL(data.full))
+  col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(data.full))),input$colseries))(NCOL(data.full))
   
   labels<-c(names(data.full),
             paste(names(data.full)," (missing)",sep=""),
@@ -2380,8 +2380,8 @@ plotSeasons.OLD <-function(){
 
   if (length(input$SelectSeasons)>0){
     lis<-melt(datfile, id.vars="num", measure.vars=input$SelectSeasons, variable.name='Season', value.name='Rates')     
-    col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
-    col.ser <- colorRampPalette(brewer.pal(length(input$SelectSeasons),input$colpalseries))(length(input$SelectSeasons))
+    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
+    col.ser <- colorRampPalette(brewer.pal(length(input$SelectSeasons),input$colseries))(length(input$SelectSeasons))
     # Basic plot structure
     g.plot <- 
       ggplot(lis) +
@@ -2391,11 +2391,11 @@ plotSeasons.OLD <-function(){
     # Add intensity, this goes first not to overwrite the series
     if(input$intensitythr=="TRUE" & NCOL(datfile.model)>1){
       g.plot <- g.plot + 
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colpalTran)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colpalTran))
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency)) +
+        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))
     }
     # Add all series selected
     g.plot <- g.plot +
@@ -2406,8 +2406,8 @@ plotSeasons.OLD <-function(){
     # Add epidemic thresholds
     if(input$preepidemicthr=="TRUE" & NCOL(datfile.model)>1){
       g.plot <- g.plot +
-        geom_hline(aes(yintercept=e.thr[1]), color = input$colMEMstart) +
-        geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop)
+        geom_hline(aes(yintercept=e.thr[1]), color = input$colEpidemicStart) +
+        geom_hline(aes(yintercept=e.thr[2]), color = input$colEpidemicStop)
     }
     # Finishing
     g.plot <- g.plot + 

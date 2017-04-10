@@ -20,7 +20,7 @@ shinyUI(dashboardPage(skin = "blue",
                    fileInput("file", label = h5("Load data")),
                    # selectInput("K", h5("    Apply MEM on season"), size=1,
                    #             selectize = FALSE, choices = ""),
-                   
+
                    ################################
                    ###  Apply MEM on season    ####
                    ################################
@@ -82,9 +82,10 @@ shinyUI(dashboardPage(skin = "blue",
                    #           trigger = "hover", 
                    #           options = list(container = "body")),
                    
-                   
+                   box(title="Model", status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+
                    ### This portion is experimental
-                   h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Model"),
+                   #h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Model"),
                    # From
                    selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "From"), size=1, selectize = FALSE, choices = ""),
                    # To
@@ -94,9 +95,14 @@ shinyUI(dashboardPage(skin = "blue",
                    # Pandemic
                    # checkboxInput("SelectPandemic", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Pandemic"), value = FALSE),
                    # Maximum seasons
-                   numericInput("SelectMaximum", "Max. seasons:", 10, step=1),
-                   h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Surveillance"),
+                   numericInput("SelectMaximum", "Max. seasons:", 10, step=1)
+                   ),
+                   
+                   box(title="Surveillance", status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                   
+                   #h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Surveillance"),
                    # Surveillance
+                   
                    selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                        bsButton("ssb", label = "", 
                                                 icon = icon("question"), 
@@ -128,9 +134,12 @@ shinyUI(dashboardPage(skin = "blue",
                              content = "Choose a season to apply MEM thresholds on. Your choosen seasen will be excluded when calculating the MEM thresholds for pre- and post season.",
                              placement = "top", 
                              trigger = "hover", 
-                             options = list(container = "body")),
+                             options = list(container = "body"))
+                   ),
                    
-                   h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Visualize"),
+                   box(title="Visualize", status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                       
+                   #h3(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Visualize"),
                    # Add seasons
                    selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                         bsButton("spb", label = "", 
@@ -141,12 +150,16 @@ shinyUI(dashboardPage(skin = "blue",
                              content = "By clicking at the seasons you can display multiple seasons in the graph. To delete a season click on it and press delete on your keyboard. You cannot apply MEM on this graph. To get MEM back delete the choices you have made.",
                              placement = "right", 
                              trigger = "hover", 
-                             options = list(container = "body")),
-
+                             options = list(container = "body"))
+                   ),
+                   
                    ##########################################
                    ###  Include MEM-thresholds in graph  ####
                    ##########################################
-                   h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
+                   
+                   box(title="Thresholds", status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                       
+                   #h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
                    checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                                          bsButton("q5", label = "", 
                                                                   icon = icon("question"), 
@@ -185,8 +198,8 @@ shinyUI(dashboardPage(skin = "blue",
                              placement = "right", 
                              trigger = "hover", 
                              options = list(container = "body"))
-                   
-                   
+                   )
+                  
                    ),
   
   ###################################
@@ -217,68 +230,7 @@ shinyUI(dashboardPage(skin = "blue",
          ###      FIRST PART: GRAPH OPTIONS  ###
          #######################################
          
-         box(title="Graph options", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
-                      collapsible = TRUE, collapsed=TRUE,
-             fluidRow(column(2, selectInput("colOBS",
-                                            h5("Observed",
-                                               tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                                               bsButton("q9", label = "", 
-                                                        icon = icon("question"), 
-                                                        style = "info", size = "extra-small")), width = '130px',
-                                            choices = sapply(colors(), function(x) list(x)),
-                                            size=1,
-                                            selectize = FALSE,
-                                            selected = "black")),
-                      column(2, selectInput("colMEMstart",
-                         h5("MEM season start",
-                            tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                            bsButton("q10", label = "", 
-                                     icon = icon("question"), 
-                                     style = "info", size = "extra-small")), width = '130px',
-                         choices = sapply(colors(), function(x) list(x)),
-                         size=1,
-                         selectize = FALSE,
-                         selected = "red")),
-                      column(2,selectInput("colMEMstop",
-                         h5("MEM season end",
-                            tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                            bsButton("q11", label = "", 
-                                     icon = icon("question"), 
-                                     style = "info", size = "extra-small")), width = '130px',
-                         choices = sapply(colors(), function(x) list(x)),
-                         size=1,
-                         selectize = FALSE,
-                         selected = "green")),
-                      column(2,selectInput("colpal",
-                                           h5("Color palette Intensity",
-                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                                              bsButton("q111", label = "", 
-                                                       icon = icon("question"), 
-                                                       style = "info", size = "extra-small")), width = '130px',
-                                           choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
-                                           size=1,
-                                           selectize = FALSE,
-                                           selected = "Blues")),
-                      column(2,selectInput("colpalseries",
-                                           h5("Color palette Series",
-                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                                              bsButton("q111b", label = "", 
-                                                       icon = icon("question"), 
-                                                       style = "info", size = "extra-small")), width = '130px',
-                                           choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
-                                           size=1,
-                                           selectize = FALSE,
-                                           selected = "Accent")),
-                      column(2,selectInput("colpalTran",
-                                           h5("Transparency",
-                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                                              bsButton("q112", label = "", 
-                                                       icon = icon("question"), 
-                                                       style = "info", size = "extra-small")), width = '130px',
-                                           choices = sapply(c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), function(x) list(x)),
-                                           size=1,
-                                           selectize = FALSE,
-                                           selected = 1)))),
+         
          
          #######################################
          ### BODY/MAIN SECTION               ###
@@ -408,7 +360,7 @@ shinyUI(dashboardPage(skin = "blue",
                       
                       
                       ),
-             fluidRow(column(2, numericInput("n.max", "Values per season:", NA, step=1, min = NA, max = NA)),
+             fluidRow(column(2, numericInput("n.max", "Values per season:", -1, step=1, min = -1, max = 100)),
                       column(2, numericInput("level.intensity.m", "Level medium:", 40, step=0.5, min = 0.5, max = 99.5)),
                       column(2, numericInput("level.intensity.h", "Level high:", 90, step=0.5, min = 0.5, max = 99.5)),
                       column(2, numericInput("level.intensity.v", "Level very high:", 97.5, step=0.5, min = 0.5, max = 99.5)),                      
@@ -422,14 +374,114 @@ shinyUI(dashboardPage(skin = "blue",
   ###################################
   
   column(3,
-        box(title="Graph text", status = "primary", solidHeader = TRUE, width = 7,  background = "black",
-            collapsible = FALSE,
+        box(title="Graph text", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
+            collapsible = TRUE, collapsed=TRUE,
             textInput("textMain", label = h5("Main title"), 
                       value = "Main title"),
             textInput("textY", label = h5("Y-axis"), 
            value = "Y-axis"),
-           textInput("textX", label = h5("X-axis"), 
-           value = "X-axis")))
+           textInput("textX", label = h5("X-axis"),value = "X-axis")
+           ),
+        box(title="Graph options", status = "primary", solidHeader = TRUE, width = 12,  background = "black",
+            collapsible = TRUE, collapsed=TRUE,
+            #fluidRow(column(2, 
+                            selectInput("colObservedLines",
+                                           h5("Observed (line)",
+                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                              bsButton("q9", label = "", 
+                                                       icon = icon("question"), 
+                                                       style = "info", size = "extra-small")), 
+                                        #width = '130px',
+                                           choices = sapply(colors(), function(x) list(x)),
+                                           size=1,
+                                           selectize = FALSE,
+                                           selected = "black"),
+            selectInput("colObservedPoints",
+                        h5("Observed (points)",
+                           tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                           bsButton("q9", label = "", 
+                                    icon = icon("question"), 
+                                    style = "info", size = "extra-small")), 
+                        #width = '130px',
+                        choices = sapply(colors(), function(x) list(x)),
+                        size=1,
+                        selectize = FALSE,
+                        selected = "grey")
+                            #),column(2
+                                     ,selectInput("colEpidemicStart",
+                                           h5("Epidemic start",
+                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                              bsButton("q10", label = "", 
+                                                       icon = icon("question"), 
+                                                       style = "info", size = "extra-small")), 
+                                           #width = '130px',
+                                           choices = sapply(colors(), function(x) list(x)),
+                                           size=1,
+                                           selectize = FALSE,
+                                           selected = "red")
+                                     #),column(2
+                                              ,selectInput("colEpidemicStop",
+                                          h5("Epidemic end",
+                                             tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                             bsButton("q11", label = "", 
+                                                      icon = icon("question"), 
+                                                      style = "info", size = "extra-small")), 
+                                          #width = '130px',
+                                          choices = sapply(colors(), function(x) list(x)),
+                                          size=1,
+                                          selectize = FALSE,
+                                          selected = "green")
+                                          #),column(2
+                                                   ,selectInput("colThresholds",
+                                          h5("Thresholds palette",
+                                             tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                             bsButton("q111", label = "", 
+                                                      icon = icon("question"), 
+                                                      style = "info", size = "extra-small")), 
+                                          #width = '130px',
+                                          choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
+                                          size=1,
+                                          selectize = FALSE,
+                                          selected = "Blues")
+                                          #),column(2
+                                                   ,selectInput("colseries",
+                                          h5("Series palette",
+                                             tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                             bsButton("q111b", label = "", 
+                                                      icon = icon("question"), 
+                                                      style = "info", size = "extra-small")), 
+                                          #width = '130px',
+                                          choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
+                                          size=1,
+                                          selectize = FALSE,
+                                          selected = "Accent")
+            ,selectInput("colEpidemic",
+                         h5("Timing palette",
+                            tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                            bsButton("q111b", label = "", 
+                                     icon = icon("question"), 
+                                     style = "info", size = "extra-small")), 
+                         #width = '130px',
+                         choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
+                         size=1,
+                         selectize = FALSE,
+                         selected = "Accent")
+            #),column(2
+                     ,selectInput("colTransparency",
+                                          h5("Transparency",
+                                             tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                                             bsButton("q112", label = "", 
+                                                      icon = icon("question"), 
+                                                      style = "info", size = "extra-small")), 
+                                  #width = '130px',
+                                          choices = sapply(c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), function(x) list(x)),
+                                          size=1,
+                                          selectize = FALSE,
+                                          selected = 1)
+            #))
+                        
+            )
+        )
   ))))
   )
 
