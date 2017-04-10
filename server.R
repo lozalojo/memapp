@@ -27,6 +27,7 @@ data_read <- reactive({
 })
 
 data_model <- reactive({
+  cat("data_model function\n")
   datfile <- data_read()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
@@ -57,7 +58,7 @@ data_model <- reactive({
   #   as.numeric(input$type.other),
   #   as.numeric(input$method),
   #   as.numeric(input$param),
-  #   as.numeric(input$n.max),sep="\n"))
+  #   as.numeric(input$n.max),sep="\n"),"\n")
   
   epi <- memmodel(datfile[selectedcolumns],
                   i.seasons=NA,
@@ -76,6 +77,7 @@ data_model <- reactive({
 
 
 data_good <- reactive({
+  cat("data_good function\n")
   datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
@@ -85,15 +87,23 @@ data_good <- reactive({
                                   i.seasons=input$SelectMaximum)
   if (length(selectedcolumns)<3){return()}
   
-  good<-memgoodness(datfile[,selectedcolumns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter),i.graph=F, i.seasons=NA, i.min.seasons = length(selectedcolumns))
+  good<-memgoodness(datfile[,selectedcolumns],i.graph=F, i.min.seasons = length(selectedcolumns),
+                    i.seasons=NA,
+                    i.type.threshold=as.numeric(input$type.threshold),
+                    i.tails.threshold=as.numeric(input$tails),
+                    i.type.intensity=as.numeric(input$type.intensity),
+                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    i.tails.intensity=as.numeric(input$tails),
+                    i.type.curve=as.numeric(input$type.curve),
+                    i.type.other=as.numeric(input$type.other),
+                    i.method=as.numeric(input$method),
+                    i.param=as.numeric(input$param),
+                    i.n.max=as.numeric(input$n.max))
   good
 })
 
 data_optim <- reactive({
+  cat("data_optim function\n")
   datfile <- data_read()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
@@ -102,13 +112,16 @@ data_optim <- reactive({
                                   i.pandemic=T,
                                   i.seasons=input$SelectMaximum)
   if (length(selectedcolumns)<3){return()}
-  roca<-roc.analysis(datfile[,selectedcolumns],
-                     i.param.values = seq(2, 3, 0.1), 
-                     i.graph.file = F,
-                     i.type.threshold=as.numeric(input$i.type.threshold),
-                     i.type.intensity=as.numeric(input$i.type.intensity), 
-                     i.seasons=NA, 
-                     i.min.seasons = length(selectedcolumns))
+  roca<-roc.analysis(datfile[,selectedcolumns], i.param.values = seq(2, 3, 0.1), i.min.seasons = length(selectedcolumns), i.graph.file = F,
+                     i.seasons=NA,
+                     i.type.threshold=as.numeric(input$type.threshold),
+                     i.tails.threshold=as.numeric(input$tails),
+                     i.type.intensity=as.numeric(input$type.intensity),
+                     i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                     i.tails.intensity=as.numeric(input$tails),
+                     i.type.curve=as.numeric(input$type.curve),
+                     i.type.other=as.numeric(input$type.other),
+                     i.n.max=as.numeric(input$n.max))
   roca
 })
 
@@ -315,8 +328,8 @@ output$tbdSeasons <- renderPlotly({
   #   epi <- memmodel(datfile[model.columns],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -354,8 +367,8 @@ output$tbdSeries_old <- renderPlot({
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+                    i.method = as.numeric(input$method),
+                    i.param = as.numeric(input$param), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
     ei.thr<-as.logical(input$intensitythr)
@@ -457,8 +470,8 @@ output$tbmSeasons <- renderPlotly({
   #   epi <- memmodel(datfile[model.columns],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -495,8 +508,8 @@ output$tbmSeries_old <- renderPlot({
   #   epi <- memmodel(datfile[model.columns],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   #   ei.thr<-as.logical(input$intensitythr)
@@ -526,8 +539,8 @@ output$tbmSeries <- renderPlotly({
   #   epi <- memmodel(datfile[model.columns],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -620,8 +633,8 @@ output$tbmMemSummary <- renderUI({
   #                     #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
   #                     i.type.threshold=as.numeric(input$i.type.threshold),
   #                     i.type.intensity=as.numeric(input$i.type.intensity),
-  #                     i.method = as.numeric(input$i.method),
-  #                     i.param = as.numeric(input$memparameter), i.seasons = NA) 
+  #                     i.method = as.numeric(input$method),
+  #                     i.param = as.numeric(input$param), i.seasons = NA) 
   
   datamodel<-data_model()
   if(is.null(datamodel)){return()}
@@ -669,8 +682,8 @@ output$tbmMemOutput <- renderPrint({
     #     #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
     #                            i.type.threshold=as.numeric(input$i.type.threshold),
     #                            i.type.intensity=as.numeric(input$i.type.intensity),
-    #                            i.method = as.numeric(input$i.method),
-    #                            i.param = as.numeric(input$memparameter), i.seasons = NA)
+    #                            i.method = as.numeric(input$method),
+    #                            i.param = as.numeric(input$param), i.seasons = NA)
         nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
                          c("",paste0("Threshold ", 
                                      roundF(nam.t$"pre.post.intervals"[1,3],2)," ", 
@@ -714,8 +727,8 @@ output$tbmMemModel <- renderPlot({
   #                   #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity),
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   datamodel<-data_model()
   if(is.null(datamodel)){return()}
   plot(datamodel)
@@ -847,6 +860,7 @@ output$tbmOptimizeSummary <- renderUI({
   if(is.null(dataoptim)){return()}
   doptim<-dataoptim$roc.data
   optim<-doptim[doptim$value==as.numeric(dataoptim$optimum["matthews"]),]
+  #print(optim)
   fluidRow(
     valueBox(roundF(optim["sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
     valueBox(roundF(optim["specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
@@ -854,7 +868,7 @@ output$tbmOptimizeSummary <- renderUI({
     valueBox(roundF(optim["negative.predictive.value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
     valueBox(roundF(optim["percent.agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
     valueBox(roundF(optim["matthews.correlation.coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
-    valueBox(roundF(input$memparameter,1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
+    valueBox(roundF(input$param,1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
     valueBox(roundF(as.numeric(dataoptim$optimum["matthews"]),1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
   )
 })
@@ -1040,8 +1054,8 @@ output$tbsSeasons <- renderPlotly({
   #   epi <- memmodel(datfile[model.columns],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -1114,8 +1128,8 @@ output$tbsSurveillanceAnimated <- renderImage({
   #   epi <- memmodel(datfile.model,
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -1212,8 +1226,8 @@ output$tbsSurveillanceWeek <- renderPlotly({
   #   epi <- memmodel(datfile.model,
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -1268,8 +1282,8 @@ output$tbsSurveillanceWeek <- renderPlotly({
 #     epi <- memmodel(datfile.model,
 #                     i.type.threshold=as.numeric(input$i.type.threshold),
 #                     i.type.intensity=as.numeric(input$i.type.intensity), 
-#                     i.method = as.numeric(input$i.method),
-#                     i.param = as.numeric(input$memparameter), i.seasons = NA)
+#                     i.method = as.numeric(input$method),
+#                     i.param = as.numeric(input$param), i.seasons = NA)
 #     e.thr<-epi$epidemic.thresholds
 #     i.thr<-epi$intensity.thresholds
 #     range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
@@ -1345,8 +1359,8 @@ output$tbvSeasons <- renderPlotly({
   #   epi <- memmodel(datfile[model.columns],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity), 
-  #                   i.method = as.numeric(input$i.method),
-  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #                   i.method = as.numeric(input$method),
+  #                   i.param = as.numeric(input$param), i.seasons = NA)
   #   e.thr<-epi$epidemic.thresholds
   #   i.thr<-epi$intensity.thresholds
   # }else{
@@ -1398,8 +1412,8 @@ output$tbvSeries_old <- renderPlot({
     epi <- memmodel(datfile[model.columns],
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+                    i.method = as.numeric(input$method),
+                    i.param = as.numeric(input$param), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
     ei.thr<-as.logical(input$intensitythr)
@@ -1483,8 +1497,8 @@ plotInput <-function(){
     epi <- memmodel(datfile.model,
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+                    i.method = as.numeric(input$method),
+                    i.param = as.numeric(input$param), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
   }
@@ -1535,8 +1549,8 @@ plotInput <-function(){
     #                                                        colnames(datfile))-1))], 
     #               i.type.threshold=as.numeric(input$i.type.threshold),
     #               i.type.intensity=as.numeric(input$i.type.intensity), 
-    #               i.method = as.numeric(input$i.method),
-    #               i.param = as.numeric(input$memparameter), i.seasons = NA)
+    #               i.method = as.numeric(input$method),
+    #               i.param = as.numeric(input$param), i.seasons = NA)
     g.plot <-
       ggplot(datfile) +
         ggtitle(input$textMain) +
@@ -1558,8 +1572,8 @@ plotInput <-function(){
     #                                                        colnames(datfile))-1))], 
     #               i.type.threshold=as.numeric(input$i.type.threshold),
     #               i.type.intensity=as.numeric(input$i.type.intensity), 
-    #               i.method = as.numeric(input$i.method),
-    #               i.param = as.numeric(input$memparameter), i.seasons = NA)
+    #               i.method = as.numeric(input$method),
+    #               i.param = as.numeric(input$param), i.seasons = NA)
     #cat("Case #3\n")
     col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
     g.plot <-
@@ -1586,8 +1600,8 @@ plotInput <-function(){
     #                                                        colnames(datfile))-1))], 
     #               i.type.threshold=as.numeric(input$i.type.threshold),
     #               i.type.intensity=as.numeric(input$i.type.intensity), 
-    #               i.method = as.numeric(input$i.method),
-    #               i.param = as.numeric(input$memparameter), i.seasons = NA)
+    #               i.method = as.numeric(input$method),
+    #               i.param = as.numeric(input$param), i.seasons = NA)
     #cat("Case #4\n")
     col.pal <- colorRampPalette(brewer.pal(5,input$colpal))(5)
     g.plot <-
@@ -1739,7 +1753,7 @@ plotSeasons <- function(i.data,
                   i.type.threshold=as.numeric(input$type.threshold),
                   i.tails.threshold=as.numeric(input$tails),
                   i.type.intensity=as.numeric(input$type.intensity),
-                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
                   i.tails.intensity=as.numeric(input$tails),
                   i.type.curve=as.numeric(input$type.curve),
                   i.type.other=as.numeric(input$type.other),
@@ -1761,7 +1775,7 @@ plotSeasons <- function(i.data,
                   i.type.threshold=as.numeric(input$type.threshold),
                   i.tails.threshold=as.numeric(input$tails),
                   i.type.intensity=as.numeric(input$type.intensity),
-                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
                   i.tails.intensity=as.numeric(input$tails),
                   i.type.curve=as.numeric(input$type.curve),
                   i.type.other=as.numeric(input$type.other),
@@ -2128,7 +2142,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
                   i.type.threshold=as.numeric(input$type.threshold),
                   i.tails.threshold=as.numeric(input$tails),
                   i.type.intensity=as.numeric(input$type.intensity),
-                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
                   i.tails.intensity=as.numeric(input$tails),
                   i.type.curve=as.numeric(input$type.curve),
                   i.type.other=as.numeric(input$type.other),
@@ -2150,7 +2164,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
                   i.type.threshold=as.numeric(input$type.threshold),
                   i.tails.threshold=as.numeric(input$tails),
                   i.type.intensity=as.numeric(input$type.intensity),
-                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
                   i.tails.intensity=as.numeric(input$tails),
                   i.type.curve=as.numeric(input$type.curve),
                   i.type.other=as.numeric(input$type.other),
@@ -2343,8 +2357,8 @@ plotSeasons.OLD <-function(){
     epi <- memmodel(datfile.model,
                     i.type.threshold=as.numeric(input$i.type.threshold),
                     i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
+                    i.method = as.numeric(input$method),
+                    i.param = as.numeric(input$param), i.seasons = NA)
     e.thr<-epi$epidemic.thresholds
     i.thr<-epi$intensity.thresholds
   }
@@ -2408,8 +2422,8 @@ plotTiming_old <-function(kol){
     #datafil <- dat3
     #for(i in input$K:input$K2){
     epi.plot <- memtiming(datfile[kol],
-                          i.method = as.numeric(input$i.method),
-                          i.param = as.numeric(input$memparameter))
+                          i.method = as.numeric(input$method),
+                          i.param = as.numeric(input$param))
     plot(epi.plot)
 }
 
@@ -2429,8 +2443,8 @@ plotSeries_old <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timin
   range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
   if (length(i.epidemic.thr)==2 & length(i.intensity.thr)==3) intensity<-c(i.epidemic.thr[1],i.intensity.thr) else intensity<-NA
   full.series.graph(datfile,
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter),
+                    i.method = as.numeric(input$method),
+                    i.param = as.numeric(input$param),
                     i.graph.file = F, 
                     i.plot.timing = i.timing, 
                     i.plot.intensity = i.threholds,
@@ -2456,8 +2470,8 @@ plotSurveillance_old <-function(){
     epi <- memmodel(datfile.model,
                 i.type.threshold=as.numeric(input$i.type.threshold),
                 i.type.intensity=as.numeric(input$i.type.intensity), 
-                i.method = as.numeric(input$i.method),
-                i.param = as.numeric(input$memparameter), i.seasons = NA)
+                i.method = as.numeric(input$method),
+                i.param = as.numeric(input$param), i.seasons = NA)
   e.thr<-epi$epidemic.thresholds
   i.thr<-epi$intensity.thresholds
   range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
