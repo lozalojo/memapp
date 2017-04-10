@@ -47,11 +47,30 @@ data_model <- reactive({
   # cat("i.seasons:->",input$SelectSeasons,"<-\n",sep="")
   # cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)<2){return()}
+  # cat(paste(
+  #   as.numeric(input$type.threshold),
+  #   as.numeric(input$tails),
+  #   as.numeric(input$type.intensity),
+  #   paste(as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,collapse="-"),
+  #   as.numeric(input$tails),
+  #   as.numeric(input$type.curve),
+  #   as.numeric(input$type.other),
+  #   as.numeric(input$method),
+  #   as.numeric(input$param),
+  #   as.numeric(input$n.max),sep="\n"))
+  
   epi <- memmodel(datfile[selectedcolumns],
-                  i.type.threshold=as.numeric(input$i.type.threshold),
-                  i.type.intensity=as.numeric(input$i.type.intensity), 
-                  i.method = as.numeric(input$i.method),
-                  i.param = as.numeric(input$memparameter), i.seasons = NA)
+                  i.seasons=NA,
+                  i.type.threshold=as.numeric(input$type.threshold),
+                  i.tails.threshold=as.numeric(input$tails),
+                  i.type.intensity=as.numeric(input$type.intensity),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                  i.tails.intensity=as.numeric(input$tails),
+                  i.type.curve=as.numeric(input$type.curve),
+                  i.type.other=as.numeric(input$type.other),
+                  i.method=as.numeric(input$method),
+                  i.param=as.numeric(input$param),
+                  i.n.max=as.numeric(input$n.max))
   epi
 })
 
@@ -165,6 +184,7 @@ observe({
   updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
   updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=rev(seasons)[1])
   updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
+  updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",weeks), selected="")
   updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
 })
 
@@ -222,8 +242,8 @@ output$tbSurveillance <- renderUI({
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbsData")),
                 #tabPanel("Plot", plotlyOutput("tbsPlot", width ="100%", height ="100%")),
-                tabPanel("Seasons", plotlyOutput("tbsSeasons", width ="100%", height ="100%")),
-                tabPanel("Timing",plotlyOutput("tbsTiming", width ="100%", height ="100%")),
+                #tabPanel("Seasons", plotlyOutput("tbsSeasons", width ="100%", height ="100%")),
+                #tabPanel("Timing",plotlyOutput("tbsTiming", width ="100%", height ="100%")),
                 #tabPanel("Surveillance",plotOutput("tbsSurveillance_old", width ="100%", height ="100%")),
                 tabPanel("Surveillance",uiOutput("tbsSurveillance"))
                 #,tabPanel("Animated",imageOutput("tbsAnimated"))
@@ -287,21 +307,29 @@ output$tbdPlot <- renderPlotly({
 output$tbdSeasons <- renderPlotly({
   datfile <- data_read()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                #i.pandemic=as.logical(input$SelectPandemic), 
-                                i.pandemic=T, 
-                                i.seasons=input$SelectMaximum)
-  if (length(model.columns)>1){
-    epi <- memmodel(datfile[model.columns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T, 
+  #                               i.seasons=input$SelectMaximum)
+  # if (length(model.columns)>1){
+  #   epi <- memmodel(datfile[model.columns],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  datamodel<-data_model()
+  if(is.null(datamodel)){
+    e.thr<-datamodel$epidemic.thresholds
+    i.thr<-datamodel$intensity.thresholds    
   }else{
-    e.thr<-NA
-    i.thr<-NA
+      e.thr<-NA
+      i.thr<-NA
   }
   datfile.plot<-datfile[!(names(datfile) %in% c("num","vecka"))]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
@@ -566,10 +594,10 @@ output$tbmTiming = renderUI({
 output$tbmMem <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Summary", uiOutput("tbmMemSummary")),
-                tabPanel("Output", verbatimTextOutput("tbmMemOutput")),
+    tabsetPanel(tabPanel("Estimators", uiOutput("tbmMemSummary")),
+                tabPanel("Detailed", verbatimTextOutput("tbmMemOutput")),
                 #tabPanel("Graph",plotOutput("tbmMemModel")),
-                tabPanel("Graph",uiOutput("tbmMemGraph"))
+                tabPanel("Graphs",uiOutput("tbmMemGraph"))
     )
 })
 
@@ -603,14 +631,14 @@ output$tbmMemSummary <- renderUI({
   #100*object$param.level
 
   fluidRow(
-    valueBox(datamodel$n.seasons, "Number of seasons", icon = icon("heartbeat"), width=3, color="yellow"),
-    valueBox(roundF(datamodel$ci.length[1,2],1), "Epidemic length", icon = icon("heartbeat"), width=3, color="green"),
-    valueBox(paste0(roundF(datamodel$ci.percent[2],1), "%"), "Epidemic percentage", icon = icon("heartbeat"), width=3, color="green"),
-    valueBox(datamodel$ci.start[2,2], "Mean start", icon = icon("heartbeat"), width=3, color="maroon"),
-    valueBox(roundF(datamodel$pre.post.intervals[1,3],1), "Epidemic threshold", icon = icon("thermometer-1"), width=3, color="aqua"),
-    valueBox(roundF(datamodel$epi.intervals[1,4],1), "Medium threshold", icon = icon("thermometer-2"), width=3, color="light-blue"),
-    valueBox(roundF(datamodel$epi.intervals[2,4],1), "High threshold", icon = icon("thermometer-3"), width=3, color="blue"),
-    valueBox(roundF(datamodel$epi.intervals[3,4],1), "Very high threshold", icon = icon("thermometer-4"), width=3, color="navy")
+    valueBox(datamodel$n.seasons, "Seasons in the model", icon = icon("heartbeat"), width=3, color="light-blue"),
+    valueBox(datamodel$ci.start[2,2], "Average epidemic start week", icon = icon("heartbeat"), width=3, color="light-blue"),
+    valueBox(roundF(datamodel$ci.length[1,2],1), "Average epidemic length", icon = icon("heartbeat"), width=3, color="light-blue"),
+    valueBox(paste0(roundF(datamodel$ci.percent[2],1), "%"), "Epidemic percentage", icon = icon("heartbeat"), width=3, color="light-blue"),
+    valueBox(roundF(datamodel$pre.post.intervals[1,3],1), "Epidemic threshold", icon = icon("thermometer-1"), width=3, color="green"),
+    valueBox(roundF(datamodel$epi.intervals[1,4],1), "Medium threshold", icon = icon("thermometer-2"), width=3, color="yellow"),
+    valueBox(roundF(datamodel$epi.intervals[2,4],1), "High threshold", icon = icon("thermometer-3"), width=3, color="orange"),
+    valueBox(roundF(datamodel$epi.intervals[3,4],1), "Very high threshold", icon = icon("thermometer-4"), width=3, color="red")
   )
 })
 
@@ -697,7 +725,7 @@ output$tbmMemGraph <- renderUI({
   if(is.null(data_read())){return()}
   else
     tabsetPanel(tabPanel("Moving epidemics", plotlyOutput("tbmMemGraphMoving", width ="100%", height ="100%")),
-                tabPanel("Typical curve", plotlyOutput("tbmMemGraphTypical", width ="100%", height ="100%"))
+                tabPanel("Average curve", plotlyOutput("tbmMemGraphTypical", width ="100%", height ="100%"))
     )
 })
 
@@ -768,8 +796,8 @@ output$tbmMemGraphTypical <- renderPlotly({
 output$tbmGoodness <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Summary", uiOutput("tbmGoodnessSummary")),
-                tabPanel("By season", DT::dataTableOutput("tbmGoodnessDetail"))
+    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessSummary")),
+                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessDetail"))
     )
 })
 
@@ -808,9 +836,9 @@ output$tbmGoodnessDetail<-DT::renderDataTable({
 output$tbmOptimize <- renderUI({
   if(is.null(data_read())){return()}
   else
-    tabsetPanel(tabPanel("Summary", uiOutput("tbmOptimizeSummary")),
-                tabPanel("Detail", DT::dataTableOutput("tbmOptimizeDetail")),
-                tabPanel("Graph",plotOutput("tbmOptimizeGraph"))
+    tabsetPanel(tabPanel("Indicators", uiOutput("tbmOptimizeSummary")),
+                tabPanel("Detailed", DT::dataTableOutput("tbmOptimizeDetail")),
+                tabPanel("Graphs",plotOutput("tbmOptimizeGraph"))
     )
 })
 
@@ -1004,22 +1032,32 @@ output$tbsPlot <- renderPlotly({
 output$tbsSeasons <- renderPlotly({
   datfile <- data_read()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                #i.pandemic=as.logical(input$SelectPandemic), 
-                                i.pandemic=T,
-                                i.seasons=input$SelectMaximum)
-  if (length(model.columns)>1){
-    epi <- memmodel(datfile[model.columns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T,
+  #                               i.seasons=input$SelectMaximum)
+  # if (length(model.columns)>1){
+  #   epi <- memmodel(datfile[model.columns],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  
+  datamodel<-data_model()
+  if(is.null(datamodel)){
+    e.thr<-datamodel$epidemic.thresholds
+    i.thr<-datamodel$intensity.thresholds    
   }else{
     e.thr<-NA
     i.thr<-NA
   }
+  
   selectedcolumns<-select.columns(i.names=names(datfile), 
                                   i.from=input$SelectSurveillance, 
                                   i.to=input$SelectSurveillance, 
@@ -1064,25 +1102,35 @@ output$tbsSurveillanceAnimated <- renderImage({
   if(is.null(datfile)){return()}
   if(!(input$SelectSurveillance %in% names(datfile))){return()}
   if(!(input$SelectSurveillanceWeek %in% rownames(datfile))){return()}
+  if (is.null(input$SelectSurveillanceForceEpidemic)) force.start<-NA else force.start<-input$SelectSurveillanceForceEpidemic
   
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  if (length(selectedcolumns)>1){
-    datfile.model<-datfile[selectedcolumns]
-    epi <- memmodel(datfile.model,
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
+  # selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude, i.include="", 
+  #                                 #i.pandemic=as.logical(input$SelectPandemic), 
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
+  # if (length(selectedcolumns)>1){
+  #   datfile.model<-datfile[selectedcolumns]
+  #   epi <- memmodel(datfile.model,
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  datamodel<-data_model()
+  if(is.null(datamodel)){
+    e.thr<-datamodel$epidemic.thresholds
+    i.thr<-datamodel$intensity.thresholds    
   }else{
     e.thr<-NA
     i.thr<-NA
   }
+  
   datfile.plot<-datfile[input$SelectSurveillance]
   
   max.y<-max(datfile.plot,na.rm=T)
@@ -1125,7 +1173,8 @@ output$tbsSurveillanceAnimated <- renderImage({
      p<-plotSurveillance(i.data=datfile.plot, i.week.report=rownames(datfile)[i], i.pre.epidemic=as.logical(input$preepidemicthr),
                              i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
                              i.intensity.thr = i.thr, i.range.y=c(0,max.y),
-                          i.end=as.logical(input$postepidemicthr))
+                          i.end=as.logical(input$postepidemicthr),
+                         i.force.start = force.start)
      imgfile<-paste(tempdir(),"/animatedplot_",i,".png",sep="")
      ggsave(imgfile, plot=p$plot, width=8, height=6, dpi=150)
      if (i==1) imgfilem<-image_read(imgfile) else imgfilem<-c(imgfilem,image_read(imgfile))
@@ -1151,20 +1200,31 @@ output$tbsSurveillanceWeek <- renderPlotly({
   datfile <- data_read()
   if(is.null(datfile)){return()}
   if(!(input$SelectSurveillance %in% names(datfile))){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  if (length(selectedcolumns)>1){
-    datfile.model<-datfile[selectedcolumns]
-    epi <- memmodel(datfile.model,
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
+  if (is.null(input$SelectSurveillanceForceEpidemic)) force.start<-NA else force.start<-input$SelectSurveillanceForceEpidemic
+  
+  # selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
+  #                                 i.exclude=input$SelectExclude, i.include="", 
+  #                                 #i.pandemic=as.logical(input$SelectPandemic), 
+  #                                 i.pandemic=T,
+  #                                 i.seasons=input$SelectMaximum)
+  # if (length(selectedcolumns)>1){
+  #   datfile.model<-datfile[selectedcolumns]
+  #   epi <- memmodel(datfile.model,
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  
+  datamodel<-data_model()
+  if(is.null(datamodel)){
+    e.thr<-datamodel$epidemic.thresholds
+    i.thr<-datamodel$intensity.thresholds    
   }else{
     e.thr<-NA
     i.thr<-NA
@@ -1175,7 +1235,8 @@ output$tbsSurveillanceWeek <- renderPlotly({
   p <- plotSurveillance(i.data=datfile.plot, i.week.report=input$SelectSurveillanceWeek, i.pre.epidemic=as.logical(input$preepidemicthr),
                          i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
                          i.intensity.thr = i.thr,
-                         i.end=as.logical(input$postepidemicthr))
+                         i.end=as.logical(input$postepidemicthr),
+                        i.force.start = force.start)
   
   z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
@@ -1276,22 +1337,32 @@ output$tbvPlot <- renderPlotly({
 output$tbvSeasons <- renderPlotly({
   datfile <- data_read()
   if(is.null(datfile)){return()}
-  model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                #i.pandemic=as.logical(input$SelectPandemic), 
-                                i.pandemic=T,
-                                i.seasons=input$SelectMaximum)
-  if (length(model.columns)>1){
-    epi <- memmodel(datfile[model.columns],
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$i.method),
-                    i.param = as.numeric(input$memparameter), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
+  # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
+  #                               #i.pandemic=as.logical(input$SelectPandemic), 
+  #                               i.pandemic=T,
+  #                               i.seasons=input$SelectMaximum)
+  # if (length(model.columns)>1){
+  #   epi <- memmodel(datfile[model.columns],
+  #                   i.type.threshold=as.numeric(input$i.type.threshold),
+  #                   i.type.intensity=as.numeric(input$i.type.intensity), 
+  #                   i.method = as.numeric(input$i.method),
+  #                   i.param = as.numeric(input$memparameter), i.seasons = NA)
+  #   e.thr<-epi$epidemic.thresholds
+  #   i.thr<-epi$intensity.thresholds
+  # }else{
+  #   e.thr<-NA
+  #   i.thr<-NA
+  # }
+  datamodel<-data_model()
+  if(is.null(datamodel)){
+    e.thr<-datamodel$epidemic.thresholds
+    i.thr<-datamodel$intensity.thresholds    
   }else{
     e.thr<-NA
     i.thr<-NA
   }
+  
+  
   if (is.null(input$SelectSeasons)) {return()}
   toinclude<-input$SelectSeasons
   selectedcolumns<-select.columns(i.names=names(datfile), 
@@ -1663,7 +1734,18 @@ plotSeasons <- function(i.data,
     i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
   }
   if (NCOL(i.data)>1){
-    epi<-memmodel(i.data, i.seasons=NA,...)
+    epi<-memmodel(i.data,
+                  i.seasons=NA,
+                  i.type.threshold=as.numeric(input$type.threshold),
+                  i.tails.threshold=as.numeric(input$tails),
+                  i.type.intensity=as.numeric(input$type.intensity),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.tails.intensity=as.numeric(input$tails),
+                  i.type.curve=as.numeric(input$type.curve),
+                  i.type.other=as.numeric(input$type.other),
+                  i.method=as.numeric(input$method),
+                  i.param=as.numeric(input$param),
+                  i.n.max=as.numeric(input$n.max),...)
     epidata<-epi$data
     epiindex<-as.data.frame(epi$season.indexes[,,1])
     rownames(epiindex)<-rownames(i.data)
@@ -1674,7 +1756,18 @@ plotSeasons <- function(i.data,
   }else{
     # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
     # the timing (which would be extracted with memtiming also)
-    epi<-memmodel(cbind(i.data,i.data), i.seasons=NA,...)
+    epi<-memmodel(cbind(i.data,i.data),
+                  i.seasons=NA,
+                  i.type.threshold=as.numeric(input$type.threshold),
+                  i.tails.threshold=as.numeric(input$tails),
+                  i.type.intensity=as.numeric(input$type.intensity),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.tails.intensity=as.numeric(input$tails),
+                  i.type.curve=as.numeric(input$type.curve),
+                  i.type.other=as.numeric(input$type.other),
+                  i.method=as.numeric(input$method),
+                  i.param=as.numeric(input$param),
+                  i.n.max=as.numeric(input$n.max),...)
     epidata<-epi$data[1]
     epiindex<-as.data.frame(epi$season.indexes[,1,1])
     rownames(epiindex)<-rownames(i.data)
@@ -2030,7 +2123,18 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
     i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
   }
   if (NCOL(i.data)>1){
-    epi<-memmodel(i.data, i.seasons=NA,...)
+    epi<-memmodel(i.data,
+                  i.seasons=NA,
+                  i.type.threshold=as.numeric(input$type.threshold),
+                  i.tails.threshold=as.numeric(input$tails),
+                  i.type.intensity=as.numeric(input$type.intensity),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.tails.intensity=as.numeric(input$tails),
+                  i.type.curve=as.numeric(input$type.curve),
+                  i.type.other=as.numeric(input$type.other),
+                  i.method=as.numeric(input$method),
+                  i.param=as.numeric(input$param),
+                  i.n.max=as.numeric(input$n.max),...)
     epidata<-epi$data
     epiindex<-as.data.frame(epi$season.indexes[,,1])
     rownames(epiindex)<-rownames(i.data)
@@ -2041,7 +2145,18 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
   }else{
     # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
     # the timing (which would be extracted with memtiming also)
-    epi<-memmodel(cbind(i.data,i.data), i.seasons=NA,...)
+    epi<-memmodel(cbind(i.data,i.data),
+                  i.seasons=NA,
+                  i.type.threshold=as.numeric(input$type.threshold),
+                  i.tails.threshold=as.numeric(input$tails),
+                  i.type.intensity=as.numeric(input$type.intensity),
+                  i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v)),
+                  i.tails.intensity=as.numeric(input$tails),
+                  i.type.curve=as.numeric(input$type.curve),
+                  i.type.other=as.numeric(input$type.other),
+                  i.method=as.numeric(input$method),
+                  i.param=as.numeric(input$param),
+                  i.n.max=as.numeric(input$n.max),...)
     epidata<-epi$data[1]
     epiindex<-as.data.frame(epi$season.indexes[,1,1])
     rownames(epiindex)<-rownames(i.data)
