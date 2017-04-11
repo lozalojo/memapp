@@ -392,10 +392,10 @@ shinyUI(dashboardPage(skin = "blue",
                                                        icon = icon("question"), 
                                                        style = "info", size = "extra-small")), 
                                         #width = '130px',
-                                           choices = sapply(colors(), function(x) list(x)),
+                                           choices = c("default",colors()),
                                            size=1,
                                            selectize = FALSE,
-                                           selected = "black"),
+                                           selected = "default"),
             selectInput("colObservedPoints",
                         h5("Observed (points)",
                            tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
@@ -403,10 +403,10 @@ shinyUI(dashboardPage(skin = "blue",
                                     icon = icon("question"), 
                                     style = "info", size = "extra-small")), 
                         #width = '130px',
-                        choices = sapply(colors(), function(x) list(x)),
+                        choices = c("default",colors()),
                         size=1,
                         selectize = FALSE,
-                        selected = "grey")
+                        selected = "default")
                             #),column(2
                                      ,selectInput("colEpidemicStart",
                                            h5("Epidemic start",
@@ -415,10 +415,10 @@ shinyUI(dashboardPage(skin = "blue",
                                                        icon = icon("question"), 
                                                        style = "info", size = "extra-small")), 
                                            #width = '130px',
-                                           choices = sapply(colors(), function(x) list(x)),
+                                           choices = c("default",colors()),
                                            size=1,
                                            selectize = FALSE,
-                                           selected = "red")
+                                           selected = "default")
                                      #),column(2
                                               ,selectInput("colEpidemicStop",
                                           h5("Epidemic end",
@@ -427,10 +427,10 @@ shinyUI(dashboardPage(skin = "blue",
                                                       icon = icon("question"), 
                                                       style = "info", size = "extra-small")), 
                                           #width = '130px',
-                                          choices = sapply(colors(), function(x) list(x)),
+                                          choices = c("default",colors()),
                                           size=1,
                                           selectize = FALSE,
-                                          selected = "green")
+                                          selected = "default")
                                           #),column(2
                                                    ,selectInput("colThresholds",
                                           h5("Thresholds palette",
@@ -439,22 +439,22 @@ shinyUI(dashboardPage(skin = "blue",
                                                       icon = icon("question"), 
                                                       style = "info", size = "extra-small")), 
                                           #width = '130px',
-                                          choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
+                                          choices = c("default",rownames(brewer.pal.info)),
                                           size=1,
                                           selectize = FALSE,
-                                          selected = "Blues")
+                                          selected = "default")
                                           #),column(2
-                                                   ,selectInput("colseries",
+                                                   ,selectInput("colSeries",
                                           h5("Series palette",
                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                              bsButton("q111b", label = "", 
                                                       icon = icon("question"), 
                                                       style = "info", size = "extra-small")), 
                                           #width = '130px',
-                                          choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
+                                          choices = c("default",rownames(brewer.pal.info)),
                                           size=1,
                                           selectize = FALSE,
-                                          selected = "Accent")
+                                          selected = "default")
             ,selectInput("colEpidemic",
                          h5("Timing palette",
                             tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
@@ -462,22 +462,22 @@ shinyUI(dashboardPage(skin = "blue",
                                      icon = icon("question"), 
                                      style = "info", size = "extra-small")), 
                          #width = '130px',
-                         choices = sapply(rownames(brewer.pal.info), function(x) list(x)),
+                         choices = c("default",rownames(brewer.pal.info)),
                          size=1,
                          selectize = FALSE,
-                         selected = "Accent")
+                         selected = "default")
             #),column(2
-                     ,selectInput("colTransparency",
+                     ,numericInput("colTransparency",
                                           h5("Transparency",
                                              tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
                                              bsButton("q112", label = "", 
                                                       icon = icon("question"), 
                                                       style = "info", size = "extra-small")), 
                                   #width = '130px',
-                                          choices = sapply(c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1), function(x) list(x)),
-                                          size=1,
-                                          selectize = FALSE,
-                                          selected = 1)
+                                  1,
+                                  step=0.1,
+                                  min=0,
+                                  max=1)
             #))
                         
             )

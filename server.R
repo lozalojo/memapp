@@ -75,7 +75,6 @@ data_model <- reactive({
   epi
 })
 
-
 data_good <- reactive({
   # cat("data_good function\n")
   datfile <- data_read()
@@ -308,15 +307,6 @@ output$tbdData <- DT::renderDataTable({
 },
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
-output$tbdPlot <- renderPlotly({
-  datfile <- data_read()
-  p <- plotInput()
-  z <- plotly_build(p)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
-})
-
 output$tbdSeasons <- renderPlotly({
   datfile <- data_read()
   if(is.null(datfile)){return()}
@@ -449,15 +439,6 @@ output$tbmData <- DT::renderDataTable({
   roundF(datatoshow,2)
 },
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
-
-output$tbmPlot <- renderPlotly({
-  datfile <- data_read()
-  p <- plotInput()
-  z <- plotly_build(p)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
-})
 
 output$tbmSeasons <- renderPlotly({
   # datfile <- data_read()
@@ -753,11 +734,14 @@ output$tbmMemGraphMoving <- renderPlotly({
   datfile.plot$Typical<-datamodel$typ.curve[,2]
   p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
   # I add the vertical lines that mark the average start and end
+  
+  colors.palette<-generate_palette()
+  
   p0<-p$plot +
     geom_vline(xintercept = datamodel$ci.start[1,2]-0.5,
-               col=c("#FF0000"), linetype="longdash", size=0.5) +
+               col=colors.palette$colEpidemicStart, linetype="longdash", size=0.5) +
     geom_vline(xintercept = datamodel$ci.start[1,2]+datamodel$mean.length-1+0.5,
-               col=c("#40FF40"), linetype="longdash", size=0.5)
+               col=colors.palette$colEpidemicStop, linetype="longdash", size=0.5)
   z <- ggplotly(p0, width = 800, height = 600)
   # Typical curve, more width and dot stype
   z$x$data[[NCOL(datfile.plot)]]$line$width<-2*z$x$data[[NCOL(datfile.plot)]]$line$width
@@ -851,7 +835,7 @@ output$tbmOptimize <- renderUI({
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmOptimizeSummary")),
                 tabPanel("Detailed", DT::dataTableOutput("tbmOptimizeDetail")),
-                tabPanel("Graphs",plotOutput("tbmOptimizeGraph"))
+                tabPanel("Graphs",plotlyOutput("tbmOptimizeGraph"))
     )
 })
 
@@ -913,93 +897,122 @@ output$tbmOptimizeDetail<-DT::renderDataTable({
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE),
 rownames= FALSE)
 
-output$tbmOptimizeGraph<- renderPlot({
+output$tbmOptimizeGraph<- renderPlotly({
 
   dataoptim <- data_optim()
   if(is.null(dataoptim)){return()}
   
-  resultados<-dataoptim$roc.data
-  i.graph.title<-""
-  i.graph.subtitle<-""
+  dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient"))
+  names(dgraf)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+  dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
   
-  colores<-c("#EBEAEA","#5B9BD5","#ED7D31")
+  colors.palette<-generate_palette(NCOL(dgraf)-1)
   
-  opar<-par(mar=c(5,3,3,3)+0.1,mgp=c(3,0.5,0),xpd=T,mfrow=c(2,2))
+  axis.x.range.original <- range(dgraf$Parameter)
+  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 10, seq(0.1,10,0.1),T,F)
+  axis.x.range <- axis.x.otick$range
+  axis.x.ticks <- axis.x.otick$tickmarks
+  axis.x.labels <- axis.x.otick$tickmarks
   
-  if (any(!is.na(resultados$sensitivity)) & any(!is.na(resultados$specificity))){
-    d.x<-resultados$value
-    d.y<-cbind(resultados$sensitivity,resultados$specificity)
-    etiquetas<-c("Sensitivity","Specificity")
-    otick<-optimal.tickmarks(0,1,10)
-    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
-    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
-    points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
-    points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
-    axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
-    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
-    mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
-    mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
-    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
-    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
-    legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
-    
-  }
+  axis.y.range.original <- c(0,1)
+  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+  axis.y.range <- axis.y.otick$range
+  axis.y.ticks <- axis.y.otick$tickmarks
+  axis.y.labels <- axis.y.otick$tickmarks
   
-  if (any(!is.na(resultados$positive.predictive.value)) & any(!is.na(resultados$negative.predictive.value))){
-    
-    d.x<-resultados$value
-    d.y<-cbind(resultados$positive.predictive.value,resultados$negative.predictive.value)
-    etiquetas<-c("Positive predictive value","Negative predictive value")
-    otick<-optimal.tickmarks(0,1,10)
-    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
-    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
-    points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
-    points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
-    axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
-    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
-    mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
-    mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
-    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
-    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
-    legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
-  }
+  p<-ggplot(dgrafgg, aes(x=Parameter,y=Value, color=Indicator)) +
+    geom_line() +
+    geom_point() + 
+    scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+    scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+    scale_color_manual(values=colors.palette$colSeries) +
+    labs(title = input$textMain, x = input$textX, y = input$textY) + 
+    ggthemes::theme_few()
+  z<-ggplotly(p, width = 800, height = 600)
+  z
   
-  if (any(!is.na(resultados$percent.agreement)) & any(!is.na(resultados$matthews.correlation.coefficient))){
-    
-    d.x<-resultados$value
-    d.y<-cbind(resultados$percent.agreement,resultados$matthews.correlation.coefficient)
-    etiquetas<-c("Percent agreement","Matthews correlation coefficient")
-    otick<-optimal.tickmarks(0,1,10)
-    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
-    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
-    points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
-    points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
-    axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
-    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
-    mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
-    mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
-    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
-    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
-    legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
-  }
-  
-  if (any(!is.na(resultados$specificity)) & any(!is.na(resultados$sensitivity))){
-    d.x<-1-resultados$specificity
-    d.y<-resultados$sensitivity[order(d.x)]
-    d.x<-d.x[order(d.x)]
-    otick<-optimal.tickmarks(0,1,10)
-    range.x<-c(otick$range[1],otick$range[2]+otick$by/2)
-    range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
-    matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,xlim=range.x,ylim=range.y,main=i.graph.title)
-    points(d.x,d.y,pch=19,type="p",col=colores[2],cex=0.5)
-    axis(1,at=otick$tickmarks,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
-    axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
-    mtext(1,text="1 - specificity",line=1.3,cex=0.8,col="#000040")
-    mtext(2,text="Sensitivity",line=1.3,cex=0.8,col="#000040")
-    mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
-    mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
-  }
-  par(opar)
+  # resultados<-dataoptim$roc.data
+  # i.graph.title<-""
+  # i.graph.subtitle<-""
+  # 
+  # colores<-c("#EBEAEA","#5B9BD5","#ED7D31")
+  # 
+  # opar<-par(mar=c(5,3,3,3)+0.1,mgp=c(3,0.5,0),xpd=T,mfrow=c(2,2))
+  # 
+  # if (any(!is.na(resultados$sensitivity)) & any(!is.na(resultados$specificity))){
+  #   d.x<-resultados$value
+  #   d.y<-cbind(resultados$sensitivity,resultados$specificity)
+  #   etiquetas<-c("Sensitivity","Specificity")
+  #   otick<-optimal.tickmarks(0,1,10)
+  #   range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+  #   matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
+  #   points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
+  #   points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
+  #   axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+  #   axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+  #   mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
+  #   mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
+  #   mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+  #   mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+  #   legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
+  #   
+  # }
+  # 
+  # if (any(!is.na(resultados$positive.predictive.value)) & any(!is.na(resultados$negative.predictive.value))){
+  #   
+  #   d.x<-resultados$value
+  #   d.y<-cbind(resultados$positive.predictive.value,resultados$negative.predictive.value)
+  #   etiquetas<-c("Positive predictive value","Negative predictive value")
+  #   otick<-optimal.tickmarks(0,1,10)
+  #   range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+  #   matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
+  #   points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
+  #   points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
+  #   axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+  #   axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+  #   mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
+  #   mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
+  #   mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+  #   mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+  #   legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
+  # }
+  # 
+  # if (any(!is.na(resultados$percent.agreement)) & any(!is.na(resultados$matthews.correlation.coefficient))){
+  #   
+  #   d.x<-resultados$value
+  #   d.y<-cbind(resultados$percent.agreement,resultados$matthews.correlation.coefficient)
+  #   etiquetas<-c("Percent agreement","Matthews correlation coefficient")
+  #   otick<-optimal.tickmarks(0,1,10)
+  #   range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+  #   matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,ylim=range.y,main=i.graph.title)
+  #   points(d.x,d.y[,1],pch=19,type="p",col=colores[2],cex=0.5)
+  #   points(d.x,d.y[,2],pch=19,type="p",col=colores[3],cex=0.5)
+  #   axis(1,at=d.x,labels=d.x,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+  #   axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+  #   mtext(1,text="Parameter",line=1.3,cex=0.8,col="#000040")
+  #   mtext(2,text="Value",line=1.3,cex=0.8,col="#000040")
+  #   mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+  #   mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+  #   legend(x="topright",y=NULL,inset=c(0,-0.05),xjust=0,legend=etiquetas,bty="n",lty=c(1,1),lwd=c(1,1),col=colores[c(1,1)],pch=c(21,21),pt.bg=colores[c(2,3)],cex=1,x.intersp=0.5,y.intersp=0.7,text.col="#000000",ncol=1)
+  # }
+  # 
+  # if (any(!is.na(resultados$specificity)) & any(!is.na(resultados$sensitivity))){
+  #   d.x<-1-resultados$specificity
+  #   d.y<-resultados$sensitivity[order(d.x)]
+  #   d.x<-d.x[order(d.x)]
+  #   otick<-optimal.tickmarks(0,1,10)
+  #   range.x<-c(otick$range[1],otick$range[2]+otick$by/2)
+  #   range.y<-c(otick$range[1],otick$range[2]+otick$by/2)
+  #   matplot(d.x,d.y,type="l",lty=rep(1,2),lwd=rep(1,2),col=colores[c(1,1)],xlab="",ylab="",axes=F,xlim=range.x,ylim=range.y,main=i.graph.title)
+  #   points(d.x,d.y,pch=19,type="p",col=colores[2],cex=0.5)
+  #   axis(1,at=otick$tickmarks,cex.axis=0.7,col.axis="#404040",col="#C0C0C0")
+  #   axis(2,at=otick$tickmarks,lwd=1,cex.axis=0.6,col.axis="#404040",col="#C0C0C0")
+  #   mtext(1,text="1 - specificity",line=1.3,cex=0.8,col="#000040")
+  #   mtext(2,text="Sensitivity",line=1.3,cex=0.8,col="#000040")
+  #   mtext(3,text=i.graph.subtitle,cex=0.8,col="#000040")
+  #   mtext(4,text=paste("mem R library - Jos",rawToChar(as.raw(233))," E. Lozano - https://github.com/lozalojo/mem",sep=""),line=0.75,cex=0.6,col="#404040")
+  # }
+  # par(opar)
   
   
 })
@@ -1033,15 +1046,6 @@ output$tbsData <- DT::renderDataTable({
   roundF(datatoshow,2)
 },
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
-
-output$tbsPlot <- renderPlotly({
-  datfile <- data_read()
-  p <- plotInput()
-  z <- plotly_build(p)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
-})
 
 output$tbsSeasons <- renderPlotly({
   datfile <- data_read()
@@ -1137,7 +1141,7 @@ output$tbsSurveillanceAnimated <- renderImage({
   #   i.thr<-NA
   # }
   datamodel<-data_model()
-  if(is.null(datamodel)){
+  if(!is.null(datamodel)){
     e.thr<-datamodel$epidemic.thresholds
     i.thr<-datamodel$intensity.thresholds    
   }else{
@@ -1236,7 +1240,7 @@ output$tbsSurveillanceWeek <- renderPlotly({
   # }
   
   datamodel<-data_model()
-  if(is.null(datamodel)){
+  if(!is.null(datamodel)){
     e.thr<-datamodel$epidemic.thresholds
     i.thr<-datamodel$intensity.thresholds    
   }else{
@@ -1246,10 +1250,25 @@ output$tbsSurveillanceWeek <- renderPlotly({
   
   datfile.plot<-datfile[input$SelectSurveillance]
   
-  p <- plotSurveillance(i.data=datfile.plot, i.week.report=input$SelectSurveillanceWeek, i.pre.epidemic=as.logical(input$preepidemicthr),
-                         i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr = e.thr, i.intensity = as.logical(input$intensitythr),
-                         i.intensity.thr = i.thr,
-                         i.end=as.logical(input$postepidemicthr),
+  cat(paste(input$SelectSurveillanceWeek,
+      as.logical(input$preepidemicthr),
+      as.logical(input$postepidemicthr),
+      e.thr,
+      as.logical(input$intensitythr),
+      i.thr,
+      as.logical(input$preepidemicthr),
+      as.logical(input$postepidemicthr),
+      force.start,sep="\n"),"\n")
+  
+  p <- plotSurveillance(i.data=datfile.plot, 
+                        i.week.report=input$SelectSurveillanceWeek, 
+                        i.pre.epidemic=as.logical(input$preepidemicthr),
+                        i.post.epidemic=as.logical(input$postepidemicthr), 
+                        i.epidemic.thr = e.thr, 
+                        i.intensity = as.logical(input$intensitythr),
+                        i.intensity.thr = i.thr,
+                        i.start=as.logical(input$preepidemicthr),
+                        i.end=as.logical(input$postepidemicthr),
                         i.force.start = force.start)
   
   z <- ggplotly(p$plot, width = 800, height = 600)
@@ -1338,15 +1357,6 @@ output$tbvData <- DT::renderDataTable({
   roundF(datatoshow,2)
 },
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
-
-output$tbvPlot <- renderPlotly({
-  datfile <- data_read()
-  p <- plotInput()
-  z <- plotly_build(p)
-  for(j in 1:length(z$x$data)){
-    z$x$data[[j]]$text <- paste(z$x$data[[j]]$name,"Y:", roundF(z$x$data[[j]]$y,1),"\nWeek:", datfile$vecka)}
-  z
-})
 
 output$tbvSeasons <- renderPlotly({
   datfile <- data_read()
@@ -1476,250 +1486,6 @@ output$tbvTiming = renderUI({
   
 })
 
-
-
-plotInput <-function(){
-  # datfile <- data_read()
-  # dat3 <- datfile
-  # datafil <- dat3
-  
-  datfile <- data_read()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  datfile.model<-datfile[selectedcolumns]
-  datfile.seasons<-datfile[input$SelectSeasons]
-
-  if (NCOL(datfile.model)>1){
-    epi <- memmodel(datfile.model,
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$method),
-                    i.param = as.numeric(input$param), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
-  }
-
-  # Axis format for all the graphs
-  # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
-  axis.x.range.original <- c(min(datfile$num),max(datfile$num))
-  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2],T,T)  
-  axis.x.range <- axis.x.otick$range
-  axis.x.values <- as.numeric(datfile$num)
-  axis.x.ticks <- axis.x.otick$tickmarks
-  axis.x.labels <- rownames(datfile)[axis.x.otick$tickmarks]
-  # Same, for 10 tickmarks in the y-axis
-  axis.y.range.original <- c(0,1.05*max(cbind(datfile.model, datfile.seasons), na.rm=T))
-  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-  axis.y.range <- axis.y.otick$range
-  axis.y.ticks <- axis.y.otick$tickmarks
-  axis.y.labels <- axis.y.otick$tickmarks
-  
-  #cat(paste(axis.y.ticks,collapse=","),"\n",sep="")
-  #########Graf med observerade data
-  
-  # CASE 1: if there are no 2 seasons to calculate thresholds AND addmoreplots=NOT
-  # OR
-  # addintensity=NOT AND addthreshold=NOT and addmoreplots=NOT
-  if(NCOL(datfile.model)<2 & is.null(input$SelectSeasons)|(input$preepidemicthr=="FALSE" & is.null(input$SelectSeasons) & input$intensitythr=="FALSE"))
-  {
-    #cat("Case #1\n")
-    g.plot <- 
-      ggplot(datfile) +
-      #geom_line(aes(x=as.numeric(rownames(dat3)), y=as.numeric(dat3[,input$K]), group=1, color=input$K)) +
-        ggtitle(input$textMain) +
-        theme(plot.title = element_text(hjust = 0.1, size=22))+
-        geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
-        labs(x=input$textX, y=input$textY, color='Season') +
-        scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
-        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
-        scale_color_manual(values="black", labels=input$SelectSurveillance)+
-        ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))
-    #start
-# CASE 2: addthreshold=YES AND 2 or more seasons AND addmoreplots=NOT and addintensity=NOT
-  }else if(input$preepidemicthr=="TRUE" & 
-           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="FALSE"){
-    #cat("Case #2\n")
-    # epi <- memmodel(datfile[,c(grep(input$K2, 
-    #                               colnames(datfile)):(grep(input$K, 
-    #                                                        colnames(datfile))-1))], 
-    #               i.type.threshold=as.numeric(input$i.type.threshold),
-    #               i.type.intensity=as.numeric(input$i.type.intensity), 
-    #               i.method = as.numeric(input$method),
-    #               i.param = as.numeric(input$param), i.seasons = NA)
-    g.plot <-
-      ggplot(datfile) +
-        ggtitle(input$textMain) +
-        theme(plot.title = element_text(hjust = 0.1, size=22))+
-        geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
-        labs(x=input$textX,y=input$textY, color='Season') +
-        scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
-        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
-        scale_color_manual(values="black", labels=input$SelectSurveillance)+
-        geom_hline(aes(yintercept=e.thr[1]), color = input$colEpidemicStart) +
-        geom_hline(aes(yintercept=e.thr[2]), color = input$colEpidemicStop) +
-        ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))
-    # CASE 3: addthreshold=NO AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
-  }else if(input$preepidemicthr=="FALSE" & 
-           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="TRUE"){
-    # epi <- memmodel(datfile[,c(grep(input$K2, 
-    #                               colnames(datfile)):(grep(input$K, 
-    #                                                        colnames(datfile))-1))], 
-    #               i.type.threshold=as.numeric(input$i.type.threshold),
-    #               i.type.intensity=as.numeric(input$i.type.intensity), 
-    #               i.method = as.numeric(input$method),
-    #               i.param = as.numeric(input$param), i.seasons = NA)
-    #cat("Case #3\n")
-    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
-    g.plot <-
-      ggplot(datfile) +
-        ggtitle(input$textMain) +
-        theme(plot.title = element_text(hjust = 0.1, size=22))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency))+
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))+
-        geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
-        labs(x=input$textX,y=input$textY, color='Season') +
-        scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
-        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
-        scale_color_manual(values="black", labels=input$SelectSurveillance)+
-        ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))
-    # CASE 4: addthreshold=YES AND 2 or more seasons AND  addmoreplots=NOT AND addintensity=YES
-  }else if(input$preepidemicthr=="TRUE" & 
-           NCOL(datfile.model)>1 & is.null(input$SelectSeasons) & input$intensitythr=="TRUE"){
-    # epi <- memmodel(datfile[,c(grep(input$K2, 
-    #                               colnames(datfile)):(grep(input$K, 
-    #                                                        colnames(datfile))-1))], 
-    #               i.type.threshold=as.numeric(input$i.type.threshold),
-    #               i.type.intensity=as.numeric(input$i.type.intensity), 
-    #               i.method = as.numeric(input$method),
-    #               i.param = as.numeric(input$param), i.seasons = NA)
-    #cat("Case #4\n")
-    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
-    g.plot <-
-      ggplot(datfile) +
-      ggtitle(input$textMain) +
-      theme(plot.title = element_text(hjust = 0.1, size=22))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency))+
-      annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))+
-      geom_line(aes(x=datfile$num, y=datfile[,input$SelectSurveillance], group=1, color=input$SelectSurveillance)) +
-      labs(x=input$textX,y=input$textY, color='Season') +
-      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
-      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
-      scale_color_manual(values="black", input$SelectSurveillance)+
-      geom_hline(aes(yintercept=e.thr[1]), color = input$colEpidemicStart) +
-      geom_hline(aes(yintercept=e.thr[2]), color = input$colMEMstop) +
-      #scale_color_manual(values="blue", labels=roundF(i.thr[1]))+
-      ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))
-# Condition: CASE 5
-  }else{
-    # lis <- list()
-    # for(i in input$SelectSeasons){
-    #   dat3 <- datfile
-    #   dat3$tid <- rownames(dat3)
-    #   selectedxaxis = colnames(dat3)[ncol(dat3)]
-    #   selectedcolumns = colnames(dat3)[which(colnames(dat3)==i)]
-    #   widedata = subset(dat3, select = c(selectedxaxis, selectedcolumns))
-    #   longdata = melt(widedata, id.vars=selectedxaxis, variable.name='Cases', value.name='Count')
-    #   lis <- rbind(lis, longdata)
-    # }
-    #cat("Case #5\n")
-    lis<-melt(datfile, id.vars="num", measure.vars=input$SelectSeasons, variable.name='Season', value.name='Rates')     
-    g.plot <- 
-      ggplot(lis) + 
-      ggtitle(input$textMain) +
-      theme(plot.title = element_text(hjust = 0.1, size=22))+
-      geom_line(aes(x=num, y=Rates, group=Season, color=Season, linetype = Season))+ 
-      labs(x=input$textX,y=input$textY, color='Season') +
-      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels)+
-      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)+
-      ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))    
-  }
-  
-}
-
-plotSeasons_old_bands <- function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.pre.epidemic=TRUE, i.post.epidemic=TRUE, i.intensity=TRUE){
-  #cat("plotSeasons function\n")
-  if(is.null(i.data)){return()}
-  dataplot<-i.data
-  dataplot$num<-1:NROW(dataplot)
-  
-  # Axis format for all the graphs
-  # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
-  axis.x.range.original <- c(min(dataplot$num),max(dataplot$num))
-  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2],T,T)  
-  axis.x.range <- axis.x.otick$range
-  axis.x.values <- as.numeric(dataplot$num)
-  axis.x.ticks <- axis.x.otick$tickmarks
-  axis.x.labels <- rownames(dataplot)[axis.x.otick$tickmarks]
-  # Same, for 10 tickmarks in the y-axis
-  
-  temp1<-max(i.data,na.rm=T)
-  if (length(i.epidemic.thr)==2 & i.pre.epidemic) temp1<-max(c(temp1,i.epidemic.thr[1]),na.rm=T)
-  if (length(i.epidemic.thr)==2 & i.post.epidemic) temp1<-max(c(temp1,i.epidemic.thr[2]),na.rm=T)
-  if (length(i.intensity.thr)==3) temp1<-max(c(temp1,i.intensity.thr),na.rm=T)
-  axis.y.range.original <- c(0,1.05*temp1)
-  rm("temp1")
-  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-  axis.y.range <- axis.y.otick$range
-  axis.y.ticks <- axis.y.otick$tickmarks
-  axis.y.labels <- axis.y.otick$tickmarks
-  
-  if (NCOL(i.data)>0){
-    lis<-melt(dataplot, id.vars="num", measure.vars=names(i.data), variable.name='Season', value.name='Rates')     
-    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
-    col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(i.data))),input$colseries))(NCOL(i.data))
-    # Basic plot structure
-    g.plot <- 
-      ggplot(lis) +
-      ggtitle(input$textMain) +
-      theme(plot.title = element_text(hjust = 0.1, size=22)) +
-      labs(x=input$textX,y=input$textY, color='Season')
-    # Add intensity, this goes first not to overwrite the series
-    if(i.intensity & length(i.intensity.thr)==3){
-      g.plot <- g.plot + 
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = i.epidemic.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.epidemic.thr[1], ymax = i.intensity.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[1], ymax = i.intensity.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[2], ymax = i.intensity.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.intensity.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))
-    }
-    # Add all series selected
-    g.plot <- g.plot +
-      geom_line(aes(x=num, y=Rates, group=Season, color=Season)) + 
-      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels) +
-      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range) +
-      scale_color_manual(values=col.ser, labels=names(i.data))
-    # Add pre-epidemic thresholds
-    if(i.pre.epidemic & length(i.epidemic.thr)==2){
-      g.plot <- g.plot +
-        geom_hline(aes(yintercept=i.epidemic.thr[1]), color = input$colEpidemicStart)
-    }
-    # Add postepidemic thresholds
-    if(i.post.epidemic & length(i.epidemic.thr)==2){
-      g.plot <- g.plot +
-        geom_hline(aes(yintercept=i.epidemic.thr[2]), color = input$colEpidemicStop)
-    }
-    # Finishing
-    g.plot <- g.plot + 
-      ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))
-  }
-}
-
 plotSeasons <- function(i.data, 
                          i.pre.epidemic=TRUE, 
                          i.post.epidemic=TRUE, 
@@ -1838,16 +1604,17 @@ plotSeasons <- function(i.data,
     }
   }
   
-  col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(data.full))),input$colseries))(NCOL(data.full))
-  
+  colors.palette<-generate_palette(NCOL(data.full))
+  #col.ser <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(data.full))),input$colSeries))(NCOL(data.full))
+
   labels<-c(names(data.full),
             paste(names(data.full)," (missing)",sep=""),
             "Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
   haspoints<-c(rep(F,NCOL(data.full)),rep(F,NCOL(data.full)),F,F,F,F,F)
   haslines<-c(rep(T,NCOL(data.full)),rep(T,NCOL(data.full)),T,T,T,T,T)
   shapes<-c(rep(NA,NCOL(data.full)),rep(NA,NCOL(data.full)),NA,NA,NA,NA,NA)
-  colors<-c(col.ser,col.ser,"#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1")
-  fills<-c(rep("#000000",NCOL(data.full)),rep("#000000",NCOL(data.full)),"#000000","#000000","#000000","#000000","#000000")
+  colors<-c(rep(colors.palette$colSeries,2),colors.palette$colThresholds)
+  fills<-c(rep(colors.palette$colObservedPoints,NCOL(data.full)),rep(colors.palette$colObservedPoints,NCOL(data.full)),rep(colors.palette$colObservedPoints,5))
   sizes<-c(rep(2,NCOL(data.full)),rep(2,NCOL(data.full)),1,1,1,1,1)
   linetypes<-c(rep("solid",NCOL(data.full)),rep("solid",NCOL(data.full)), "dashed", "dashed", "dashed", "dashed","dashed")
   
@@ -1916,210 +1683,6 @@ plotSeasons <- function(i.data,
   
   list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=i.range.x.values$week.lab)
   
-}
-
-
-plotSeries_old2<-function(i.data, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=T, i.post.epidemic=T,
-                      i.epidemic.thr=NA, i.intensity= T, i.intensity.thr=NA, i.range.y=NA,
-                      i.color.pattern=c("#C0C0C0","#606060","#000000","#808080","#000000","#001933",
-                                        "#00C000","#800080","#FFB401",
-                                        "#8c6bb1","#88419d","#810f7c","#4d004b"), ...){
-  
-  if(is.null(i.data)){return()}
-  
-  week.f<-as.numeric(rownames(i.data)[1])
-  week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
-  if (week.f>week.l){
-    i.range.x<-c(min(week.f,30),min(week.f,30)-1)
-    i.range.x.values<-data.frame(week.lab=c(min(week.f,30):52,1:(min(week.f,30)-1)),week.no=1:52)
-  }else{
-    i.range.x<-c(1,52)
-    i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
-  }
-  if (NCOL(i.data)>1){
-    epi<-memmodel(i.data, i.seasons=NA,...)
-    epidata<-epi$data
-    epiindex<-as.data.frame(epi$season.indexes[,,1])
-    rownames(epiindex)<-rownames(i.data)
-    colnames(epiindex)<-colnames(i.data)
-    epithresholds<-epi$epidemic.thresholds
-    intthresholds<-epi$intensity.thresholds
-    i.data<-i.data[names(i.data) %in% names(epi$data)]
-  }else{
-    # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
-    # the timing (which would be extracted with memtiming also)
-    epi<-memmodel(cbind(i.data,i.data), i.seasons=NA,...)
-    epidata<-epi$data[1]
-    epiindex<-as.data.frame(epi$season.indexes[,1,1])
-    rownames(epiindex)<-rownames(i.data)
-    colnames(epiindex)<-colnames(i.data)
-    epithresholds<-NA
-    intthresholds<-NA
-    i.data<-i.data[names(i.data) %in% names(epi$data)]
-  }
-  rm("epi")
-  
-  # To have continuity between seasons I have to inflate original data to the global squeme. That's it: If
-  # original data format is from 40 to 20, the inflated data would be 30 to 29, so that when a season ends
-  # at 29, next one will start at 30 and there would be continuity between both
-  
-  data.full<-i.data
-  data.full$week.lab<-rownames(data.full)
-  data.full<-merge(data.full,i.range.x.values,by="week.lab",all.y=T)
-  data.full<-data.full[order(data.full$week.no),]
-  row.names(data.full)<-data.full$week.lab
-  data.full$week.lab<-NULL
-  data.full$week.no<-NULL
-  
-  data.full.epi<-epidata
-  data.full.epi$week.lab<-rownames(data.full.epi)
-  data.full.epi<-merge(data.full.epi,i.range.x.values,by="week.lab",all.y=T)
-  data.full.epi<-data.full.epi[order(data.full.epi$week.no),]
-  row.names(data.full.epi)<-data.full.epi$week.lab
-  data.full.epi$week.lab<-NULL
-  data.full.epi$week.no<-NULL
-  
-  data.full.index<-epiindex
-  data.full.index[is.na(epidata)]<-NA
-  data.full.index$week.lab<-rownames(data.full.index)
-  data.full.index<-merge(data.full.index,i.range.x.values,by="week.lab",all.y=T)
-  data.full.index<-data.full.index[order(data.full.index$week.no),]
-  row.names(data.full.index)<-data.full.index$week.lab
-  data.full.index$week.lab<-NULL
-  data.full.index$week.no<-NULL
-  
-  # Data to plot
-  data.orig<-transformdata.back(data.full,i.name="rates",i.range.x=i.range.x,i.fun=sum)
-  data.y<-as.numeric(data.orig[,"rates"])
-  # Data to plot, filling in missing with data imputed by mem (using loess)
-  data.fixed<-transformdata.back(data.full.epi,i.name="rates",i.range.x=i.range.x,i.fun=sum)
-  data.y.fixed<-as.numeric(data.fixed[,"rates"])
-  # Data that have been imputed, to mark them as a circle with a cross
-  data.missing<-data.fixed
-  data.missing[!(is.na(data.orig) & !is.na(data.fixed))]<-NA
-  data.y.missing<-as.numeric(data.missing[,"rates"])
-  # Indexes for pre, epi and post epidemic
-  data.indexes<-transformdata.back(data.full.index,i.name="rates",i.range.x=i.range.x,i.fun=function(x,...) if (all(is.na(x))) return(NA) else if (any(x==2,...)) return(2) else if (any(x==1,...)) return(1) else return(3))
-  data.y.indexes<-as.numeric(data.indexes[,names(data.indexes)=="rates"])
-  
-  if (length(i.epidemic.thr)==2){
-    epidemic<-i.epidemic.thr
-  }else{
-    if (NCOL(i.data)>1){
-      epidemic<-as.numeric(epithresholds)
-    }else{
-      i.pre.epidemic<-F
-      i.post.epidemic<-F
-      epidemic<-NA
-    }
-  }
-  
-  if (length(i.intensity.thr)==3){
-    intensity<-i.intensity.thr
-  }else{
-    if (NCOL(i.data)>1){
-      intensity<-as.numeric(intthresholds)
-    }else{
-      i.intensity<-F
-      intensity<-NA
-    }
-  }
-  
-  
-  # Calculate ticks for x
-  
-  data.x <- 1:NROW(data.orig)
-  axis.x.range <- range(data.x)
-  
-  # Axis format for all the graphs
-  # First: WEEK NAME
-  # Calculate values as if we want to place 20 tickmarks in the graph in the x-axis.
-  # temp1 <- range(i.range.x.values$week.no)
-  # temp2 <- optimal.tickmarks(temp1[1], temp1[2], 4, 1:temp1[2],T,F)  
-  # axis.x1.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-  # axis.x1.labels<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-  # rm("temp1","temp2")  
-  # # Second: SEASONS NAME 
-  # temp1<-i.range.x.values$week.lab[floor(quantile(i.range.x.values$week.no,0.5))]
-  # axis.x2.ticks<-data.x[data.orig$week==temp1]
-  # axis.x2.labels<-data.orig$season[data.orig$week==temp1]
-  # rm("temp1")
-  
-  temp1 <- range(i.range.x.values$week.no)
-  temp2 <- optimal.tickmarks(temp1[1], temp1[2], 4, 1:temp1[2],T,F)  
-  axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-  axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-  axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-  axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
-  axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
-  rm("temp1","temp2")  
-  
-  # Same, for 10 tickmarks in the y-axis
-  
-  if (is.numeric(i.range.y)){
-    temp1<-i.range.y
-  }else if (i.intensity){
-    #temp1<-c(0,max.fix.na(c(data.y.fixed,intensity)))
-    temp1<-c(0,max(c(data.y.fixed,intensity, na.rm=T)))
-  }else{
-    #temp1<-c(0,max.fix.na(data.y.fixed))
-    temp1<-c(0,max(data.y.fixed, na.rm=T))
-  }
-  if (length(epidemic)==2 & i.pre.epidemic) temp1<-max(c(temp1,epidemic[1]),na.rm=T)
-  if (length(epidemic)==2 & i.post.epidemic) temp1<-max(c(temp1,epidemic[2]),na.rm=T)
-  if (length(intensity)==3 & i.intensity) temp1<-max(c(temp1,intensity),na.rm=T)
-  axis.y.range.original <- c(0,1.05*temp1)
-  rm("temp1")
-  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-  axis.y.range <- axis.y.otick$range
-  axis.y.ticks <- axis.y.otick$tickmarks
-  axis.y.labels <- axis.y.otick$tickmarks
-  
-  temp1<-rep("No",length(data.y.missing))
-  temp1[!is.na(data.y.missing)]<-"Yes"
-  
-  data.plot<-data.frame(data.x,data.y.fixed,data.y.missing=temp1,data.y.indexes,dummy=1)
-  
-  g.plot <- 
-    ggplot(data.plot) +
-    ggtitle(input$textMain) +
-    theme(plot.title = element_text(hjust = 0.1, size=22)) +
-    labs(x=input$textX,y=input$textY, color=i.color.pattern[6]) +
-    geom_line(aes(x=data.x, y=data.y.fixed, group=1), color=i.color.pattern[6]) + 
-    scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels) +
-    scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range)
-  
-  if (i.plot.timing){
-    g.plot <- 
-      g.plot + 
-      geom_point(aes(x=data.x, y=data.y.fixed, 
-                     color=factor(data.y.indexes, levels=1:3, labels = c("Pre", "Epi","Post")), 
-                     shape=data.y.missing, 
-                     size=data.y.missing)) + 
-      scale_color_manual(name="Timing", values=i.color.pattern[7:9]) +
-      scale_shape_manual(name="Missing", values=c(19, 13)) +
-      scale_size_manual(name="Missing", values=c(1, 2))
-  }else{
-    g.plot <- 
-      g.plot + 
-      geom_point(aes(x=data.x, y=data.y.fixed, 
-                     color=factor(dummy, levels=1, labels = "Serie"),
-                     shape=data.y.missing, 
-                     size=data.y.missing)) + 
-      scale_color_manual(name="Timing", values=i.color.pattern[4]) +
-      scale_shape_manual(name="Missing", values=c(19, 13)) +
-      scale_size_manual(name="Missing", values=c(1, 2))
-  }
-  
-  
-  if (i.pre.epidemic) g.plot <- g.plot + geom_hline(aes(yintercept=epidemic[1]), color = i.color.pattern[10], linetype=2, size=1)
-  if (i.post.epidemic) g.plot <- g.plot + geom_hline(aes(yintercept=epidemic[2]), color = i.color.pattern[10], linetype=3, size=1)
-  if (i.intensity) g.plot <- g.plot + geom_hline(aes(yintercept=intensity[1]), color = i.color.pattern[11], linetype=2, size=1) +
-    geom_hline(aes(yintercept=intensity[2]), color = i.color.pattern[12], linetype=2, size=1) +
-    geom_hline(aes(yintercept=intensity[3]), color = i.color.pattern[13], linetype=2, size=1)
-  g.plot <- g.plot + 
-    ggthemes::theme_few()
-  print(ggplotly(g.plot, tooltip = "text"))
 }
 
 plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemic=T, i.epidemic.thr=NA, 
@@ -2247,12 +1810,14 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
     }
   }
   
+  colors.palette<-generate_palette()
+  
   labels<-c("Weekly rates","Pre-epidemic","Pre-epidemic (missing)","Epidemic","Epidemic (missing)","Post-epidemic","Post-epidemic (missing)","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
   haspoints<-c(T,T,T,T,T,T,T,F,F,F,F,F)
   haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
   shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
-  colors<-c("#808080","#000000","#000000","#000000","#000000","#000000","#000000","#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1")
-  fills<-c("#000000","#00C000","#00C000","#800080","#800080","#FFB401","#FFB401","#000000","#000000","#000000","#000000","#000000")
+  colors<-c(rep(colors.palette$colObservedLines,7),colors.palette$colThresholds)
+  fills<-c(colors.palette$colObservedPoints,rep(colors.palette$colEpidemic,each=2),rep(colors.palette$colObservedPoints,5))
   sizes<-c(2,2,2,2,2,2,2,1,1,1,1,1)
   linetypes<-c("solid","blank","blank","blank","blank","blank","blank", "dashed", "dashed", "dashed", "dashed","dashed")
   
@@ -2344,89 +1909,6 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
   
 }
 
-plotSeasons.OLD <-function(){
-  datfile <- data_read()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  datfile.model<-datfile[selectedcolumns]
-  datfile.seasons<-datfile[input$SelectSeasons]
-  if (NCOL(datfile.model)>1){
-    epi <- memmodel(datfile.model,
-                    i.type.threshold=as.numeric(input$i.type.threshold),
-                    i.type.intensity=as.numeric(input$i.type.intensity), 
-                    i.method = as.numeric(input$method),
-                    i.param = as.numeric(input$param), i.seasons = NA)
-    e.thr<-epi$epidemic.thresholds
-    i.thr<-epi$intensity.thresholds
-  }
-  
-  # Axis format for all the graphs
-  # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
-  axis.x.range.original <- c(min(datfile$num),max(datfile$num))
-  axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2],T,T)  
-  axis.x.range <- axis.x.otick$range
-  axis.x.values <- as.numeric(datfile$num)
-  axis.x.ticks <- axis.x.otick$tickmarks
-  axis.x.labels <- rownames(datfile)[axis.x.otick$tickmarks]
-  # Same, for 10 tickmarks in the y-axis
-  axis.y.range.original <- c(0,1.05*max(cbind(datfile.model, datfile.seasons), na.rm=T))
-  axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-  axis.y.range <- axis.y.otick$range
-  axis.y.ticks <- axis.y.otick$tickmarks
-  axis.y.labels <- axis.y.otick$tickmarks
-
-  if (length(input$SelectSeasons)>0){
-    lis<-melt(datfile, id.vars="num", measure.vars=input$SelectSeasons, variable.name='Season', value.name='Rates')     
-    col.pal <- colorRampPalette(brewer.pal(5,input$colThresholds))(5)
-    col.ser <- colorRampPalette(brewer.pal(length(input$SelectSeasons),input$colseries))(length(input$SelectSeasons))
-    # Basic plot structure
-    g.plot <- 
-      ggplot(lis) +
-      ggtitle(input$textMain) +
-      theme(plot.title = element_text(hjust = 0.1, size=22)) +
-      labs(x=input$textX,y=input$textY, color='Season')
-    # Add intensity, this goes first not to overwrite the series
-    if(input$intensitythr=="TRUE" & NCOL(datfile.model)>1){
-      g.plot <- g.plot + 
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = 0,        ymax = e.thr[1], fill = col.pal[1], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = e.thr[1], ymax = i.thr[1], fill = col.pal[2], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[1], ymax = i.thr[2], fill = col.pal[3], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[2], ymax = i.thr[3], fill = col.pal[4], alpha=as.numeric(input$colTransparency)) +
-        annotate("rect", xmin = axis.x.range[1], xmax = axis.x.range[2], ymin = i.thr[3], ymax = axis.y.range[2], fill = col.pal[5], alpha=as.numeric(input$colTransparency))
-    }
-    # Add all series selected
-    g.plot <- g.plot +
-      geom_line(aes(x=num, y=Rates, group=Season, color=Season)) + 
-      scale_x_continuous(breaks=axis.x.ticks, labels=axis.x.labels) +
-      scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range) +
-      scale_color_manual(values=col.ser, labels=input$SelectSurveillance)
-    # Add epidemic thresholds
-    if(input$preepidemicthr=="TRUE" & NCOL(datfile.model)>1){
-      g.plot <- g.plot +
-        geom_hline(aes(yintercept=e.thr[1]), color = input$colEpidemicStart) +
-        geom_hline(aes(yintercept=e.thr[2]), color = input$colEpidemicStop)
-    }
-    # Finishing
-    g.plot <- g.plot + 
-      ggthemes::theme_few()
-    print(ggplotly(g.plot, tooltip = "text"))
-  }
-}
-
-plotTiming_old <-function(kol){
-  datfile <- data_read()
-    #dat3 <- datfile
-    #datafil <- dat3
-    #for(i in input$K:input$K2){
-    epi.plot <- memtiming(datfile[kol],
-                          i.method = as.numeric(input$method),
-                          i.param = as.numeric(input$param))
-    plot(epi.plot)
-}
-
 plotTiming <-function(i.column){
   datfile <- data_read()
   if(is.null(datfile)){return()}
@@ -2435,51 +1917,6 @@ plotTiming <-function(i.column){
   z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   zfix
-}
-
-plotSeries_old <-function(i.data, i.epidemic.thr=NA, i.intensity.thr=NA, i.timing=TRUE, i.threholds=TRUE){
-  datfile <- i.data
-  if(is.null(datfile)){return()}
-  range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
-  if (length(i.epidemic.thr)==2 & length(i.intensity.thr)==3) intensity<-c(i.epidemic.thr[1],i.intensity.thr) else intensity<-NA
-  full.series.graph(datfile,
-                    i.method = as.numeric(input$method),
-                    i.param = as.numeric(input$param),
-                    i.graph.file = F, 
-                    i.plot.timing = i.timing, 
-                    i.plot.intensity = i.threholds,
-                    i.range.x=range.x,
-                    i.alternative.thresholds=intensity)
-}
-
-plotSurveillance_old <-function(){
-  # datfile <- data_read()
-  # rownames(datfile)<-datfile$vecka
-  # datfile$vecka<-NULL
-  
-  datfile <- data_read()
-  if(is.null(datfile)){return()}
-  selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
-                                  i.exclude=input$SelectExclude, i.include="", 
-                                  #i.pandemic=as.logical(input$SelectPandemic), 
-                                  i.pandemic=T,
-                                  i.seasons=input$SelectMaximum)
-  datfile.model<-datfile[selectedcolumns]
-  datfile.surveillance<-datfile[input$SelectSurveillance]
-  if (NCOL(datfile.model)>1 & input$SelectSurveillance %in% names(datfile)){
-    epi <- memmodel(datfile.model,
-                i.type.threshold=as.numeric(input$i.type.threshold),
-                i.type.intensity=as.numeric(input$i.type.intensity), 
-                i.method = as.numeric(input$method),
-                i.param = as.numeric(input$param), i.seasons = NA)
-  e.thr<-epi$epidemic.thresholds
-  i.thr<-epi$intensity.thresholds
-  range.x<- as.numeric(rownames(datfile)[c(1,NROW(datfile))])
-
-  if (!as.logical(input$preepidemicthr)) e.thr<-NA
-  memsurveillance(datfile.surveillance, 
-                  e.thr, i.thr, i.graph.file=F, i.pos.epidemic = as.logical(input$postepidemicthr), i.range.x =range.x, i.week.report = input$SelectSurveillanceWeek, i.no.intensity=!as.logical(input$intensitythr))
-  }
 }
 
 plotSurveillance<-function(i.data,
@@ -2659,12 +2096,14 @@ plotSurveillance<-function(i.data,
   intensidades.3<-array(dim=c(semanas,3))
   intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
   
+  colors.palette<-generate_palette()
+  
   labels<-c("Weekly rates","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End")
   haspoints<-c(T,F,F,F,F,F,T,T)
   haslines<-c(T,T,T,T,T,T,F,F)
   shapes<-c(21,NA,NA,NA,NA,NA,21,21)
-  colors<-c("#808080","#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1","#000000","#000000")
-  fills<-c("#000000","#000000","#000000","#000000","#000000","#000000","#FF0000","#40FF40")
+  colors<-c(colors.palette$colObservedLines,colors.palette$colThresholds,rep(colors.palette$colObservedLines,2))
+  fills<-c(rep(colors.palette$colObservedPoints,6),colors.palette$colEpidemicStart,colors.palette$colEpidemicStop)
   sizes<-c(3,1,1,1,1,1,4,4)
   linetypes<-c("solid", "dashed", "dashed", "dashed", "dashed","dashed","blank","blank")
   
@@ -3010,6 +2449,35 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   return(i.plotly)
 }
 
+generate_palette <- function(number.series=NA){
+  if (is.na(number.series)) number.series<-10
+  params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
+            "colThresholds","colSeries","colEpidemic")
+  params.default<-list(colObservedLines="#808080",colObservedPoints="#000000",colEpidemicStart="#FF0000",
+                       colEpidemicStop="#40FF40",colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1"),
+                       colSeries="Accent",colEpidemic=c("#00C000","#800080","#FFB401"),colTransparency=1)
+  n.params<-length(params)
+  for (i in 1:n.params){
+    eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
+    eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
+  }
+  # First four are simple colors
+  for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
+  # Fifth to Seventh are palettes that I must create
+  if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
+  if (colSeries=="default") colSeries<-params.default$colSeries
+  colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
+  if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
+  # Last one is a number between 0 and 1
+  colTransparency<-input$colTransparency
+  if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
+  colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
+                     colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
+                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic,
+                     colTransparency=colTransparency)
+  #print(colors.final)
+  colors.final
+}
 
 session$onSessionEnded(function() {
   stopApp()
