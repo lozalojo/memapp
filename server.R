@@ -2,33 +2,28 @@ library(shiny)
 
 shinyServer(function(input, output, session) {
   
-data_read <- reactive({
-  file1 <- input$file
-  if(is.null(file1)){return()}
-  else
-  #dat <- as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-  #dat <- as.data.frame(dat)
-  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
-  dat<-read.data(i.file=file1$datapath, i.extension=fileextension)
-  dat$vecka<-rownames(dat)
-  dat<-dat[c(NCOL(dat),1:(NCOL(dat)-1))]
-  dat$num <- 1:nrow(dat)
-  dat2 <- as.data.frame(apply(dat, 2, function(x) as.numeric(x)))
-  rownames(dat2) <- rownames(dat)
-
-  datanames<-names(dat2)[!(names(dat2) %in% c("vecka","num"))]  
-  
-  lapply(datanames, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlotly({plotTiming(s)})})
-  lapply(datanames, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlotly({plotTiming(s)})})
-  lapply(datanames, function(s){output[[paste0("tbvTiming_",s)]] <- renderPlotly({plotTiming(s)})})
-
-  dat2
-})
+# read_data <- reactive({
+#   infile <- input$file
+#   indataset <- input$dataset
+#   if(is.null(infile)){return(NULL)}
+#   if(is.null(indataset)){return(NULL)}
+#   #dat <- as.data.frame(read.csv2(file=infile$datapath, sep=";", header=TRUE))
+#   #dat <- as.data.frame(dat)
+#   fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
+#   dat<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
+#   dat$vecka<-rownames(dat)
+#   dat<-dat[c(NCOL(dat),1:(NCOL(dat)-1))]
+#   dat$num <- 1:nrow(dat)
+#   dat2 <- as.data.frame(apply(dat, 2, function(x) as.numeric(x)))
+#   rownames(dat2) <- rownames(dat)
+# 
+#   dat2
+# })
 
 data_model <- reactive({
   # cat("data_model function\n")
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   selectedcolumns<-select.columns(i.names=names(datfile), 
@@ -77,7 +72,7 @@ data_model <- reactive({
 
 data_good <- reactive({
   # cat("data_good function\n")
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude, i.include="", 
@@ -103,7 +98,7 @@ data_good <- reactive({
 
 data_optim <- reactive({
   # cat("data_optim function\n")
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
                                   i.exclude=input$SelectExclude, i.include="", 
@@ -124,85 +119,142 @@ data_optim <- reactive({
   roca
 })
 
-observe({
-  file1 <- input$file
-  inFile<-input$file
-  if(is.null(inFile)) return(NULL)
-  #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-  dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-  dt$vecka<-rownames(dt)
-  dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-  ## Decide later what to do with the data, here we just fill
-  updateSelectInput(session, "K", choices = names(dt)[2:ncol(dt)])
-})
+get_datasets <- function(){
+  infile <- input$file
+  if(is.null(infile)){
+    datasets.final<-NULL
+    cat("Warning: No file\n")
+  } else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx","mdb","accdb"))) return()
+    datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
+  }
+  datasets.final
+}
+
+read_data <- function(){
+  infile <- input$file
+  indataset <- input$dataset
+  cat(">",infile$name,"-",indataset,"<\n")
+  if(is.null(infile)){
+    data.final<-NULL
+    cat("Warning: No file\n")
+  }else if(is.null(indataset)){
+    data.final<-NULL
+    cat("Warning: No dataset\n")
+  }else if (indataset==""){
+    data.final<-NULL
+    cat("Warning: No dataset\n")
+  }else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
+    data.final<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
+    if (is.null(data.final)){
+      cat("Warning: Error reading data\n")
+    }else{
+      data.final <- as.data.frame(apply(data.final, 2, function(x) as.numeric(x)))
+      rownames(data.final) <- rownames(data.final)
+    }
+  }
+  data.final
+}
+
+
+# observe({
+#   file1 <- input$file
+#   infile<-input$file
+#   if(is.null(infile)) return(NULL)
+#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
+#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
+#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
+#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
+#   dt$vecka<-rownames(dt)
+#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
+#   ## Decide later what to do with the data, here we just fill
+#   updateSelectInput(session, "K", choices = names(dt)[2:ncol(dt)])
+# })
+# 
+# observe({
+#   file1 <- input$file
+#   infile<-input$file
+#   if(is.null(infile)) return(NULL)
+#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
+#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
+#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
+#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
+#   dt$vecka<-rownames(dt)
+#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
+#   ## Decide later what to do with the data, here we just fill
+#   updateSelectInput(session, "K2", choices = names(dt)[2:ncol(dt)])
+# })
+# 
+# observe({
+#   file1 <- input$file
+#   infile<-input$file
+#   if(is.null(infile)) return(NULL)
+#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
+#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
+#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
+#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
+#   dt$vecka<-rownames(dt)
+#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
+#   ## Decide later what to do with the data, here we just fill
+#   updateSelectInput(session, "K3", choices = names(dt)[2:ncol(dt)])
+# })
+# 
+# observe({
+#   file1 <- input$file
+#   infile<-input$file
+#   if(is.null(infile)) return(NULL)
+#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
+#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
+#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
+#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
+#   dt$vecka<-rownames(dt)
+#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
+#   ## Decide later what to do with the data, here we just fill
+#   updateSelectInput(session, "K4", choices = names(dt)[2:ncol(dt)])
+# })
 
 observe({
-  file1 <- input$file
-  inFile<-input$file
-  if(is.null(inFile)) return(NULL)
-  #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-  dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-  dt$vecka<-rownames(dt)
-  dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-  ## Decide later what to do with the data, here we just fill
-  updateSelectInput(session, "K2", choices = names(dt)[2:ncol(dt)])
-})
-
-observe({
-  file1 <- input$file
-  inFile<-input$file
-  if(is.null(inFile)) return(NULL)
-  #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-  dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-  dt$vecka<-rownames(dt)
-  dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-  ## Decide later what to do with the data, here we just fill
-  updateSelectInput(session, "K3", choices = names(dt)[2:ncol(dt)])
-})
-
-observe({
-  file1 <- input$file
-  inFile<-input$file
-  if(is.null(inFile)) return(NULL)
-  #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-  dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-  dt$vecka<-rownames(dt)
-  dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-  ## Decide later what to do with the data, here we just fill
-  updateSelectInput(session, "K4", choices = names(dt)[2:ncol(dt)])
-})
-
-observe({
-  file1 <- input$file
-  inFile <- input$file
-  if(is.null(inFile)) return(NULL)
-  fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-  if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-  dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-  dt$vecka<-rownames(dt)
-  dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]
-  seasons<-names(dt)[2:ncol(dt)]
-  weeks<-rownames(dt)
-  updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
-  updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
-  updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
-  updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=rev(seasons)[1])
-  updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
-  updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",weeks), selected="")
-  updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
+  infile <- input$file
+  indataset <- input$dataset
+  if(is.null(infile)){
+    return()
+  }else if(is.null(indataset)){
+    return()
+  }else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
+    dt<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table=indataset)
+    if(is.null(dt)){
+      return()
+    }else{
+      dt$vecka<-rownames(dt)
+      dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]
+      seasons<-names(dt)[2:ncol(dt)]
+      weeks<-rownames(dt)
+      updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
+      updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
+      updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
+      updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=rev(seasons)[1])
+      updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
+      updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",weeks), selected="")
+      updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
+      
+      datanames<-names(dt)[!(names(dt) %in% c("vecka","num"))]  
+      
+      lapply(datanames, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlotly({plotTiming(s)})})
+      lapply(datanames, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlotly({plotTiming(s)})})
+      lapply(datanames, function(s){output[[paste0("tbvTiming_",s)]] <- renderPlotly({plotTiming(s)})})
+    }   
+  }
+  
 })
 
 # Define main output structure
 # output$tb <- renderUI({
-#   if(is.null(data_read())){return()}
+#   if(is.null(read_data())){return()}
 #   else
 #     tabsetPanel(tabPanel("File name", DT::dataTableOutput("filedf")),
 #                 tabPanel("Data", DT::dataTableOutput("table")),
@@ -218,12 +270,18 @@ observe({
 #                 )
 # })
 
+output$loaddata = renderUI({
+  datasets<-get_datasets()
+  if(!is.null(datasets)) selectInput('dataset', 'dataset', get_datasets())
+})
+
+
 #####################################
 ### DEFINING TABS STRUCTURE
 #####################################
 
 output$tbData <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return(NULL)}
   else
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
                 tabPanel("Data", DT::dataTableOutput("tbdData")),
@@ -235,7 +293,7 @@ output$tbData <- renderUI({
 })
 
 output$tbModel <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbmData")),
                 #tabPanel("Plot", plotlyOutput("tbmPlot", width ="100%", height ="100%")),
@@ -250,7 +308,7 @@ output$tbModel <- renderUI({
 })
 
 output$tbSurveillance <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbsData")),
                 #tabPanel("Plot", plotlyOutput("tbsPlot", width ="100%", height ="100%")),
@@ -263,7 +321,7 @@ output$tbSurveillance <- renderUI({
 })
 
 output$tbVisualize <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbvData")),
                 #tabPanel("Plot", plotlyOutput("tbvPlot", width ="100%", height ="100%")),
@@ -278,12 +336,12 @@ output$tbVisualize <- renderUI({
 #####################################
 
 output$tbdFile <- renderTable({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   input$file[1]
 }) 
 
 output$tbdData <- DT::renderDataTable({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   #toinclude<-names(datfile)
@@ -308,7 +366,7 @@ output$tbdData <- DT::renderDataTable({
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbdSeasons <- renderPlotly({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -347,7 +405,7 @@ output$tbdSeasons <- renderPlotly({
 })
 
 output$tbdSeries_old <- renderPlot({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -372,7 +430,7 @@ output$tbdSeries_old <- renderPlot({
 })
 
 output$tbdSeries <- renderPlotly({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   datamodel<-data_model()
   if(is.null(datamodel)){return()}
@@ -388,7 +446,7 @@ output$tbdSeries <- renderPlotly({
 })
 
 output$tbdTiming = renderUI({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)) {return()}
   selectedcolumns<-select.columns(i.names=names(datfile), 
                                   i.from="", 
@@ -415,7 +473,7 @@ output$tbdTiming = renderUI({
 #####################################
 
 output$tbmData <- DT::renderDataTable({
-  #datfile <- data_read()
+  #datfile <- read_data()
   #if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   # selectedcolumns<-select.columns(i.names=names(datfile), 
@@ -441,7 +499,7 @@ output$tbmData <- DT::renderDataTable({
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbmSeasons <- renderPlotly({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -477,7 +535,7 @@ output$tbmSeasons <- renderPlotly({
 })
 
 output$tbmSeries_old <- renderPlot({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -510,7 +568,7 @@ output$tbmSeries_old <- renderPlot({
 })
 
 output$tbmSeries <- renderPlotly({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -562,7 +620,7 @@ output$tbmSeries <- renderPlotly({
 })
 
 output$tbmTiming = renderUI({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -586,7 +644,7 @@ output$tbmTiming = renderUI({
 })
 
 output$tbmMem <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Estimators", uiOutput("tbmMemSummary")),
                 tabPanel("Detailed", verbatimTextOutput("tbmMemOutput")),
@@ -596,7 +654,7 @@ output$tbmMem <- renderUI({
 })
 
 output$tbmMemSummary <- renderUI({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # selectedcolumns<-select.columns(i.names=names(datfile), 
   #                                 i.from=input$SelectFrom, 
@@ -610,8 +668,8 @@ output$tbmMemSummary <- renderUI({
   # if (length(selectedcolumns)<2){return()}
   # datfile.model<-datfile[selectedcolumns]
   # nam.t <- memmodel(datfile.model,
-  #                     # nam.t <- memmodel(data_read()[,c(grep(input$K2, 
-  #                     #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
+  #                     # nam.t <- memmodel(read_data()[,c(grep(input$K2, 
+  #                     #                                           colnames(read_data())):(grep(input$K, colnames(read_data()))-1))],
   #                     i.type.threshold=as.numeric(input$i.type.threshold),
   #                     i.type.intensity=as.numeric(input$i.type.intensity),
   #                     i.method = as.numeric(input$method),
@@ -637,7 +695,7 @@ output$tbmMemSummary <- renderUI({
 })
 
 output$tbmMemOutput <- renderPrint({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # selectedcolumns<-select.columns(i.names=names(datfile), 
   #                                 i.from=input$SelectFrom, 
@@ -656,11 +714,11 @@ output$tbmMemOutput <- renderPrint({
   
   nam.t<-datamodel
   
-    #if(grep(input$K, colnames(data_read()))>1){
-    #   if(grep(input$K2, colnames(data_read())) < grep(input$K, colnames(data_read()))-1){
+    #if(grep(input$K, colnames(read_data()))>1){
+    #   if(grep(input$K2, colnames(read_data())) < grep(input$K, colnames(read_data()))-1){
     # nam.t <- memmodel(datfile.model,
-    #     # nam.t <- memmodel(data_read()[,c(grep(input$K2, 
-    #     #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
+    #     # nam.t <- memmodel(read_data()[,c(grep(input$K2, 
+    #     #                                           colnames(read_data())):(grep(input$K, colnames(read_data()))-1))],
     #                            i.type.threshold=as.numeric(input$i.type.threshold),
     #                            i.type.intensity=as.numeric(input$i.type.intensity),
     #                            i.method = as.numeric(input$method),
@@ -690,7 +748,7 @@ output$tbmMemOutput <- renderPrint({
   })
 
 output$tbmMemModel <- renderPlot({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # selectedcolumns<-select.columns(i.names=names(datfile), 
   #                                 i.from=input$SelectFrom, 
@@ -704,8 +762,8 @@ output$tbmMemModel <- renderPlot({
   # if (length(selectedcolumns)<3){return()}
   # datfile.model<-datfile[selectedcolumns]
   # nam.t <- memmodel(datfile.model,
-  #                   # nam.t <- memmodel(data_read()[,c(grep(input$K2, 
-  #                   #                                           colnames(data_read())):(grep(input$K, colnames(data_read()))-1))],
+  #                   # nam.t <- memmodel(read_data()[,c(grep(input$K2, 
+  #                   #                                           colnames(read_data())):(grep(input$K, colnames(read_data()))-1))],
   #                   i.type.threshold=as.numeric(input$i.type.threshold),
   #                   i.type.intensity=as.numeric(input$i.type.intensity),
   #                   i.method = as.numeric(input$method),
@@ -716,7 +774,7 @@ output$tbmMemModel <- renderPlot({
 })
 
 output$tbmMemGraph <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Moving epidemics", plotlyOutput("tbmMemGraphMoving", width ="100%", height ="100%")),
                 tabPanel("Average curve", plotlyOutput("tbmMemGraphTypical", width ="100%", height ="100%"))
@@ -791,7 +849,7 @@ output$tbmMemGraphTypical <- renderPlotly({
 
 
 output$tbmGoodness <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessSummary")),
                 tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessDetail"))
@@ -813,7 +871,7 @@ output$tbmGoodnessSummary <- renderUI({
 
 
 output$tbmGoodnessDetail<-DT::renderDataTable({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
   # datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
@@ -831,7 +889,7 @@ output$tbmGoodnessDetail<-DT::renderDataTable({
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))
 
 output$tbmOptimize <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmOptimizeSummary")),
                 tabPanel("Detailed", DT::dataTableOutput("tbmOptimizeDetail")),
@@ -858,13 +916,13 @@ output$tbmOptimizeSummary <- renderUI({
 })
 
 output$tbmOptimizeDetail<-DT::renderDataTable({
-  # datfile <- data_read()
+  # datfile <- read_data()
   # rownames(datfile)<-datfile$vecka
   # datfile$vecka<-NULL
   # datacolumns<-c(grep(input$K2,colnames(datfile)):(grep(input$K, colnames(datfile))-1))
   # 
   # if(length(datacolumns)>2){
-  # datfile <- data_read()
+  # datfile <- read_data()
   # if(is.null(datfile)){return()}
   # selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
   #                                 i.exclude=input$SelectExclude, i.include="", 
@@ -1022,7 +1080,7 @@ output$tbmOptimizeGraph<- renderPlotly({
 #####################################
 
 output$tbsData <- DT::renderDataTable({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   # toinclude<-names(datfile)
@@ -1048,7 +1106,7 @@ output$tbsData <- DT::renderDataTable({
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbsSeasons <- renderPlotly({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -1108,7 +1166,7 @@ output$tbsTiming <- renderPlotly({
 # })
 
 output$tbsSurveillance <- renderUI({
-  if(is.null(data_read())){return()}
+  if(is.null(read_data())){return()}
   else
     tabsetPanel(tabPanel("Week", plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
                 tabPanel("Animated", imageOutput("tbsSurveillanceAnimated"))
@@ -1116,7 +1174,7 @@ output$tbsSurveillance <- renderUI({
 })
 
 output$tbsSurveillanceAnimated <- renderImage({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   if(!(input$SelectSurveillance %in% names(datfile))){return()}
   if(!(input$SelectSurveillanceWeek %in% rownames(datfile))){return()}
@@ -1215,7 +1273,7 @@ output$tbsSurveillanceAnimated <- renderImage({
 
 output$tbsSurveillanceWeek <- renderPlotly({
   
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   if(!(input$SelectSurveillance %in% names(datfile))){return()}
   if (is.null(input$SelectSurveillanceForceEpidemic)) force.start<-NA else force.start<-input$SelectSurveillanceForceEpidemic
@@ -1286,10 +1344,10 @@ output$tbsSurveillanceWeek <- renderPlotly({
 })
 
 # output$tbsAnimated <- renderImage({
-#   # datfile <- data_read()
+#   # datfile <- read_data()
 #   # rownames(datfile)<-datfile$vecka
 #   # datfile$vecka<-NULL
-#   datfile <- data_read()
+#   datfile <- read_data()
 #   if(is.null(datfile)){return()}
 #   selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, 
 #                                   i.exclude=input$SelectExclude, i.include="", 
@@ -1334,7 +1392,7 @@ output$tbsSurveillanceWeek <- renderPlotly({
 #####################################
 
 output$tbvData <- DT::renderDataTable({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # Shows the data that's going to be used for mem calculations, plus the seasons to be added to the graph and surveillance
   if (is.null(input$SelectSeasons)) {return()}
@@ -1359,7 +1417,7 @@ output$tbvData <- DT::renderDataTable({
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 output$tbvSeasons <- renderPlotly({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   # model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
   #                               #i.pandemic=as.logical(input$SelectPandemic), 
@@ -1412,7 +1470,7 @@ output$tbvSeasons <- renderPlotly({
 })
 
 output$tbvSeries_old <- renderPlot({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   model.columns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo, i.exclude=input$SelectExclude, i.include="", 
                                 #i.pandemic=as.logical(input$SelectPandemic), 
@@ -1447,7 +1505,7 @@ output$tbvSeries_old <- renderPlot({
 })
 
 output$tbvSeries <- renderPlotly({
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   datamodel<-data_model()
   if(is.null(datamodel)){return()}
@@ -1910,7 +1968,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
 }
 
 plotTiming <-function(i.column){
-  datfile <- data_read()
+  datfile <- read_data()
   if(is.null(datfile)){return()}
   datfile.plot<-datfile[i.column]
   p <- plotSeries(datfile.plot, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
@@ -2180,138 +2238,445 @@ plotSurveillance<-function(i.data,
 
 # custom functions
 
-read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.max.temp=NA,i.season.limits=NA,i.naweeks.to.remove=1){
-  
-  if (!file.exists(i.file)) stop("file not found")
-  
-  # divide the filename between path, name and extension
-  temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
-  temp1[is.na(temp1)]<-""
-  filepath<-temp1[2]
-  filename<-paste(temp1[3],temp1[4],sep="")
-  if (is.na(i.extension)){
-    temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
-    temp2[is.na(temp2)]<-""  
-    fileextension<-temp2[3]
-    rm("temp2")
-  }else fileextension<-i.extension
-  
-  rm("temp1")
-  
-  # reading data, depending the extension, different options
-  if (tolower(fileextension)=="xlsx"){
-    # xlsx files, openxlsx read data perfectly
-    cat("Excel 2007+ file detected: ",filename,"\n",sep="")
-    wb<-openxlsx::loadWorkbook(i.file)
-    sheets<-openxlsx::sheets(wb)
-    n.sheets<-length(sheets)
-    cat("Number of sheets: ",n.sheets,"\nReading the first one: ",sheets[1],"\n",sep="")    
-    data.original<-openxlsx::read.xlsx(wb,sheet=1,rowNames=T)
-    cat("Read ",NROW(data.original),"rows and ",NCOL(data.original),"columns\n",sep="")
-    rm("sheets","n.sheets")
-  }else if (tolower(fileextension)=="xls"){
-    # no xls library read headers correctly, so i use a first pass to read headers, then the data
-    cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
-    wb <- XLConnect::loadWorkbook(i.file)
-    sheets<-XLConnect::getSheets(wb)
-    n.sheets<-length(sheets)
-    cat("Number of sheets: ",n.sheets,"\nReading the first one: ",sheets[1],"\n",sep="")    
-    data.headers<-as.character(XLConnect::readWorksheet(wb, sheet = 1, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))[-1]
-    data.original<-XLConnect::readWorksheet(wb, sheet = 1,rownames=1, colTypes=XLC$DATA_TYPE.NUMERIC)
-    names(data.original)<-data.headers
-    rm("data.headers")
-    cat("Read ",NROW(data.original),"rows and ",NCOL(data.original),"columns\n",sep="")
-  }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
-    # text files
-    # detect encoding
-    temp1<-readr::guess_encoding(i.file, n_max = -1)
-    temp1<-temp1[order(temp1$confidence,decreasing = T),]
-    myencoding<-as.character(temp1$encoding[1])
+# read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.max.temp=NA,i.season.limits=NA,i.naweeks.to.remove=1, i.table=NA){
+#   
+#   if (!file.exists(i.file)) return(NULL)
+# 
+#   # divide the filename between path, name and extension
+#   temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
+#   temp1[is.na(temp1)]<-""
+#   filepath<-temp1[2]
+#   filename<-paste(temp1[3],temp1[4],sep="")
+#   if (is.na(i.extension)){
+#     temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
+#     temp2[is.na(temp2)]<-""  
+#     fileextension<-temp2[3]
+#     rm("temp2")
+#   }else fileextension<-i.extension
+#   
+#   rm("temp1")
+#   
+#   # reading data, depending the extension, different options
+#   if (tolower(fileextension)=="xlsx"){
+#     # xlsx files, openxlsx read data perfectly
+#     cat("Excel 2007+ file detected: ",filename,"\n",sep="")
+#     wb<-openxlsx::loadWorkbook(i.file)
+#     sheets<-openxlsx::sheets(wb)
+#     n.sheets<-length(sheets)
+#     if (is.na(i.table)){
+#       cat("Table name not specified\n")
+#       i.table<-sheets[1]
+#     }else if (!(i.table %in% sheets)) {
+#       cat("Table ",i.table," not found\n")
+#       i.table<-sheets[1]
+#     }
+#     cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+#     data.original<-openxlsx::read.xlsx(wb,sheet=i.table,rowNames=T)
+#     cat("Read ",NROW(data.original),"rows and ",NCOL(data.original),"columns\n",sep="")
+#     rm("sheets","n.sheets")
+#   }else if (tolower(fileextension)=="xls"){
+#     # no xls library read headers correctly, so i use a first pass to read headers, then the data
+#     cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
+#     wb <- XLConnect::loadWorkbook(i.file)
+#     sheets<-XLConnect::getSheets(wb)
+#     n.sheets<-length(sheets)
+#     if (is.na(i.table)) {
+#       cat("Table name not specified\n")
+#       return(NULL)
+#     }
+#     if (!(i.table %in% sheets)){
+#       cat("Table ",i.table," not found\n")
+#       return(NULL)
+#     }
+#     cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+#     data.headers<-as.character(XLConnect::readWorksheet(wb, sheet = i.table, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))[-1]
+#     data.original<-XLConnect::readWorksheet(wb, sheet = i.table,rownames=1, colTypes=XLC$DATA_TYPE.NUMERIC)
+#     names(data.original)<-data.headers
+#     rm("data.headers")
+#     cat("Read ",NROW(data.original),"rows and ",NCOL(data.original),"columns\n",sep="")
+#   }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
+#     # text files
+#     # detect encoding
+#     temp1<-readr::guess_encoding(i.file, n_max = -1)
+#     temp1<-temp1[order(temp1$confidence,decreasing = T),]
+#     myencoding<-as.character(temp1$encoding[1])
+#     rm("temp1")
+#     # detect separator and decimal separator
+#     cat("Text file detected: ",filename," (encoding: ",myencoding,")\n",sep="")
+#     firstline<-readLines(i.file,1,encoding=myencoding)
+#     separators<-c(',',';','\t','\\|')
+#     mysep<-separators[which.max(str_count(firstline, separators))]
+#     restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
+#     decimals<-c(".",",")
+#     mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
+#     cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
+#     data.headers<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))[-1]
+#     data.original<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=1,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+#     names(data.original)<-data.headers
+#     rm("firstline","data.headers","separators","mysep","decimals")
+#     cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+#   }else{
+#     stop(paste("Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,sep="-"))
+#   }
+#   
+#   # dealing with season start and end, extracts information from rownames and gets season start/end
+#   
+#   seasons.original<-data.frame(names(data.original),str_match(names(data.original),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+#   names(seasons.original)<-c("season","anioi","aniof","aniow")
+#   seasons.original[is.na(seasons.original)]<-""
+#   
+#   # This is the original data, now we modify it, final colnames is as any of these formats:
+#   # 2009/2019 (starting year/ending year) - standard format
+#   # 2010/2011(1) (first part of the 2010/2011 season) - this is done when the season is splitted in two
+#   # 2009 (year) - for southern hemisphere countries, each season is one single year
+#   
+#   # Final modified data  
+#   data.final<-data.original
+#   
+#   # dealing with season start and end
+#   seasons.final<-seasons.original
+#   seasonsname<-seasons.final$anioi
+#   seasonsname[seasons.final$aniof!=""]<-paste(seasonsname[seasons.final$aniof!=""],seasons.final$aniof[seasons.final$aniof!=""],sep="/")
+#   seasonsname[seasons.final$aniow!=""]<-paste(seasonsname[seasons.final$aniow!=""],seasons.final$aniow[seasons.final$aniow!=""],sep="/")
+#   seasons.final$season<-seasonsname
+#   rm("seasonsname")
+#   
+#   # The read function also subsets the original dataset, subsetting data
+#   if (!any(is.na(i.subset))){
+#     mysubset<-i.subset
+#     data.final<-data.final[mysubset]
+#     seasons.final<-seasons.final[mysubset,]    
+#     rm("mysubset")
+#   }
+#   
+#   # And removes the pandemic seasons if requested to
+#   if (i.remove.pandemic){
+#     mysubset<-seasons.final$anioi!="2009"
+#     data.final<-data.final[mysubset]
+#     seasons.final<-seasons.final[mysubset,]    
+#     rm("mysubset")
+#   }
+#   
+#   # Limit to the maximum number of seasons
+#   if (!is.na(i.n.max.temp)){
+#     mysubset<-(max(NCOL(data.final)-i.n.max.temp+1,1)):NCOL(data.final)
+#     data.final<-data.final[mysubset]
+#     seasons.final<-seasons.final[mysubset,]    
+#     rm("mysubset")
+#   }
+#   
+#   # Limiting weeks
+#   if (!any(is.na(i.season.limits))){
+#     if (i.season.limits[1]<i.season.limits[2]) validweeks<-as.character(i.season.limits[1]:i.season.limits[2]) else validweeks<-as.character(c(i.season.limits[1]:53,1:i.season.limits[2]))
+#     data.final<-data.final[rownames(data.final) %in% validweeks,]
+#   }  
+#   
+#   # Seasons with more than a given percentage of NAs are removed
+#   if (!is.na(i.naweeks.to.remove)){
+#     mysubset<-apply(data.final, 2, function(x) sum(is.na(x))/length(x))<=i.naweeks.to.remove
+#     data.final<-data.final[mysubset]
+#     seasons.final<-seasons.final[mysubset,]    
+#     rm("mysubset")
+#   }
+#   
+#   cat("Subsetting...\n")
+#   cat("Final data: ",NROW(data.final)," rows and ",NCOL(data.final)," columns\n\n",sep="")
+#   
+#   names(data.final)<-seasons.final$season    
+#   return(data.final)
+# }
+
+read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.max.temp=NA,i.season.limits=NA,i.naweeks.to.remove=1, i.table){
+  #cat(">>>START read.data\n")
+  if (!file.exists(i.file)){
+    data.final<-NULL
+    cat("Warning: file not found\n")
+  } else if (is.null(i.table)){
+    data.final<-NULL
+    cat("Warning: no dataset specified\n");
+  } else{
+    # divide the filename between path, name and extension
+    temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
+    temp1[is.na(temp1)]<-""
+    filepath<-temp1[2]
+    filename<-paste(temp1[3],temp1[4],sep="")
+    if (is.na(i.extension)){
+      temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
+      temp2[is.na(temp2)]<-""  
+      fileextension<-temp2[3]
+      rm("temp2")
+    }else {
+      fileextension<-i.extension
+    }
+    
     rm("temp1")
-    # detect separator and decimal separator
-    cat("Text file detected: ",filename," (encoding: ",myencoding,")\n",sep="")
-    firstline<-readLines(i.file,1,encoding=myencoding)
-    separators<-c(',',';','\t','\\|')
-    mysep<-separators[which.max(str_count(firstline, separators))]
-    restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
-    decimals<-c(".",",")
-    mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
-    cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
-    data.headers<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))[-1]
-    data.original<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=1,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
-    names(data.original)<-data.headers
-    rm("firstline","data.headers","separators","mysep","decimals")
-    cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-  }else{
-    stop(paste("Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,sep="-"))
+    
+    # reading data, depending the extension, different options
+    if (tolower(fileextension)=="xlsx"){
+      # xlsx files, openxlsx read data perfectly
+      cat("Excel 2007+ file detected: ",filename,"\n",sep="")
+      wb<-openxlsx::loadWorkbook(i.file)
+      sheets<-openxlsx::sheets(wb)
+      n.sheets<-length(sheets)
+      if (is.na(i.table)){
+        data.original<-NULL
+        cat("Warning: Table name not specified\n");
+        #i.table<-sheets[1]
+      }else if (!(i.table %in% sheets)) {
+        data.original<-NULL
+        cat("Warning: Table ",i.table," not found\n");
+        #i.table<-sheets[1]
+      }else{
+        cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+        data.original<-openxlsx::read.xlsx(wb,sheet=i.table,rowNames=T)
+        cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+      }
+      rm("sheets","n.sheets")
+    }else if (tolower(fileextension)=="xls"){
+      # no xls library read headers correctly, so i use a first pass to read headers, then the data
+      cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
+      wb <- XLConnect::loadWorkbook(i.file)
+      sheets<-XLConnect::getSheets(wb)
+      n.sheets<-length(sheets)
+      if (is.na(i.table)){
+        data.original<-NULL
+        cat("Warning: Table name not specified\n")
+      }else if (!(i.table %in% sheets)){
+        data.original<-NULL
+        cat("Warning: Table ",i.table," not found\n")
+      }else{
+        cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+        data.headers<-as.character(XLConnect::readWorksheet(wb, sheet = i.table, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))[-1]
+        data.original<-XLConnect::readWorksheet(wb, sheet = i.table,rownames=1, colTypes=XLC$DATA_TYPE.NUMERIC)
+        names(data.original)<-data.headers
+        rm("data.headers")
+        cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+      }
+      rm("sheets","n.sheets")
+    }else if (tolower(fileextension) %in% c("mdb","accdb")){
+      cat("Access file detected: ",filename,"\n",sep="")
+      connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
+      channel<-odbcDriverConnect(connectstring)
+      sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
+      n.sheets<-length(sheets)
+      if (is.na(i.table)){
+        data.original<-NULL
+        cat("Warning: Table name not specified\n")
+        #i.table<-sheets[1]
+      }else if (!(i.table %in% sheets)) {
+        data.original<-NULL
+        cat("Warning: Table ",i.table," not found\n")
+        #i.table<-sheets[1]
+      }else{
+        cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+        data.original<-sqlFetch(channel,i.table,rownames=T)
+        rownames(data.original)<-as.character(data.original[,1])
+        data.original<-data.original[-1]
+        cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+        odbcCloseAll()
+      }
+      rm("sheets","n.sheets","connectstring","channel")
+    }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
+      # text files
+      # detect encoding
+      temp1<-readr::guess_encoding(i.file, n_max = -1)
+      temp1<-temp1[order(temp1$confidence,decreasing = T),]
+      myencoding<-as.character(temp1$encoding[1])
+      rm("temp1")
+      # detect separator and decimal separator
+      cat("Text file detected: ",filename," (encoding: ",myencoding,")\n",sep="")
+      firstline<-readLines(i.file,1,encoding=myencoding)
+      separators<-c(',',';','\t','\\|')
+      mysep<-separators[which.max(str_count(firstline, separators))]
+      restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
+      decimals<-c(".",",")
+      mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
+      cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
+      data.headers<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))[-1]
+      data.original<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=1,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+      names(data.original)<-data.headers
+      rm("firstline","data.headers","separators","mysep","decimals")
+      cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+    }else{
+      data.original<-NULL
+      cat(paste("Warning: Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,"\n",sep="-"))
+      #return(NULL)
+    }
+    
+    if (is.null(data.original)){
+      data.final<-NULL
+    }else{
+      naonlycolumns<-apply(data.original, 2, function(x) all(is.na(x)))
+      if (any(naonlycolumns)){
+        cat("Columns ",paste(names(data.original)[naonlycolumns], collapse=",")," contain only NAs, removing...\n")
+        data.original<-data.original[!naonlycolumns]
+      }
+      nonnumericcolumns<-sapply(data.original, function(x) !is.numeric(x))
+      if (any(nonnumericcolumns)){
+        cat("Columns ",paste(names(data.original)[nonnumericcolumns], collapse=",")," are not numeric, removing...\n")
+        data.original<-data.original[!nonnumericcolumns]
+      }
+      rm("naonlycolumns","nonnumericcolumns")
+      
+      # dealing with season start and end, extracts information from rownames and gets season start/end
+      
+      seasons.original<-data.frame(names(data.original),str_match(names(data.original),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+      names(seasons.original)<-c("season","anioi","aniof","aniow")
+      seasons.original[is.na(seasons.original)]<-""
+      
+      # This is the original data, now we modify it, final colnames is as any of these formats:
+      # 2009/2019 (starting year/ending year) - standard format
+      # 2010/2011(1) (first part of the 2010/2011 season) - this is done when the season is splitted in two
+      # 2009 (year) - for southern hemisphere countries, each season is one single year
+      
+      # Final modified data  
+      data.final<-data.original
+      
+      # dealing with season start and end
+      seasons.final<-seasons.original
+      seasonsname<-seasons.final$anioi
+      seasonsname[seasons.final$aniof!=""]<-paste(seasonsname[seasons.final$aniof!=""],seasons.final$aniof[seasons.final$aniof!=""],sep="/")
+      seasonsname[seasons.final$aniow!=""]<-paste(seasonsname[seasons.final$aniow!=""],seasons.final$aniow[seasons.final$aniow!=""],sep="/")
+      seasons.final$season<-seasonsname
+      rm("seasonsname")
+      
+      # The read function also subsets the original dataset, subsetting data
+      if (!any(is.na(i.subset))){
+        mysubset<-i.subset
+        data.final<-data.final[mysubset]
+        seasons.final<-seasons.final[mysubset,]    
+        rm("mysubset")
+      }
+      
+      # And removes the pandemic seasons if requested to
+      if (i.remove.pandemic){
+        mysubset<-seasons.final$anioi!="2009"
+        data.final<-data.final[mysubset]
+        seasons.final<-seasons.final[mysubset,]    
+        rm("mysubset")
+      }
+      
+      # Limit to the maximum number of seasons
+      if (!is.na(i.n.max.temp)){
+        mysubset<-(max(NCOL(data.final)-i.n.max.temp+1,1)):NCOL(data.final)
+        data.final<-data.final[mysubset]
+        seasons.final<-seasons.final[mysubset,]    
+        rm("mysubset")
+      }
+      
+      # Limiting weeks
+      if (!any(is.na(i.season.limits))){
+        if (i.season.limits[1]<i.season.limits[2]) validweeks<-as.character(i.season.limits[1]:i.season.limits[2]) else validweeks<-as.character(c(i.season.limits[1]:53,1:i.season.limits[2]))
+        data.final<-data.final[rownames(data.final) %in% validweeks,]
+      }  
+      
+      # Seasons with more than a given percentage of NAs are removed
+      if (!is.na(i.naweeks.to.remove)){
+        mysubset<-apply(data.final, 2, function(x) sum(is.na(x))/length(x))<=i.naweeks.to.remove
+        data.final<-data.final[mysubset]
+        seasons.final<-seasons.final[mysubset,]    
+        rm("mysubset")
+      }
+      
+      cat("Subsetting...\n")
+      cat("Final data: ",NROW(data.final)," rows and ",NCOL(data.final)," columns\n\n",sep="")
+      
+      names(data.final)<-seasons.final$season
+    }
+    
   }
   
-  # dealing with season start and end, extracts information from rownames and gets season start/end
-  
-  seasons.original<-data.frame(names(data.original),str_match(names(data.original),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
-  names(seasons.original)<-c("season","anioi","aniof","aniow")
-  seasons.original[is.na(seasons.original)]<-""
-  
-  # This is the original data, now we modify it, final colnames is as any of these formats:
-  # 2009/2019 (starting year/ending year) - standard format
-  # 2010/2011(1) (first part of the 2010/2011 season) - this is done when the season is splitted in two
-  # 2009 (year) - for southern hemisphere countries, each season is one single year
-  
-  # Final modified data  
-  data.final<-data.original
-  
-  # dealing with season start and end
-  seasons.final<-seasons.original
-  seasonsname<-seasons.final$anioi
-  seasonsname[seasons.final$aniof!=""]<-paste(seasonsname[seasons.final$aniof!=""],seasons.final$aniof[seasons.final$aniof!=""],sep="/")
-  seasonsname[seasons.final$aniow!=""]<-paste(seasonsname[seasons.final$aniow!=""],seasons.final$aniow[seasons.final$aniow!=""],sep="/")
-  seasons.final$season<-seasonsname
-  rm("seasonsname")
-  
-  # The read function also subsets the original dataset, subsetting data
-  if (!any(is.na(i.subset))){
-    mysubset<-i.subset
-    data.final<-data.final[mysubset]
-    seasons.final<-seasons.final[mysubset,]    
-    rm("mysubset")
-  }
-  
-  # And removes the pandemic seasons if requested to
-  if (i.remove.pandemic){
-    mysubset<-seasons.final$anioi!="2009"
-    data.final<-data.final[mysubset]
-    seasons.final<-seasons.final[mysubset,]    
-    rm("mysubset")
-  }
-  
-  # Limit to the maximum number of seasons
-  if (!is.na(i.n.max.temp)){
-    mysubset<-(max(NCOL(data.final)-i.n.max.temp+1,1)):NCOL(data.final)
-    data.final<-data.final[mysubset]
-    seasons.final<-seasons.final[mysubset,]    
-    rm("mysubset")
-  }
-  
-  # Limiting weeks
-  if (!any(is.na(i.season.limits))){
-    if (i.season.limits[1]<i.season.limits[2]) validweeks<-as.character(i.season.limits[1]:i.season.limits[2]) else validweeks<-as.character(c(i.season.limits[1]:53,1:i.season.limits[2]))
-    data.final<-data.final[rownames(data.final) %in% validweeks,]
-  }  
-  
-  # Seasons with more than a given percentage of NAs are removed
-  if (!is.na(i.naweeks.to.remove)){
-    mysubset<-apply(data.final, 2, function(x) sum(is.na(x))/length(x))<=i.naweeks.to.remove
-    data.final<-data.final[mysubset]
-    seasons.final<-seasons.final[mysubset,]    
-    rm("mysubset")
-  }
-  
-  cat("Subsetting...\n")
-  cat("Final data: ",NROW(data.final)," rows and ",NCOL(data.final)," columns\n\n",sep="")
-  
-  names(data.final)<-seasons.final$season    
+  #cat(">>>END read.data\n")
   return(data.final)
 }
+
+
+# get.tables<-function(i.file,i.extension=NA){
+#   if (!file.exists(i.file)) stop("file not found")
+#   # divide the filename between path, name and extension
+#   temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
+#   temp1[is.na(temp1)]<-""
+#   filepath<-temp1[2]
+#   filenamenoextension<-temp1[3]
+#   filename<-paste(temp1[3],temp1[4],sep="")
+#   if (is.na(i.extension)){
+#     temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
+#     temp2[is.na(temp2)]<-""  
+#     fileextension<-temp2[3]
+#     rm("temp2")
+#   }else fileextension<-i.extension
+#   rm("temp1")
+#   # reading data, depending the extension, different options
+#   if (tolower(fileextension)=="xlsx"){
+#     # xlsx files, openxlsx read data perfectly
+#     #cat("Excel 2007+ file detected: ",filename,"\n",sep="")
+#     wb<-openxlsx::loadWorkbook(i.file)
+#     sheets<-openxlsx::sheets(wb)
+#   }else if (tolower(fileextension)=="xls"){
+#     # no xls library read headers correctly, so i use a first pass to read headers, then the data
+#     #cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
+#     wb <- XLConnect::loadWorkbook(i.file)
+#     sheets<-XLConnect::getSheets(wb)
+#   }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
+#     sheets<-"text file"
+#   }else{
+#     stop(paste("Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,sep="-"))
+#   }
+#   return(sheets)
+# }
+
+get.datasets<-function(i.file,i.extension=NA){
+  #cat(">>>START get.datasets\n")
+  if (!file.exists(i.file)){
+    sheets<-NULL
+    cat("Warning: file not found\n")
+  }else{
+    # divide the filename between path, name and extension
+    temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
+    temp1[is.na(temp1)]<-""
+    filepath<-temp1[2]
+    filenamenoextension<-temp1[3]
+    filename<-paste(temp1[3],temp1[4],sep="")
+    if (is.na(i.extension)){
+      temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
+      temp2[is.na(temp2)]<-""  
+      fileextension<-temp2[3]
+      rm("temp2")
+    }else{
+      fileextension<-i.extension
+    } 
+    rm("temp1")
+    # reading data, depending the extension, different options
+    if (tolower(fileextension)=="xlsx"){
+      # xlsx files, openxlsx read data perfectly
+      #cat("Excel 2007+ file detected: ",filename,"\n",sep="")
+      wb<-openxlsx::loadWorkbook(i.file)
+      sheets<-openxlsx::sheets(wb)
+      rm("wb")
+    }else if (tolower(fileextension)=="xls"){
+      # no xls library read headers correctly, so i use a first pass to read headers, then the data
+      #cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
+      wb <- XLConnect::loadWorkbook(i.file)
+      sheets<-XLConnect::getSheets(wb)
+      rm("wb")
+    }else if (tolower(fileextension) %in% c("mdb","accdb")){
+      connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
+      channel<-odbcDriverConnect(connectstring)
+      sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
+      odbcCloseAll()
+      rm("connectstring","channel")
+    }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
+      sheets<-"text file"
+    }else{
+      sheets<-NULL
+      cat(paste("Warning: Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,"\n",sep="-"));
+    }
+    
+  }
+  #cat(">>>END get.datasets\n")
+  return(sheets)
+}
+
 
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 

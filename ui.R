@@ -17,7 +17,10 @@ shinyUI(dashboardPage(skin = "blue",
                    ###    Load data          ######
                    ################################
                    
-                   fileInput("file", label = h5("Load data")),
+                   # fileInput("file", label = h5("Load data")),
+                   # selectInput("table", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Table"), size=1, selectize = FALSE, choices = ""),
+                   fileInput('file', 'Load file', accept = c("csv","dat","prn","txt","xls","xlsx")),
+                   uiOutput('loaddata'),
                    # selectInput("K", h5("    Apply MEM on season"), size=1,
                    #             selectize = FALSE, choices = ""),
 
