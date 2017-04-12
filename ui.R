@@ -470,17 +470,16 @@ shinyUI(dashboardPage(skin = "blue",
                          selectize = FALSE,
                          selected = "default")
             #),column(2
-                     ,numericInput("colTransparency",
-                                          h5("Transparency",
-                                             tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
-                                             bsButton("q112", label = "", 
-                                                      icon = icon("question"), 
-                                                      style = "info", size = "extra-small")), 
-                                  #width = '130px',
-                                  1,
-                                  step=0.1,
-                                  min=0,
-                                  max=1)
+                     # ,numericInput("colTransparency",
+                     #                      h5("Transparency",
+                     #                         tags$style(type = "text/css", "#q1 {vertical-align: top;}"),
+                     #                         bsButton("q112", label = "", 
+                     #                                  icon = icon("question"), 
+                     #                                  style = "info", size = "extra-small")), 
+                     #              1,
+                     #              step=0.1,
+                     #              min=0,
+                     #              max=1)
             #))
                         
             )
