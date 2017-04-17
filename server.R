@@ -2759,9 +2759,15 @@ generate_palette <- function(number.series=NA){
   if (is.na(number.series)) number.series<-10
   params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
             "colThresholds","colSeries","colEpidemic")
-  params.default<-list(colObservedLines="#808080",colObservedPoints="#000000",colEpidemicStart="#FF0000",
-                       colEpidemicStop="#40FF40",colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#8c6bb1"),
-                       colSeries="Accent",colEpidemic=c("#00C000","#800080","#FFB401"),colTransparency=1)
+  params.default<-list(colObservedLines="#808080",
+                       colObservedPoints="#000000",
+                       colEpidemicStart="#FF0000",
+                       colEpidemicStop="#40FF40",
+                       colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                       colSeries="Accent",
+                       colEpidemic=c("#00C000","#800080","#FFB401")
+                       #,colTransparency=1
+                       )
   n.params<-length(params)
   for (i in 1:n.params){
     eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
@@ -2775,12 +2781,13 @@ generate_palette <- function(number.series=NA){
   colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
   if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
   # Last one is a number between 0 and 1
-  colTransparency<-input$colTransparency
-  if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
+  # colTransparency<-input$colTransparency
+  # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
   colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
                      colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
-                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic,
-                     colTransparency=colTransparency)
+                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic
+                     #,colTransparency=colTransparency
+                     )
   #print(colors.final)
   colors.final
 }
