@@ -1,34 +1,24 @@
 rm(list = ls(all=TRUE))
+
 jscode <- "Shiny.addCustomMessageHandler('closeWindow', function(m) {window.close();});"
-ladda.paket <- function(vector.paket) {
-  lapply(vector.paket, 
-         function (x) if(sum(installed.packages()[, 1]%in%x)==0) install.packages(x))
-  lapply(vector.paket, 
-         require, 
-         character.only=TRUE)
-  lapply(vector.paket,  function(x) paste(x,packageVersion(x)))
+
+testinstall.packages <- function(i.packages) {
+  lapply(i.packages, function (x) if(sum(installed.packages()[, 1]%in%x)==0) install.packages(x))
+  lapply(i.packages, require, character.only=TRUE)
+  lapply(i.packages,  function(x) paste(x, packageVersion(x)))
 }
-ladda.paket(c("shiny",
-              "mem",
-              "shinythemes", 
-              "shinydashboard",
-              "shinyjs",
-              "RColorBrewer",
-              "shinyBS",
-              "plotly",
-              "ggplot2",
-              "ggthemes",
-              "reshape2",
-              "R.utils",
-              "openxlsx",
-              "XLConnect",
-              "stringr",
-              "readr",
-              "magick",
-              "DT",
-              "stringr",
-              "gplots",
-              "RODBC"))
+
+testinstall.packages(c("shiny", "shinythemes", "shinydashboard", "shinyjs", "RColorBrewer", "shinyBS",
+              "plotly", "ggplot2", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
+              "stringr", "readr", "magick", "DT", "stringr", "gplots", "RODBC"))
+
+# Install mem development version
+
+if (packageVersion("mem")!="2.3"){
+  testinstall.packages("devtools")
+  devtools::install_github("lozalojo/mem")
+}
+library("mem")
 
 # The palette with black:
 #cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
