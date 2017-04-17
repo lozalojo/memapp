@@ -2613,11 +2613,16 @@ get.datasets<-function(i.file,i.extension=NA){
       sheets<-XLConnect::getSheets(wb)
       rm("wb")
     }else if (tolower(fileextension) %in% c("mdb","accdb")){
-      connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
-      channel<-odbcDriverConnect(connectstring)
-      sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
-      odbcCloseAll()
-      rm("connectstring","channel")
+      if (.Platform$OS.type=="windows"){
+        connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
+        channel<-odbcDriverConnect(connectstring)
+        sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
+        odbcCloseAll()
+        rm("connectstring","channel")
+      }else{
+        sheets<-NULL
+        cat("Warning: Access file reading only supported in windows systems\n")
+      }
     }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
       sheets<-"text file"
     }else{
