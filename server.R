@@ -92,6 +92,7 @@ data_good <- reactive({
                     i.type.other=as.numeric(input$type.other),
                     i.method=as.numeric(input$method),
                     i.param=as.numeric(input$param),
+                    i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                     i.n.max=as.numeric(input$n.max))
   good
 })
@@ -106,7 +107,10 @@ data_optim <- reactive({
                                   i.pandemic=T,
                                   i.seasons=input$SelectMaximum)
   if (length(selectedcolumns)<3){return()}
-  roca<-roc.analysis(datfile[,selectedcolumns], i.param.values = seq(2, 3, 0.1), i.min.seasons = length(selectedcolumns), i.graph.file = F,
+  roca<-roc.analysis(datfile[,selectedcolumns], 
+                     i.param.values = seq(input$paramrange[1],input$paramrange[2],by=0.1), 
+                     i.min.seasons = length(selectedcolumns), 
+                     i.graph.file = F,
                      i.seasons=NA,
                      i.type.threshold=as.numeric(input$type.threshold),
                      i.tails.threshold=as.numeric(input$tails),
@@ -115,6 +119,7 @@ data_optim <- reactive({
                      i.tails.intensity=as.numeric(input$tails),
                      i.type.curve=as.numeric(input$type.curve),
                      i.type.other=as.numeric(input$type.other),
+                     i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                      i.n.max=as.numeric(input$n.max))
   roca
 })
@@ -133,6 +138,8 @@ get_datasets <- function(){
 }
 
 read_data <- function(){
+  #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
+  #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
   infile <- input$file
   indataset <- input$dataset
   cat(">",infile$name,"-",indataset,"<\n")
@@ -2396,27 +2403,32 @@ read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.ma
       rm("sheets","n.sheets")
     }else if (tolower(fileextension) %in% c("mdb","accdb")){
       cat("Access file detected: ",filename,"\n",sep="")
-      connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
-      channel<-odbcDriverConnect(connectstring)
-      sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
-      n.sheets<-length(sheets)
-      if (is.na(i.table)){
-        data.original<-NULL
-        cat("Warning: Table name not specified\n")
-        #i.table<-sheets[1]
-      }else if (!(i.table %in% sheets)) {
-        data.original<-NULL
-        cat("Warning: Table ",i.table," not found\n")
-        #i.table<-sheets[1]
+      if (.Platform$OS.type=="windows"){
+        connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
+        channel<-odbcDriverConnect(connectstring)
+        sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
+        n.sheets<-length(sheets)
+        if (is.na(i.table)){
+          data.original<-NULL
+          cat("Warning: Table name not specified\n")
+          #i.table<-sheets[1]
+        }else if (!(i.table %in% sheets)) {
+          data.original<-NULL
+          cat("Warning: Table ",i.table," not found\n")
+          #i.table<-sheets[1]
+        }else{
+          cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+          data.original<-sqlFetch(channel,i.table,rownames=T)
+          rownames(data.original)<-as.character(data.original[,1])
+          data.original<-data.original[-1]
+          cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+          odbcCloseAll()
+        }
+        rm("sheets","n.sheets","connectstring","channel")
       }else{
-        cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
-        data.original<-sqlFetch(channel,i.table,rownames=T)
-        rownames(data.original)<-as.character(data.original[,1])
-        data.original<-data.original[-1]
-        cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-        odbcCloseAll()
+        data.original<-NULL
+        cat("Warning: Access file reading only supported in windows systems\n")
       }
-      rm("sheets","n.sheets","connectstring","channel")
     }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
       # text files
       # detect encoding

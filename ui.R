@@ -173,19 +173,26 @@ shinyUI(dashboardPage(skin = "blue",
                                        background = "black",
                                        collapsible = TRUE, 
                                        collapsed=TRUE,
-                                       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Timing"),
                                        fluidRow(
-                                         column(4, 
-                                                selectInput("method", h6("Method for timing", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotim", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4), size=1, selectize = FALSE, selected = 2),
-                                                bsPopover(id = "helpotim", title = "Method for epidemic timing", content = "Original: uses the process shown in the original paper.<br>Fixed criterium: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br>Slope: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br>Second derivative: calculates the second derivative and equals to zero to search an inflexion point in the original curve.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                         ),
-                                         column(2,
-                                                conditionalPanel(
-                                                  condition = "input.method == 2",
-                                                  numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpopar", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Slope parameter"), 2.8, step=0.1),
-                                                  bsPopover(id = "helpopar", title = "Window parameter", content = "Window parameter used in fixed criterium method.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                         column(6,
+                                                h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Timing"),
+                                                column(8, 
+                                                       selectInput("method", h6("Method for timing", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotim", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4), size=1, selectize = FALSE, selected = 2),
+                                                       bsPopover(id = "helpotim", title = "Method for epidemic timing", content = "Original: uses the process shown in the original paper.<br>Fixed criterium: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br>Slope: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br>Second derivative: calculates the second derivative and equals to zero to search an inflexion point in the original curve.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                                ),
+                                                column(4,
+                                                       conditionalPanel(
+                                                         condition = "input.method == 2",
+                                                         numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpopar", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Slope parameter"), 2.8, step=0.1),
+                                                         bsPopover(id = "helpopar", title = "Window parameter", content = "Window parameter used in fixed criterium method.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                                       )
                                                 )
-                                         )
+                                         ),
+                                         column(6,
+                                                h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Goodness & optimize"),
+                                                sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoopt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
+                                                bsPopover(id = "helpoopt", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                                )
                                        ),
                                        h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
                                        fluidRow(
