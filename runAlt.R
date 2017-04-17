@@ -25,7 +25,7 @@ library("mem")
 #-----------------------------------------------------------------------------------
 #### Paths ####
 #-----------------------------------------------------------------------------------
-script.path <- "."
+script.path <- dirname(rstudioapi::getActiveDocumentContext()$path)
 
 col.mine <- c("black","blue","seagreen","red","darkgoldenrod4", "darkmagenta",
               "firebrick", "gold3", "darkslategrey", "lemonchiffon4")
@@ -33,5 +33,3 @@ palette(col.mine)
 
 ## Applikation Shiny
 runApp(file.path(script.path))
-
-
