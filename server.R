@@ -2425,9 +2425,55 @@ read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.ma
           odbcCloseAll()
         }
         rm("sheets","n.sheets","connectstring","channel")
+      }else if (.Platform$OS.type=="unix"){
+        # check if mdbtools is installed
+        if (system("mdb-tables")==127){
+          data.original<-NULL
+          cat("mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
+        }else{
+          # read tables in file
+          sheets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
+          n.sheets<-length(sheets)
+          if (is.na(i.table)){
+            data.original<-NULL
+            cat("Warning: Table name not specified\n")
+            #i.table<-sheets[1]
+          }else if (!(i.table %in% sheets)) {
+            data.original<-NULL
+            cat("Warning: Table ",i.table," not found\n")
+            #i.table<-sheets[1]
+          }else{
+            cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
+            # read selected table schema
+            tableschema <- system(paste('mdb-schema -T', shQuote(i.table), shQuote(i.file)), intern=TRUE)
+            start <- grep('^ \\($', tableschema) + 1
+            end   <- grep('^\\);$', tableschema) - 1
+            tableschema <- tableschema[start:end]
+            tableschema <- strsplit(tableschema, '\t')
+            vnames <- sapply(tableschema, function(x)x[2])
+            vnames <- substring(vnames, 2,nchar(vnames)-1)
+            filecsv <- tempfile()
+            system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.table), '>', filecsv))
+            # detect encoding
+            encodings<-readr::guess_encoding(filecsv, n_max = -1)
+            encodings<-encodings[order(encodings$confidence,decreasing = T),]
+            myencoding<-as.character(encodings$encoding[1])
+            # detect separator and decimal separator
+            firstline<-readLines(filecsv,1,encoding=myencoding)
+            separators<-c(',',';','\t','\\|')
+            mysep<-separators[which.max(stringr::str_count(firstline, separators))]
+            restlines<-paste(readLines(filecsv,encoding=myencoding)[-1],collapse="")
+            decimals<-c(".",",")
+            mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
+            data.original<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=1,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+            names(data.original)<-vnames[-1]
+            rm("firstline","separators","mysep","decimals", "tableschema", "start", "end", "encodings")
+            cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
+          }
+        }
       }else{
         data.original<-NULL
-        cat("Warning: Access file reading only supported in windows systems\n")
+        cat("Warning: Access file only supported in windows and *nix systems\n")
       }
     }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
       # text files
@@ -2619,6 +2665,15 @@ get.datasets<-function(i.file,i.extension=NA){
         sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
         odbcCloseAll()
         rm("connectstring","channel")
+      }else if (.Platform$OS.type=="unix"){
+        # check if mdbtools is installed
+        if (system("mdb-tables")==127){
+          sheets<-NULL
+          cat("mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
+        }else{
+          # read tables in file
+          sheets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
+        }
       }else{
         sheets<-NULL
         cat("Warning: Access file reading only supported in windows systems\n")

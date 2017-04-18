@@ -14,10 +14,16 @@ testinstall.packages(c("shiny", "shinythemes", "shinydashboard", "shinyjs", "RCo
 
 # Install mem development version
 
-if (packageVersion("mem")!="2.3"){
+if ("mem" %in% installed.packages()[,"Package"]){
+  if (as.numeric(as.character(packageVersion("mem")))<2){
+    testinstall.packages("devtools")
+    devtools::install_github("lozalojo/mem")
+  }  
+}else{
   testinstall.packages("devtools")
   devtools::install_github("lozalojo/mem")
 }
+
 library("mem")
 
 # The palette with black:
@@ -25,6 +31,7 @@ library("mem")
 #-----------------------------------------------------------------------------------
 #### Paths ####
 #-----------------------------------------------------------------------------------
+
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 col.mine <- c("black","blue","seagreen","red","darkgoldenrod4", "darkmagenta",
