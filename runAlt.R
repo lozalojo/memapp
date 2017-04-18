@@ -39,4 +39,4 @@ col.mine <- c("black","blue","seagreen","red","darkgoldenrod4", "darkmagenta",
 palette(col.mine)
 
 ## Applikation Shiny
-runApp()
+runApp(launch.browser = T)
