@@ -68,8 +68,9 @@ data_good <- reactive({
                                   i.pandemic=T,
                                   i.seasons=input$SelectMaximum)
   if (length(selectedcolumns)<3){return()}
-  
-  good<-memgoodness(datfile[,selectedcolumns],i.graph=F, i.min.seasons = length(selectedcolumns),
+  good<-memgoodness(datfile[,selectedcolumns], 
+                    i.graph=F, 
+                    i.min.seasons = 3,
                     i.seasons=NA,
                     i.type.threshold=as.numeric(input$type.threshold),
                     i.tails.threshold=as.numeric(input$tails),
@@ -81,7 +82,8 @@ data_good <- reactive({
                     i.method=as.numeric(input$method),
                     i.param=as.numeric(input$param),
                     i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
-                    i.n.max=as.numeric(input$n.max))
+                    i.n.max=as.numeric(input$n.max),
+                    i.goodness.method=as.character(input$validation))
   progress$set(value = 2)
   good
 })
@@ -101,7 +103,7 @@ data_optim <- reactive({
   if (length(selectedcolumns)<3){return()}
   roca<-roc.analysis(datfile[,selectedcolumns], 
                      i.param.values = seq(input$paramrange[1],input$paramrange[2],by=0.1), 
-                     i.min.seasons = length(selectedcolumns), 
+                     i.min.seasons = 3, 
                      i.graph.file = F,
                      i.seasons=NA,
                      i.type.threshold=as.numeric(input$type.threshold),
@@ -112,7 +114,8 @@ data_optim <- reactive({
                      i.type.curve=as.numeric(input$type.curve),
                      i.type.other=as.numeric(input$type.other),
                      i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
-                     i.n.max=as.numeric(input$n.max))
+                     i.n.max=as.numeric(input$n.max),
+                     i.goodness.method=as.character(input$validation))
   progress$set(value = 2)
   roca
 })

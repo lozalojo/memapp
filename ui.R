@@ -190,8 +190,15 @@ shinyUI(dashboardPage(skin = "blue",
                                          ),
                                          column(6,
                                                 h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Goodness & optimize"),
-                                                sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoopt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
-                                                bsPopover(id = "helpoopt", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                                column(8, 
+                                                       sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoopt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
+                                                       bsPopover(id = "helpoopt", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                                ),
+                                                column(4,
+                                                       selectInput("validation", h6("Validation", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpocro", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Cross"="cross", "Sequential"="sequential"), size=1, selectize = FALSE, selected = "cross"),
+                                                       bsPopover(id = "helpocro", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                                )
+                                                
                                                 )
                                        ),
                                        h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
