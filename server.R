@@ -2,26 +2,10 @@ library(shiny)
 
 shinyServer(function(input, output, session) {
   
-# read_data <- reactive({
-#   infile <- input$file
-#   indataset <- input$dataset
-#   if(is.null(infile)){return(NULL)}
-#   if(is.null(indataset)){return(NULL)}
-#   #dat <- as.data.frame(read.csv2(file=infile$datapath, sep=";", header=TRUE))
-#   #dat <- as.data.frame(dat)
-#   fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
-#   dat<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
-#   dat$vecka<-rownames(dat)
-#   dat<-dat[c(NCOL(dat),1:(NCOL(dat)-1))]
-#   dat$num <- 1:nrow(dat)
-#   dat2 <- as.data.frame(apply(dat, 2, function(x) as.numeric(x)))
-#   rownames(dat2) <- rownames(dat)
-# 
-#   dat2
-# })
-
 data_model <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   # cat("data_model function\n")
   datfile <- read_data()
   if(is.null(datfile)){return()}
@@ -67,10 +51,14 @@ data_model <- reactive({
                   i.method=as.numeric(input$method),
                   i.param=as.numeric(input$param),
                   i.n.max=as.numeric(input$n.max))
+  progress$set(value = 2)
   epi
 })
 
 data_good <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   # cat("data_good function\n")
   datfile <- read_data()
   if(is.null(datfile)){return()}
@@ -94,10 +82,14 @@ data_good <- reactive({
                     i.param=as.numeric(input$param),
                     i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                     i.n.max=as.numeric(input$n.max))
+  progress$set(value = 2)
   good
 })
 
 data_optim <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   # cat("data_optim function\n")
   datfile <- read_data()
   if(is.null(datfile)){return()}
@@ -121,6 +113,7 @@ data_optim <- reactive({
                      i.type.other=as.numeric(input$type.other),
                      i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                      i.n.max=as.numeric(input$n.max))
+  progress$set(value = 2)
   roca
 })
 
@@ -281,7 +274,7 @@ observe({
 
 output$loaddata = renderUI({
   datasets<-get_datasets()
-  if(!is.null(datasets)) selectInput('dataset', 'dataset', get_datasets())
+  if(!is.null(datasets)) selectInput('dataset', "Dataset", get_datasets())
 })
 
 
@@ -2588,41 +2581,6 @@ read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.ma
   #cat(">>>END read.data\n")
   return(data.final)
 }
-
-
-# get.tables<-function(i.file,i.extension=NA){
-#   if (!file.exists(i.file)) stop("file not found")
-#   # divide the filename between path, name and extension
-#   temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
-#   temp1[is.na(temp1)]<-""
-#   filepath<-temp1[2]
-#   filenamenoextension<-temp1[3]
-#   filename<-paste(temp1[3],temp1[4],sep="")
-#   if (is.na(i.extension)){
-#     temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
-#     temp2[is.na(temp2)]<-""  
-#     fileextension<-temp2[3]
-#     rm("temp2")
-#   }else fileextension<-i.extension
-#   rm("temp1")
-#   # reading data, depending the extension, different options
-#   if (tolower(fileextension)=="xlsx"){
-#     # xlsx files, openxlsx read data perfectly
-#     #cat("Excel 2007+ file detected: ",filename,"\n",sep="")
-#     wb<-openxlsx::loadWorkbook(i.file)
-#     sheets<-openxlsx::sheets(wb)
-#   }else if (tolower(fileextension)=="xls"){
-#     # no xls library read headers correctly, so i use a first pass to read headers, then the data
-#     #cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
-#     wb <- XLConnect::loadWorkbook(i.file)
-#     sheets<-XLConnect::getSheets(wb)
-#   }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
-#     sheets<-"text file"
-#   }else{
-#     stop(paste("Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,sep="-"))
-#   }
-#   return(sheets)
-# }
 
 get.datasets<-function(i.file,i.extension=NA){
   #cat(">>>START get.datasets\n")
