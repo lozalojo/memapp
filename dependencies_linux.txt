@@ -1,0 +1,6 @@
+plotly
+.hexbin - requires a fortran compiler
+XLConnect
+.rJava - requires java and configure R for it sudo R CMD javareconf
+RODBC - requires odbc package
+mdb tools
