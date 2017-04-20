@@ -1735,7 +1735,9 @@ read_data <- function(){
     #   rownames(data.final) <- rownames(data.final)
     # }
   }
-  transform.data(data.final,input$transformation)
+  #cat(as.numeric(input$transformation),"\n",is.null(data.final),"\n")
+  #transform.data(data.final,as.numeric(input$transformation))
+  transformseries(data.final, i.transformation=as.numeric(input$transformation))
 }
 
 plotSeasons <- function(i.data, 
@@ -2735,33 +2737,33 @@ read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.ma
   return(data.final)
 }
 
-transform.data<-function(i.data,i.transformation){
-  if (is.null(i.data)){
-    i.data.transf<-i.data
-  }else if (is.null(i.transformation)){
-    i.data.transf<-i.data
-  }else if (is.na(i.transformation)){
-    i.data.transf<-i.data
-  }else{
-    if (i.transformation==1){
-      i.data.transf<-i.data
-    }else if (i.transformation==2){
-      # odd transformation requires p between 0 and 1, if I have percentage I have to divide by 100
-      # in case other unit is used, first i detect the units x10, x100, x1000, x10000...
-      mx<-max(i.data,na.rm=T)
-      mults<-0:25
-      mult<-min(mults[10^mults>=mx])
-      i.data.transf<-i.data/(10^mult)
-      cat("odd multiplier: ",mult,"\n")
-      i.data.transf<-data.frame(apply(i.data.transf,2,function(x) x/(1-x)),stringsAsFactors = F)
-      names(i.data.transf)<-names(i.data)
-      rownames(i.data.transf)<-rownames(i.data)
-    }else{
-      i.data.transf<-i.data
-    }
-  }
-  return(i.data.transf)
-}
+# transform.data<-function(i.data,i.transformation){
+#   if (is.null(i.data)){
+#     i.data.transf<-i.data
+#   }else if (is.null(i.transformation)){
+#     i.data.transf<-i.data
+#   }else if (is.na(i.transformation)){
+#     i.data.transf<-i.data
+#   }else{
+#     if (i.transformation==1){
+#       i.data.transf<-i.data
+#     }else if (i.transformation==2){
+#       # odd transformation requires p between 0 and 1, if I have percentage I have to divide by 100
+#       # in case other unit is used, first i detect the units x10, x100, x1000, x10000...
+#       mx<-max(i.data,na.rm=T)
+#       mults<-0:25
+#       mult<-min(mults[10^mults>=mx])
+#       i.data.transf<-i.data/(10^mult)
+#       cat("odd multiplier: ",mult,"\n")
+#       i.data.transf<-data.frame(apply(i.data.transf,2,function(x) x/(1-x)),stringsAsFactors = F)
+#       names(i.data.transf)<-names(i.data)
+#       rownames(i.data.transf)<-rownames(i.data)
+#     }else{
+#       i.data.transf<-i.data
+#     }
+#   }
+#   return(i.data.transf)
+# }
 
 get.datasets<-function(i.file,i.extension=NA){
   #cat(">>>START get.datasets\n")
