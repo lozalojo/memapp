@@ -1,6 +1,8 @@
 library(shiny)
 
 shinyServer(function(input, output, session) {
+
+# Reactive functions
   
 data_model <- reactive({
   progress <- Progress$new(session, min=1, max=2)
@@ -120,105 +122,51 @@ data_optim <- reactive({
   roca
 })
 
-get_datasets <- function(){
-  infile <- input$file
-  if(is.null(infile)){
-    datasets.final<-NULL
-    cat("Warning: No file\n")
-  } else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx","mdb","accdb"))) return()
-    datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
-  }
-  datasets.final
-}
+data_evolution <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  datfile <- read_data()
+  if(is.null(datfile)){return()}
+  if (NCOL(datfile)<2){return()}
+  evo <- memevolution(i.data=datfile,
+                      i.evolution.seasons=as.numeric(input$SelectMaximum),
+                      i.evolution.method = as.character(input$validation),
+                      i.type.threshold=as.numeric(input$type.threshold),
+                      i.tails.threshold=as.numeric(input$tails),
+                      i.type.intensity=as.numeric(input$type.intensity),
+                      i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                      i.tails.intensity=as.numeric(input$tails),
+                      i.type.curve=as.numeric(input$type.curve),
+                      i.type.other=as.numeric(input$type.other),
+                      i.method=as.numeric(input$method),
+                      i.param=as.numeric(input$param),
+                      i.n.max=as.numeric(input$n.max))
+  progress$set(value = 2)
+  evo
+})
 
-read_data <- function(){
-  #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
-  #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
-  infile <- input$file
-  indataset <- input$dataset
-  cat(">",infile$name,"-",indataset,"<\n")
-  if(is.null(infile)){
-    data.final<-NULL
-    cat("Warning: No file\n")
-  }else if(is.null(indataset)){
-    data.final<-NULL
-    cat("Warning: No dataset\n")
-  }else if (indataset==""){
-    data.final<-NULL
-    cat("Warning: No dataset\n")
-  }else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
-    data.final<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
-    if (is.null(data.final)){
-      cat("Warning: Error reading data\n")
-    }
-    # else{
-    #   data.final <- as.data.frame(apply(data.final, 2, function(x) as.numeric(x)))
-    #   rownames(data.final) <- rownames(data.final)
-    # }
-  }
-  data.final
-}
-
-
-# observe({
-#   file1 <- input$file
-#   infile<-input$file
-#   if(is.null(infile)) return(NULL)
-#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-#   dt$vecka<-rownames(dt)
-#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-#   ## Decide later what to do with the data, here we just fill
-#   updateSelectInput(session, "K", choices = names(dt)[2:ncol(dt)])
-# })
-# 
-# observe({
-#   file1 <- input$file
-#   infile<-input$file
-#   if(is.null(infile)) return(NULL)
-#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-#   dt$vecka<-rownames(dt)
-#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-#   ## Decide later what to do with the data, here we just fill
-#   updateSelectInput(session, "K2", choices = names(dt)[2:ncol(dt)])
-# })
-# 
-# observe({
-#   file1 <- input$file
-#   infile<-input$file
-#   if(is.null(infile)) return(NULL)
-#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-#   dt$vecka<-rownames(dt)
-#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-#   ## Decide later what to do with the data, here we just fill
-#   updateSelectInput(session, "K3", choices = names(dt)[2:ncol(dt)])
-# })
-# 
-# observe({
-#   file1 <- input$file
-#   infile<-input$file
-#   if(is.null(infile)) return(NULL)
-#   #dt = as.data.frame(read.csv2(file=file1$datapath, sep=";", header=TRUE))
-#   fileextension<-str_match(file1$name,"^(.*)\\.([^\\.]*)$")[3]
-#   if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-#   dt<-read.data(i.file=file1$datapath, i.extension=fileextension)
-#   dt$vecka<-rownames(dt)
-#   dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]  
-#   ## Decide later what to do with the data, here we just fill
-#   updateSelectInput(session, "K4", choices = names(dt)[2:ncol(dt)])
-# })
+data_stability <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  datfile <- read_data()
+  if(is.null(datfile)){return()}
+  if (NCOL(datfile)<2){return()}
+  sta <- memstability(i.data=datfile,
+                      i.type.threshold=as.numeric(input$type.threshold),
+                      i.tails.threshold=as.numeric(input$tails),
+                      i.type.intensity=as.numeric(input$type.intensity),
+                      i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                      i.tails.intensity=as.numeric(input$tails),
+                      i.type.curve=as.numeric(input$type.curve),
+                      i.type.other=as.numeric(input$type.other),
+                      i.method=as.numeric(input$method),
+                      i.param=as.numeric(input$param),
+                      i.n.max=as.numeric(input$n.max))
+  progress$set(value = 2)
+  sta
+})
 
 observe({
   infile <- input$file
@@ -257,29 +205,10 @@ observe({
   
 })
 
-# Define main output structure
-# output$tb <- renderUI({
-#   if(is.null(read_data())){return()}
-#   else
-#     tabsetPanel(tabPanel("File name", DT::dataTableOutput("filedf")),
-#                 tabPanel("Data", DT::dataTableOutput("table")),
-#                 tabPanel("Plot", plotlyOutput("distPlot", width ="100%", height ="100%")),
-#                 tabPanel("Seasons", plotlyOutput("distSeasons", width ="100%", height ="100%")),
-#                 tabPanel("MEM", verbatimTextOutput("memdf")),
-#                 tabPanel("Timing",plotOutput("distPlot2", width ="100%", height ="100%")),
-#                 tabPanel("Series",plotOutput("distSeries", width ="100%", height ="100%")),
-#                 tabPanel("Surveillance",plotOutput("distSurveillance", width ="100%", height ="100%")),
-#                 tabPanel("Animated",imageOutput("distAnimated")),
-#                 tabPanel("Goodness",DT::dataTableOutput("tableGoodness")),
-#                 tabPanel("Optimize",DT::dataTableOutput("tableOptimize"))
-#                 )
-# })
-
 output$loaddata = renderUI({
   datasets<-get_datasets()
   if(!is.null(datasets)) selectInput('dataset', "Dataset", get_datasets())
 })
-
 
 #####################################
 ### DEFINING TABS STRUCTURE
@@ -293,7 +222,9 @@ output$tbData <- renderUI({
                 #tabPanel("Plot", plotlyOutput("tbdPlot", width ="100%", height ="100%")),
                 tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
                 tabPanel("Series",plotlyOutput("tbdSeries", width ="100%", height ="100%")),
-                tabPanel("Timing",uiOutput("tbdTiming"))
+                tabPanel("Timing",uiOutput("tbdTiming")),
+                tabPanel("Evolution",uiOutput("tbdEvolution")),
+                tabPanel("Stability",uiOutput("tbdStability"))
     )
 })
 
@@ -458,6 +389,280 @@ output$tbdTiming = renderUI({
   )
 
 })
+
+output$tbdEvolution <- renderUI({
+  if(is.null(read_data())){return()}
+  else
+    tabsetPanel(tabPanel("Duration", plotlyOutput("tbdEduration", width ="100%", height ="100%")),
+                tabPanel("Start",plotlyOutput("tbdEstart", width ="100%", height ="100%")),
+                tabPanel("Percentage", plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
+                tabPanel("Thresholds",plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
+                tabPanel("Scheme", DT::dataTableOutput("tbdEscheme")),
+                tabPanel("Details", DT::dataTableOutput("tbdEdetails"))
+    )
+})
+
+output$tbdStability <- renderUI({
+  if(is.null(read_data())){return()}
+  else
+    tabsetPanel(tabPanel("Duration", plotlyOutput("tbdSduration", width ="100%", height ="100%")),
+                tabPanel("Start",plotlyOutput("tbdSstart", width ="100%", height ="100%")),
+                tabPanel("Percentage", plotlyOutput("tbdSpercentage", width ="100%", height ="100%")),
+                tabPanel("Thresholds",plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
+                tabPanel("Scheme", DT::dataTableOutput("tbdSscheme")),
+                tabPanel("Details", DT::dataTableOutput("tbdSdetails"))
+    )
+})
+
+output$tbdEduration <- renderPlotly({
+  dataevolution <- data_evolution()$evolution.data
+  if(is.null(dataevolution)){return()}
+  indicators<-c("durationll","duration","durationul")
+  datfile.plot<-dataevolution[indicators]
+  names(datfile.plot)<-c("Lower limit","Duration","Upper limit")
+  # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
+  rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+  colors.palette<-generate_palette(3)
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colSeries,
+                 i.fills=colors.palette$colSeries,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdEstart <- renderPlotly({
+  dataevolution <- data_evolution()$evolution.data
+  datfile <- read_data()
+  if(is.null(dataevolution)){return()}
+  indicators<-c("startll","start","startul")
+  datfile.plot<-dataevolution[indicators]
+  names(datfile.plot)<-c("Lower limit","Start","Upper limit")
+  # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
+  rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+  colors.palette<-generate_palette(3)
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=rownames(datfile),
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colSeries,
+                 i.fills=colors.palette$colSeries,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdEpercentage <- renderPlotly({
+  dataevolution <- data_evolution()$evolution.data
+  if(is.null(dataevolution)){return()}
+  indicators<-c("percentagell","percentage","percentageul")
+  datfile.plot<-dataevolution[indicators]
+  names(datfile.plot)<-c("Lower limit","Epidemic percentage","Upper limit")
+  # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
+  rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+  colors.palette<-generate_palette(3)
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colSeries,
+                 i.fills=colors.palette$colSeries,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdEthresholds <- renderPlotly({
+  dataevolution <- data_evolution()$evolution.data
+  if(is.null(dataevolution)){return()}
+  indicators<-c("epidemic","medium","high","veryhigh","postepidemic")
+  datfile.plot<-dataevolution[indicators]
+  colors.palette<-generate_palette(NCOL(datfile.plot))
+  names(datfile.plot)<-c("Epidemic","Medium int.","High int.","Very high int.","Post-epidemic")
+  # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
+  rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colThresholds,
+                 i.fills=colors.palette$colThresholds,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdEscheme <- DT::renderDataTable({
+  dataevolution <- data_evolution()
+  if(is.null(dataevolution)){return()}
+  dataevolution$evolution.seasons
+}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE)) 
+
+output$tbdEdetails <- DT::renderDataTable({
+  dataevolution <- data_evolution()
+  if(is.null(dataevolution)){return()}
+  roundF(dataevolution$evolution.data,2)
+}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE)) 
+
+output$tbdSduration <- renderPlotly({
+  datastability <- data_stability()$stability.data
+  if(is.null(datastability)){return()}
+  indicators<-c("durationll","duration","durationul")
+  datfile.plot<-datastability[indicators]
+  names(datfile.plot)<-c("Lower limit","Duration","Upper limit")
+  colors.palette<-generate_palette(3)
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colSeries,
+                 i.fills=colors.palette$colSeries,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdSstart <- renderPlotly({
+  datastability <- data_stability()$stability.data
+  datfile <- read_data()
+  if(is.null(datastability)){return()}
+  indicators<-c("startll","start","startul")
+  datfile.plot<-datastability[indicators]
+  names(datfile.plot)<-c("Lower limit","Start","Upper limit")
+  colors.palette<-generate_palette(3)
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.range.y.labels=rownames(datfile),
+                 i.colors=colors.palette$colSeries,
+                 i.fills=colors.palette$colSeries,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdSpercentage <- renderPlotly({
+  datastability <- data_stability()$stability.data
+  if(is.null(datastability)){return()}
+  indicators<-c("percentagell","percentage","percentageul")
+  datfile.plot<-datastability[indicators]
+  names(datfile.plot)<-c("Lower limit","Epidemic percentage","Upper limit")
+  colors.palette<-generate_palette(3)
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colSeries,
+                 i.fills=colors.palette$colSeries,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdSthresholds <- renderPlotly({
+  datastability <- data_stability()$stability.data
+  if(is.null(datastability)){return()}
+  indicators<-c("epidemic","medium","high","veryhigh","postepidemic")
+  datfile.plot<-datastability[indicators]
+  colors.palette<-generate_palette(NCOL(datfile.plot))
+  names(datfile.plot)<-c("Epidemic","Medium int.","High int.","Very high int.","Post-epidemic")
+  p<-plotGeneric(datfile.plot,
+                 i.range.y=NA,
+                 i.range.y.labels=NA,
+                 i.shapes=rep(21,NCOL(datfile.plot)),
+                 i.colors=colors.palette$colThresholds,
+                 i.fills=colors.palette$colThresholds,
+                 i.sizes=rep(3,NCOL(datfile.plot)),
+                 i.linetypes=rep("solid",NCOL(datfile.plot)),
+                 i.linesize=1)
+  z <- ggplotly(p, width = 800, height = 600)
+  zfix<-fixplotly(z,
+                  names(datfile.plot),
+                  rep(T,NCOL(datfile.plot)),
+                  rep(T,NCOL(datfile.plot)),
+                  "num",
+                  "value",
+                  rownames(datfile.plot))
+  zfix
+})
+
+output$tbdSscheme <- DT::renderDataTable({
+  datastability <- data_stability()
+  if(is.null(datastability)){return()}
+  datastability$stability.seasons
+}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+
+output$tbdSdetails <- DT::renderDataTable({
+  datastability <- data_stability()
+  if(is.null(datastability)){return()}
+  roundF(datastability$stability.data,2)
+}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
 
 #####################################
 ### MODEL TAB
@@ -1487,6 +1692,51 @@ output$tbvTiming = renderUI({
   
 })
 
+# Custom functions
+
+get_datasets <- function(){
+  infile <- input$file
+  if(is.null(infile)){
+    datasets.final<-NULL
+    cat("Warning: No file\n")
+  } else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx","mdb","accdb"))) return()
+    datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
+  }
+  datasets.final
+}
+
+read_data <- function(){
+  #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
+  #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
+  infile <- input$file
+  indataset <- input$dataset
+  cat(">",infile$name,"-",indataset,"<\n")
+  if(is.null(infile)){
+    data.final<-NULL
+    cat("Warning: No file\n")
+  }else if(is.null(indataset)){
+    data.final<-NULL
+    cat("Warning: No dataset\n")
+  }else if (indataset==""){
+    data.final<-NULL
+    cat("Warning: No dataset\n")
+  }else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
+    data.final<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
+    if (is.null(data.final)){
+      cat("Warning: Error reading data\n")
+    }
+    # else{
+    #   data.final <- as.data.frame(apply(data.final, 2, function(x) as.numeric(x)))
+    #   rownames(data.final) <- rownames(data.final)
+    # }
+  }
+  data.final
+}
+
 plotSeasons <- function(i.data, 
                          i.pre.epidemic=TRUE, 
                          i.post.epidemic=TRUE, 
@@ -2178,6 +2428,53 @@ plotSurveillance<-function(i.data,
     #    plot.title=element_text(size=20, face="bold", color="#000000", hjust=0.5))
   list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=current.season$nombre.semana)
        
+}
+
+plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colors, i.fills, i.sizes, i.linetypes, i.linesize){
+  if(is.null(i.data)){return()}
+  dgraf<-i.data
+  labels<-names(dgraf)
+  dgraf$num<-1:NROW(dgraf)
+  dgrafgg<-melt(dgraf,id="num")
+  
+  # Calculate ticks for x
+  axis.x.range <- c(1,NROW(dgraf))
+  axis.x.ticks<- 1:NROW(dgraf)
+  axis.x.labels<-rownames(dgraf)
+  # Range y fix
+  if (length(i.range.y.labels)<2){
+    if (length(i.range.y)!=2){
+      i.range.y <- c(0,1.05*max(dgrafgg$value,na.rm=T))
+    }else{
+      i.range.y <- 1.05*i.range.y
+    }
+    axis.y.range.original <- i.range.y
+    axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+    axis.y.range <- axis.y.otick$range
+    axis.y.ticks <- axis.y.otick$tickmarks
+    axis.y.labels <- axis.y.otick$tickmarks
+  }else{
+    axis.y.range.original <- c(1,length(i.range.y.labels))
+    axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10,
+                                      i.valid.ticks=1:(length(i.range.y.labels)),  i.include.min=T, i.include.max=T)
+    axis.y.range <- axis.y.otick$range
+    axis.y.ticks <- axis.y.otick$tickmarks
+    axis.y.labels <- i.range.y.labels[axis.y.otick$tickmarks]
+  }
+
+  gplot<-ggplot(dgrafgg) +
+    geom_line(aes(x=num,y=value,group=variable, color=variable, linetype=variable),size=i.linesize) +
+    geom_point(aes(x=num,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+    scale_shape_manual(values=i.shapes, name="Legend", labels=labels) + 
+    scale_color_manual(values=i.colors, name="Legend", labels=labels) +
+    scale_fill_manual(values=i.fills, name="Legend", labels=labels) +
+    scale_size_manual(values=i.sizes, name="Legend", labels=labels) +
+    scale_linetype_manual(values=i.linetypes, name="Legend", labels=labels) + 
+    scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+    scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+    labs(title = input$textMain, x = input$textX, y = input$textY) + 
+    ggthemes::theme_few()
+  gplot
 }
 
 # custom functions
