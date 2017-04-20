@@ -19,6 +19,7 @@ shinyUI(dashboardPage(skin = "blue",
                                        
                                        fileInput('file', 'Load file', accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb")),
                                        uiOutput('loaddata'),
+                                       selectInput("transformation", "Transform", choices = list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6), size=1, selectize = FALSE, selected = 1),
                                        
                                        ################################
                                        ###    Model                ####
