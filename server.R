@@ -168,6 +168,98 @@ data_stability <- reactive({
   sta
 })
 
+get_datasets <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  infile <- input$file
+  if(is.null(infile)){
+    datasets.final<-NULL
+    cat("Warning: No file\n")
+  } else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx","mdb","accdb"))) return()
+    datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
+  }
+  progress$set(value = 2)
+  datasets.final
+})
+
+read_data <- reactive({
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
+  #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
+  infile <- input$file
+  indataset <- input$dataset
+  cat(">",infile$name,"-",indataset,"<\n")
+  if(is.null(infile)){
+    data.final<-NULL
+    cat("Warning: No file\n")
+  }else if(is.null(indataset)){
+    data.final<-NULL
+    cat("Warning: No dataset\n")
+  }else if (indataset==""){
+    data.final<-NULL
+    cat("Warning: No dataset\n")
+  }else{
+    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
+    data.final<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
+    if (is.null(data.final)){
+      cat("Warning: Error reading data\n")
+    }
+    # else{
+    #   data.final <- as.data.frame(apply(data.final, 2, function(x) as.numeric(x)))
+    #   rownames(data.final) <- rownames(data.final)
+    # }
+  }
+  #cat(as.numeric(input$transformation),"\n",is.null(data.final),"\n")
+  #transform.data(data.final,as.numeric(input$transformation))
+  data.final<-transformseries(data.final, i.transformation=as.numeric(input$transformation))
+  progress$set(value = 2)
+  data.final
+})
+
+generate_palette <- function(number.series=NA){
+  if (is.na(number.series)) number.series<-10
+  params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
+            "colThresholds","colSeries","colEpidemic")
+  params.default<-list(colObservedLines="#808080",
+                       colObservedPoints="#000000",
+                       colEpidemicStart="#FF0000",
+                       colEpidemicStop="#40FF40",
+                       colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                       colSeries="Accent",
+                       colEpidemic=c("#00C000","#800080","#FFB401")
+                       #,colTransparency=1
+  )
+  n.params<-length(params)
+  for (i in 1:n.params){
+    eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
+    eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
+  }
+  # First four are simple colors
+  for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
+  # Fifth to Seventh are palettes that I must create
+  if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
+  if (colSeries=="default") colSeries<-params.default$colSeries
+  colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
+  if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
+  # Last one is a number between 0 and 1
+  # colTransparency<-input$colTransparency
+  # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
+  colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
+                     colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
+                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic
+                     #,colTransparency=colTransparency
+  )
+  #print(colors.final)
+  colors.final
+}
+
+
 observe({
   infile <- input$file
   indataset <- input$dataset
@@ -197,6 +289,9 @@ observe({
       updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
       
       #datanames<-names(dt)[!(names(dt) %in% c("vecka","num"))]  
+      cat(paste(seasons,collapse=","),"\n")
+      
+      
       
       lapply(seasons, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlotly({plotTiming(s)})})
       lapply(seasons, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlotly({plotTiming(s)})})
@@ -206,14 +301,15 @@ observe({
   
 })
 
-output$loaddata = renderUI({
-  datasets<-get_datasets()
-  if(!is.null(datasets)) selectInput('dataset', "Dataset", get_datasets())
-})
 
 #####################################
 ### DEFINING TABS STRUCTURE
 #####################################
+
+output$loaddata = renderUI({
+  datasets<-get_datasets()
+  if(!is.null(datasets)) selectInput('dataset', "Dataset", get_datasets())
+})
 
 output$tbData <- renderUI({
   if(is.null(read_data())){return(NULL)}
@@ -347,7 +443,6 @@ output$tbdSeasons <- renderPlotly({
   z <- ggplotly(p$plot, width = 800, height = 600)
   zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
   zfix
-  
 })
 
 output$tbdSeries <- renderPlotly({
@@ -1339,7 +1434,8 @@ output$tbsTiming <- renderPlotly({
 # })
 
 output$tbsSurveillance <- renderUI({
-  if(is.null(read_data())){return()}
+  datfile <- read_data()
+  if(is.null(datfile)){return()}
   else
     tabsetPanel(tabPanel("Week", plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
                 tabPanel("Animated", imageOutput("tbsSurveillanceAnimated"))
@@ -1687,56 +1783,6 @@ output$tbvTiming = renderUI({
 })
 
 # Custom functions
-
-get_datasets <- function(){
-  infile <- input$file
-  if(is.null(infile)){
-    datasets.final<-NULL
-    cat("Warning: No file\n")
-  } else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx","mdb","accdb"))) return()
-    datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
-  }
-  datasets.final
-}
-
-read_data <- function(){
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
-  #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
-  #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
-  infile <- input$file
-  indataset <- input$dataset
-  cat(">",infile$name,"-",indataset,"<\n")
-  if(is.null(infile)){
-    data.final<-NULL
-    cat("Warning: No file\n")
-  }else if(is.null(indataset)){
-    data.final<-NULL
-    cat("Warning: No dataset\n")
-  }else if (indataset==""){
-    data.final<-NULL
-    cat("Warning: No dataset\n")
-  }else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-    #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return()
-    data.final<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
-    if (is.null(data.final)){
-      cat("Warning: Error reading data\n")
-    }
-    # else{
-    #   data.final <- as.data.frame(apply(data.final, 2, function(x) as.numeric(x)))
-    #   rownames(data.final) <- rownames(data.final)
-    # }
-  }
-  #cat(as.numeric(input$transformation),"\n",is.null(data.final),"\n")
-  #transform.data(data.final,as.numeric(input$transformation))
-  data.final<-transformseries(data.final, i.transformation=as.numeric(input$transformation))
-  progress$set(value = 2)
-  data.final
-}
 
 plotSeasons <- function(i.data, 
                          i.pre.epidemic=TRUE, 
@@ -2173,12 +2219,16 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
 }
 
 plotTiming <-function(i.column){
+  cat("plotTiming: ",i.column,"\n")
   datfile <- read_data()
-  if(is.null(datfile)){return()}
-  datfile.plot<-datfile[i.column]
-  p <- plotSeries(datfile.plot, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
-  z <- ggplotly(p$plot, width = 800, height = 600)
-  zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  if(is.null(datfile)){
+    zfix<-NULL
+  }else{
+    datfile.plot<-datfile[i.column]
+    p <- plotSeries(datfile.plot, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
+    z <- ggplotly(p$plot, width = 800, height = 600)
+    zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+  }
   zfix
 }
 
@@ -2978,42 +3028,6 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   return(i.plotly)
 }
 
-generate_palette <- function(number.series=NA){
-  if (is.na(number.series)) number.series<-10
-  params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
-            "colThresholds","colSeries","colEpidemic")
-  params.default<-list(colObservedLines="#808080",
-                       colObservedPoints="#000000",
-                       colEpidemicStart="#FF0000",
-                       colEpidemicStop="#40FF40",
-                       colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
-                       colSeries="Accent",
-                       colEpidemic=c("#00C000","#800080","#FFB401")
-                       #,colTransparency=1
-                       )
-  n.params<-length(params)
-  for (i in 1:n.params){
-    eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
-    eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
-  }
-  # First four are simple colors
-  for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
-  # Fifth to Seventh are palettes that I must create
-  if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
-  if (colSeries=="default") colSeries<-params.default$colSeries
-  colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
-  if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
-  # Last one is a number between 0 and 1
-  # colTransparency<-input$colTransparency
-  # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
-  colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
-                     colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
-                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic
-                     #,colTransparency=colTransparency
-                     )
-  #print(colors.final)
-  colors.final
-}
 
 session$onSessionEnded(function() {
   stopApp()
