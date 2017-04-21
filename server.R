@@ -652,6 +652,8 @@ output$tbdEstart <- renderPlotly({
                       "num",
                       "value",
                       rownames(datfile.plot))
+      # fix to replace relative to absolute weeks
+      for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br>",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
     }
   }
   zfix
@@ -813,6 +815,8 @@ output$tbdSstart <- renderPlotly({
                       "num",
                       "value",
                       rownames(datfile.plot))
+      # fix to replace relative to absolute weeks
+      for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br>",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
     }
   }
   zfix
@@ -2926,7 +2930,7 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   # Fix text to showup
   for (i in 1:nlists){
     if (length(grep(i.yname,i.plotly$x$data[[i]]$text))>0){
-      i.plotly$x$data[[i]]$text
+      #i.plotly$x$data[[i]]$text
       dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
       i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br>",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
     }
