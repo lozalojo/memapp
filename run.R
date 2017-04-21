@@ -10,7 +10,7 @@ testinstall.packages <- function(i.packages) {
 
 testinstall.packages(c("shiny", "shinythemes", "shinydashboard", "shinyjs", "RColorBrewer", "shinyBS",
               "plotly", "ggplot2", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
-              "stringr", "readr", "magick", "DT", "stringr", "gplots", "RODBC"))
+              "stringr", "readr", "magick", "DT", "stringr", "gplots", "RODBC", "mixtools"))
 
 # Install mem development version
 

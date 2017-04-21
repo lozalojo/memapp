@@ -308,8 +308,7 @@ output$tbdData <- DT::renderDataTable({
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   roundF(datatoshow,2)
-},
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbdSeasons <- renderPlotly({
   datfile <- read_data()
@@ -536,13 +535,13 @@ output$tbdEscheme <- DT::renderDataTable({
   dataevolution <- data_evolution()
   if(is.null(dataevolution)){return()}
   dataevolution$evolution.seasons
-}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE)) 
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbdEdetails <- DT::renderDataTable({
   dataevolution <- data_evolution()
   if(is.null(dataevolution)){return()}
   roundF(dataevolution$evolution.data,2)
-}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE)) 
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbdSduration <- renderPlotly({
   datastability <- data_stability()$stability.data
@@ -657,13 +656,13 @@ output$tbdSscheme <- DT::renderDataTable({
   datastability <- data_stability()
   if(is.null(datastability)){return()}
   datastability$stability.seasons
-}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'))) 
 
 output$tbdSdetails <- DT::renderDataTable({
   datastability <- data_stability()
   if(is.null(datastability)){return()}
   roundF(datastability$stability.data,2)
-}, options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'))) 
 
 #####################################
 ### MODEL TAB
@@ -692,8 +691,7 @@ output$tbmData <- DT::renderDataTable({
   datamodel<-data_model()
   if(is.null(datamodel)) datatoshow<-data.frame(Message="No data selected",row.names = NULL) else datatoshow<-datamodel$param.data
   roundF(datatoshow,2)
-},
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbmSeasons <- renderPlotly({
   # datfile <- read_data()
@@ -1064,8 +1062,7 @@ output$tbmGoodnessDetail<-DT::renderDataTable({
     good.table<-data.frame(Error="Number of columns must be greater than 2")
   }
   roundF(good.table,2)
-},
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbmOptimize <- renderUI({
   if(is.null(read_data())){return()}
@@ -1130,9 +1127,7 @@ output$tbmOptimizeDetail<-DT::renderDataTable({
   }
   rownames(roca.table)<-NULL
   roundF(roca.table,2)
-},
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE),
-rownames= FALSE)
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')), rownames= FALSE)
 
 output$tbmOptimizeGraph<- renderPlotly({
 
@@ -1281,8 +1276,7 @@ output$tbsData <- DT::renderDataTable({
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   roundF(datatoshow,2)
-},
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbsSeasons <- renderPlotly({
   datfile <- read_data()
@@ -1597,8 +1591,7 @@ output$tbvData <- DT::renderDataTable({
   #cat("Seleccion:->",selectedcolumns,"<-\n",sep="")
   if (length(selectedcolumns)>0) datatoshow<-datfile[selectedcolumns] else datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   roundF(datatoshow,2)
-},
-  options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE))  
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel')))
 
 output$tbvSeasons <- renderPlotly({
   datfile <- read_data()
@@ -1709,6 +1702,9 @@ get_datasets <- function(){
 }
 
 read_data <- function(){
+  progress <- Progress$new(session, min=1, max=2)
+  on.exit(progress$close())
+  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
   #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
   infile <- input$file
@@ -1737,7 +1733,9 @@ read_data <- function(){
   }
   #cat(as.numeric(input$transformation),"\n",is.null(data.final),"\n")
   #transform.data(data.final,as.numeric(input$transformation))
-  transformseries(data.final, i.transformation=as.numeric(input$transformation))
+  data.final<-transformseries(data.final, i.transformation=as.numeric(input$transformation))
+  progress$set(value = 2)
+  data.final
 }
 
 plotSeasons <- function(i.data, 
@@ -1942,16 +1940,28 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
                       i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, i.tickmarks=30, ...){
   
   if(is.null(i.data)){return()}
-  
-  week.f<-as.numeric(rownames(i.data)[1])
-  week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
+
+  # Range x fix
+  # week.f<-as.numeric(rownames(i.data)[1])
+  # week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
+  # if (week.f>week.l){
+  #   i.range.x<-c(min(week.f,30),min(week.f,30)-1)
+  #   i.range.x.values<-data.frame(week.lab=c(min(week.f,30):52,1:(min(week.f,30)-1)),week.no=1:52)
+  # }else{
+  #   i.range.x<-c(1,52)
+  #   i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
+  # }
+  if (length(i.range.x)!=2) i.range.x<-c(as.numeric(rownames(i.data)[1]),as.numeric(rownames(i.data)[NROW(i.data)]))
+  week.f<-i.range.x[1]
+  week.l<-i.range.x[2]
+  if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
+  last.week<-52
   if (week.f>week.l){
-    i.range.x<-c(min(week.f,30),min(week.f,30)-1)
-    i.range.x.values<-data.frame(week.lab=c(min(week.f,30):52,1:(min(week.f,30)-1)),week.no=1:52)
+    i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
   }else{
-    i.range.x<-c(1,52)
-    i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
+    i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
   }
+
   if (NCOL(i.data)>1){
     epi<-memmodel(i.data,
                   i.seasons=NA,
