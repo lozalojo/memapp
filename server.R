@@ -316,7 +316,7 @@ observe({
       #cat(paste(seasons,collapse=","),"\n")
       
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
-        datfile <- read_data()
+        #datfile <- read_data()
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
@@ -334,7 +334,7 @@ observe({
         zfix
       })})
       lapply(seasons, function(s){output[[paste0("tbmTiming_",as.character(s))]] <- renderPlotly({
-        datfile <- read_data()
+        #datfile <- read_data()
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
@@ -352,7 +352,7 @@ observe({
         zfix
       })})
       lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s))]] <- renderPlotly({
-        datfile <- read_data()
+        #datfile <- read_data()
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
