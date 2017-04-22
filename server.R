@@ -315,12 +315,14 @@ observe({
       #datanames<-names(dt)[!(names(dt) %in% c("vecka","num"))]  
       #cat(paste(seasons,collapse=","),"\n")
       
-      lapply(seasons, function(s){output[[paste0("tbdTiming_",s)]] <- renderPlotly({
+      lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
         datfile <- read_data()
         if(is.null(datfile)){
           zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
         }else{
-          datfile.plot<-datfile[s]
+          datfile.plot<-datfile[as.character(s)]
           p <- plotTiming(datfile.plot)
           if (is.null(p)){
             zfix<-NULL
@@ -331,12 +333,14 @@ observe({
         }
         zfix
       })})
-      lapply(seasons, function(s){output[[paste0("tbmTiming_",s)]] <- renderPlotly({
+      lapply(seasons, function(s){output[[paste0("tbmTiming_",as.character(s))]] <- renderPlotly({
         datfile <- read_data()
         if(is.null(datfile)){
           zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
         }else{
-          datfile.plot<-datfile[s]
+          datfile.plot<-datfile[as.character(s)]
           p <- plotTiming(datfile.plot)
           if (is.null(p)){
             zfix<-NULL
@@ -347,12 +351,14 @@ observe({
         }
         zfix
       })})
-      lapply(seasons, function(s){output[[paste0("tbvTiming_",s)]] <- renderPlotly({
+      lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s))]] <- renderPlotly({
         datfile <- read_data()
         if(is.null(datfile)){
           zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
         }else{
-          datfile.plot<-datfile[s]
+          datfile.plot<-datfile[as.character(s)]
           p <- plotTiming(datfile.plot)
           if (is.null(p)){
             zfix<-NULL
