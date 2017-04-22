@@ -379,8 +379,9 @@ output$loaddata = renderUI({
 })
 
 output$tbData <- renderUI({
-  if(is.null(read_data())){return(NULL)}
-  else
+  if(is.null(read_data())){
+    return(NULL)
+  }else{
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
                 tabPanel("Data", DT::dataTableOutput("tbdData")),
                 #tabPanel("Plot", plotlyOutput("tbdPlot", width ="100%", height ="100%")),
@@ -390,6 +391,7 @@ output$tbData <- renderUI({
                 tabPanel("Evolution",uiOutput("tbdEvolution")),
                 tabPanel("Stability",uiOutput("tbdStability"))
     )
+  }
 })
 
 output$tbModel <- renderUI({
