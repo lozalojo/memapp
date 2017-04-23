@@ -5,9 +5,9 @@ shinyServer(function(input, output, session) {
 # Reactive functions
   
 data_model <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   # cat("data_model function\n")
   datfile <- read_data()
   if(is.null(datfile)){
@@ -59,14 +59,14 @@ data_model <- reactive({
                       i.n.max=as.numeric(input$n.max))      
     }
   }
-  progress$set(value = 2)
+  #progress$set(value = 2)
   epi
 })
 
 data_good <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   # cat("data_good function\n")
   datfile <- read_data()
   if(is.null(datfile)){
@@ -98,14 +98,14 @@ data_good <- reactive({
                         i.goodness.method=as.character(input$validation))
     }
   }
-  progress$set(value = 2)
+  #progress$set(value = 2)
   good
 })
 
 data_optim <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   # cat("data_optim function\n")
   datfile <- read_data()
   if(is.null(datfile)){
@@ -136,14 +136,14 @@ data_optim <- reactive({
                          i.goodness.method=as.character(input$validation))
     }
   }
-  progress$set(value = 2)
+  #progress$set(value = 2)
   roca
 })
 
 data_evolution <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   datfile <- read_data()
   if(is.null(datfile)){
     evo<-NULL
@@ -165,14 +165,14 @@ data_evolution <- reactive({
                         i.n.max=as.numeric(input$n.max))
   }
   
-  progress$set(value = 2)
+  #progress$set(value = 2)
   evo
 })
 
 data_stability <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   datfile <- read_data()
   if(is.null(datfile)){
     sta<-NULL
@@ -191,14 +191,14 @@ data_stability <- reactive({
                         i.param=as.numeric(input$param),
                         i.n.max=as.numeric(input$n.max))
   }
-  progress$set(value = 2)
+  #progress$set(value = 2)
   sta
 })
 
 get_datasets <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   infile <- input$file
   if(is.null(infile)){
     datasets.final<-NULL
@@ -207,14 +207,14 @@ get_datasets <- reactive({
     fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
     datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
   }
-  progress$set(value = 2)
+  #progress$set(value = 2)
   datasets.final
 })
 
 read_data <- reactive({
-  progress <- Progress$new(session, min=1, max=2)
-  on.exit(progress$close())
-  progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+  #progress <- Progress$new(session, min=1, max=2)
+  #on.exit(progress$close())
+  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
   #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
   infile <- input$file
@@ -243,7 +243,7 @@ read_data <- reactive({
   #cat(as.numeric(input$transformation),"\n",is.null(data.final),"\n")
   #transform.data(data.final,as.numeric(input$transformation))
   data.final<-transformseries(data.final, i.transformation=as.numeric(input$transformation))
-  progress$set(value = 2)
+  #progress$set(value = 2)
   data.final
 })
 
@@ -316,7 +316,7 @@ observe({
       #cat(paste(seasons,collapse=","),"\n")
       
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
-        #datfile <- read_data()
+        datfile <- isolate(read_data())
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
@@ -334,7 +334,7 @@ observe({
         zfix
       })})
       lapply(seasons, function(s){output[[paste0("tbmTiming_",as.character(s))]] <- renderPlotly({
-        #datfile <- read_data()
+        datfile <- isolate(read_data())
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
@@ -352,7 +352,7 @@ observe({
         zfix
       })})
       lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s))]] <- renderPlotly({
-        #datfile <- read_data()
+        datfile <- isolate(read_data())
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
@@ -1382,9 +1382,9 @@ output$tbsSurveillanceAnimated <- renderImage({
   }else if(!(input$SelectSurveillanceWeek %in% rownames(datfile))){
     outdistAnimated<-NULL
   }else{
-    progress <- Progress$new(session, min=1, max=2)
-    on.exit(progress$close())
-    progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
+    #progress <- Progress$new(session, min=1, max=2)
+    #on.exit(progress$close())
+    #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
     if (is.null(input$SelectSurveillanceForceEpidemic)) force.start<-NA else force.start<-input$SelectSurveillanceForceEpidemic
     datamodel<-data_model()
     if(!is.null(datamodel)){
@@ -1460,7 +1460,7 @@ output$tbsSurveillanceAnimated <- renderImage({
                           height = 600,
                           alt = "This is alternate text")
   }
-  progress$set(value = 2)
+  #progress$set(value = 2)
   outdistAnimated
 }, deleteFile = TRUE)
 

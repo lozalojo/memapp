@@ -132,6 +132,10 @@ shinyUI(dashboardPage(skin = "blue",
                       ###################################
                       
                       dashboardBody(
+                        useShinyjs(),
+                        
+                        tags$body(inlineCSS(list(".shinysky-busy-indicator" = "position: absolute !important; z-index:800; "))),
+                        
                         tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
                         fluidPage(
                           
@@ -155,10 +159,10 @@ shinyUI(dashboardPage(skin = "blue",
                                    
                                    tabBox(
                                      title = "MEM", width = 12, height = "800px",
-                                     tabPanel("Check & describe", "Check data series, timing and describe the data", uiOutput("tbData")),
-                                     tabPanel("Model", "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
-                                     tabPanel("Surveillance", "Surveillance tools", uiOutput("tbSurveillance")),
-                                     tabPanel("Visualize", "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
+                                     tabPanel("Check & describe", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Check data series, timing and describe the data", uiOutput("tbData")),
+                                     tabPanel("Model", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
+                                     tabPanel("Surveillance", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Surveillance tools", uiOutput("tbSurveillance")),
+                                     tabPanel("Visualize", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
                                    ),
                                    
                                    #######################################
