@@ -10,7 +10,7 @@ testinstall.packages <- function(i.packages) {
 
 testinstall.packages(c("shiny", "shinythemes", "shinydashboard", "shinyjs", "RColorBrewer", "shinyBS",
               "plotly", "ggplot2", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
-              "stringr", "readr", "magick", "DT", "stringr", "gplots", "RODBC", "mixtools", "shinysky"))
+              "stringr", "readr", "magick", "DT", "stringr", "gplots", "RODBC", "mixtools"))
 
 # Install mem development version
 
@@ -25,6 +25,10 @@ if ("mem" %in% installed.packages()[,"Package"]){
 }
 
 library("mem")
+
+# There are no binaries for shinysky
+if (!("shinysky" %in% installed.packages()[,"Package"])) devtools::install_github("AnalytixWare/ShinySky")
+library("shinysky")
 
 # The palette with black:
 #cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
