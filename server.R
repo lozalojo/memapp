@@ -282,7 +282,7 @@ observe({
   }else{
     fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
     #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
-    #dt<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table=indataset)
+    #dt<-read.data(i.file=infile$datapath, i.extension=fileextension, i.dataset=indataset)
     datfile <- read_data()
     if(is.null(datfile)){
       return(NULL)
@@ -2579,7 +2579,7 @@ read.data.access<-function(i.file, i.filename, i.dataset){
       }else{
         cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
         # read selected table schema
-        tableschema <- system(paste('mdb-schema -T', shQuote(i.table), shQuote(i.file)), intern=TRUE)
+        tableschema <- system(paste('mdb-schema -T', shQuote(i.dataset), shQuote(i.file)), intern=TRUE)
         start <- grep('^ \\($', tableschema) + 1
         end   <- grep('^\\);$', tableschema) - 1
         tableschema <- tableschema[start:end]
@@ -2587,7 +2587,7 @@ read.data.access<-function(i.file, i.filename, i.dataset){
         vnames <- sapply(tableschema, function(x)x[2])
         vnames <- substring(vnames, 2,nchar(vnames)-1)
         filecsv <- tempfile()
-        system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.table), '>', filecsv))
+        system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.dataset), '>', filecsv))
         # detect encoding
         encodings<-readr::guess_encoding(filecsv, n_max = -1)
         encodings<-encodings[order(encodings$confidence,decreasing = T),]
