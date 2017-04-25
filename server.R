@@ -196,55 +196,43 @@ data_stability <- reactive({
 })
 
 get_datasets <- reactive({
-  #progress <- Progress$new(session, min=1, max=2)
-  #on.exit(progress$close())
-  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
   infile <- input$file
+  inname <- infile$name
+  cat("get_datasets> Name: ",inname,"\n")
   if(is.null(infile)){
-    datasets.final<-NULL
+    datasets<-NULL
     cat("Warning: No file\n")
   } else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-    datasets.final<-get.datasets(i.file=infile$datapath, i.extension=fileextension)
+    datasets<-read.data(i.file=infile$datapath, i.file.name=inname, NA)$datasets
   }
-  #progress$set(value = 2)
-  datasets.final
+  cat(paste(datasets,collapse=","),"\n")
+  cat("get_datasets>Returning NULL?: ",is.null(datasets),"\n\n")
+  datasets
 })
 
 read_data <- reactive({
-  #progress <- Progress$new(session, min=1, max=2)
-  #on.exit(progress$close())
-  #progress$set(message = 'Calculation in progress', detail = 'This may take a while...')
-  #cat(">",input$paramrange[1],"<\n",sep="",collapse="-")
-  #cat(">",input$paramrange[2],"<\n",sep="",collapse="-")
   infile <- input$file
   indataset <- input$dataset
-  cat(">",infile$name,"-",indataset,"<\n")
+  inname <- infile$name
+  cat("read_data> Name: ",inname,"\n")
+  cat("read_data> Dataset: ",indataset,"\n")
   if(is.null(infile)){
-    data.final<-NULL
+    dataread<-NULL
     cat("Warning: No file\n")
   }else if(is.null(indataset)){
-    data.final<-NULL
+    dataread<-NULL
     cat("Warning: No dataset\n")
   }else if (indataset==""){
-    data.final<-NULL
+    dataread<-NULL
     cat("Warning: No dataset\n")
   }else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
-    data.final<-read.data(i.file=infile$datapath, i.extension=fileextension, i.table = indataset)
-    if (is.null(data.final)){
-      cat("Warning: Error reading data\n")
-    }
-    # else{
-    #   data.final <- as.data.frame(apply(data.final, 2, function(x) as.numeric(x)))
-    #   rownames(data.final) <- rownames(data.final)
-    # }
+    dataread<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)$datasetread
   }
-  #cat(as.numeric(input$transformation),"\n",is.null(data.final),"\n")
-  #transform.data(data.final,as.numeric(input$transformation))
-  data.final<-transformseries(data.final, i.transformation=as.numeric(input$transformation))
-  #progress$set(value = 2)
-  data.final
+  print(head(dataread))
+  cat("read_data>Returning NULL?: ",is.null(dataread),"\n")
+  dataread<-transformseries(dataread, i.transformation=as.numeric(input$transformation))
+  cat("read_data>Transformed returning NULL?: ",is.null(dataread),"\n\n")
+  dataread
 })
 
 generate_palette <- function(number.series=NA){
@@ -316,7 +304,7 @@ observe({
       #cat(paste(seasons,collapse=","),"\n")
       
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
-        datfile <- isolate(read_data())
+        #datfile <- isolate(read_data())
         if(is.null(datfile)){
           zfix<-NULL
         }else if (!(as.character(s) %in% names(datfile))){
@@ -2478,353 +2466,221 @@ plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colo
 
 # custom functions
 
-read.data<-function(i.file,i.extension=NA,i.subset=NA,i.remove.pandemic=F,i.n.max.temp=NA,i.season.limits=NA,i.naweeks.to.remove=1, i.table){
-  #cat(">>>START read.data\n")
+read.data<-function(i.file, i.file.name, i.dataset){
   if (!file.exists(i.file)){
-    data.final<-NULL
-    cat("Warning: file not found\n")
-  } else if (is.null(i.table)){
-    data.final<-NULL
-    cat("Warning: no dataset specified\n");
-  } else{
-    # divide the filename between path, name and extension
-    temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
-    temp1[is.na(temp1)]<-""
-    filepath<-temp1[2]
-    filename<-paste(temp1[3],temp1[4],sep="")
-    if (is.na(i.extension)){
-      temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
-      temp2[is.na(temp2)]<-""  
-      fileextension<-temp2[3]
-      rm("temp2")
-    }else {
-      fileextension<-i.extension
-    }
-    
-    rm("temp1")
-    
-    # reading data, depending the extension, different options
-    if (tolower(fileextension)=="xlsx"){
-      # xlsx files, openxlsx read data perfectly
-      cat("Excel 2007+ file detected: ",filename,"\n",sep="")
-      wb<-openxlsx::loadWorkbook(i.file)
-      sheets<-openxlsx::sheets(wb)
-      n.sheets<-length(sheets)
-      if (is.na(i.table)){
-        data.original<-NULL
-        cat("Warning: Table name not specified\n");
-        #i.table<-sheets[1]
-      }else if (!(i.table %in% sheets)) {
-        data.original<-NULL
-        cat("Warning: Table ",i.table," not found\n");
-        #i.table<-sheets[1]
-      }else{
-        cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
-        data.original<-openxlsx::read.xlsx(wb,sheet=i.table,rowNames=T)
-        cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-      }
-      rm("sheets","n.sheets")
-    }else if (tolower(fileextension)=="xls"){
-      # no xls library read headers correctly, so i use a first pass to read headers, then the data
-      cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
-      wb <- XLConnect::loadWorkbook(i.file)
-      sheets<-XLConnect::getSheets(wb)
-      n.sheets<-length(sheets)
-      if (is.na(i.table)){
-        data.original<-NULL
-        cat("Warning: Table name not specified\n")
-      }else if (!(i.table %in% sheets)){
-        data.original<-NULL
-        cat("Warning: Table ",i.table," not found\n")
-      }else{
-        cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
-        data.headers<-as.character(XLConnect::readWorksheet(wb, sheet = i.table, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))[-1]
-        data.original<-XLConnect::readWorksheet(wb, sheet = i.table,rownames=1, colTypes=XLC$DATA_TYPE.NUMERIC)
-        names(data.original)<-data.headers
-        rm("data.headers")
-        cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-      }
-      rm("sheets","n.sheets")
-    }else if (tolower(fileextension) %in% c("mdb","accdb")){
-      cat("Access file detected: ",filename,"\n",sep="")
-      if (.Platform$OS.type=="windows"){
-        connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
-        channel<-odbcDriverConnect(connectstring)
-        sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
-        n.sheets<-length(sheets)
-        if (is.na(i.table)){
-          data.original<-NULL
-          cat("Warning: Table name not specified\n")
-          #i.table<-sheets[1]
-        }else if (!(i.table %in% sheets)) {
-          data.original<-NULL
-          cat("Warning: Table ",i.table," not found\n")
-          #i.table<-sheets[1]
-        }else{
-          cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
-          data.original<-sqlFetch(channel,i.table,rownames=T)
-          rownames(data.original)<-as.character(data.original[,1])
-          data.original<-data.original[-1]
-          cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-          odbcCloseAll()
-        }
-        rm("sheets","n.sheets","connectstring","channel")
-      }else if (.Platform$OS.type=="unix"){
-        # check if mdbtools is installed
-        if (system("mdb-tables")==127){
-          data.original<-NULL
-          cat("mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
-        }else{
-          # read tables in file
-          sheets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
-          n.sheets<-length(sheets)
-          if (is.na(i.table)){
-            data.original<-NULL
-            cat("Warning: Table name not specified\n")
-            #i.table<-sheets[1]
-          }else if (!(i.table %in% sheets)) {
-            data.original<-NULL
-            cat("Warning: Table ",i.table," not found\n")
-            #i.table<-sheets[1]
-          }else{
-            cat("Number of sheets: ",n.sheets,"\nReading table: ",i.table,"\n",sep="")    
-            # read selected table schema
-            tableschema <- system(paste('mdb-schema -T', shQuote(i.table), shQuote(i.file)), intern=TRUE)
-            start <- grep('^ \\($', tableschema) + 1
-            end   <- grep('^\\);$', tableschema) - 1
-            tableschema <- tableschema[start:end]
-            tableschema <- strsplit(tableschema, '\t')
-            vnames <- sapply(tableschema, function(x)x[2])
-            vnames <- substring(vnames, 2,nchar(vnames)-1)
-            filecsv <- tempfile()
-            system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.table), '>', filecsv))
-            # detect encoding
-            encodings<-readr::guess_encoding(filecsv, n_max = -1)
-            encodings<-encodings[order(encodings$confidence,decreasing = T),]
-            myencoding<-as.character(encodings$encoding[1])
-            # detect separator and decimal separator
-            firstline<-readLines(filecsv,1,encoding=myencoding)
-            separators<-c(',',';','\t','\\|')
-            mysep<-separators[which.max(stringr::str_count(firstline, separators))]
-            restlines<-paste(readLines(filecsv,encoding=myencoding)[-1],collapse="")
-            decimals<-c(".",",")
-            mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
-            data.original<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=1,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
-            names(data.original)<-vnames[-1]
-            rm("firstline","separators","mysep","decimals", "tableschema", "start", "end", "encodings")
-            cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-          }
-        }
-      }else{
-        data.original<-NULL
-        cat("Warning: Access file only supported in windows and *nix systems\n")
-      }
-    }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
-      # text files
-      # detect encoding
-      temp1<-readr::guess_encoding(i.file, n_max = -1)
-      temp1<-temp1[order(temp1$confidence,decreasing = T),]
-      myencoding<-as.character(temp1$encoding[1])
-      rm("temp1")
-      # detect separator and decimal separator
-      cat("Text file detected: ",filename," (encoding: ",myencoding,")\n",sep="")
-      firstline<-readLines(i.file,1,encoding=myencoding)
-      separators<-c(',',';','\t','\\|')
-      mysep<-separators[which.max(str_count(firstline, separators))]
-      restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
-      decimals<-c(".",",")
-      mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
-      cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
-      data.headers<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))[-1]
-      data.original<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=1,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
-      names(data.original)<-data.headers
-      rm("firstline","data.headers","separators","mysep","decimals")
-      cat("Read ",NROW(data.original)," rows and ",NCOL(data.original)," columns\n",sep="")
-    }else{
-      data.original<-NULL
-      cat(paste("Warning: Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,"\n",sep="-"))
-      #return(NULL)
-    }
-    
-    if (is.null(data.original)){
-      data.final<-NULL
-    }else{
-      naonlycolumns<-apply(data.original, 2, function(x) all(is.na(x)))
-      if (any(naonlycolumns)){
-        cat("Columns ",paste(names(data.original)[naonlycolumns], collapse=",")," contain only NAs, removing...\n")
-        data.original<-data.original[!naonlycolumns]
-      }
-      nonnumericcolumns<-sapply(data.original, function(x) !is.numeric(x))
-      if (any(nonnumericcolumns)){
-        cat("Columns ",paste(names(data.original)[nonnumericcolumns], collapse=",")," are not numeric, removing...\n")
-        data.original<-data.original[!nonnumericcolumns]
-      }
-      rm("naonlycolumns","nonnumericcolumns")
-      
-      # dealing with season start and end, extracts information from rownames and gets season start/end
-      
-      seasons.original<-data.frame(names(data.original),str_match(names(data.original),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
-      names(seasons.original)<-c("season","anioi","aniof","aniow")
-      seasons.original[is.na(seasons.original)]<-""
-      
-      # This is the original data, now we modify it, final colnames is as any of these formats:
-      # 2009/2019 (starting year/ending year) - standard format
-      # 2010/2011(1) (first part of the 2010/2011 season) - this is done when the season is splitted in two
-      # 2009 (year) - for southern hemisphere countries, each season is one single year
-      
-      # Final modified data  
-      data.final<-data.original
-      
-      # dealing with season start and end
-      seasons.final<-seasons.original
-      seasonsname<-seasons.final$anioi
-      seasonsname[seasons.final$aniof!=""]<-paste(seasonsname[seasons.final$aniof!=""],seasons.final$aniof[seasons.final$aniof!=""],sep="/")
-      seasonsname[seasons.final$aniow!=""]<-paste(seasonsname[seasons.final$aniow!=""],seasons.final$aniow[seasons.final$aniow!=""],sep="/")
-      seasons.final$season<-seasonsname
-      rm("seasonsname")
-      
-      # The read function also subsets the original dataset, subsetting data
-      if (!any(is.na(i.subset))){
-        mysubset<-i.subset
-        data.final<-data.final[mysubset]
-        seasons.final<-seasons.final[mysubset,]    
-        rm("mysubset")
-      }
-      
-      # And removes the pandemic seasons if requested to
-      if (i.remove.pandemic){
-        mysubset<-seasons.final$anioi!="2009"
-        data.final<-data.final[mysubset]
-        seasons.final<-seasons.final[mysubset,]    
-        rm("mysubset")
-      }
-      
-      # Limit to the maximum number of seasons
-      if (!is.na(i.n.max.temp)){
-        mysubset<-(max(NCOL(data.final)-i.n.max.temp+1,1)):NCOL(data.final)
-        data.final<-data.final[mysubset]
-        seasons.final<-seasons.final[mysubset,]    
-        rm("mysubset")
-      }
-      
-      # Limiting weeks
-      if (!any(is.na(i.season.limits))){
-        if (i.season.limits[1]<i.season.limits[2]) validweeks<-as.character(i.season.limits[1]:i.season.limits[2]) else validweeks<-as.character(c(i.season.limits[1]:53,1:i.season.limits[2]))
-        data.final<-data.final[rownames(data.final) %in% validweeks,]
-      }  
-      
-      # Seasons with more than a given percentage of NAs are removed
-      if (!is.na(i.naweeks.to.remove)){
-        mysubset<-apply(data.final, 2, function(x) sum(is.na(x))/length(x))<=i.naweeks.to.remove
-        data.final<-data.final[mysubset]
-        seasons.final<-seasons.final[mysubset,]    
-        rm("mysubset")
-      }
-      
-      cat("Subsetting...\n")
-      cat("Final data: ",NROW(data.final)," rows and ",NCOL(data.final)," columns\n\n",sep="")
-      
-      names(data.final)<-seasons.final$season
-    }
-    
-  }
-  
-  #cat(">>>END read.data\n")
-  return(data.final)
-}
-
-# transform.data<-function(i.data,i.transformation){
-#   if (is.null(i.data)){
-#     i.data.transf<-i.data
-#   }else if (is.null(i.transformation)){
-#     i.data.transf<-i.data
-#   }else if (is.na(i.transformation)){
-#     i.data.transf<-i.data
-#   }else{
-#     if (i.transformation==1){
-#       i.data.transf<-i.data
-#     }else if (i.transformation==2){
-#       # odd transformation requires p between 0 and 1, if I have percentage I have to divide by 100
-#       # in case other unit is used, first i detect the units x10, x100, x1000, x10000...
-#       mx<-max(i.data,na.rm=T)
-#       mults<-0:25
-#       mult<-min(mults[10^mults>=mx])
-#       i.data.transf<-i.data/(10^mult)
-#       cat("odd multiplier: ",mult,"\n")
-#       i.data.transf<-data.frame(apply(i.data.transf,2,function(x) x/(1-x)),stringsAsFactors = F)
-#       names(i.data.transf)<-names(i.data)
-#       rownames(i.data.transf)<-rownames(i.data)
-#     }else{
-#       i.data.transf<-i.data
-#     }
-#   }
-#   return(i.data.transf)
-# }
-
-get.datasets<-function(i.file,i.extension=NA){
-  #cat(">>>START get.datasets\n")
-  if (!file.exists(i.file)){
-    sheets<-NULL
+    readdata<-list(datasets=NULL, datasetread=NULL)
     cat("Warning: file not found\n")
   }else{
-    # divide the filename between path, name and extension
-    temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.[^\\.]*))?$")
-    temp1[is.na(temp1)]<-""
-    filepath<-temp1[2]
-    filenamenoextension<-temp1[3]
-    filename<-paste(temp1[3],temp1[4],sep="")
-    if (is.na(i.extension)){
-      temp2<-str_match(filename,"^(.*)\\.([^\\.]*)$")
-      temp2[is.na(temp2)]<-""  
-      fileextension<-temp2[3]
-      rm("temp2")
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
     }else{
-      fileextension<-i.extension
-    } 
-    rm("temp1")
-    # reading data, depending the extension, different options
-    if (tolower(fileextension)=="xlsx"){
-      # xlsx files, openxlsx read data perfectly
-      #cat("Excel 2007+ file detected: ",filename,"\n",sep="")
-      wb<-openxlsx::loadWorkbook(i.file)
-      sheets<-openxlsx::sheets(wb)
-      rm("wb")
-    }else if (tolower(fileextension)=="xls"){
-      # no xls library read headers correctly, so i use a first pass to read headers, then the data
-      #cat("Excel 97-2003 file detected: ",filename,"\n",sep="")
-      wb <- XLConnect::loadWorkbook(i.file)
-      sheets<-XLConnect::getSheets(wb)
-      rm("wb")
-    }else if (tolower(fileextension) %in% c("mdb","accdb")){
-      if (.Platform$OS.type=="windows"){
-        connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
-        channel<-odbcDriverConnect(connectstring)
-        sheets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
-        odbcCloseAll()
-        rm("connectstring","channel")
-      }else if (.Platform$OS.type=="unix"){
-        # check if mdbtools is installed
-        if (system("mdb-tables")==127){
-          sheets<-NULL
-          cat("mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
-        }else{
-          # read tables in file
-          sheets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
-        }
-      }else{
-        sheets<-NULL
-        cat("Warning: Access file reading only supported in windows systems\n")
-      }
-    }else if (tolower(fileextension) %in% c("csv","dat","prn","txt")){
-      sheets<-"text file"
-    }else{
-      sheets<-NULL
-      cat(paste("Warning: Extension not recognised\n",i.file,"\n",filepath,filename,fileextension,"\n",sep="-"));
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
     }
-    
+    filenameextension<-paste(filename, fileextension, sep=".")
+    if (fileextension=="xlsx"){
+      readdata<-read.data.xlsx(i.file, filenameextension, i.dataset)
+    }else if (fileextension=="xls"){
+      readdata<-read.data.xls(i.file, filenameextension, i.dataset)
+    }else if (fileextension %in% c("mdb","accdb")){
+      readdata<-read.data.access(i.file, filenameextension, i.dataset)
+    }else if (fileextension %in% c("csv","dat","prn","txt")){
+      readdata<-read.data.text(i.file, filenameextension, i.dataset)
+    }else{
+      readdata<-list(datasets=NULL, datasetread=NULL)
+      cat(paste("Warning: Extension not recognised\t", filenameextension,"\n",sep=""));
+    }
   }
-  #cat(">>>END get.datasets\n")
-  return(sheets)
+  readdata$datasetread<-fix.data(readdata$datasetread)
+  readdata
+}
+
+read.data.xlsx<-function(i.file, i.filename, i.dataset){
+  cat("Excel 2007+ file detected: ", i.filename, "\n", sep="")
+  wb<-openxlsx::loadWorkbook(i.file)
+  datasets<-openxlsx::sheets(wb)
+  n.datasets<-length(datasets)  
+  if (is.na(i.dataset)){
+    datasetread<-NULL
+    #cat("Warning: Table name not specified\n");
+  }else if (!(i.dataset %in% datasets)) {
+    datasetread<-NULL
+    cat("Warning: Table ",i.dataset," not found\n");
+  }else{
+    cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
+    datasetread<-openxlsx::read.xlsx(wb,sheet=i.dataset,rowNames=F)
+    rownames(datasetread)<-1:NROW(datasetread)
+    cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+  }
+  list(datasets=datasets, datasetread=datasetread)
+}
+
+read.data.xls<-function(i.file, i.filename, i.dataset){
+  cat("Excel 97-2003 file detected: ",i.filename,"\n",sep="")
+  wb <- XLConnect::loadWorkbook(i.file)
+  datasets<-XLConnect::getSheets(wb)
+  n.datasets<-length(datasets)
+  if (is.na(i.dataset)){
+    datasetread<-NULL
+    #cat("Warning: Table name not specified\n")
+  }else if (!(i.dataset %in% datasets)){
+    datasetread<-NULL
+    cat("Warning: Table ",i.dataset," not found\n")
+  }else{
+    cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")  
+    temp1<-as.character(XLConnect::readWorksheet(wb, sheet = i.dataset, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))
+    datasetread<-XLConnect::readWorksheet(wb, sheet = i.dataset, rownames=NA, colTypes=XLC$DATA_TYPE.NUMERIC)
+    names(datasetread)<-temp1
+    rownames(datasetread)<-1:NROW(datasetread)
+    cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+  }
+  list(datasets=datasets, datasetread=datasetread)
+}
+
+read.data.access<-function(i.file, i.filename, i.dataset){
+  cat("Access file detected: ",i.filename,"\n",sep="")
+  if (.Platform$OS.type=="windows"){
+    connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
+    channel<-odbcDriverConnect(connectstring)
+    datasets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
+    n.datasets<-length(datasets)
+    if (is.na(i.dataset)){
+      datasetread<-NULL
+      #cat("Warning: Table name not specified\n")
+    }else if (!(i.dataset %in% datasets)) {
+      datasetread<-NULL
+      cat("Warning: Table ",i.dataset," not found\n")
+    }else{
+      cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
+      datasetread<-sqlFetch(channel,i.dataset,rownames=T)
+      rownames(datasetread)<-1:NROW(datasetread)
+      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+    }
+    odbcCloseAll()
+  }else if (.Platform$OS.type=="unix"){
+    # check if mdbtools is installed
+    if (system("mdb-tables")==127){
+      datasetread<-NULL
+      cat("Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
+    }else{
+      # read tables in file
+      datasets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
+      n.datasets<-length(datasets)
+      if (is.na(i.dataset)){
+        datasetread<-NULL
+        #cat("Warning: Table name not specified\n")
+      }else if (!(i.dataset %in% datasets)) {
+        datasetread<-NULL
+        cat("Warning: Table ",i.dataset," not found\n")
+      }else{
+        cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
+        # read selected table schema
+        tableschema <- system(paste('mdb-schema -T', shQuote(i.table), shQuote(i.file)), intern=TRUE)
+        start <- grep('^ \\($', tableschema) + 1
+        end   <- grep('^\\);$', tableschema) - 1
+        tableschema <- tableschema[start:end]
+        tableschema <- strsplit(tableschema, '\t')
+        vnames <- sapply(tableschema, function(x)x[2])
+        vnames <- substring(vnames, 2,nchar(vnames)-1)
+        filecsv <- tempfile()
+        system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.table), '>', filecsv))
+        # detect encoding
+        encodings<-readr::guess_encoding(filecsv, n_max = -1)
+        encodings<-encodings[order(encodings$confidence,decreasing = T),]
+        myencoding<-as.character(encodings$encoding[1])
+        # detect separator and decimal separator
+        firstline<-readLines(filecsv,1,encoding=myencoding)
+        separators<-c(',',';','\t','\\|')
+        mysep<-separators[which.max(stringr::str_count(firstline, separators))]
+        restlines<-paste(readLines(filecsv,encoding=myencoding)[-1],collapse="")
+        decimals<-c(".",",")
+        mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
+        datasetread<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+        names(datasetread)<-vnames
+        rownames(datasetread)<-1:NROW(datasetread)
+        cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+      }
+    }
+  }else{
+    datasetread<-NULL
+    cat("Warning: Access file only supported in windows and *nix systems\n")
+  }
+  list(datasets=datasets, datasetread=datasetread)
+}
+
+read.data.text<-function(i.file, i.filename, i.dataset){
+  datasets<-"text file"
+  n.datasets<-length(datasets)
+  # text files
+  # detect encoding
+  temp1<-readr::guess_encoding(i.file, n_max = -1)
+  temp1<-temp1[order(temp1$confidence,decreasing = T),]
+  myencoding<-as.character(temp1$encoding[1])
+  cat("Text file detected: ",i.filename," (encoding: ",myencoding,")\n",sep="")
+  if (is.na(i.dataset)){
+    datasetread<-NULL
+    #cat("Warning: Table name not specified\n");
+  }else if (!(i.dataset %in% datasets)) {
+    datasetread<-NULL
+    cat("Warning: Table ",i.dataset," not found\n");
+  }else{
+    cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
+    # detect separator and decimal separator
+    firstline<-readLines(i.file,1,encoding=myencoding)
+    separators<-c(',',';','\t','\\|')
+    mysep<-separators[which.max(str_count(firstline, separators))]
+    restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
+    decimals<-c(".",",")
+    mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
+    cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
+    temp1<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))
+    datasetread<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+    names(datasetread)<-temp1
+    rownames(datasetread)<-1:NROW(datasetread)
+    cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+  }
+  list(datasets=datasets, datasetread=datasetread)
+}
+
+fix.data<-function(i.data){
+  o.data<-i.data
+  if (!(is.null(o.data))){
+    # First column is the week name
+    if (all(o.data[,1] %in% 1:53)){
+      rownames(o.data)<-as.character(o.data[,1])
+      o.data<-o.data[-1]
+      cat("Note: First column is the week name\n")
+    }
+    # Remove columns only with NA
+    naonlycolumns<-apply(o.data, 2, function(x) all(is.na(x)))
+    if (any(naonlycolumns)){
+      cat("Note: Columns ",paste(names(o.data)[naonlycolumns], collapse=",")," contain only NAs, removing...\n")
+      o.data<-o.data[!naonlycolumns]
+    }
+    rm("naonlycolumns")
+    # Remove character only columns
+    nonnumericcolumns<-sapply(o.data, function(x) !is.numeric(x))
+    if (any(nonnumericcolumns)){
+      cat("Note: Columns ",paste(names(o.data)[nonnumericcolumns], collapse=",")," are not numeric, removing...\n")
+      o.data<-o.data[!nonnumericcolumns]
+    }
+    rm("nonnumericcolumns")
+    # dealing with season start and end, extracts information from rownames and gets season start/end
+    seasons<-data.frame(names(o.data),str_match(names(o.data),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+    names(seasons)<-c("column","anioi","aniof","aniow")
+    seasons[is.na(seasons)]<-""
+    seasonsname<-seasons$anioi
+    seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
+    seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
+    seasons$season<-seasonsname
+    rm("seasonsname")  
+    names(o.data)<-seasons$season    
+  }
+  o.data
 }
 
 
@@ -2850,7 +2706,7 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
   seasons[is.na(seasons)]<-""
   seasonsname<-seasons$anioi
   seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
-  seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],seasons$aniow[seasons$aniow!=""],sep="/")
+  seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
   seasons$season<-seasonsname
   pandemic<-grep("2009",seasons$anioi,fixed=T)
   indexes<-from:to
