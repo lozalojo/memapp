@@ -1,0 +1,65 @@
+\documentclass[10pt,a4paper]{memoir}
+\usepackage{natbib}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[english,activeacute]{babel}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{isodate}
+
+\title{%
+  The Moving Epidemics Method \\
+  \large The mem Shiny web application}
+\author{José E. Lozano and  Jakob Bergström}
+\date{\today}
+
+\begin{document}
+% cuerpo del documento
+
+\maketitle
+\newpage
+% \pagenumbering{Roman}
+\tableofcontents
+% \newpage
+% \listoffigures
+% \newpage
+% \listoftables
+\newpage
+\pagenumbering{arabic}
+
+\chapter{Introduction}
+
+The Moving Epidemics Method (MEM) is a tool developed in Castilla y León (Spain) to help in the routine influenza surveillance in health systems. It gives a better understanding of the annual influenza epidemics and allows the weekly assessment of the epidemic status and intensity.
+
+Thought in its conception it was originally created to be used with influenza data and health sentinel networks, MEM has been tested with different diseases and surveillance systems so nowadays it can be used with any disease which present a seasonal accumulation of cases that can be considered an epidemic.
+
+MEM development started in 2000 and the first record of is existence is dated in 2003 in the Options for the Control of Influenza V\citep{vega_alonso_modelling_2004}.
+
+It was presented to the baselines working group of the European Influenza Surveillance Scheme (EISS) in the 12th EISS Annual Meeting (Malaga, Spain, 2007), with whom started a collaboration that continued when EISS was dissolved in 2008 to create the European Influenza Surveillance Network.
+
+In 2009 MEM appears for the first time in an official European document: the Who European guidance for influenza surveillance in humans. A year later MEM was implemented in the European Centre for Disease Prevention and Control (ECDC) platform, and in 2012, after piloting, in the World Health Organization Regional Office for Europe (WHO-E).
+
+As a result of the collaboration with ECDC and WHO-E, two papers have been published, one related to the establishment of epidemic thresholds\citep{vega_influenza_2013} and other in the comparison of intensity levels in Europe\citep{vega_influenza_2015}.
+
+In 2014 a tool was created to help users around the world to apply mem on their data. It was released in July as a library for R, a free software environment for statistical computing and graphics. It is available at the official repositories: The Comprehensive R Archive Network (CRAN), it is the stable mem version\citep{jose_e_lozano_alonso_mem_nodate}.
+In 2015 the second version of the mem R library was published open source at GitHub, a web-based Git or version control repository and Internet hosting service. This is available directly from github\citep{lozano_jose_e_lozalojo/mem:_nodate} and is considered as the development version and includes a lot of new features and graphics.
+
+In 2017 a web application was created to serve as a graphical user interface for the R mem library using a web application framework for R called Shiny. This application is based on the development version of the mem R library.
+
+\chapter{Installation}
+
+The mem Shiny web application (memshy) is based on the mem R library and requires R to work. R is available as Free Software under the terms of the Free Software Foundation’s GNU General Public License in source code form. It compiles and runs on a wide variety of UNIX platforms and similar systems (including FreeBSD and Linux), Windows and MacOS. There are binaries for most operating systems at its official web page\citep{the_r_foundation_r_nodate}. To install download the binaries appropriate for your system and proceed to install it.
+
+R is a command line program but there are a lot of graphical user interfaces available to users that wants a friendlier environment. The most popular is RStudio an open source powerful and productive user interface for R. Binaries can be downloaded from its official web\citep{rstudio_r_nodate} and installed on Windows, Mac, and Linux.
+
+Shiny is a web application framework for R created by the RStudio team, there is no need to install separately because it acts as a library for the R language and will be installed with the rest of dependencies.
+
+MEM Shiny app is a set of two files that Shiny framework is able to interpret in order to start the web application. They can be run directly from a remote web server or in a local directory of our hard disc (running a local server).
+
+\medskip
+ 
+\bibliographystyle{unsrt}
+\bibliography{manualdraft}
+
+\end{document}
