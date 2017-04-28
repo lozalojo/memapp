@@ -3,4 +3,6 @@
 \contentsline {chapter}{Contents}{2}
 \contentsline {chapter}{\chapternumberline {1}Introduction}{1}
 \contentsline {chapter}{\chapternumberline {2}Installation}{3}
-\contentsline {chapter}{Bibliography}{5}
+\contentsline {section}{\numberline {2.1}Dependencies}{3}
+\contentsline {chapter}{\chapternumberline {3}Running memshy}{7}
+\contentsline {chapter}{Bibliography}{9}

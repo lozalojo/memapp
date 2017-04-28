@@ -7,6 +7,34 @@
 \usepackage{mathtools}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{isodate}
+\usepackage{listings}
+\usepackage{color}
+\lstset{ %
+  language=R,                     % the language of the code
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                 % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},      % keyword style
+  commentstyle=\color{dkgreen},   % comment style
+  stringstyle=\color{mauve},      % string literal style
+  escapeinside={\%*}{*)},         % if you want to add a comment within your code
+  morekeywords={*,...}            % if you want to add more keywords to the set
+} 
 
 \title{%
   The Moving Epidemics Method \\
@@ -56,6 +84,139 @@ R is a command line program but there are a lot of graphical user interfaces ava
 Shiny is a web application framework for R created by the RStudio team, there is no need to install separately because it acts as a library for the R language and will be installed with the rest of dependencies.
 
 MEM Shiny app is a set of two files that Shiny framework is able to interpret in order to start the web application. They can be run directly from a remote web server or in a local directory of our hard disc (running a local server).
+
+\section{Dependencies}
+
+Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R is based on the contribution of the community, which creates their own code and share it creating new packages, which extend the features of the base package.
+
+Most packages has requirements, they need other packages to work, these are the dependencies of the package.
+
+MEM Shiny app and mem R library requires to install a set of packages (dependencies) on R to start the application. The list of dependencies required for both applications are those of the original mem R library and those added by the new features of the mem Shiny web application.
+
+Mem R library requirements:
+
+\begin{itemize}[\textbullet]
+\item sm
+\item boot
+\item grDevices
+\item graphics
+\item stats
+\item sqldf
+\item reshape2
+\item RColorBrewer
+\item mixtools
+\end{itemize}
+
+memshy requeriments:
+
+\begin{itemize}[\textbullet]
+\item shiny
+\item shinythemes
+\item shinydashboard
+\item shinyjs
+\item shinyBS
+\item plotly
+\item ggplot2
+\item ggthemes
+\item R.utils
+\item openxlsx
+\item XLConnect
+\item stringr
+\item readr
+\item magick
+\item DT
+\item gplots
+\item RODBC
+\item mem
+\item shinysky
+\end{itemize}
+
+Almost all the libraries can be installed directly from the CRAN repositories. To install a package simply write in the command line:
+
+\begin{lstlisting}
+install.package('packagename')
+\end{lstlisting}
+
+Installation of packages must be done only once, after a package is installed, to use it, it has to be loaded, no need to install it again.
+
+\begin{lstlisting}
+library('packagename')
+\end{lstlisting}
+
+To automatize the work of installing and loading libraries, here it is a custom function to check all dependencies and install in case it is needed for memshy.
+
+\begin{lstlisting}
+testinstall.packages <- function(i.packages) {
+  lapply(i.packages, function (x) if(sum(installed.packages()[, 1]%in%x)==0) install.packages(x))
+  lapply(i.packages, require, character.only=TRUE)
+  lapply(i.packages,  function(x) paste(x, packageVersion(x)))
+}
+testinstall.packages(c('shiny', 'shinythemes', 'shinydashboard', 'shinyjs', 'RColorBrewer', 'shinyBS',
+              'plotly', 'ggplot2', 'ggthemes', 'reshape2', 'R.utils', 'openxlsx', 'XLConnect',
+              'stringr', 'readr', 'magick', 'DT', 'gplots', 'RODBC', 'mixtools'))
+\end{lstlisting}
+
+There are two missing packages in the above code, requires special installation, the mem R library is hosted at github, and the shinysky package does not provide binaries to the lastest version of R, so it has to be installed from sources, also at github.
+
+To install from github another package must be installed: devtools.
+
+\begin{lstlisting}
+install.package('devtools')
+\end{lstlisting}
+
+And to install and load the last two packages:
+
+\begin{lstlisting}
+# Install mem development version
+if ('mem' %in% installed.packages()[,'Package']){
+  if (as.numeric(as.character(packageVersion('mem')))<2){
+    testinstall.packages('devtools')
+    devtools::install_github('lozalojo/mem')
+  }  
+}else{
+  testinstall.packages('devtools')
+  devtools::install_github('lozalojo/mem')
+}
+library('mem')
+# There are no binaries for shinysky
+if (!('shinysky' %in% installed.packages()[,'Package'])) devtools::install_github('AnalytixWare/ShinySky')
+library('shinysky')
+\end{lstlisting}
+
+In windows, the only package that can give problems installing is rJava (required by XLConnect), which requires Java installed in your computer (www.java.com).
+
+In *nix systems, there are libraries that need some specific packages installed on your system, each system is different, but these are some issues we’ve found while installing on debian and arch linux machines:
+
+\begin{itemize}
+	\item hexbin (required by plotly) requires a fortran compiler.
+	\item rJava (required by XLConnect) requires Java.
+	\item RODBC requires an odbc package (unixodbc).
+\end{itemize}
+
+Finally, memshy is able to read access files. In *nix systems it is required to install mdbtools (http://mdbtools.sourceforge.net/), which is probably in the distribution repositories.
+
+Once all requirements are fulfilled, you can start the application.
+
+\chapter{Running memshy}
+
+From RStudio, to run a Shiny application is easy:
+
+\begin{lstlisting}
+runApp(path.to.the.files, launch.browser = T)
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \medskip
  
