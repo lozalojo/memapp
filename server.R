@@ -235,43 +235,6 @@ read_data <- reactive({
   dataread
 })
 
-generate_palette <- function(number.series=NA){
-  if (is.na(number.series)) number.series<-10
-  params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
-            "colThresholds","colSeries","colEpidemic")
-  params.default<-list(colObservedLines="#808080",
-                       colObservedPoints="#000000",
-                       colEpidemicStart="#FF0000",
-                       colEpidemicStop="#40FF40",
-                       colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
-                       colSeries="Accent",
-                       colEpidemic=c("#00C000","#800080","#FFB401")
-                       #,colTransparency=1
-  )
-  n.params<-length(params)
-  for (i in 1:n.params){
-    eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
-    eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
-  }
-  # First four are simple colors
-  for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
-  # Fifth to Seventh are palettes that I must create
-  if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
-  if (colSeries=="default") colSeries<-params.default$colSeries
-  colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
-  if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
-  # Last one is a number between 0 and 1
-  # colTransparency<-input$colTransparency
-  # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
-  colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
-                     colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
-                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic
-                     #,colTransparency=colTransparency
-  )
-  #print(colors.final)
-  colors.final
-}
-
 observe({
   infile <- input$file
   indataset <- input$dataset
@@ -514,7 +477,7 @@ output$tbdSeries <- renderPlotly({
       i.thr<-datamodel$intensity.thresholds
       p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                       i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
-                      i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
+                      i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA, i.replace.x.cr=T)
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -588,7 +551,7 @@ output$tbdEduration <- renderPlotly({
     datfile.plot<-dataevolution[indicators]
     names(datfile.plot)<-c("Lower limit","Duration","Upper limit")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-    rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+    #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
     colors.palette<-generate_palette(3)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
@@ -598,7 +561,8 @@ output$tbdEduration <- renderPlotly({
                    i.fills=colors.palette$colSeries,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.replace.x.cr=T)
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -625,7 +589,7 @@ output$tbdEstart <- renderPlotly({
     datfile.plot<-dataevolution[indicators]
     names(datfile.plot)<-c("Lower limit","Start","Upper limit")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-    rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+    #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
     colors.palette<-generate_palette(3)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
@@ -635,7 +599,8 @@ output$tbdEstart <- renderPlotly({
                    i.fills=colors.palette$colSeries,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.replace.x.cr=T)
     
     if (is.null(p)){
       zfix<-NULL
@@ -664,7 +629,7 @@ output$tbdEpercentage <- renderPlotly({
     datfile.plot<-dataevolution[indicators]
     names(datfile.plot)<-c("Lower limit","Epidemic percentage","Upper limit")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-    rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+    #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
     colors.palette<-generate_palette(3)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
@@ -674,7 +639,8 @@ output$tbdEpercentage <- renderPlotly({
                    i.fills=colors.palette$colSeries,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.replace.x.cr=T)
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -701,7 +667,7 @@ output$tbdEthresholds <- renderPlotly({
     colors.palette<-generate_palette(NCOL(datfile.plot))
     names(datfile.plot)<-c("Epidemic","Medium int.","High int.","Very high int.","Post-epidemic")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-    rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
+    #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.range.y.labels=NA,
@@ -710,7 +676,8 @@ output$tbdEthresholds <- renderPlotly({
                    i.fills=colors.palette$colThresholds,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.replace.x.cr=T)
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -950,7 +917,7 @@ output$tbmSeries <- renderPlotly({
     i.thr<-datamodel$intensity.thresholds
     p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                     i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
-                    i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
+                    i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA, i.replace.x.cr=T)
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1651,7 +1618,7 @@ output$tbvSeries <- renderPlotly({
       datfile.plot<-datfile[selectedcolumns]
       p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
                       i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
-                      i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA)
+                      i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA, i.replace.x.cr=T)
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -1681,6 +1648,43 @@ output$tbvTiming = renderUI({
 })
 
 # Custom functions
+
+generate_palette <- function(number.series=NA){
+  if (is.na(number.series)) number.series<-10
+  params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
+            "colThresholds","colSeries","colEpidemic")
+  params.default<-list(colObservedLines="#808080",
+                       colObservedPoints="#000000",
+                       colEpidemicStart="#FF0000",
+                       colEpidemicStop="#40FF40",
+                       colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                       colSeries="Accent",
+                       colEpidemic=c("#00C000","#800080","#FFB401")
+                       #,colTransparency=1
+  )
+  n.params<-length(params)
+  for (i in 1:n.params){
+    eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
+    eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
+  }
+  # First four are simple colors
+  for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
+  # Fifth to Seventh are palettes that I must create
+  if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
+  if (colSeries=="default") colSeries<-params.default$colSeries
+  colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
+  if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
+  # Last one is a number between 0 and 1
+  # colTransparency<-input$colTransparency
+  # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
+  colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
+                     colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
+                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic
+                     #,colTransparency=colTransparency
+  )
+  #print(colors.final)
+  colors.final
+}
 
 plotSeasons <- function(i.data, 
                          i.pre.epidemic=TRUE, 
@@ -1876,6 +1880,7 @@ plotSeasons <- function(i.data,
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = input$textMain, x = input$textX, y = input$textY) + 
+      theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
       ggthemes::theme_few()
     
     p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=i.range.x.values$week.lab)
@@ -1884,7 +1889,7 @@ plotSeasons <- function(i.data,
 }
 
 plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemic=T, i.epidemic.thr=NA, 
-                      i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, i.tickmarks=30, ...){
+                      i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, i.tickmarks=30, i.replace.x.cr=F, ...){
   
   if(is.null(i.data)){
     p<-NULL
@@ -2091,6 +2096,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
     axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
     axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
     axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
+    if (i.replace.x.cr) axis.x.labels<-gsub("/","\n",axis.x.labels)
     rm("temp1","temp2")  
     
     # Range y fix
@@ -2141,7 +2147,7 @@ plotTiming <-function(i.data){
   if(is.null(i.data)){
     p<-NULL
   }else{
-    p <- plotSeries(i.data, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
+    p <- plotSeries(i.data, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F, i.replace.x.cr=F)
   }
   p
 }
@@ -2414,7 +2420,7 @@ plotSurveillance<-function(i.data,
   p
 }
 
-plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colors, i.fills, i.sizes, i.linetypes, i.linesize){
+plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colors, i.fills, i.sizes, i.linetypes, i.linesize, i.replace.x.cr=F){
   if(is.null(i.data)){
     p<-NULL
   }else{
@@ -2427,6 +2433,7 @@ plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colo
     axis.x.range <- c(1,NROW(dgraf))
     axis.x.ticks<- 1:NROW(dgraf)
     axis.x.labels<-rownames(dgraf)
+    if (i.replace.x.cr) axis.x.labels<-gsub("/","\n", axis.x.labels)
     # Range y fix
     if (length(i.range.y.labels)<2){
       if (length(i.range.y)!=2){
@@ -2463,8 +2470,6 @@ plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colo
   }
   p
 }
-
-# custom functions
 
 read.data<-function(i.file, i.file.name=NA, i.dataset=NA){
   if (!file.exists(i.file)){
