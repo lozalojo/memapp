@@ -649,7 +649,7 @@ output$tbdEstart <- renderPlotly({
                       "value",
                       rownames(datfile.plot))
       # fix to replace relative to absolute weeks
-      for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br>",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
+      for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
     }
   }
   zfix
@@ -812,7 +812,7 @@ output$tbdSstart <- renderPlotly({
                       "value",
                       rownames(datfile.plot))
       # fix to replace relative to absolute weeks
-      for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br>",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
+      for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
     }
   }
   zfix
@@ -2118,7 +2118,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
       labs(title = input$textMain, x = input$textX, y = input$textY) + 
       ggthemes::theme_few()
     
-    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=paste(data.orig$week,"<br>Season: ",data.orig$season,sep=""))
+    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""))
   }
   p
 }
@@ -2896,7 +2896,7 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   a.corrected <- lapply(a, function(x) {c(x, rep("", a.len - length(x)))})
   divideit<-matrix(unlist(a.corrected),nrow=length(i.plotly$x$layout$xaxis$ticktext), byrow=T)
   i.plotly$x$layout$margin$b<-(NCOL(divideit))*i.plotly$x$layout$margin$b
-  i.plotly$x$layout$xaxis$ticktext<-apply(divideit,1,paste,collapse="<br>")
+  i.plotly$x$layout$xaxis$ticktext<-apply(divideit,1,paste,collapse="<br />")
   # Fix labels names
   sequ<-1:nlists-nlabels*(floor((1:nlists-1)/nlabels))
   for (i in 1:nlists) i.plotly$x$data[[i]]$name<-i.labels[sequ[i]]
@@ -2904,8 +2904,8 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   for (i in 1:nlists){
     if (length(grep(i.yname,i.plotly$x$data[[i]]$text))>0){
       #i.plotly$x$data[[i]]$text
-      dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
-      i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br>",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
+      dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>|<br />")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
+      i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br />",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
     }
   }
   # For those with points and labels, i modify the mode and add the marker
