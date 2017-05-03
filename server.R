@@ -555,8 +555,8 @@ output$tbdEduration <- renderPlotly({
                    i.range.y=NA,
                    i.range.y.labels=NA,
                    i.shapes=rep(21,NCOL(datfile.plot)),
-                   i.colors=colors.palette$colSeries,
-                   i.fills=colors.palette$colSeries,
+                   i.colors=colors.palette$colSeasons,
+                   i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
@@ -593,8 +593,8 @@ output$tbdEstart <- renderPlotly({
                    i.range.y=NA,
                    i.range.y.labels=rownames(datfile),
                    i.shapes=rep(21,NCOL(datfile.plot)),
-                   i.colors=colors.palette$colSeries,
-                   i.fills=colors.palette$colSeries,
+                   i.colors=colors.palette$colSeasons,
+                   i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
@@ -633,8 +633,8 @@ output$tbdEpercentage <- renderPlotly({
                    i.range.y=NA,
                    i.range.y.labels=NA,
                    i.shapes=rep(21,NCOL(datfile.plot)),
-                   i.colors=colors.palette$colSeries,
-                   i.fills=colors.palette$colSeries,
+                   i.colors=colors.palette$colSeasons,
+                   i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
@@ -725,8 +725,8 @@ output$tbdSduration <- renderPlotly({
                    i.range.y=NA,
                    i.range.y.labels=NA,
                    i.shapes=rep(21,NCOL(datfile.plot)),
-                   i.colors=colors.palette$colSeries,
-                   i.fills=colors.palette$colSeries,
+                   i.colors=colors.palette$colSeasons,
+                   i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1)
@@ -760,8 +760,8 @@ output$tbdSstart <- renderPlotly({
                    i.range.y=NA,
                    i.shapes=rep(21,NCOL(datfile.plot)),
                    i.range.y.labels=rownames(datfile),
-                   i.colors=colors.palette$colSeries,
-                   i.fills=colors.palette$colSeries,
+                   i.colors=colors.palette$colSeasons,
+                   i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1)
@@ -796,8 +796,8 @@ output$tbdSpercentage <- renderPlotly({
                    i.range.y=NA,
                    i.range.y.labels=NA,
                    i.shapes=rep(21,NCOL(datfile.plot)),
-                   i.colors=colors.palette$colSeries,
-                   i.fills=colors.palette$colSeries,
+                   i.colors=colors.palette$colSeasons,
+                   i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1)
@@ -1216,7 +1216,7 @@ output$tbmOptimizeGraph<- renderPlotly({
       geom_point() + 
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-      scale_color_manual(values=colors.palette$colSeries) +
+      scale_color_manual(values=colors.palette$colSeasons) +
       labs(title = input$textMain, x = input$textX, y = input$textY) + 
       ggthemes::theme_few()
     z<-ggplotly(p, width = 800, height = 600)      
@@ -1650,13 +1650,13 @@ output$tbvTiming = renderUI({
 generate_palette <- function(number.series=NA){
   if (is.na(number.series)) number.series<-10
   params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
-            "colThresholds","colSeries","colEpidemic")
+            "colThresholds","colSeasons","colEpidemic")
   params.default<-list(colObservedLines="#808080",
                        colObservedPoints="#000000",
                        colEpidemicStart="#FF0000",
                        colEpidemicStop="#40FF40",
                        colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
-                       colSeries="Accent",
+                       colSeasons="Accent",
                        colEpidemic=c("#00C000","#800080","#FFB401")
                        #,colTransparency=1
   )
@@ -1669,15 +1669,15 @@ generate_palette <- function(number.series=NA){
   for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
   # Fifth to Seventh are palettes that I must create
   if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
-  if (colSeries=="default") colSeries<-params.default$colSeries
-  colSeries <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeries))(number.series)
+  if (colSeasons=="default") colSeasons<-params.default$colSeasons
+  colSeasons <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeasons))(number.series)
   if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
   # Last one is a number between 0 and 1
   # colTransparency<-input$colTransparency
   # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
   colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
                      colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
-                     colThresholds=colThresholds, colSeries=colSeries,colEpidemic=colEpidemic
+                     colThresholds=colThresholds, colSeasons=colSeasons,colEpidemic=colEpidemic
                      #,colTransparency=colTransparency
   )
   #print(colors.final)
@@ -1812,8 +1812,8 @@ plotSeasons <- function(i.data,
     haspoints<-c(rep(F,NCOL(data.full)),rep(T,NCOL(data.full)),F,F,F,F,F)
     haslines<-c(rep(T,NCOL(data.full)),rep(F,NCOL(data.full)),T,T,T,T,T)
     shapes<-c(rep(NA,NCOL(data.full)),rep(24,NCOL(data.full)),NA,NA,NA,NA,NA)
-    colors<-c(rep(colors.palette$colSeries,2),colors.palette$colThresholds)
-    fills<-c(rep(colors.palette$colSeries,2),rep(colors.palette$colObservedPoints,5))
+    colors<-c(rep(colors.palette$colSeasons,2),colors.palette$colThresholds)
+    fills<-c(rep(colors.palette$colSeasons,2),rep(colors.palette$colObservedPoints,5))
     sizes<-c(rep(2,NCOL(data.full)),rep(2,NCOL(data.full)),1,1,1,1,1)
     linetypes<-c(rep("solid",NCOL(data.full)),rep("solid",NCOL(data.full)), "dashed", "dashed", "dashed", "dashed","dashed")
     
