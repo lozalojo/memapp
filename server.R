@@ -226,7 +226,7 @@ read_data <- reactive({
   }else{
     dataread<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)$datasetread
   }
-  print(head(dataread))
+  # print(head(dataread))
   cat("read_data>Returning NULL?: ",is.null(dataread),"\n")
   dataread<-transformseries(dataread, i.transformation=as.numeric(input$transformation))
   cat("read_data>Transformed returning NULL?: ",is.null(dataread),"\n\n")
@@ -1698,21 +1698,34 @@ plotSeasons <- function(i.data,
     p<-NULL
   }else{
     
-    if (length(i.range.x)!=2){
-      week.f<-as.numeric(rownames(i.data)[1])
-      week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
-    }else{
-      week.f<-i.range.x[1]
-      week.l<-i.range.x[2]
-    }  
+    # if (length(i.range.x)!=2){
+    #   week.f<-as.numeric(rownames(i.data)[1])
+    #   week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
+    # }else{
+    #   week.f<-i.range.x[1]
+    #   week.l<-i.range.x[2]
+    # }  
+    # if (week.f>week.l){
+    #   i.range.x<-c(week.f,week.l)
+    #   i.range.x.values<-data.frame(week.lab=c(week.f:52,1:week.l))
+    #   i.range.x.values$week.no=1:NROW(i.range.x.values)
+    # }else{
+    #   i.range.x<-c(1,52)
+    #   i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
+    # }
+    
+    if (length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    week.f<-i.range.x[1]
+    week.l<-i.range.x[2]
+    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
+    last.week<-52
     if (week.f>week.l){
-      i.range.x<-c(week.f,week.l)
-      i.range.x.values<-data.frame(week.lab=c(week.f:52,1:week.l))
-      i.range.x.values$week.no=1:NROW(i.range.x.values)
+      i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
     }else{
-      i.range.x<-c(1,52)
-      i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
+      i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
     }
+    
+    
     if (NCOL(i.data)>1){
       epi<-memmodel(i.data,
                     i.seasons=NA,
@@ -1904,7 +1917,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
     #   i.range.x<-c(1,52)
     #   i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
     # }
-    if (length(i.range.x)!=2) i.range.x<-c(as.numeric(rownames(i.data)[1]),as.numeric(rownames(i.data)[NROW(i.data)]))
+    if (length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
     if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
@@ -2181,10 +2194,20 @@ plotSurveillance<-function(i.data,
     if (i.force.week.53) last.week<-53 else last.week<-52
     
     # Range x fix
-    if (length(i.range.x)!=2) i.range.x<-c(as.numeric(rownames(i.data)[1]),as.numeric(rownames(i.data)[NROW(i.data)]))
+    # if (length(i.range.x)!=2) i.range.x<-c(as.numeric(rownames(i.data)[1]),as.numeric(rownames(i.data)[NROW(i.data)]))
+    # week.f<-i.range.x[1]
+    # week.l<-i.range.x[2]
+    # if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(40,20)
+    # if (week.f>week.l){
+    #   i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+    # }else{
+    #   i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+    # }
+    if (length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(40,20)
+    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
+    last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
     }else{
@@ -2750,7 +2773,7 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
       cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
       # detect separator and decimal separator
       datasetread<-readRDS(i.file)
-      if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
+      #if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
       cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
     }
   }
@@ -2767,6 +2790,27 @@ fix.data<-function(i.data){
       datasetread<-datasetread[-1]
       cat("Note: First column is the week name\n")
     }
+    # Fix when reading access files, sometimes it changes the order of the weeks
+    # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance 
+    # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
+    i.range.x<-NA
+    if (length(i.range.x)!=2) i.range.x<-c(max(1,min(as.numeric(rownames(datasetread)[1:3]))),min(52,max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)]))))
+    week.f<-i.range.x[1]
+    week.l<-i.range.x[2]
+    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
+    last.week<-52
+    if (week.f>week.l){
+      i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+    }else{
+      i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+    }
+    # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
+    datasetread$week.lab<-as.numeric(rownames(datasetread))
+    datasetread<-merge(datasetread,i.range.x.values, all.y=T, all.x=F, by="week.lab")
+    datasetread<-datasetread[order(datasetread$week.no),]
+    rownames(datasetread)<-datasetread$week.lab
+    datasetread$week.lab<-NULL
+    datasetread$week.no<-NULL
     # Remove columns only with NA
     naonlycolumns<-apply(datasetread, 2, function(x) all(is.na(x)))
     if (any(naonlycolumns)){
