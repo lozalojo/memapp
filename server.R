@@ -2750,7 +2750,7 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
       cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
       # detect separator and decimal separator
       datasetread<-readRDS(i.file)
-      rownames(datasetread)<-1:NROW(datasetread)
+      if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
       cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
     }
   }
