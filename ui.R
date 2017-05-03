@@ -1,4 +1,26 @@
-library(shiny)
+library("shiny")
+library("shinythemes")
+library("shinydashboard")
+library("shinyjs")
+library("RColorBrewer")
+library("shinyBS")
+library("plotly")
+library("ggplot2")
+library("ggthemes")
+library("reshape2")
+library("R.utils")
+library("openxlsx")
+library("XLConnect")
+library("stringr")
+library("readr")
+library("magick")
+library("DT")
+library("gplots")
+library("RODBC")
+library("mixtools")
+library("mem")
+library("shinysky")
+
 shinyUI(dashboardPage(skin = "blue",
                       
                       ###################################

@@ -1,5 +1,3 @@
-library(shiny)
-
 shinyServer(function(input, output, session) {
 
 # Reactive functions
