@@ -119,7 +119,8 @@ data_optim <- reactive({
     }else{
       roca<-roc.analysis(datfile[,selectedcolumns], 
                          i.param.values = seq(input$paramrange[1],input$paramrange[2],by=0.1), 
-                         i.min.seasons = 3, 
+                         i.min.seasons = 3,
+                         i.graph = F,
                          i.graph.file = F,
                          i.seasons=NA,
                          i.type.threshold=as.numeric(input$type.threshold),
