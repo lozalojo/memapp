@@ -21,13 +21,32 @@ library("mixtools")
 library("mem")
 library("shinysky")
 
-shinyUI(dashboardPage(skin = "blue",
+shinyUI(dashboardPage(skin = "black",
                       
                       ###################################
                       ### HEADER SECTION              ###
                       ###################################
                       
-                      dashboardHeader(title = "Dashboard"),
+                      #dashboardHeader(title = "Dashboard"),
+                      # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
+                      # so we can pass such elements instead of dropdownMenus
+                      dashboardHeader(title = "Dashboard",
+                                      tags$li("code under GPLv2 at",
+                                              class = "dropdown"),
+                                      tags$li(a(href = 'https://github.com/lozalojo/memapp',
+                                                img(src = 'GitHub_Logo.png',
+                                                    title = "José E. Lozano", height = "30px"),
+                                                style = "padding-top:10px; padding-bottom:0px;"),
+                                              class = "dropdown"),
+                                      tags$li(a(href = 'http://www.icscyl.com',
+                                                img(src = 'logoiecscyl.gif',
+                                                    title = "IECSCyL", height = "40px"),
+                                                style = "padding-top:5px; padding-bottom:0px;"),
+                                              class = "dropdown"),
+                                      tags$li(a(onclick = "window.close();",
+                                                icon("power-off", "fa-2x"),
+                                                title = "Power off"),
+                                              class = "dropdown")),
                       
                       ###################################
                       ### LEFT PANEL SECTION          ###
@@ -154,7 +173,7 @@ shinyUI(dashboardPage(skin = "blue",
                       ###################################
                       
                       dashboardBody(
-                        useShinyjs(),
+                        #useShinyjs(),
                         
                         tags$body(inlineCSS(list(".shinysky-busy-indicator" = "position: absolute !important; z-index:800; "))),
                         
