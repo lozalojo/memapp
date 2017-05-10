@@ -8,7 +8,6 @@
 >list.packages<-c("shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
 >              "plotly", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
 >              "stringr", "readr", "magick", "DT", "gplots", "RODBC", "mixtools", "devtools")
->
 >lapply(list.packages, function (x) if(sum(installed.packages()[, 1]%in%x)==0) install.packages(x))
 
 Also, some packages must be compiled from sources at github:
@@ -19,5 +18,5 @@ Also, some packages must be compiled from sources at github:
 
 To run it:
 
-> shiny::runGitHub("lozalojo/memapp", launch.browser = T)
+>shiny::runGitHub("lozalojo/memapp", launch.browser = T)
 
