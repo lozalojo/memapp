@@ -202,7 +202,7 @@ get_datasets <- reactive({
     datasets<-NULL
     cat("Warning: No file\n")
   } else{
-    datasets<-read.data(i.file=infile$datapath, i.file.name=inname, NA)$datasets
+    datasets<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = NA, i.range.x=as.numeric(c(input$firstWeek,input$lastWeek)))$datasets
   }
   cat(paste(datasets,collapse=","),"\n")
   cat("get_datasets>Returning NULL?: ",is.null(datasets),"\n\n")
@@ -225,7 +225,7 @@ get_weeks <- reactive({
     dataweeks<-NULL
     cat("Warning: No dataset\n")
   }else{
-    dataweeks<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)$dataweeks
+    dataweeks<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=as.numeric(c(input$firstWeek,input$lastWeek)))$dataweeks
   }
   cat(paste(dataweeks,collapse=","),"\n")
   cat("get_weeks>Returning NULL?: ",is.null(dataweeks),"\n\n")
@@ -249,7 +249,7 @@ read_data <- reactive({
     dataread<-NULL
     cat("Warning: No dataset\n")
   }else{
-    dataread<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)$datasetread
+    dataread<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=as.numeric(c(input$firstWeek,input$lastWeek)))$datasetread
   }
   # print(head(dataread))
   cat("read_data>Returning NULL?: ",is.null(dataread),"\n")
@@ -297,7 +297,27 @@ observe({
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
-          p <- plotTiming(datfile.plot)
+          #p <- plotTiming(datfile.plot)
+          p <- plotSeries(datfile.plot, 
+                          i.plot.timing = T, 
+                          i.pre.epidemic=F, 
+                          i.post.epidemic=F, 
+                          i.intensity= F, 
+                          i.replace.x.cr=F,
+                          i.textMain=input$textMain,
+                          i.textX=input$textX,
+                          i.textY=input$textY,
+                          i.type.threshold=as.numeric(input$type.threshold),
+                          i.tails.threshold=as.numeric(input$tails),
+                          i.type.intensity=as.numeric(input$type.intensity),
+                          i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                          i.tails.intensity=as.numeric(input$tails),
+                          i.type.curve=as.numeric(input$type.curve),
+                          i.type.other=as.numeric(input$type.other),
+                          i.method=as.numeric(input$method),
+                          i.param=as.numeric(input$param),
+                          i.n.max=as.numeric(input$n.max)
+          )
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -315,7 +335,27 @@ observe({
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
-          p <- plotTiming(datfile.plot)
+          #p <- plotTiming(datfile.plot)
+          p <- plotSeries(datfile.plot, 
+                          i.plot.timing = T, 
+                          i.pre.epidemic=F, 
+                          i.post.epidemic=F, 
+                          i.intensity= F, 
+                          i.replace.x.cr=F,
+                          i.textMain=input$textMain,
+                          i.textX=input$textX,
+                          i.textY=input$textY,
+                          i.type.threshold=as.numeric(input$type.threshold),
+                          i.tails.threshold=as.numeric(input$tails),
+                          i.type.intensity=as.numeric(input$type.intensity),
+                          i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                          i.tails.intensity=as.numeric(input$tails),
+                          i.type.curve=as.numeric(input$type.curve),
+                          i.type.other=as.numeric(input$type.other),
+                          i.method=as.numeric(input$method),
+                          i.param=as.numeric(input$param),
+                          i.n.max=as.numeric(input$n.max)
+          )
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -333,7 +373,27 @@ observe({
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
-          p <- plotTiming(datfile.plot)
+          #p <- plotTiming(datfile.plot)
+          p <- plotSeries(datfile.plot, 
+                          i.plot.timing = T, 
+                          i.pre.epidemic=F, 
+                          i.post.epidemic=F, 
+                          i.intensity= F, 
+                          i.replace.x.cr=F,
+                          i.textMain=input$textMain,
+                          i.textX=input$textX,
+                          i.textY=input$textY,
+                          i.type.threshold=as.numeric(input$type.threshold),
+                          i.tails.threshold=as.numeric(input$tails),
+                          i.type.intensity=as.numeric(input$type.intensity),
+                          i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                          i.tails.intensity=as.numeric(input$tails),
+                          i.type.curve=as.numeric(input$type.curve),
+                          i.type.other=as.numeric(input$type.other),
+                          i.method=as.numeric(input$method),
+                          i.param=as.numeric(input$param),
+                          i.n.max=as.numeric(input$n.max)
+          )
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -513,7 +573,26 @@ output$tbdSeasons <- renderPlotly({
       i.thr<-NA
     }
     datfile.plot<-datfile
-    p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
+    p <- plotSeasons(datfile.plot,
+                     i.epidemic.thr=e.thr, 
+                     i.intensity.thr=i.thr, 
+                     i.pre.epidemic = as.logical(input$preepidemicthr), 
+                     i.post.epidemic = as.logical(input$postepidemicthr), 
+                     i.intensity = as.logical(input$intensitythr),
+                     i.textMain=input$textMain,
+                     i.textX=input$textX,
+                     i.textY=input$textY,
+                     i.type.threshold=as.numeric(input$type.threshold),
+                     i.tails.threshold=as.numeric(input$tails),
+                     i.type.intensity=as.numeric(input$type.intensity),
+                     i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                     i.tails.intensity=as.numeric(input$tails),
+                     i.type.curve=as.numeric(input$type.curve),
+                     i.type.other=as.numeric(input$type.other),
+                     i.method=as.numeric(input$method),
+                     i.param=as.numeric(input$param),
+                     i.n.max=as.numeric(input$n.max)
+                     )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -536,9 +615,30 @@ output$tbdSeries <- renderPlotly({
       datfile.plot<-datfile
       e.thr<-datamodel$epidemic.thresholds
       i.thr<-datamodel$intensity.thresholds
-      p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
-                      i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
-                      i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA, i.replace.x.cr=T)
+      p <- plotSeries(i.data=datfile.plot, 
+                      i.plot.timing = T, 
+                      i.range.x=NA, 
+                      i.pre.epidemic=as.logical(input$preepidemicthr),
+                      i.post.epidemic=as.logical(input$postepidemicthr), 
+                      i.epidemic.thr=e.thr, 
+                      i.intensity= as.logical(input$intensitythr), 
+                      i.intensity.thr=i.thr, 
+                      i.range.y=NA, 
+                      i.replace.x.cr=T,
+                      i.textMain=input$textMain,
+                      i.textX=input$textX,
+                      i.textY=input$textY,
+                      i.type.threshold=as.numeric(input$type.threshold),
+                      i.tails.threshold=as.numeric(input$tails),
+                      i.type.intensity=as.numeric(input$type.intensity),
+                      i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                      i.tails.intensity=as.numeric(input$tails),
+                      i.type.curve=as.numeric(input$type.curve),
+                      i.type.other=as.numeric(input$type.other),
+                      i.method=as.numeric(input$method),
+                      i.param=as.numeric(input$param),
+                      i.n.max=as.numeric(input$n.max)
+                      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -613,7 +713,14 @@ output$tbdEduration <- renderPlotly({
     names(datfile.plot)<-c("Lower limit","Duration","Upper limit")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
     #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
-    colors.palette<-generate_palette(3)
+    colors.palette<-generate_palette(i.number.series=3,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.range.y.labels=NA,
@@ -623,7 +730,11 @@ output$tbdEduration <- renderPlotly({
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
-                   i.replace.x.cr=T)
+                   i.replace.x.cr=T,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -651,7 +762,14 @@ output$tbdEstart <- renderPlotly({
     names(datfile.plot)<-c("Lower limit","Start","Upper limit")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
     #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
-    colors.palette<-generate_palette(3)
+    colors.palette<-generate_palette(i.number.series=3,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.range.y.labels=rownames(datfile),
@@ -661,7 +779,11 @@ output$tbdEstart <- renderPlotly({
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
-                   i.replace.x.cr=T)
+                   i.replace.x.cr=T,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     
     if (is.null(p)){
       zfix<-NULL
@@ -691,7 +813,14 @@ output$tbdEpercentage <- renderPlotly({
     names(datfile.plot)<-c("Lower limit","Epidemic percentage","Upper limit")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
     #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
-    colors.palette<-generate_palette(3)
+    colors.palette<-generate_palette(i.number.series=3,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.range.y.labels=NA,
@@ -701,7 +830,11 @@ output$tbdEpercentage <- renderPlotly({
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
-                   i.replace.x.cr=T)
+                   i.replace.x.cr=T,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -725,7 +858,14 @@ output$tbdEthresholds <- renderPlotly({
   }else{
     indicators<-c("epidemic","medium","high","veryhigh","postepidemic")
     datfile.plot<-dataevolution[indicators]
-    colors.palette<-generate_palette(NCOL(datfile.plot))
+    colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     names(datfile.plot)<-c("Epidemic","Medium int.","High int.","Very high int.","Post-epidemic")
     # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
     #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
@@ -738,7 +878,11 @@ output$tbdEthresholds <- renderPlotly({
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
                    i.linesize=1,
-                   i.replace.x.cr=T)
+                   i.replace.x.cr=T,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -784,7 +928,14 @@ output$tbdSduration <- renderPlotly({
     indicators<-c("durationll","duration","durationul")
     datfile.plot<-datastability[indicators]
     names(datfile.plot)<-c("Lower limit","Duration","Upper limit")
-    colors.palette<-generate_palette(3)
+    colors.palette<-generate_palette(i.number.series=3,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.range.y.labels=NA,
@@ -793,7 +944,11 @@ output$tbdSduration <- renderPlotly({
                    i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -819,7 +974,14 @@ output$tbdSstart <- renderPlotly({
     indicators<-c("startll","start","startul")
     datfile.plot<-datastability[indicators]
     names(datfile.plot)<-c("Lower limit","Start","Upper limit")
-    colors.palette<-generate_palette(3)
+    colors.palette<-generate_palette(i.number.series=3,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.shapes=rep(21,NCOL(datfile.plot)),
@@ -828,7 +990,11 @@ output$tbdSstart <- renderPlotly({
                    i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -855,7 +1021,14 @@ output$tbdSpercentage <- renderPlotly({
     indicators<-c("percentagell","percentage","percentageul")
     datfile.plot<-datastability[indicators]
     names(datfile.plot)<-c("Lower limit","Epidemic percentage","Upper limit")
-    colors.palette<-generate_palette(3)
+    colors.palette<-generate_palette(i.number.series=3,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
                    i.range.y.labels=NA,
@@ -864,7 +1037,11 @@ output$tbdSpercentage <- renderPlotly({
                    i.fills=colors.palette$colSeasons,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -888,7 +1065,14 @@ output$tbdSthresholds <- renderPlotly({
   }else{
     indicators<-c("epidemic","medium","high","veryhigh","postepidemic")
     datfile.plot<-datastability[indicators]
-    colors.palette<-generate_palette(NCOL(datfile.plot))
+    colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     names(datfile.plot)<-c("Epidemic","Medium int.","High int.","Very high int.","Post-epidemic")
     p<-plotGeneric(datfile.plot,
                    i.range.y=NA,
@@ -898,7 +1082,11 @@ output$tbdSthresholds <- renderPlotly({
                    i.fills=colors.palette$colThresholds,
                    i.sizes=rep(3,NCOL(datfile.plot)),
                    i.linetypes=rep("solid",NCOL(datfile.plot)),
-                   i.linesize=1)
+                   i.linesize=1,
+                   i.textMain=input$textMain,
+                   i.textX=input$textX,
+                   i.textY=input$textY
+                   )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -957,7 +1145,26 @@ output$tbmSeasons <- renderPlotly({
     datfile.plot<-datamodel$param.data
     e.thr<-datamodel$epidemic.thresholds
     i.thr<-datamodel$intensity.thresholds
-    p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
+    p <- plotSeasons(datfile.plot,
+                     i.epidemic.thr=e.thr, 
+                     i.intensity.thr=i.thr, 
+                     i.pre.epidemic = as.logical(input$preepidemicthr), 
+                     i.post.epidemic = as.logical(input$postepidemicthr), 
+                     i.intensity = as.logical(input$intensitythr),
+                     i.textMain=input$textMain,
+                     i.textX=input$textX,
+                     i.textY=input$textY,
+                     i.type.threshold=as.numeric(input$type.threshold),
+                     i.tails.threshold=as.numeric(input$tails),
+                     i.type.intensity=as.numeric(input$type.intensity),
+                     i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                     i.tails.intensity=as.numeric(input$tails),
+                     i.type.curve=as.numeric(input$type.curve),
+                     i.type.other=as.numeric(input$type.other),
+                     i.method=as.numeric(input$method),
+                     i.param=as.numeric(input$param),
+                     i.n.max=as.numeric(input$n.max)
+                     )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -977,9 +1184,30 @@ output$tbmSeries <- renderPlotly({
     datfile.plot<-datamodel$param.data
     e.thr<-datamodel$epidemic.thresholds
     i.thr<-datamodel$intensity.thresholds
-    p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
-                    i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
-                    i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA, i.replace.x.cr=T)
+    p <- plotSeries(i.data=datfile.plot, 
+                    i.plot.timing = T, 
+                    i.range.x=NA, 
+                    i.pre.epidemic=as.logical(input$preepidemicthr),
+                    i.post.epidemic=as.logical(input$postepidemicthr), 
+                    i.epidemic.thr=e.thr, 
+                    i.intensity= as.logical(input$intensitythr), 
+                    i.intensity.thr=i.thr, 
+                    i.range.y=NA, 
+                    i.replace.x.cr=T,
+                    i.textMain=input$textMain,
+                    i.textX=input$textX,
+                    i.textY=input$textY,
+                    i.type.threshold=as.numeric(input$type.threshold),
+                    i.tails.threshold=as.numeric(input$tails),
+                    i.type.intensity=as.numeric(input$type.intensity),
+                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    i.tails.intensity=as.numeric(input$tails),
+                    i.type.curve=as.numeric(input$type.curve),
+                    i.type.other=as.numeric(input$type.other),
+                    i.method=as.numeric(input$method),
+                    i.param=as.numeric(input$param),
+                    i.n.max=as.numeric(input$n.max)
+                    )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1105,12 +1333,38 @@ output$tbmMemGraphMoving <- renderPlotly({
     datfile.plot<-data.frame(datamodel$moving.epidemics,row.names = rownames(datamodel$param.data))
     names(datfile.plot)<-names(datamodel$param.data)
     datfile.plot$Typical<-datamodel$typ.curve[,2]
-    p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
+    p <- plotSeasons(datfile.plot,
+                     i.epidemic.thr=e.thr, 
+                     i.intensity.thr=i.thr, 
+                     i.pre.epidemic = as.logical(input$preepidemicthr), 
+                     i.post.epidemic = as.logical(input$postepidemicthr), 
+                     i.intensity = as.logical(input$intensitythr),
+                     i.textMain=input$textMain,
+                     i.textX=input$textX,
+                     i.textY=input$textY,
+                     i.type.threshold=as.numeric(input$type.threshold),
+                     i.tails.threshold=as.numeric(input$tails),
+                     i.type.intensity=as.numeric(input$type.intensity),
+                     i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                     i.tails.intensity=as.numeric(input$tails),
+                     i.type.curve=as.numeric(input$type.curve),
+                     i.type.other=as.numeric(input$type.other),
+                     i.method=as.numeric(input$method),
+                     i.param=as.numeric(input$param),
+                     i.n.max=as.numeric(input$n.max)
+                     )
     if (is.null(p)){
       zfix<-NULL
     }else{
       # I add the vertical lines that mark the average start and end
-      colors.palette<-generate_palette()
+      colors.palette<-generate_palette(i.number.series=NA,
+                                       i.colObservedLines=input$colObservedLines,
+                                       i.colObservedPoints=input$colObservedPoints,
+                                       i.colEpidemicStart=input$colEpidemicStart,
+                                       i.colEpidemicStop=input$colEpidemicStop,
+                                       i.colThresholds=input$colThresholds,
+                                       i.colSeasons=input$colSeasons,
+                                       i.colEpidemic=input$colEpidemic)
       p0<-p$plot +
         geom_vline(xintercept = datamodel$ci.start[1,2]-0.5,
                    col=colors.palette$colEpidemicStart, linetype="longdash", size=0.5) +
@@ -1160,7 +1414,11 @@ output$tbmMemGraphTypical <- renderPlotly({
                           i.force.length=T,
                           i.force.equal=F,
                           i.force.start=datamodel$ci.start[2,2],
-                          i.force.week.53=F)
+                          i.force.week.53=F,
+                          i.textMain=input$textMain,
+                          i.textX=input$textX,
+                          i.textY=input$textY
+                          )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1261,7 +1519,14 @@ output$tbmOptimizeGraph<- renderPlotly({
     names(dgraf)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
     dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
     
-    colors.palette<-generate_palette(NCOL(dgraf)-1)
+    colors.palette<-generate_palette(i.number.series=NCOL(dgraf)-1,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     
     axis.x.range.original <- range(dgraf$Parameter)
     axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 10, seq(0.1,10,0.1),T,F)
@@ -1342,7 +1607,26 @@ output$tbsSeasons <- renderPlotly({
     if (length(selectedcolumns)==0){
       zfix<-NULL
     }else{
-      p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
+      p <- plotSeasons(datfile.plot,
+                       i.epidemic.thr=e.thr, 
+                       i.intensity.thr=i.thr, 
+                       i.pre.epidemic = as.logical(input$preepidemicthr), 
+                       i.post.epidemic = as.logical(input$postepidemicthr), 
+                       i.intensity = as.logical(input$intensitythr),
+                       i.textMain=input$textMain,
+                       i.textX=input$textX,
+                       i.textY=input$textY,
+                       i.type.threshold=as.numeric(input$type.threshold),
+                       i.tails.threshold=as.numeric(input$tails),
+                       i.type.intensity=as.numeric(input$type.intensity),
+                       i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                       i.tails.intensity=as.numeric(input$tails),
+                       i.type.curve=as.numeric(input$type.curve),
+                       i.type.other=as.numeric(input$type.other),
+                       i.method=as.numeric(input$method),
+                       i.param=as.numeric(input$param),
+                       i.n.max=as.numeric(input$n.max)
+                       )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -1364,7 +1648,27 @@ output$tbsTiming <- renderPlotly({
     zfix<-NULL
   }else{
     datfile.plot<-datfile[input$SelectSurveillance]
-    p <- plotTiming(datfile.plot)
+    #p <- plotTiming(datfile.plot)
+    p <- plotSeries(datfile.plot, 
+                    i.plot.timing = T, 
+                    i.pre.epidemic=F, 
+                    i.post.epidemic=F, 
+                    i.intensity= F, 
+                    i.replace.x.cr=F,
+                    i.textMain=input$textMain,
+                    i.textX=input$textX,
+                    i.textY=input$textY,
+                    i.type.threshold=as.numeric(input$type.threshold),
+                    i.tails.threshold=as.numeric(input$tails),
+                    i.type.intensity=as.numeric(input$type.intensity),
+                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    i.tails.intensity=as.numeric(input$tails),
+                    i.type.curve=as.numeric(input$type.curve),
+                    i.type.other=as.numeric(input$type.other),
+                    i.method=as.numeric(input$method),
+                    i.param=as.numeric(input$param),
+                    i.n.max=as.numeric(input$n.max)
+    )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1460,7 +1764,11 @@ output$tbsSurveillanceAnimated <- renderImage({
                           i.intensity.thr = i.thr, 
                           i.range.y=c(0,max.y),
                           i.end=as.logical(input$postepidemicthr),
-                          i.force.start = force.start)
+                          i.force.start = force.start,
+                          i.textMain=input$textMain,
+                          i.textX=input$textX,
+                          i.textY=input$textY
+                          )
       imgfile<-paste(tempdir(),"/animatedplot_",i,".png",sep="")
       ggsave(imgfile, plot=p$plot, width=8, height=6, dpi=150)
       if (i==1) imgfilem<-image_read(imgfile) else imgfilem<-c(imgfilem,image_read(imgfile))
@@ -1521,7 +1829,11 @@ output$tbsSurveillanceWeek <- renderPlotly({
                           i.intensity.thr = i.thr,
                           i.start=as.logical(input$preepidemicthr),
                           i.end=as.logical(input$postepidemicthr),
-                          i.force.start = force.start)
+                          i.force.start = force.start,
+                          i.textMain=input$textMain,
+                          i.textX=input$textX,
+                          i.textY=input$textY
+                          )
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1641,7 +1953,26 @@ output$tbvSeasons <- renderPlotly({
       datfile.plot<-datfile[selectedcolumns]
       #cat("Seleccion:->",paste(selectedcolumns,collapse=","),"<-\n",sep="")
       #cat("Seleccion:->",length(selectedcolumns),"<-\n",sep="")
-      p <- plotSeasons(datfile.plot,i.epidemic.thr=e.thr, i.intensity.thr=i.thr, i.pre.epidemic = as.logical(input$preepidemicthr), i.post.epidemic = as.logical(input$postepidemicthr), i.intensity = as.logical(input$intensitythr))
+      p <- plotSeasons(datfile.plot,
+                       i.epidemic.thr=e.thr, 
+                       i.intensity.thr=i.thr, 
+                       i.pre.epidemic = as.logical(input$preepidemicthr), 
+                       i.post.epidemic = as.logical(input$postepidemicthr), 
+                       i.intensity = as.logical(input$intensitythr),
+                       i.textMain=input$textMain,
+                       i.textX=input$textX,
+                       i.textY=input$textY,
+                       i.type.threshold=as.numeric(input$type.threshold),
+                       i.tails.threshold=as.numeric(input$tails),
+                       i.type.intensity=as.numeric(input$type.intensity),
+                       i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                       i.tails.intensity=as.numeric(input$tails),
+                       i.type.curve=as.numeric(input$type.curve),
+                       i.type.other=as.numeric(input$type.other),
+                       i.method=as.numeric(input$method),
+                       i.param=as.numeric(input$param),
+                       i.n.max=as.numeric(input$n.max)
+                       )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -1678,9 +2009,30 @@ output$tbvSeries <- renderPlotly({
       zfix<-NULL
     }else{
       datfile.plot<-datfile[selectedcolumns]
-      p <- plotSeries(i.data=datfile.plot, i.plot.timing = T, i.range.x=NA, i.pre.epidemic=as.logical(input$preepidemicthr),
-                      i.post.epidemic=as.logical(input$postepidemicthr), i.epidemic.thr=e.thr, 
-                      i.intensity= as.logical(input$intensitythr), i.intensity.thr=i.thr, i.range.y=NA, i.replace.x.cr=T)
+      p <- plotSeries(i.data=datfile.plot, 
+                      i.plot.timing = T, 
+                      i.range.x=NA, 
+                      i.pre.epidemic=as.logical(input$preepidemicthr),
+                      i.post.epidemic=as.logical(input$postepidemicthr), 
+                      i.epidemic.thr=e.thr, 
+                      i.intensity= as.logical(input$intensitythr), 
+                      i.intensity.thr=i.thr, 
+                      i.range.y=NA, 
+                      i.replace.x.cr=T,
+                      i.textMain=input$textMain,
+                      i.textX=input$textX,
+                      i.textY=input$textY,
+                      i.type.threshold=as.numeric(input$type.threshold),
+                      i.tails.threshold=as.numeric(input$tails),
+                      i.type.intensity=as.numeric(input$type.intensity),
+                      i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                      i.tails.intensity=as.numeric(input$tails),
+                      i.type.curve=as.numeric(input$type.curve),
+                      i.type.other=as.numeric(input$type.other),
+                      i.method=as.numeric(input$method),
+                      i.param=as.numeric(input$param),
+                      i.n.max=as.numeric(input$n.max)
+                      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -1711,10 +2063,49 @@ output$tbvTiming = renderUI({
 
 # Custom functions
 
-generate_palette <- function(number.series=NA){
-  if (is.na(number.series)) number.series<-10
-  params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
-            "colThresholds","colSeasons","colEpidemic")
+# generate_palette <- function(number.series=NA){
+#   if (is.na(number.series)) number.series<-10
+#   params<-c("colObservedLines","colObservedPoints","colEpidemicStart","colEpidemicStop",
+#             "colThresholds","colSeasons","colEpidemic")
+#   params.default<-list(colObservedLines="#808080",
+#                        colObservedPoints="#000000",
+#                        colEpidemicStart="#FF0000",
+#                        colEpidemicStop="#40FF40",
+#                        colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+#                        colSeasons="Accent",
+#                        colEpidemic=c("#00C000","#800080","#FFB401")
+#   )
+#   n.params<-length(params)
+#   for (i in 1:n.params){
+#     eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
+#     eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
+#   }
+#   # First four are simple colors
+#   for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
+#   # Fifth to Seventh are palettes that I must create
+#   if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
+#   if (colSeasons=="default") colSeasons<-params.default$colSeasons
+#   colSeasons <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeasons))(number.series)
+#   if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
+#   # Last one is a number between 0 and 1
+#   # colTransparency<-input$colTransparency
+#   # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
+#   colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
+#                      colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
+#                      colThresholds=colThresholds, colSeasons=colSeasons,colEpidemic=colEpidemic
+#   )
+#   colors.final
+# }
+
+generate_palette <- function(i.number.series=NA,
+                             i.colObservedLines=NULL,
+                             i.colObservedPoints=NULL,
+                             i.colEpidemicStart=NULL,
+                             i.colEpidemicStop=NULL,
+                             i.colThresholds=NULL,
+                             i.colSeasons=NULL,
+                             i.colEpidemic=NULL
+){
   params.default<-list(colObservedLines="#808080",
                        colObservedPoints="#000000",
                        colEpidemicStart="#FF0000",
@@ -1722,41 +2113,49 @@ generate_palette <- function(number.series=NA){
                        colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
                        colSeasons="Accent",
                        colEpidemic=c("#00C000","#800080","#FFB401")
-                       #,colTransparency=1
   )
-  n.params<-length(params)
-  for (i in 1:n.params){
-    eval(parse(text = paste(params[i],"<-input$",params[i], sep = "")))
-    eval(parse(text = paste("if (is.null(",params[i],")) ",params[i],"<-\"default\" else if (is.na(",params[i],")) ",params[i],"<-\"default\"",sep="")))
-  }
+  if (is.na(i.number.series)) i.number.series<-10
+  if (is.null(i.colObservedLines)) i.colObservedLines<-"default" else if (is.na(i.colObservedLines)) i.colObservedLines<-"default"
+  if (is.null(i.colObservedPoints)) i.colObservedPoints<-"default" else if (is.na(i.colObservedPoints)) i.colObservedPoints<-"default"
+  if (is.null(i.colEpidemicStart)) i.colEpidemicStart<-"default" else if (is.na(i.colEpidemicStart)) i.colEpidemicStart<-"default"
+  if (is.null(i.colEpidemicStop)) i.colEpidemicStop<-"default" else if (is.na(i.colEpidemicStop)) i.colEpidemicStop<-"default"
+  if (is.null(i.colThresholds)) i.colThresholds<-"default" else if (is.na(i.colThresholds)) i.colThresholds<-"default"
+  if (is.null(i.colSeasons)) i.colSeasons<-"default" else if (is.na(i.colSeasons)) i.colSeasons<-"default"
+  if (is.null(i.colEpidemic)) i.colEpidemic<-"default" else if (is.na(i.colEpidemic)) i.colEpidemic<-"default"
+  
   # First four are simple colors
-  for (i in 1:4) eval(parse(text = paste("if (",params[i],"==\"default\") ",params[i],"<-params.default$",params[i]," else ",params[i],"<-col2hex(",params[i],")",sep=""))) 
+  if (i.colObservedLines=="default") i.colObservedLines<-params.default$colObservedLines else i.colObservedLines<-col2hex(i.colObservedLines)
+  if (i.colObservedPoints=="default") i.colObservedPoints<-params.default$colObservedPoints else i.colObservedPoints<-col2hex(i.colObservedPoints)
+  if (i.colEpidemicStart=="default") i.colEpidemicStart<-params.default$colEpidemicStart else i.colEpidemicStart<-col2hex(i.colEpidemicStart)
+  if (i.colEpidemicStop=="default") i.colEpidemicStop<-params.default$colEpidemicStop else i.colEpidemicStop<-col2hex(i.colEpidemicStop)
   # Fifth to Seventh are palettes that I must create
-  if (colThresholds=="default") colThresholds<-params.default$colThresholds else colThresholds<-brewer.pal(7,colThresholds)[2:6]
-  if (colSeasons=="default") colSeasons<-params.default$colSeasons
-  colSeasons <- colorRampPalette(brewer.pal(max(3,min(8,number.series)),colSeasons))(number.series)
-  if (colEpidemic=="default") colEpidemic<-params.default$colEpidemic else colEpidemic<-brewer.pal(5,colEpidemic)[2:4]
+  if (i.colThresholds=="default") i.colThresholds<-params.default$colThresholds else i.colThresholds<-brewer.pal(7,i.colThresholds)[2:6]
+  if (i.colSeasons=="default") i.colSeasons<-params.default$colSeasons
+  i.colSeasons <- colorRampPalette(brewer.pal(max(3,min(8,i.number.series)),i.colSeasons))(i.number.series)
+  if (i.colEpidemic=="default") i.colEpidemic<-params.default$colEpidemic else i.colEpidemic<-brewer.pal(5,i.colEpidemic)[2:4]
   # Last one is a number between 0 and 1
   # colTransparency<-input$colTransparency
   # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
-  colors.final<-list(colObservedLines=colObservedLines, colObservedPoints=colObservedPoints,
-                     colEpidemicStart=colEpidemicStart, colEpidemicStop=colEpidemicStop,
-                     colThresholds=colThresholds, colSeasons=colSeasons,colEpidemic=colEpidemic
-                     #,colTransparency=colTransparency
+  colors.final<-list(colObservedLines=i.colObservedLines, colObservedPoints=i.colObservedPoints,
+                     colEpidemicStart=i.colEpidemicStart, colEpidemicStop=i.colEpidemicStop,
+                     colThresholds=i.colThresholds, colSeasons=i.colSeasons,colEpidemic=i.colEpidemic
   )
-  #print(colors.final)
   colors.final
 }
 
 plotSeasons <- function(i.data, 
-                         i.pre.epidemic=TRUE, 
-                         i.post.epidemic=TRUE, 
-                         i.epidemic.thr=NA,
-                         i.intensity=TRUE,
-                         i.intensity.thr=NA, 
-                         i.range.x=NA, 
-                         i.range.y=NA, 
-                         i.tickmarks=30, ...){
+                        i.pre.epidemic=TRUE, 
+                        i.post.epidemic=TRUE, 
+                        i.epidemic.thr=NA,
+                        i.intensity=TRUE,
+                        i.intensity.thr=NA, 
+                        i.range.x=NA, 
+                        i.range.y=NA, 
+                        i.tickmarks=30,
+                        i.textMain="",
+                        i.textX="",
+                        i.textY="",
+                        ...){
   
   if(is.null(i.data)){
     p<-NULL
@@ -1792,16 +2191,17 @@ plotSeasons <- function(i.data,
     if (NCOL(i.data)>1){
       epi<-memmodel(i.data,
                     i.seasons=NA,
-                    i.type.threshold=as.numeric(input$type.threshold),
-                    i.tails.threshold=as.numeric(input$tails),
-                    i.type.intensity=as.numeric(input$type.intensity),
-                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
-                    i.tails.intensity=as.numeric(input$tails),
-                    i.type.curve=as.numeric(input$type.curve),
-                    i.type.other=as.numeric(input$type.other),
-                    i.method=as.numeric(input$method),
-                    i.param=as.numeric(input$param),
-                    i.n.max=as.numeric(input$n.max),...)
+                    # i.type.threshold=as.numeric(input$type.threshold),
+                    # i.tails.threshold=as.numeric(input$tails),
+                    # i.type.intensity=as.numeric(input$type.intensity),
+                    # i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    # i.tails.intensity=as.numeric(input$tails),
+                    # i.type.curve=as.numeric(input$type.curve),
+                    # i.type.other=as.numeric(input$type.other),
+                    # i.method=as.numeric(input$method),
+                    # i.param=as.numeric(input$param),
+                    # i.n.max=as.numeric(input$n.max),
+                    ...)
       epidata<-epi$data
       epiindex<-as.data.frame(epi$season.indexes[,,1])
       rownames(epiindex)<-rownames(i.data)
@@ -1814,16 +2214,17 @@ plotSeasons <- function(i.data,
       # the timing (which would be extracted with memtiming also)
       epi<-memmodel(cbind(i.data,i.data),
                     i.seasons=NA,
-                    i.type.threshold=as.numeric(input$type.threshold),
-                    i.tails.threshold=as.numeric(input$tails),
-                    i.type.intensity=as.numeric(input$type.intensity),
-                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
-                    i.tails.intensity=as.numeric(input$tails),
-                    i.type.curve=as.numeric(input$type.curve),
-                    i.type.other=as.numeric(input$type.other),
-                    i.method=as.numeric(input$method),
-                    i.param=as.numeric(input$param),
-                    i.n.max=as.numeric(input$n.max),...)
+                    # i.type.threshold=as.numeric(input$type.threshold),
+                    # i.tails.threshold=as.numeric(input$tails),
+                    # i.type.intensity=as.numeric(input$type.intensity),
+                    # i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    # i.tails.intensity=as.numeric(input$tails),
+                    # i.type.curve=as.numeric(input$type.curve),
+                    # i.type.other=as.numeric(input$type.other),
+                    # i.method=as.numeric(input$method),
+                    # i.param=as.numeric(input$param),
+                    # i.n.max=as.numeric(input$n.max),
+                    ...)
       epidata<-epi$data[1]
       epiindex<-as.data.frame(epi$season.indexes[,1,1])
       rownames(epiindex)<-rownames(i.data)
@@ -1880,7 +2281,15 @@ plotSeasons <- function(i.data,
       }
     }
     
-    colors.palette<-generate_palette(NCOL(data.full))
+    colors.palette<-generate_palette(i.number.series=NCOL(data.full),
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic
+    )
     
     labels<-c(names(data.full),
               paste(names(data.full)," (missing)",sep=""),
@@ -1953,7 +2362,7 @@ plotSeasons <- function(i.data,
       scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) + 
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-      labs(title = input$textMain, x = input$textX, y = input$textY) + 
+      labs(title = i.textMain, x = i.textX, y = i.textY) + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
       ggthemes::theme_few()
     
@@ -1962,8 +2371,21 @@ plotSeasons <- function(i.data,
   p
 }
 
-plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemic=T, i.epidemic.thr=NA, 
-                      i.intensity= T, i.intensity.thr=NA, i.range.x=NA, i.range.y=NA, i.tickmarks=30, i.replace.x.cr=F, ...){
+plotSeries<-function(i.data, 
+                     i.plot.timing = T, 
+                     i.pre.epidemic=T, 
+                     i.post.epidemic=T, 
+                     i.epidemic.thr=NA,
+                     i.intensity= T, 
+                     i.intensity.thr=NA, 
+                     i.range.x=NA, 
+                     i.range.y=NA, 
+                     i.tickmarks=30, 
+                     i.replace.x.cr=F,
+                     i.textMain="",
+                     i.textX="",
+                     i.textY="", 
+                     ...){
   
   if(is.null(i.data)){
     p<-NULL
@@ -1993,16 +2415,17 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
     if (NCOL(i.data)>1){
       epi<-memmodel(i.data,
                     i.seasons=NA,
-                    i.type.threshold=as.numeric(input$type.threshold),
-                    i.tails.threshold=as.numeric(input$tails),
-                    i.type.intensity=as.numeric(input$type.intensity),
-                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
-                    i.tails.intensity=as.numeric(input$tails),
-                    i.type.curve=as.numeric(input$type.curve),
-                    i.type.other=as.numeric(input$type.other),
-                    i.method=as.numeric(input$method),
-                    i.param=as.numeric(input$param),
-                    i.n.max=as.numeric(input$n.max),...)
+                    # i.type.threshold=as.numeric(input$type.threshold),
+                    # i.tails.threshold=as.numeric(input$tails),
+                    # i.type.intensity=as.numeric(input$type.intensity),
+                    # i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    # i.tails.intensity=as.numeric(input$tails),
+                    # i.type.curve=as.numeric(input$type.curve),
+                    # i.type.other=as.numeric(input$type.other),
+                    # i.method=as.numeric(input$method),
+                    # i.param=as.numeric(input$param),
+                    # i.n.max=as.numeric(input$n.max),
+                    ...)
       epidata<-epi$data
       epiindex<-as.data.frame(epi$season.indexes[,,1])
       rownames(epiindex)<-rownames(i.data)
@@ -2015,16 +2438,17 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
       # the timing (which would be extracted with memtiming also)
       epi<-memmodel(cbind(i.data,i.data),
                     i.seasons=NA,
-                    i.type.threshold=as.numeric(input$type.threshold),
-                    i.tails.threshold=as.numeric(input$tails),
-                    i.type.intensity=as.numeric(input$type.intensity),
-                    i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
-                    i.tails.intensity=as.numeric(input$tails),
-                    i.type.curve=as.numeric(input$type.curve),
-                    i.type.other=as.numeric(input$type.other),
-                    i.method=as.numeric(input$method),
-                    i.param=as.numeric(input$param),
-                    i.n.max=as.numeric(input$n.max),...)
+                    # i.type.threshold=as.numeric(input$type.threshold),
+                    # i.tails.threshold=as.numeric(input$tails),
+                    # i.type.intensity=as.numeric(input$type.intensity),
+                    # i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+                    # i.tails.intensity=as.numeric(input$tails),
+                    # i.type.curve=as.numeric(input$type.curve),
+                    # i.type.other=as.numeric(input$type.other),
+                    # i.method=as.numeric(input$method),
+                    # i.param=as.numeric(input$param),
+                    # i.n.max=as.numeric(input$n.max),
+                    ...)
       epidata<-epi$data[1]
       epiindex<-as.data.frame(epi$season.indexes[,1,1])
       rownames(epiindex)<-rownames(i.data)
@@ -2101,7 +2525,14 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
       }
     }
     
-    colors.palette<-generate_palette()
+    colors.palette<-generate_palette(i.number.series=NA,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     
     labels<-c("Weekly rates","Pre-epidemic","Pre-epidemic (missing)","Epidemic","Epidemic (missing)","Post-epidemic","Post-epidemic (missing)","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
     haspoints<-c(F,T,T,T,T,T,T,F,F,F,F,F)
@@ -2194,7 +2625,7 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
       scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) + 
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-      labs(title = input$textMain, x = input$textX, y = input$textY) + 
+      labs(title = i.textMain, x = i.textX, y = i.textY) + 
       ggthemes::theme_few()
     
     p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""))
@@ -2202,28 +2633,33 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
   p
 }
 
-# plotTiming <-function(i.column){
-#   cat("plotTiming: ",i.column,"\n")
-#   datfile <- read_data()
-#   if(is.null(datfile)){
-#     zfix<-NULL
+# plotTiming <-function(i.data){
+#   if(is.null(i.data)){
+#     p<-NULL
 #   }else{
-#     datfile.plot<-datfile[i.column]
-#     p <- plotSeries(datfile.plot, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F)
-#     z <- ggplotly(p$plot, width = 800, height = 600)
-#     zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+#     p <- plotSeries(i.data, 
+#                     i.plot.timing = T, 
+#                     i.pre.epidemic=F, 
+#                     i.post.epidemic=F, 
+#                     i.intensity= F, 
+#                     i.replace.x.cr=F,
+#                     i.textMain=input$textMain,
+#                     i.textX=input$textX,
+#                     i.textY=input$textY,
+#                     i.type.threshold=as.numeric(input$type.threshold),
+#                     i.tails.threshold=as.numeric(input$tails),
+#                     i.type.intensity=as.numeric(input$type.intensity),
+#                     i.level.intensity=as.numeric(c(input$level.intensity.m,input$level.intensity.h,input$level.intensity.v))/100,
+#                     i.tails.intensity=as.numeric(input$tails),
+#                     i.type.curve=as.numeric(input$type.curve),
+#                     i.type.other=as.numeric(input$type.other),
+#                     i.method=as.numeric(input$method),
+#                     i.param=as.numeric(input$param),
+#                     i.n.max=as.numeric(input$n.max)
+#                     )
 #   }
-#   zfix
+#   p
 # }
-
-plotTiming <-function(i.data){
-  if(is.null(i.data)){
-    p<-NULL
-  }else{
-    p <- plotSeries(i.data, i.plot.timing = T, i.pre.epidemic=F, i.post.epidemic=F, i.intensity= F, i.replace.x.cr=F)
-  }
-  p
-}
 
 plotSurveillance<-function(i.data,
                       i.week.report=NA,
@@ -2241,7 +2677,10 @@ plotSurveillance<-function(i.data,
                       i.force.length=F,
                       i.force.equal=F,
                       i.force.start=NA,
-                      i.force.week.53=F){
+                      i.force.week.53=F,
+                      i.textMain="",
+                      i.textX="",
+                      i.textY=""){
   
   # check parameters
   if (is.null(i.data)) {
@@ -2417,7 +2856,14 @@ plotSurveillance<-function(i.data,
     intensidades.3<-array(dim=c(semanas,3))
     intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
     
-    colors.palette<-generate_palette()
+    colors.palette<-generate_palette(i.number.series=NA,
+                                     i.colObservedLines=input$colObservedLines,
+                                     i.colObservedPoints=input$colObservedPoints,
+                                     i.colEpidemicStart=input$colEpidemicStart,
+                                     i.colEpidemicStop=input$colEpidemicStop,
+                                     i.colThresholds=input$colThresholds,
+                                     i.colSeasons=input$colSeasons,
+                                     i.colEpidemic=input$colEpidemic)
     
     labels<-c("Weekly rates","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End")
     haspoints<-c(T,F,F,F,F,F,T,T)
@@ -2491,7 +2937,7 @@ plotSurveillance<-function(i.data,
       scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) + 
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-      labs(title = input$textMain, x = input$textX, y = input$textY) + 
+      labs(title = i.textMain, x = i.textX, y = i.textY) + 
       ggthemes::theme_few()
     
     # theme(axis.text.x=element_text(size=14, col="#000040"), axis.title.x=element_text(size=16, col="#000040"),
@@ -2502,7 +2948,19 @@ plotSurveillance<-function(i.data,
   p
 }
 
-plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colors, i.fills, i.sizes, i.linetypes, i.linesize, i.replace.x.cr=F){
+plotGeneric <- function(i.data, 
+                        i.range.y, 
+                        i.range.y.labels=NA, 
+                        i.shapes, 
+                        i.colors, 
+                        i.fills, 
+                        i.sizes, 
+                        i.linetypes, 
+                        i.linesize, 
+                        i.replace.x.cr=F,
+                        i.textMain="",
+                        i.textX="",
+                        i.textY=""){
   if(is.null(i.data)){
     p<-NULL
   }else{
@@ -2547,13 +3005,16 @@ plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colo
       scale_linetype_manual(values=i.linetypes, name="Legend", labels=labels) + 
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-      labs(title = input$textMain, x = input$textX, y = input$textY) + 
+      labs(title = i.textMain, x = i.textX, y = i.textY) + 
       ggthemes::theme_few()
   }
   p
 }
 
-read.data<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data<-function(i.file, 
+                    i.file.name=NA, 
+                    i.dataset=NA, 
+                    i.range.x=NA){
   if (!file.exists(i.file)){
     datasets=NULL
     datasetread=NULL
@@ -2613,7 +3074,7 @@ read.data<-function(i.file, i.file.name=NA, i.dataset=NA){
     # Fix when reading access files, sometimes it changes the order of the weeks
     # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance 
     # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
-    i.range.x<-as.numeric(c(input$firstWeek,input$lastWeek))
+    #i.range.x<-as.numeric(c(input$firstWeek,input$lastWeek))
     # cat(paste(i.range.x,collapse=","),"\n")
     # i.range.x<-NA
     i.range.x.default<-c(max(1,min(as.numeric(rownames(datasetread)[1:3]))),min(52,max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)]))))
