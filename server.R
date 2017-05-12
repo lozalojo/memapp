@@ -329,9 +329,28 @@ observe({
 ### DEFINING TABS STRUCTURE
 #####################################
 
-output$loaddata = renderUI({
+output$loaddataset = renderUI({
   datasets<-get_datasets()
-  if(!is.null(datasets)) selectInput('dataset', "Dataset", get_datasets())
+  if(!is.null(datasets)) fluidPage(
+    selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpld", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Dataset"), get_datasets()),
+    bsPopover(id = "helpld", title = "Select dataset", content = "If the format is able to store different datasets, select the one you want to open.", placement = "top", trigger = "hover", options = list(container = "body"))
+  )
+})
+
+output$loadfirst = renderUI({
+  datasets<-get_datasets()
+  if(!is.null(datasets)) fluidPage(
+    selectInput("SelectFirstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpls", label = "", icon = icon("question"), style = "info", size = "extra-small"), "First Week"), size=1, selectize = FALSE, choices = ""),
+    bsPopover(id = "helpls", title = "First week", content = "First week of the dataset's surveillance period.", placement = "top", trigger = "hover", options = list(container = "body"))
+  )
+})
+
+output$loadlast = renderUI({
+  datasets<-get_datasets()
+  if(!is.null(datasets)) fluidPage(
+    selectInput("SelectLastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helple", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Last Week"), size=1, selectize = FALSE, choices = ""),
+    bsPopover(id = "helple", title = "Last week", content = "Last week of the dataset's surveillance period.", placement = "top", trigger = "hover", options = list(container = "body"))
+  )
 })
 
 output$tbData <- renderUI({
@@ -709,6 +728,7 @@ output$tbdEdetails <- DT::renderDataTable({
     datashow<-NULL
   }else{
     datashow<-roundF(dataevolution$evolution.data,2)
+    names(datashow)<-c("Sesons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
   }
   datashow
 }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))

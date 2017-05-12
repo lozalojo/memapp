@@ -30,8 +30,8 @@ shinyUI(dashboardPage(skin = "black",
                       #dashboardHeader(title = "Dashboard"),
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
-                      dashboardHeader(title = "Dashboard",
-                                      tags$li("code under GPLv2 at",
+                      dashboardHeader(title = "MEM dashboard",
+                                      tags$li("12MAY2017, code under GPLv2 at",
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 img(src = 'GitHub_Logo.png',
@@ -58,10 +58,14 @@ shinyUI(dashboardPage(skin = "black",
                                        ###    Load data          ######
                                        ################################
                                        
-                                       fileInput('file', 'Load file', accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb")),
-                                       uiOutput('loaddata'),
-                                       selectInput("transformation", "Transform", choices = list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6), size=1, selectize = FALSE, selected = 1),
                                        
+                                       
+                                       fileInput('file', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpll", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Load file"), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb")),
+                                       bsPopover(id = "helpll", title = "Load file", content = "memapp is able to read text, excel, access and R.", placement = "top", trigger = "hover", options = list(container = "body")),
+                                       uiOutput('loaddataset'),
+                                       selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helplt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Transform"), choices = list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6), size=1, selectize = FALSE, selected = 1),
+                                       bsPopover(id = "helplt", title = "Transform data", content = "Select the transformation to apply to the original data.", placement = "top", trigger = "hover", options = list(container = "body")),
+
                                        ################################
                                        ###    Model                ####
                                        ################################
@@ -181,7 +185,7 @@ shinyUI(dashboardPage(skin = "black",
                         fluidPage(
                           
                           # Application title
-                          titlePanel(h1("The Moving Epidemics Method")),
+                          titlePanel(h1("The Moving Epidemics Method Shiny Web Application")),
                           
                           fluidRow(
                             
