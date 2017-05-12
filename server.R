@@ -209,6 +209,30 @@ get_datasets <- reactive({
   datasets
 })
 
+get_weeks <- reactive({
+  infile <- input$file
+  indataset <- input$dataset
+  inname <- infile$name
+  cat("get_weeks> Name: ",inname,"\n")
+  cat("get_weeks> Dataset: ",indataset,"\n")
+  if(is.null(infile)){
+    dataweeks<-NULL
+    cat("Warning: No file\n")
+  }else if(is.null(indataset)){
+    dataweeks<-NULL
+    cat("Warning: No dataset\n")
+  }else if (indataset==""){
+    dataweeks<-NULL
+    cat("Warning: No dataset\n")
+  }else{
+    dataweeks<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)$dataweeks
+  }
+  cat(paste(dataweeks,collapse=","),"\n")
+  cat("get_weeks>Returning NULL?: ",is.null(dataweeks),"\n\n")
+  dataweeks
+})
+
+
 read_data <- reactive({
   infile <- input$file
   indataset <- input$dataset
@@ -242,16 +266,17 @@ observe({
   }else if(is.null(indataset)){
     return(NULL)
   }else{
-    fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
+    #fileextension<-str_match(infile$name,"^(.*)\\.([^\\.]*)$")[3]
     #if (!(fileextension %in% c("csv","dat","prn","txt","xls","xlsx"))) return(NULL)
     #dt<-read.data(i.file=infile$datapath, i.extension=fileextension, i.dataset=indataset)
     datfile <- read_data()
-    if(is.null(datfile)){
+    datsheets <- get_datasets()
+    datweeks <- get_weeks()
+    if(is.null(datsheets)){
       return(NULL)
+    }else if(is.null(datfile)){
+      updateSelectInput(session, "dataset", choices = datsheets)
     }else{
-      #dt$vecka<-rownames(dt)
-      #dt<-dt[c(NCOL(dt),1:(NCOL(dt)-1))]
-      #seasons<-names(dt)[2:ncol(dt)]
       seasons<-names(datfile)
       weeks<-rownames(datfile)
       updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
@@ -261,10 +286,9 @@ observe({
       updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
       updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",weeks), selected="")
       updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
-      
-      #datanames<-names(dt)[!(names(dt) %in% c("vecka","num"))]  
-      #cat(paste(seasons,collapse=","),"\n")
-      
+      #updateSelectInput(session, "firstWeek", choices = datweeks, selected=datweeks[1])
+      #updateSelectInput(session, "lastWeek", choices = datweeks, selected=rev(datweeks)[1])
+
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
         #datfile <- isolate(read_data())
         if(is.null(datfile)){
@@ -324,34 +348,53 @@ observe({
   
 })
 
+observeEvent(input$file, {
+  infile <- input$file
+  indataset <- input$dataset
+  if(is.null(infile)){
+    return(NULL)
+  }else if(is.null(indataset)){
+    return(NULL)
+  }else{
+    datfile <- read_data()
+    datsheets <- get_datasets()
+    datweeks <- get_weeks()
+    if(is.null(datsheets)){
+      return(NULL)
+    }else if(is.null(datfile)){
+      return(NULL)
+    }else{
+      updateSelectInput(session, "firstWeek", choices = datweeks, selected=datweeks[1])
+      updateSelectInput(session, "lastWeek", choices = datweeks, selected=rev(datweeks)[1])
+    }   
+  }
+})
+
+observeEvent(input$dataset, {
+  infile <- input$file
+  indataset <- input$dataset
+  if(is.null(infile)){
+    return(NULL)
+  }else if(is.null(indataset)){
+    return(NULL)
+  }else{
+    datfile <- read_data()
+    datsheets <- get_datasets()
+    datweeks <- get_weeks()
+    if(is.null(datsheets)){
+      return(NULL)
+    }else if(is.null(datfile)){
+      return(NULL)
+    }else{
+      updateSelectInput(session, "firstWeek", choices = datweeks, selected=datweeks[1])
+      updateSelectInput(session, "lastWeek", choices = datweeks, selected=rev(datweeks)[1])
+    }   
+  }
+})
 
 #####################################
 ### DEFINING TABS STRUCTURE
 #####################################
-
-output$loaddataset = renderUI({
-  datasets<-get_datasets()
-  if(!is.null(datasets)) fluidPage(
-    selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpld", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Dataset"), get_datasets()),
-    bsPopover(id = "helpld", title = "Select dataset", content = "If the format is able to store different datasets, select the one you want to open.", placement = "top", trigger = "hover", options = list(container = "body"))
-  )
-})
-
-output$loadfirst = renderUI({
-  datasets<-get_datasets()
-  if(!is.null(datasets)) fluidPage(
-    selectInput("SelectFirstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpls", label = "", icon = icon("question"), style = "info", size = "extra-small"), "First Week"), size=1, selectize = FALSE, choices = ""),
-    bsPopover(id = "helpls", title = "First week", content = "First week of the dataset's surveillance period.", placement = "top", trigger = "hover", options = list(container = "body"))
-  )
-})
-
-output$loadlast = renderUI({
-  datasets<-get_datasets()
-  if(!is.null(datasets)) fluidPage(
-    selectInput("SelectLastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helple", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Last Week"), size=1, selectize = FALSE, choices = ""),
-    bsPopover(id = "helple", title = "Last week", content = "Last week of the dataset's surveillance period.", placement = "top", trigger = "hover", options = list(container = "body"))
-  )
-})
 
 output$tbData <- renderUI({
   if(is.null(read_data())){
@@ -1735,10 +1778,9 @@ plotSeasons <- function(i.data,
     #   i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
     # }
     
-    if (length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
     last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
@@ -1938,10 +1980,9 @@ plotSeries<-function(i.data, i.plot.timing = T, i.pre.epidemic=T, i.post.epidemi
     #   i.range.x<-c(1,52)
     #   i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
     # }
-    if (length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
     last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
@@ -2224,10 +2265,9 @@ plotSurveillance<-function(i.data,
     # }else{
     #   i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
     # }
-    if (length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
     last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
@@ -2515,7 +2555,9 @@ plotGeneric <- function(i.data, i.range.y, i.range.y.labels=NA, i.shapes, i.colo
 
 read.data<-function(i.file, i.file.name=NA, i.dataset=NA){
   if (!file.exists(i.file)){
-    readdata<-list(datasets=NULL, datasetread=NULL)
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
     cat("Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
@@ -2530,301 +2572,67 @@ read.data<-function(i.file, i.file.name=NA, i.dataset=NA){
     }
     filenameextension<-paste(filename, fileextension, sep=".")
     if (fileextension=="xlsx"){
-      readdata<-read.data.xlsx(i.file, filenameextension, i.dataset)
+      temp2<-read.data.xlsx(i.file, filenameextension, i.dataset)
+      datasets=temp2$datasets
+      datasetread=temp2$datasetread
+      dataweeks=temp2$dataweeks
+      rm("temp2")
     }else if (fileextension=="xls"){
-      readdata<-read.data.xls(i.file, filenameextension, i.dataset)
+      temp2<-read.data.xls(i.file, filenameextension, i.dataset)
+      datasets=temp2$datasets
+      datasetread=temp2$datasetread
+      dataweeks=temp2$dataweeks
+      rm("temp2")
     }else if (fileextension %in% c("mdb","accdb")){
-      readdata<-read.data.access(i.file, filenameextension, i.dataset)
+      temp2<-read.data.access(i.file, filenameextension, i.dataset)
+      datasets=temp2$datasets
+      datasetread=temp2$datasetread
+      dataweeks=temp2$dataweeks
+      rm("temp2")
     }else if (fileextension %in% c("csv","dat","prn","txt")){
-      readdata<-read.data.text(i.file, filenameextension, i.dataset)
+      temp2<-read.data.text(i.file, filenameextension, i.dataset)
+      datasets=temp2$datasets
+      datasetread=temp2$datasetread
+      dataweeks=temp2$dataweeks
+      rm("temp2")
     }else if (fileextension %in% c("rds")){
-      readdata<-read.data.rds(i.file, filenameextension, i.dataset)
+      temp2<-read.data.rds(i.file, filenameextension, i.dataset)
+      datasets=temp2$datasets
+      datasetread=temp2$datasetread
+      dataweeks=temp2$dataweeks
+      rm("temp2")
     }else{
-      readdata<-list(datasets=NULL, datasetread=NULL)
+      datasets=NULL
+      datasetread=NULL
+      dataweeks=NULL
       cat(paste("Warning: Extension not recognised\t", filenameextension,"\n",sep=""));
     }
+    rm("temp1","filename","fileextension","filenameextension")
   }
-  readdata<-fix.data(readdata)
-  readdata
-}
-
-read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
-  if (!file.exists(i.file)){
-    datasets=NULL
-    datasetread=NULL
-    cat("Warning: file not found\n")
-  }else{
-    if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
-      temp1[is.na(temp1)]<-""
-      filename<-temp1[1,3]
-      fileextension<-tolower(temp1[1,5])
-    }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
-      filename<-temp1[1,2]
-      fileextension<-tolower(temp1[1,3])
-    }
-    filenameextension<-paste(filename, fileextension, sep=".")
-    cat("Excel 2007+ file detected: ", filenameextension, "\n", sep="")
-    wb<-openxlsx::loadWorkbook(i.file)
-    datasets<-openxlsx::sheets(wb)
-    n.datasets<-length(datasets)  
-    if (is.na(i.dataset)){
-      datasetread<-NULL
-      #cat("Warning: Table name not specified\n");
-    }else if (!(i.dataset %in% datasets)) {
-      datasetread<-NULL
-      cat("Warning: Table ",i.dataset," not found\n");
-    }else{
-      cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
-      datasetread<-openxlsx::read.xlsx(wb,sheet=i.dataset,rowNames=F)
-      rownames(datasetread)<-1:NROW(datasetread)
-      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
-    }
-  }
-  list(datasets=datasets, datasetread=datasetread)
-}
-
-read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
-  if (!file.exists(i.file)){
-    datasets=NULL
-    datasetread=NULL
-    cat("Warning: file not found\n")
-  }else{
-    if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
-      temp1[is.na(temp1)]<-""
-      filename<-temp1[1,3]
-      fileextension<-tolower(temp1[1,5])
-    }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
-      filename<-temp1[1,2]
-      fileextension<-tolower(temp1[1,3])
-    }
-    filenameextension<-paste(filename, fileextension, sep=".")
-    cat("Excel 97-2003 file detected: ",filenameextension,"\n",sep="")
-    wb <- XLConnect::loadWorkbook(i.file)
-    datasets<-XLConnect::getSheets(wb)
-    n.datasets<-length(datasets)
-    if (is.na(i.dataset)){
-      datasetread<-NULL
-      #cat("Warning: Table name not specified\n")
-    }else if (!(i.dataset %in% datasets)){
-      datasetread<-NULL
-      cat("Warning: Table ",i.dataset," not found\n")
-    }else{
-      cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")  
-      temp1<-as.character(XLConnect::readWorksheet(wb, sheet = i.dataset, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))
-      datasetread<-XLConnect::readWorksheet(wb, sheet = i.dataset, rownames=NA, colTypes=XLC$DATA_TYPE.NUMERIC)
-      names(datasetread)<-temp1
-      rownames(datasetread)<-1:NROW(datasetread)
-      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
-    }
-  }
-  list(datasets=datasets, datasetread=datasetread)
-}
-
-read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
-  if (!file.exists(i.file)){
-    datasets=NULL
-    datasetread=NULL
-    cat("Warning: file not found\n")
-  }else{
-    if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
-      temp1[is.na(temp1)]<-""
-      filename<-temp1[1,3]
-      fileextension<-tolower(temp1[1,5])
-    }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
-      filename<-temp1[1,2]
-      fileextension<-tolower(temp1[1,3])
-    }
-    filenameextension<-paste(filename, fileextension, sep=".")
-    cat("Access file detected: ",filenameextension,"\n",sep="")
-    if (.Platform$OS.type=="windows"){
-      connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
-      channel<-odbcDriverConnect(connectstring)
-      datasets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
-      n.datasets<-length(datasets)
-      if (is.na(i.dataset)){
-        datasetread<-NULL
-        #cat("Warning: Table name not specified\n")
-      }else if (!(i.dataset %in% datasets)) {
-        datasetread<-NULL
-        cat("Warning: Table ",i.dataset," not found\n")
-      }else{
-        cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
-        datasetread<-sqlFetch(channel,i.dataset,rownames=T)
-        rownames(datasetread)<-1:NROW(datasetread)
-        cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
-      }
-      odbcCloseAll()
-    }else if (.Platform$OS.type=="unix"){
-      # check if mdbtools is installed
-      if (system("mdb-tables")==127){
-        datasetread<-NULL
-        cat("Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
-      }else{
-        # read tables in file
-        datasets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
-        n.datasets<-length(datasets)
-        if (is.na(i.dataset)){
-          datasetread<-NULL
-          #cat("Warning: Table name not specified\n")
-        }else if (!(i.dataset %in% datasets)) {
-          datasetread<-NULL
-          cat("Warning: Table ",i.dataset," not found\n")
-        }else{
-          cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
-          # read selected table schema
-          tableschema <- system(paste('mdb-schema -T', shQuote(i.dataset), shQuote(i.file)), intern=TRUE)
-          start <- grep('^ \\($', tableschema) + 1
-          end   <- grep('^\\);$', tableschema) - 1
-          tableschema <- tableschema[start:end]
-          tableschema <- strsplit(tableschema, '\t')
-          vnames <- sapply(tableschema, function(x)x[2])
-          vnames <- substring(vnames, 2,nchar(vnames)-1)
-          filecsv <- tempfile()
-          system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.dataset), '>', filecsv))
-          # detect encoding
-          encodings<-readr::guess_encoding(filecsv, n_max = -1)
-          encodings<-encodings[order(encodings$confidence,decreasing = T),]
-          myencoding<-as.character(encodings$encoding[1])
-          # detect separator and decimal separator
-          firstline<-readLines(filecsv,1,encoding=myencoding)
-          separators<-c(',',';','\t','\\|')
-          mysep<-separators[which.max(stringr::str_count(firstline, separators))]
-          restlines<-paste(readLines(filecsv,encoding=myencoding)[-1],collapse="")
-          decimals<-c(".",",")
-          mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
-          datasetread<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
-          names(datasetread)<-vnames
-          rownames(datasetread)<-1:NROW(datasetread)
-          cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
-        }
-      }
-    }else{
-      datasetread<-NULL
-      cat("Warning: Access file only supported in windows and *nix systems\n")
-    }
-  }
-  list(datasets=datasets, datasetread=datasetread)
-}
-
-read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
-  if (!file.exists(i.file)){
-    datasets=NULL
-    datasetread=NULL
-    cat("Warning: file not found\n")
-  }else{
-    if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
-      temp1[is.na(temp1)]<-""
-      filename<-temp1[1,3]
-      fileextension<-tolower(temp1[1,5])
-    }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
-      filename<-temp1[1,2]
-      fileextension<-tolower(temp1[1,3])
-    }
-    filenameextension<-paste(filename, fileextension, sep=".")
-    datasets<-filename
-    n.datasets<-length(datasets)
-    # text files
-    # detect encoding
-    temp1<-readr::guess_encoding(i.file, n_max = -1)
-    temp1<-temp1[order(temp1$confidence,decreasing = T),]
-    myencoding<-as.character(temp1$encoding[1])
-    cat("Text file detected: ",filenameextension," (encoding: ",myencoding,")\n",sep="")
-    if (is.na(i.dataset)){
-      datasetread<-NULL
-      #cat("Warning: Table name not specified\n");
-    }else if (!(i.dataset %in% datasets)) {
-      datasetread<-NULL
-      cat("Warning: Table ",i.dataset," not found\n");
-    }else{
-      cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
-      # detect separator and decimal separator
-      firstline<-readLines(i.file,1,encoding=myencoding)
-      separators<-c(',',';','\t','\\|')
-      mysep<-separators[which.max(str_count(firstline, separators))]
-      restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
-      decimals<-c(".",",")
-      mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
-      cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
-      temp1<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))
-      datasetread<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
-      names(datasetread)<-temp1
-      rownames(datasetread)<-1:NROW(datasetread)
-      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
-    }
-  }
-  list(datasets=datasets, datasetread=datasetread)
-}
-
-read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
-  if (!file.exists(i.file)){
-    datasets=NULL
-    datasetread=NULL
-    cat("Warning: file not found\n")
-  }else{
-    if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
-      temp1[is.na(temp1)]<-""
-      filename<-temp1[1,3]
-      fileextension<-tolower(temp1[1,5])
-    }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
-      filename<-temp1[1,2]
-      fileextension<-tolower(temp1[1,3])
-    }
-    filenameextension<-paste(filename, fileextension, sep=".")
-    datasets<-filename
-    n.datasets<-length(datasets)
-    # rds files
-    cat("R file detected: ",filenameextension,")\n",sep="")
-    if (is.na(i.dataset)){
-      datasetread<-NULL
-      #cat("Warning: Table name not specified\n");
-    }else if (!(i.dataset %in% datasets)) {
-      datasetread<-NULL
-      cat("Warning: Table ",i.dataset," not found\n");
-    }else{
-      cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
-      # detect separator and decimal separator
-      datasetread<-readRDS(i.file)
-      #if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
-      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
-    }
-  }
-  list(datasets=datasets, datasetread=datasetread)
-}
-
-fix.data<-function(i.data){
-  datasets<-i.data$datasets
-  datasetread<-i.data$datasetread
   if (!(is.null(datasetread))){
-    # First column is the week name
-    if (all(datasetread[,1] %in% 1:53)){
-      rownames(datasetread)<-as.character(datasetread[,1])
-      datasetread<-datasetread[-1]
-      cat("Note: First column is the week name\n")
-    }
     # Fix when reading access files, sometimes it changes the order of the weeks
     # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance 
     # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
-    i.range.x<-NA
-    if (length(i.range.x)!=2) i.range.x<-c(max(1,min(as.numeric(rownames(datasetread)[1:3]))),min(52,max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)]))))
+    i.range.x<-as.numeric(c(input$firstWeek,input$lastWeek))
+    # cat(paste(i.range.x,collapse=","),"\n")
+    # i.range.x<-NA
+    i.range.x.default<-c(max(1,min(as.numeric(rownames(datasetread)[1:3]))),min(52,max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)]))))
+    # cat(any(is.na(i.range.x)),!is.numeric(i.range.x),length(i.range.x)!=2,"\n")
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-i.range.x.default
+    # if (any(is.na(i.range.x))) i.range.x<-i.range.x.default
+    # if (any(is.null(i.range.x))) i.range.x<-i.range.x.default
+    # if (any(i.range.x=="")) i.range.x<-i.range.x.default
+    # cat(paste(i.range.x,collapse=","),"\n")
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(30,29)
     last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
     }else{
       i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
     }
+    # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
+    # cat(paste(i.range.x.values$week.no,collapse=","),"\n")
     # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
     datasetread$week.lab<-as.numeric(rownames(datasetread))
     datasetread<-merge(datasetread,i.range.x.values, all.y=T, all.x=F, by="week.lab")
@@ -2857,9 +2665,310 @@ fix.data<-function(i.data){
     rm("seasonsname")  
     names(datasetread)<-seasons$season    
   }
-  list(datasets=datasets, datasetread=datasetread)
+  readdata<-list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+  readdata
 }
 
+read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
+  if (!file.exists(i.file)){
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
+    cat("Warning: file not found\n")
+  }else{
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
+    }else{
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
+    }
+    filenameextension<-paste(filename, fileextension, sep=".")
+    cat("Excel 2007+ file detected: ", filenameextension, "\n", sep="")
+    wb<-openxlsx::loadWorkbook(i.file)
+    datasets<-openxlsx::sheets(wb)
+    n.datasets<-length(datasets)  
+    if (is.na(i.dataset)){
+      datasetread<-NULL
+      dataweeks=NULL
+      #cat("Warning: Table name not specified\n");
+    }else if (!(i.dataset %in% datasets)) {
+      datasetread<-NULL
+      dataweeks=NULL
+      cat("Warning: Table ",i.dataset," not found\n");
+    }else{
+      cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
+      datasetread<-openxlsx::read.xlsx(wb,sheet=i.dataset,rowNames=F)
+      # First column is the week name
+      if (all(datasetread[,1] %in% 1:53)){
+        rownames(datasetread)<-as.character(datasetread[,1])
+        datasetread<-datasetread[-1]
+        cat("Note: First column is the week name\n")
+      }else rownames(datasetread)<-1:NROW(datasetread)
+      dataweeks<-as.numeric(row.names(datasetread))
+      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+    }
+  }
+  list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+}
+
+read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
+  if (!file.exists(i.file)){
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
+    cat("Warning: file not found\n")
+  }else{
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
+    }else{
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
+    }
+    filenameextension<-paste(filename, fileextension, sep=".")
+    cat("Excel 97-2003 file detected: ",filenameextension,"\n",sep="")
+    wb <- XLConnect::loadWorkbook(i.file)
+    datasets<-XLConnect::getSheets(wb)
+    n.datasets<-length(datasets)
+    if (is.na(i.dataset)){
+      datasetread<-NULL
+      dataweeks=NULL
+      #cat("Warning: Table name not specified\n")
+    }else if (!(i.dataset %in% datasets)){
+      datasetread<-NULL
+      dataweeks=NULL
+      cat("Warning: Table ",i.dataset," not found\n")
+    }else{
+      cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")  
+      temp1<-as.character(XLConnect::readWorksheet(wb, sheet = i.dataset, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))
+      datasetread<-XLConnect::readWorksheet(wb, sheet = i.dataset, rownames=NA, colTypes=XLC$DATA_TYPE.NUMERIC)
+      names(datasetread)<-temp1
+      if (all(datasetread[,1] %in% 1:53)){
+        rownames(datasetread)<-as.character(datasetread[,1])
+        datasetread<-datasetread[-1]
+        cat("Note: First column is the week name\n")
+      }else rownames(datasetread)<-1:NROW(datasetread)
+      dataweeks<-as.numeric(row.names(datasetread))
+      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+    }
+  }
+  list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+}
+
+read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
+  if (!file.exists(i.file)){
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
+    cat("Warning: file not found\n")
+  }else{
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
+    }else{
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
+    }
+    filenameextension<-paste(filename, fileextension, sep=".")
+    cat("Access file detected: ",filenameextension,"\n",sep="")
+    if (.Platform$OS.type=="windows"){
+      connectstring<-paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=",i.file,sep="")
+      channel<-odbcDriverConnect(connectstring)
+      datasets<-subset(sqlTables(channel),TABLE_TYPE!="SYSTEM TABLE")[,"TABLE_NAME"]
+      n.datasets<-length(datasets)
+      if (is.na(i.dataset)){
+        datasetread<-NULL
+        dataweeks=NULL
+        #cat("Warning: Table name not specified\n")
+      }else if (!(i.dataset %in% datasets)) {
+        datasetread<-NULL
+        dataweeks=NULL
+        cat("Warning: Table ",i.dataset," not found\n")
+      }else{
+        cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
+        datasetread<-sqlFetch(channel,i.dataset,rownames=T)
+        if (all(datasetread[,1] %in% 1:53)){
+          rownames(datasetread)<-as.character(datasetread[,1])
+          datasetread<-datasetread[-1]
+          cat("Note: First column is the week name\n")
+        }else rownames(datasetread)<-1:NROW(datasetread)
+        dataweeks<-as.numeric(row.names(datasetread))
+        cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+      }
+      odbcCloseAll()
+    }else if (.Platform$OS.type=="unix"){
+      # check if mdbtools is installed
+      if (system("mdb-tables")==127){
+        datasets <- NULL
+        datasetread<-NULL
+        dataweeks=NULL
+        cat("Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
+      }else{
+        # read tables in file
+        datasets <- system(paste('mdb-tables -1', shQuote(i.file)), intern=TRUE)
+        n.datasets<-length(datasets)
+        if (is.na(i.dataset)){
+          datasetread<-NULL
+          dataweeks=NULL
+          #cat("Warning: Table name not specified\n")
+        }else if (!(i.dataset %in% datasets)) {
+          datasetread<-NULL
+          dataweeks=NULL
+          cat("Warning: Table ",i.dataset," not found\n")
+        }else{
+          cat("Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")    
+          # read selected table schema
+          tableschema <- system(paste('mdb-schema -T', shQuote(i.dataset), shQuote(i.file)), intern=TRUE)
+          start <- grep('^ \\($', tableschema) + 1
+          end   <- grep('^\\);$', tableschema) - 1
+          tableschema <- tableschema[start:end]
+          tableschema <- strsplit(tableschema, '\t')
+          vnames <- sapply(tableschema, function(x)x[2])
+          vnames <- substring(vnames, 2,nchar(vnames)-1)
+          filecsv <- tempfile()
+          system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.dataset), '>', filecsv))
+          # detect encoding
+          encodings<-readr::guess_encoding(filecsv, n_max = -1)
+          encodings<-encodings[order(encodings$confidence,decreasing = T),]
+          myencoding<-as.character(encodings$encoding[1])
+          # detect separator and decimal separator
+          firstline<-readLines(filecsv,1,encoding=myencoding)
+          separators<-c(',',';','\t','\\|')
+          mysep<-separators[which.max(stringr::str_count(firstline, separators))]
+          restlines<-paste(readLines(filecsv,encoding=myencoding)[-1],collapse="")
+          decimals<-c(".",",")
+          mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
+          datasetread<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+          names(datasetread)<-vnames
+          if (all(datasetread[,1] %in% 1:53)){
+            rownames(datasetread)<-as.character(datasetread[,1])
+            datasetread<-datasetread[-1]
+            cat("Note: First column is the week name\n")
+          }else rownames(datasetread)<-1:NROW(datasetread)
+          dataweeks<-as.numeric(row.names(datasetread))
+          cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+        }
+      }
+    }else{
+      datasets=NULL
+      datasetread<-NULL
+      dataweeks=NULL
+      cat("Warning: Access file only supported in windows and *nix systems\n")
+    }
+  }
+  list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+}
+
+read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
+  if (!file.exists(i.file)){
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
+    cat("Warning: file not found\n")
+  }else{
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
+    }else{
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
+    }
+    filenameextension<-paste(filename, fileextension, sep=".")
+    datasets<-filename
+    n.datasets<-length(datasets)
+    # text files
+    # detect encoding
+    temp1<-readr::guess_encoding(i.file, n_max = -1)
+    temp1<-temp1[order(temp1$confidence,decreasing = T),]
+    myencoding<-as.character(temp1$encoding[1])
+    cat("Text file detected: ",filenameextension," (encoding: ",myencoding,")\n",sep="")
+    if (is.na(i.dataset)){
+      datasetread<-NULL
+      dataweeks=NULL
+      #cat("Warning: Table name not specified\n");
+    }else if (!(i.dataset %in% datasets)) {
+      datasetread<-NULL
+      dataweeks=NULL
+      cat("Warning: Table ",i.dataset," not found\n");
+    }else{
+      cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
+      # detect separator and decimal separator
+      firstline<-readLines(i.file,1,encoding=myencoding)
+      separators<-c(',',';','\t','\\|')
+      mysep<-separators[which.max(str_count(firstline, separators))]
+      restlines<-paste(readLines(i.file,encoding=myencoding)[-1],collapse="")
+      decimals<-c(".",",")
+      mydec<-decimals[which.max(str_count(gsub(mysep,"",restlines,fixed=T), fixed(decimals)))]
+      cat("Separator is ",mysep,"\nDecimal point is ",mydec,"\n",sep="")
+      temp1<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))
+      datasetread<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
+      names(datasetread)<-temp1
+      if (all(datasetread[,1] %in% 1:53)){
+        rownames(datasetread)<-as.character(datasetread[,1])
+        datasetread<-datasetread[-1]
+        cat("Note: First column is the week name\n")
+      }else rownames(datasetread)<-1:NROW(datasetread)
+      dataweeks<-as.numeric(row.names(datasetread))
+      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+    }
+  }
+  list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+}
+
+read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
+  if (!file.exists(i.file)){
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
+    cat("Warning: file not found\n")
+  }else{
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
+    }else{
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
+    }
+    filenameextension<-paste(filename, fileextension, sep=".")
+    datasets<-filename
+    n.datasets<-length(datasets)
+    # rds files
+    cat("R file detected: ",filenameextension,")\n",sep="")
+    if (is.na(i.dataset)){
+      datasetread<-NULL
+      dataweeks=NULL
+      #cat("Warning: Table name not specified\n");
+    }else if (!(i.dataset %in% datasets)) {
+      datasetread<-NULL
+      dataweeks=NULL
+      cat("Warning: Table ",i.dataset," not found\n");
+    }else{
+      cat("Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")    
+      # detect separator and decimal separator
+      datasetread<-readRDS(i.file)
+      dataweeks<-as.numeric(row.names(datasetread))
+      #if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
+      cat("Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+    }
+  }
+  list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+}
 
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 
