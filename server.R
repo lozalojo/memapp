@@ -300,6 +300,7 @@ observe({
           #p <- plotTiming(datfile.plot)
           p <- plotSeries(datfile.plot, 
                           i.plot.timing = T, 
+                          i.range.x=NA,
                           i.pre.epidemic=F, 
                           i.post.epidemic=F, 
                           i.intensity= F, 
@@ -338,6 +339,7 @@ observe({
           #p <- plotTiming(datfile.plot)
           p <- plotSeries(datfile.plot, 
                           i.plot.timing = T, 
+                          i.range.x=NA,
                           i.pre.epidemic=F, 
                           i.post.epidemic=F, 
                           i.intensity= F, 
@@ -375,7 +377,8 @@ observe({
           datfile.plot<-datfile[as.character(s)]
           #p <- plotTiming(datfile.plot)
           p <- plotSeries(datfile.plot, 
-                          i.plot.timing = T, 
+                          i.plot.timing = T,
+                          i.range.x=NA,
                           i.pre.epidemic=F, 
                           i.post.epidemic=F, 
                           i.intensity= F, 
@@ -1941,9 +1944,9 @@ output$tbvData <- DT::renderDataTable({
 
 output$tbvSeasons <- renderPlotly({
   datfile <- read_data()
-  cat("-----------",paste(input$SelectSeasons,collapse=","),"\n")
-  cat("-----------",length(input$SelectSeasons),"\n")
-  cat("-----------",is.null(input$SelectSeasons),"\n")
+  # cat("-----------",paste(input$SelectSeasons,collapse=","),"\n")
+  # cat("-----------",length(input$SelectSeasons),"\n")
+  # cat("-----------",is.null(input$SelectSeasons),"\n")
   if(is.null(datfile)){
     zfix<-NULL
   }else if (is.null(input$SelectSeasons)) {
@@ -1994,7 +1997,7 @@ output$tbvSeasons <- renderPlotly({
       if (is.null(p$plot)){
         zfix<-NULL
       }else{
-        cat("-------generating\n")
+        # cat("-------generating\n")
         z <- ggplotly(p$plot, width = 800, height = 600)
         zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
       }        
@@ -2409,8 +2412,6 @@ plotSeries<-function(i.data,
   if(is.null(i.data)){
     p<-NULL
   }else{
-    
-    
     # Range x fix
     # week.f<-as.numeric(rownames(i.data)[1])
     # week.l<-as.numeric(rownames(i.data)[NROW(i.data)])
@@ -2421,7 +2422,9 @@ plotSeries<-function(i.data,
     #   i.range.x<-c(1,52)
     #   i.range.x.values<-data.frame(week.lab=1:52,week.no=1:52)
     # }
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    #if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    i.range.x.default<-c(max(1,min(as.numeric(rownames(i.data)[1:3]))),min(52,max(as.numeric(rownames(i.data)[(NROW(i.data)-2):NROW(i.data)]))))
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-i.range.x.default
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
     last.week<-52
@@ -3141,10 +3144,15 @@ read.data<-function(i.file,
     }
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
-    seasons<-data.frame(names(datasetread),str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+    # seasons<-data.frame(names(datasetread),str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+    if (NCOL(datasetread)>1){
+      seasons<-data.frame(names(datasetread),matrix(str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=NCOL(datasetread),byrow=F)[,-1],stringsAsFactors = F)
+    }else{
+      seasons<-data.frame(t(c(names(datasetread),str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
+    }
     names(seasons)<-c("column","anioi","aniof","aniow")
     seasons[is.na(seasons)]<-""
-	seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
+    seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
     seasonsname<-seasons$anioi
     seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
     seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
@@ -3474,7 +3482,12 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
   if (to<from) to<-from
   #cat(to,"-",from,"\n")
   #cat(i.names,"\n")
-  seasons<-data.frame(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+  # seasons<-data.frame(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
+  if (length(i.names)>1){
+    seasons<-data.frame(i.names,matrix(str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=length(i.names),byrow=F)[,-1],stringsAsFactors = F)
+  }else{
+    seasons<-data.frame(t(c(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
+  }
   names(seasons)<-c("season.original","anioi","aniof","aniow")
   seasons[is.na(seasons)]<-""
   seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
