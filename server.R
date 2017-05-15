@@ -505,15 +505,30 @@ output$tbSurveillance <- renderUI({
 })
 
 output$tbVisualize <- renderUI({
-  if(is.null(read_data())){
+  datfile <- read_data()
+  if(is.null(datfile)){
+    return(NULL)
+  }else if (is.null(input$SelectSeasons)) {
     return(NULL)
   }else{
-    tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbvData")),
-                #tabPanel("Plot", plotlyOutput("tbvPlot", width ="100%", height ="100%")),
-                tabPanel("Seasons", plotlyOutput("tbvSeasons", width ="100%", height ="100%")),
-                tabPanel("Series",plotlyOutput("tbvSeries", width ="100%", height ="100%")),
-                tabPanel("Timing",uiOutput("tbvTiming"))
-    )
+    toinclude<-input$SelectSeasons
+    selectedcolumns<-select.columns(i.names=names(datfile), 
+                                    i.from=input$SelectSeasons[1], 
+                                    i.to=input$SelectSeasons[1], 
+                                    i.exclude="",
+                                    i.include=toinclude,
+                                    i.pandemic=as.logical("TRUE"),
+                                    i.seasons=NA)
+    if (length(selectedcolumns)>0){
+      tabsetPanel(tabPanel("Data", DT::dataTableOutput("tbvData")),
+                  #tabPanel("Plot", plotlyOutput("tbvPlot", width ="100%", height ="100%")),
+                  tabPanel("Seasons", plotlyOutput("tbvSeasons", width ="100%", height ="100%")),
+                  tabPanel("Series",plotlyOutput("tbvSeries", width ="100%", height ="100%")),
+                  tabPanel("Timing",uiOutput("tbvTiming"))
+      )
+    }else{
+      return(NULL)
+    }    
   }
 })
 
@@ -3129,6 +3144,7 @@ read.data<-function(i.file,
     seasons<-data.frame(names(datasetread),str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
     names(seasons)<-c("column","anioi","aniof","aniow")
     seasons[is.na(seasons)]<-""
+	seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
     seasonsname<-seasons$anioi
     seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
     seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
@@ -3461,6 +3477,7 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
   seasons<-data.frame(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[,-1],stringsAsFactors = F)
   names(seasons)<-c("season.original","anioi","aniof","aniow")
   seasons[is.na(seasons)]<-""
+  seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
   seasonsname<-seasons$anioi
   seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
   seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
