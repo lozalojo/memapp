@@ -1926,6 +1926,9 @@ output$tbvData <- DT::renderDataTable({
 
 output$tbvSeasons <- renderPlotly({
   datfile <- read_data()
+  cat("-----------",paste(input$SelectSeasons,collapse=","),"\n")
+  cat("-----------",length(input$SelectSeasons),"\n")
+  cat("-----------",is.null(input$SelectSeasons),"\n")
   if(is.null(datfile)){
     zfix<-NULL
   }else if (is.null(input$SelectSeasons)) {
@@ -1973,9 +1976,10 @@ output$tbvSeasons <- renderPlotly({
                        i.param=as.numeric(input$param),
                        i.n.max=as.numeric(input$n.max)
                        )
-      if (is.null(p)){
+      if (is.null(p$plot)){
         zfix<-NULL
       }else{
+        cat("-------generating\n")
         z <- ggplotly(p$plot, width = 800, height = 600)
         zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
       }        
@@ -2033,7 +2037,7 @@ output$tbvSeries <- renderPlotly({
                       i.param=as.numeric(input$param),
                       i.n.max=as.numeric(input$n.max)
                       )
-      if (is.null(p)){
+      if (is.null(p$plot)){
         zfix<-NULL
       }else{
         z <- ggplotly(p$plot, width = 800, height = 600)
@@ -3084,23 +3088,29 @@ read.data<-function(i.file,
     # if (any(is.null(i.range.x))) i.range.x<-i.range.x.default
     # if (any(i.range.x=="")) i.range.x<-i.range.x.default
     # cat(paste(i.range.x,collapse=","),"\n")
-    week.f<-i.range.x[1]
-    week.l<-i.range.x[2]
-    last.week<-52
-    if (week.f>week.l){
-      i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+    if (FALSE){
+      week.f<-i.range.x[1]
+      week.l<-i.range.x[2]
+      last.week<-52
+      if (week.f>week.l){
+        i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+      }else{
+        i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+      }
+      # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
+      # cat(paste(i.range.x.values$week.no,collapse=","),"\n")
+      # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
+      datasetread$week.lab<-as.numeric(rownames(datasetread))
+      datasetread<-merge(datasetread,i.range.x.values, all.y=T, all.x=F, by="week.lab")
+      datasetread<-datasetread[order(datasetread$week.no),]
+      rownames(datasetread)<-datasetread$week.lab
+      datasetread$week.lab<-NULL
+      datasetread$week.no<-NULL      
     }else{
-      i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+      datasetread<-transformdata.back(datasetread, i.name = "rates", i.range.x = i.range.x)
+      datasetread<-transformdata(datasetread, i.name = "rates", i.range.x = i.range.x)$tdata
     }
-    # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
-    # cat(paste(i.range.x.values$week.no,collapse=","),"\n")
-    # cat(paste(i.range.x.values$week.lab,collapse=","),"\n")
-    datasetread$week.lab<-as.numeric(rownames(datasetread))
-    datasetread<-merge(datasetread,i.range.x.values, all.y=T, all.x=F, by="week.lab")
-    datasetread<-datasetread[order(datasetread$week.no),]
-    rownames(datasetread)<-datasetread$week.lab
-    datasetread$week.lab<-NULL
-    datasetread$week.no<-NULL
+
     # Remove columns only with NA
     naonlycolumns<-apply(datasetread, 2, function(x) all(is.na(x)))
     if (any(naonlycolumns)){
