@@ -16,3 +16,13 @@ devtools::install_github("lozalojo/mem")
 devtools::install_github("AnalytixWare/ShinySky")
 devtools::install_github("hadley/ggplot2")
 
+# if you are behind a proxy
+# library(httr)
+# proxy.config <- use_proxy("proxy.server", port = 80, username = "user", password = "pass", auth = "basic")
+# with_config(proxy.config, install_github("lozalojo/mem"))
+# with_config(proxy.config, install_github("AnalytixWare/ShinySky"))
+# with_config(proxy.config, install_github("hadley/ggplot2"))
+# Install from local disk (download from github and unzip)
+# devtools::install_local("C:/Downloads/mem-master")
+# devtools::install_local("C:/Downloads/ShinySky-master")
+# devtools::install_local("C:/Downloads/ggplot2-master")
