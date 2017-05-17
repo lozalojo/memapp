@@ -2107,15 +2107,16 @@ plotSeasons <- function(i.data,
   if(is.null(i.data)){
     p<-NULL
   }else{
-    
-    if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:3])),max(as.numeric(rownames(i.data)[(NROW(i.data)-2):NROW(i.data)])))
+    if (i.range.x[1] < 1) i.range.x[1] <- 1
+    if (i.range.x[1] > 52) i.range.x[1] <- 52
+    if (i.range.x[2] < 1) i.range.x[2] <- 1
+    if (i.range.x[2] > 52) i.range.x[2] <- 52
+    if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
+    if (i.range.x[2]==0) i.range.x[2]<-52
+    # Input scheme numbering
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (week.f < 1) week.f <- 1
-    if (week.f > 52) week.f <- 52
-    if (week.l < 1) week.l <- 1
-    if (week.l > 52) week.l <- 52
-    if (week.f == week.l) week.l <- week.l - 1
     last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
@@ -2310,15 +2311,18 @@ plotSeries<-function(i.data,
     p<-NULL
   }else{
     # Range x fix
-    i.range.x.default<-c(max(1,min(as.numeric(rownames(i.data)[1:3]))),min(52,max(as.numeric(rownames(i.data)[(NROW(i.data)-2):NROW(i.data)]))))
-    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-i.range.x.default
+    i.cutoff.original<-min(as.numeric(rownames(i.data)[1:3]))
+    if (i.cutoff.original < 1) i.cutoff.original <- 1
+    if (i.cutoff.original > 52) i.cutoff.original <- 52
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:3])),max(as.numeric(rownames(i.data)[(NROW(i.data)-2):NROW(i.data)])))
+    if (i.range.x[1] < 1) i.range.x[1] <- 1
+    if (i.range.x[1] > 52) i.range.x[1] <- 52
+    if (i.range.x[2] < 1) i.range.x[2] <- 1
+    if (i.range.x[2] > 52) i.range.x[2] <- 52
+    if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
+    if (i.range.x[2]==0) i.range.x[2]<-52
     week.f<-i.range.x[1]
     week.l<-i.range.x[2]
-    if (week.f < 1) week.f <- 1
-    if (week.f > 52) week.f <- 52
-    if (week.l < 1) week.l <- 1
-    if (week.l > 52) week.l <- 52
-    if (week.f == week.l) week.l <- week.l - 1
     last.week<-52
     if (week.f>week.l){
       i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
@@ -2383,17 +2387,17 @@ plotSeries<-function(i.data,
     data.full.index$week.no<-NULL
     
     # Data to plot
-    data.orig<-transformdata.back(data.full,i.name="rates",i.range.x=i.range.x,i.fun=sum)$data
+    data.orig<-transformdata.back(data.full,i.name="rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x, i.fun=sum)$data
     data.y<-as.numeric(data.orig[,"rates"])
     # Data to plot, filling in missing with data imputed by mem (using loess)
-    data.fixed<-transformdata.back(data.full.epi,i.name="rates",i.range.x=i.range.x,i.fun=sum)$data
+    data.fixed<-transformdata.back(data.full.epi,i.name="rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x, i.fun=sum)$data
     data.y.fixed<-as.numeric(data.fixed[,"rates"])
     # Data that have been imputed, to mark them as a circle with a cross
     data.missing<-data.fixed
     data.missing[!(is.na(data.orig) & !is.na(data.fixed))]<-NA
     data.y.missing<-as.numeric(data.missing[,"rates"])
     # Indexes for pre, epi and post epidemic
-    data.indexes<-transformdata.back(data.full.index,i.name="rates",i.range.x=i.range.x,i.fun=function(x,...) if (all(is.na(x))) return(NA) else if (any(x==2,...)) return(2) else if (any(x==1,...)) return(1) else return(3))$data
+    data.indexes<-transformdata.back(data.full.index,i.name="rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x, i.fun=function(x,...) if (all(is.na(x))) return(NA) else if (any(x==2,...)) return(2) else if (any(x==1,...)) return(1) else return(3))$data
     data.y.indexes<-as.numeric(data.indexes[,names(data.indexes)=="rates"])
     
     if (length(i.epidemic.thr)==2){
@@ -2928,16 +2932,27 @@ read.data<-function(i.file,
     # Fix when reading access files, sometimes it changes the order of the weeks
     # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
     # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
-    i.range.x.default<-c(max(1,min(as.numeric(rownames(datasetread)[1:3]))),min(52,max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)]))))
-    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-i.range.x.default
+    i.cutoff.original<-min(as.numeric(rownames(datasetread)[1:3]))
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(datasetread)[1:3])),max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)])))
+    if (i.range.x[1] < 1) i.range.x[1] <- 1
+    if (i.range.x[1] > 52) i.range.x[1] <- 52
+    if (i.range.x[2] < 1) i.range.x[2] <- 1
+    if (i.range.x[2] > 52) i.range.x[2] <- 52
+    if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
+    if (i.range.x[2]==0) i.range.x[2]<-52
     if (FALSE){
+      i.cutoff.original<-min(as.numeric(rownames(datasetread)[1:3]))
+      if (i.cutoff.original < 1) i.cutoff.original <- 1
+      if (i.cutoff.original > 52) i.cutoff.original <- 52
+      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(datasetread)[1:3])),max(as.numeric(rownames(datasetread)[(NROW(datasetread)-2):NROW(datasetread)])))
+      if (i.range.x[1] < 1) i.range.x[1] <- 1
+      if (i.range.x[1] > 52) i.range.x[1] <- 52
+      if (i.range.x[2] < 1) i.range.x[2] <- 1
+      if (i.range.x[2] > 52) i.range.x[2] <- 52
+      if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
+      if (i.range.x[2]==0) i.range.x[2]<-52
       week.f<-i.range.x[1]
       week.l<-i.range.x[2]
-      if (week.f < 1) week.f <- 1
-      if (week.f > 52) week.f <- 52
-      if (week.l < 1) week.l <- 1
-      if (week.l > 52) week.l <- 52
-      if (week.f == week.l) week.l <- week.l - 1
       last.week<-52
       if (week.f>week.l){
         i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
@@ -2951,7 +2966,7 @@ read.data<-function(i.file,
       datasetread$week.lab<-NULL
       datasetread$week.no<-NULL
     }else{
-      datasetread<-transformdata.back(datasetread, i.name = "rates", i.range.x = i.range.x)$data
+      datasetread<-transformdata.back(datasetread, i.name = "rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x)$data
       datasetread<-transformdata(datasetread, i.name = "rates", i.range.x = i.range.x)$data
     }
 
