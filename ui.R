@@ -31,7 +31,7 @@ shinyUI(dashboardPage(skin = "black",
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
                       dashboardHeader(title = "MEM dashboard",
-                                      tags$li("17MAY2017, code under GPLv2 at",
+                                      tags$li("18MAY2017, code under GPLv2 at",
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 img(src = 'GitHub_Logo.png',
@@ -296,8 +296,11 @@ shinyUI(dashboardPage(skin = "black",
                                          bsPopover(id = "helpohig", title = "High intensity threshold", content = "Level of the confidence interval used to calculate the high threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
                                          column(2, numericInput("level.intensity.v", h6("Level very high", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpover", label = "", icon = icon("question"), style = "info", size = "extra-small")), 97.5, step=0.5, min = 0.5, max = 99.5)),
                                          bsPopover(id = "helpover", title = "Very high intensity threshold", content = "Level of the confidence interval used to calculate the very high threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                         column(2, numericInput("tails", h6("Tails", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotai", label = "", icon = icon("question"), style = "info", size = "extra-small")), 1, step=1, min = 1, max = 2))),
-                                         bsPopover(id = "helpotai", title = "One or two-tailed confidence intervals", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                         column(2, numericInput("tails", h6("Tails", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotai", label = "", icon = icon("question"), style = "info", size = "extra-small")), 1, step=1, min = 1, max = 2)),
+                                         bsPopover(id = "helpotai", title = "One or two-tailed confidence intervals", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                         column(2, numericInput("level.typical.curve", h6("Level average curve", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotlv", label = "", icon = icon("question"), style = "info", size = "extra-small")), 95.0, step=0.5, min = 0.5, max = 99.5)),
+                                         bsPopover(id = "helpotlv", title = "Average curve intervals", content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                         )
                                        )
                                    ),
                             
