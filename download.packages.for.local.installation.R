@@ -24,7 +24,7 @@ if (!file.exists(d.file)) download.file(paste("https://download1.rstudio.org/RSt
 
 # Packages from the official R repositories
 
-list.packages<-c("shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
+list.packages<-c("rstudioapi","shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
               "plotly", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
               "stringr", "readr", "magick", "DT", "gplots", "RODBC", "mixtools", "devtools", "sm", "boot",
               "ggplot2", "RJSONIO", "plyr")
@@ -40,6 +40,8 @@ getPackages <- function(packs){
 
 packages <- getPackages(list.packages)
 packages.downloaded<-download.packages(packages, destdir=paste(output.dir,"cran",sep="/"), type="source")
+
+tools::write_PACKAGES(paste(output.dir,"/cran/",sep=""))
 
 # Packages to be compiled from sources at github.
 

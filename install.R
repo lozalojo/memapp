@@ -4,7 +4,7 @@
 
 # Packages from the official R repositories
 
-list.packages<-c("shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
+list.packages<-c("rstudioapi","shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
               "plotly", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
               "stringr", "readr", "magick", "DT", "gplots", "RODBC", "mixtools", "devtools")
 

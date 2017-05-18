@@ -2188,7 +2188,7 @@ plotSeasons <- function(i.data,
   if(is.null(i.data)){
     p<-NULL
   }else{
-    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(min(1,NROW(i.data)-2)):NROW(i.data)])))
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(max(1,NROW(i.data)-2)):NROW(i.data)])))
     if (i.range.x[1] < 1) i.range.x[1] <- 1
     if (i.range.x[1] > 52) i.range.x[1] <- 52
     if (i.range.x[2] < 1) i.range.x[2] <- 1
@@ -2385,7 +2385,7 @@ plotSeries<-function(i.data,
     i.cutoff.original<-min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))]))
     if (i.cutoff.original < 1) i.cutoff.original <- 1
     if (i.cutoff.original > 52) i.cutoff.original <- 52
-    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(min(1,NROW(i.data)-2)):NROW(i.data)])))
+    if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(max(1,NROW(i.data)-2)):NROW(i.data)])))
     if (i.range.x[1] < 1) i.range.x[1] <- 1
     if (i.range.x[1] > 52) i.range.x[1] <- 52
     if (i.range.x[2] < 1) i.range.x[2] <- 1
@@ -3025,7 +3025,7 @@ read.data<-function(i.file,
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
       i.cutoff.original<-min(as.numeric(rownames(datasetread)[1:(min(3,NROW(datasetread)))]))
-      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(datasetread)[1:(min(3,NROW(datasetread)))])),max(as.numeric(rownames(datasetread)[(min(1,NROW(datasetread)-2)):NROW(datasetread)])))
+      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(datasetread)[1:(min(3,NROW(datasetread)))])),max(as.numeric(rownames(datasetread)[(max(1,NROW(datasetread)-2)):NROW(datasetread)])))
       if (i.range.x[1] < 1) i.range.x[1] <- 1
       if (i.range.x[1] > 52) i.range.x[1] <- 52
       if (i.range.x[2] < 1) i.range.x[2] <- 1

@@ -2,13 +2,17 @@
 ##### INSTALL PACKAGES REQUIRED TO RUN THE APPLICATION
 ####################################################################
 
-mylocaldirectory<-dirname(rstudioapi::getActiveDocumentContext()$path)
+mylocaldirectory<-"G:/GRIPE/Umbral/Programa MEM/files/R 3.4.0 x86_64 (2017-05-18)"
 setwd(mylocaldirectory)
+
+write_PACKAGES(paste(mylocaldirectory,"/cran",sep="")
 
 # Packages from the official R repositories
 
 packages.cran<-list.files("cran", full.names = T)
 lapply(packages.cran, function (x) install.packages(x, repos = NULL, type="source", dependencies=F))
+
+install.packages("ggplot2", contriburl=paste("file://cran/"))
 
 # Packages to be compiled from sources at github.
 
