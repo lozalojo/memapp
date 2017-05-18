@@ -49,3 +49,9 @@ download.file("https://github.com/lozalojo/mem/archive/master.zip", paste(output
 # memapp
 
 download.file("https://github.com/lozalojo/memapp/archive/master.zip", paste(output.dir,"/programs/memapp-master.zip",sep=""))
+unzip(paste(output.dir,"/programs/memapp-master.zip",sep=""), 
+      files="memapp-master/install.dependencies.from.local.directory.R",
+      exdir=output.dir)
+file.copy(paste(output.dir,"/memapp-master/install.dependencies.from.local.directory.R",sep=""),
+          paste(output.dir,"/install.R",sep=""))
+unlink(paste(output.dir,"/memapp-master",sep=""),recursive=T)
