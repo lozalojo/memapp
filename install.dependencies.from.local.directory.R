@@ -2,7 +2,7 @@
 ##### INSTALL PACKAGES REQUIRED TO RUN THE APPLICATION
 ####################################################################
 
-mylocaldirectory<-"G:/GRIPE/Umbral/Programa MEM/files/R 3.4.0 x86_64 (2017-05-18)"
+mylocaldirectory<-dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(mylocaldirectory)
 
 # Packages from the official R repositories

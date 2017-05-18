@@ -11,13 +11,16 @@ if (!dir.exists("files")) dir.create("files")
 if (!dir.exists(output.dir)) dir.create(output.dir)
 if (!dir.exists(paste(output.dir,"cran",sep="/"))) dir.create(paste(output.dir,"cran",sep="/"))
 if (!dir.exists(paste(output.dir,"github",sep="/"))) dir.create(paste(output.dir,"github",sep="/"))
+if (!dir.exists(paste(output.dir,"programs",sep="/"))) dir.create(paste(output.dir,"programs",sep="/"))
 
-# Download R
+# Download R and Rstudio
 
-d.file<-paste(output.dir,"/","R-",version$major,".",version$minor,"-win.exe",sep="")
-  
+d.file<-paste(output.dir,"/programs/","R-",version$major,".",version$minor,"-win.exe",sep="")
 if (!file.exists(d.file)) download.file(paste("https://cloud.r-project.org/bin/windows/base/R-",version$major,".",version$minor,"-win.exe",sep=""),
               d.file)
+d.file<-paste(output.dir,"/programs/RStudio-1.0.143.exe",sep="")
+if (!file.exists(d.file)) download.file(paste("https://download1.rstudio.org/RStudio-1.0.143.exe",sep=""),
+                                        d.file)
 
 # Packages from the official R repositories
 
@@ -45,4 +48,4 @@ download.file("https://github.com/lozalojo/mem/archive/master.zip", paste(output
 
 # memapp
 
-download.file("https://github.com/lozalojo/memapp/archive/master.zip", paste(output.dir,"/memapp-master.zip",sep=""))
+download.file("https://github.com/lozalojo/memapp/archive/master.zip", paste(output.dir,"/programs/memapp-master.zip",sep=""))
