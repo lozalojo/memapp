@@ -31,7 +31,7 @@ shinyUI(dashboardPage(skin = "black",
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
                       dashboardHeader(title = "MEM dashboard",
-                                      tags$li("19MAY2017, code under GPLv2 at",
+                                      tags$li("22MAY2017, code under GPLv2 at",
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 img(src = 'GitHub_Logo.png',
@@ -53,13 +53,9 @@ shinyUI(dashboardPage(skin = "black",
                       ###################################
                       
                       dashboardSidebar(width='250px', 
-                                       
                                        ################################
                                        ###    Load data          ######
                                        ################################
-                                       
-                                       
-                                       
                                        fileInput('file',             h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpll", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Load file" ), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb")),
                                        bsPopover(id = "helpll", title = "Load file",      content = "memapp is able to read text, excel, access and R.",                                   placement = "top", trigger = "hover", options = list(container = "body")),
                                        # selectInput('dataset',        h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpld", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Dataset"   ), size=1, selectize = FALSE, choices = "", selected = NULL),
@@ -71,14 +67,14 @@ shinyUI(dashboardPage(skin = "black",
                                        # selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helplt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Transform" ), size=1, selectize = FALSE, choices = list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6), selected = 1),
                                        # bsPopover(id = "helplt", title = "Transform data", content = "Select the transformation to apply to the original data.",                            placement = "top", trigger = "hover", options = list(container = "body")),
 
-                                       box(title="Dataset", footer="aaa", status = "warning", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=FALSE,
-                                           selectInput('dataset',        h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpld", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Dataset"   ), size=1, selectize = FALSE, choices = "", selected = NULL),
+                                       box(title="Dataset", status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
+                                           selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpld", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Dataset"), size=1, selectize = FALSE, choices = "", selected = NULL),
                                            bsPopover(id = "helpld", title = "Select dataset", content = "If the format is able to store different datasets, select the one you want to open.", placement = "top", trigger = "hover", options = list(container = "body")),
-                                           selectInput("firstWeek",      h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpl1", label = "", icon = icon("question"), style = "info", size = "extra-small"), "First Week"), size=1, selectize = FALSE, choices = "", selected = NULL),
-                                           bsPopover(id = "helpl1", title = "First week",     content = "First week of the datasets` surveillance period.",                                    placement = "top", trigger = "hover", options = list(container = "body")),
-                                           selectInput("lastWeek",       h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpl2", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Last Week" ), size=1, selectize = FALSE, choices = "", selected = NULL),
-                                           bsPopover(id = "helpl2", title = "Last week",      content = "Last week of the datasets surveillance period.",                                     placement = "top", trigger = "hover", options = list(container = "body")),
-                                           selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helplt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Transform" ), size=1, selectize = FALSE, choices = list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6), selected = 1),
+                                           selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpl1", label = "", icon = icon("question"), style = "info", size = "extra-small"), "First Week"), size=1, selectize = FALSE, choices = "", selected = NULL),
+                                           bsPopover(id = "helpl1", title = "First week", content = "First week of the datasets` surveillance period.",                                    placement = "top", trigger = "hover", options = list(container = "body")),
+                                           selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpl2", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Last Week" ), size=1, selectize = FALSE, choices = "", selected = NULL),
+                                           bsPopover(id = "helpl2", title = "Last week", content = "Last week of the datasets surveillance period.",                                     placement = "top", trigger = "hover", options = list(container = "body")),
+                                           selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helplt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Transform"), size=1, selectize = FALSE, choices = list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6), selected = 1),
                                            bsPopover(id = "helplt", title = "Transform data", content = "Select the transformation to apply to the original data.",                            placement = "top", trigger = "hover", options = list(container = "body"))
                                        ),
                                        
@@ -224,84 +220,84 @@ shinyUI(dashboardPage(skin = "black",
                                      tabPanel("Model", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
                                      tabPanel("Surveillance", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Surveillance tools", uiOutput("tbSurveillance")),
                                      tabPanel("Visualize", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
-                                   ),
-                                   
-                                   #######################################
-                                   ### BODY/MAIN SECTION               ###
-                                   ###   FIRST COLUMN DEFINITION       ###
-                                   ###      SECOND PART: MEM OPTIONS   ###
-                                   #######################################
-                                   
-                                   box(title="MEM options", 
-                                       status = "primary", 
-                                       solidHeader = TRUE, 
-                                       width = 12,  
-                                       background = "black",
-                                       collapsible = TRUE, 
-                                       collapsed=TRUE,
-                                       fluidRow(
-                                         column(6,
-                                                h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Timing"),
-                                                column(8, 
-                                                       selectInput("method", h6("Method for timing", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotim", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4), size=1, selectize = FALSE, selected = 2),
-                                                       bsPopover(id = "helpotim", title = "Method for epidemic timing", content = "Original: uses the process shown in the original paper.<br>Fixed criterium: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br>Slope: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br>Second derivative: calculates the second derivative and equals to zero to search an inflexion point in the original curve.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                                ),
-                                                column(4,
-                                                       conditionalPanel(
-                                                         condition = "input.method == 2",
-                                                         numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpopar", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Slope parameter"), 2.8, step=0.1),
-                                                         bsPopover(id = "helpopar", title = "Window parameter", content = "Window parameter used in fixed criterium method.", placement = "top", trigger = "hover", options = list(container = "body"))
-                                                       )
-                                                )
-                                         ),
-                                         column(6,
-                                                h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Goodness & optimize"),
-                                                column(8, 
-                                                       sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoopt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
-                                                       bsPopover(id = "helpoopt", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "top", trigger = "hover", options = list(container = "body"))
-                                                ),
-                                                column(4,
-                                                       selectInput("validation", h6("Validation", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpocro", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Cross"="cross", "Sequential"="sequential"), size=1, selectize = FALSE, selected = "cross"),
-                                                       bsPopover(id = "helpocro", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                                )
-                                                
-                                                )
-                                       ),
-                                       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
-                                       fluidRow(
-                                         column(3, 
-                                                selectInput("type.threshold", h6("Epidemic thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoepi", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 5),
-                                                bsPopover(id = "helpoepi", title = "Epidemic threshold", content = "Method for calculating the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                                ),
-                                         column(3, 
-                                                selectInput("type.intensity", h6("intensity thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoint", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 6),
-                                                bsPopover(id = "helpoint", title = "Intensity thresholds", content = "Method for calculating the intensity threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                                ),
-                                         column(3, 
-                                                selectInput("type.curve", h6("Curve thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotyp", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 2),
-                                                bsPopover(id = "helpotyp", title = "Average curve intervals", content = "Method for calculating the average/typical curve confidence intervals.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                                ),
-                                         column(3, 
-                                                selectInput("type.other", h6("Other thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpooth", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 3),
-                                                bsPopover(id = "helpooth", title = "Otrher confidence intervals", content = "Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                                )
-                                         ),
-                                       fluidRow(
-                                         #column(2, numericInput("n.max", h6("Values per season", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoval", label = "", icon = icon("question"), style = "info", size = "extra-small")), -1, step=1, min = -1, max = 100)),
-                                         column(2, selectInput("n.max", h6("Values per season", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoval", label = "", icon = icon("question"), style = "info", size = "extra-small")), choices = list("30 in total"=-1,"All"=0,"1/season"=1,"2/season"=2,"3/season"=3,"4/season"=4,"5/season"=5,"6/season"=6,"7/season"=7,"8/season"=8,"9/season"=9,"10/season"=10), size=1, selectize = FALSE, selected = -1)),
-                                         bsPopover(id = "helpoval", title = "Number of values per seasons", content = "Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                         column(2, numericInput("level.intensity.m", h6("Level medium", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpomed", label = "", icon = icon("question"), style = "info", size = "extra-small")), 40, step=0.5, min = 0.5, max = 99.5)),
-                                         bsPopover(id = "helpomed", title = "Medium intensity threshold", content = "Level of the confidence interval used to calculate the medium threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                         column(2, numericInput("level.intensity.h", h6("Level high", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpohig", label = "", icon = icon("question"), style = "info", size = "extra-small")), 90, step=0.5, min = 0.5, max = 99.5)),
-                                         bsPopover(id = "helpohig", title = "High intensity threshold", content = "Level of the confidence interval used to calculate the high threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                         column(2, numericInput("level.intensity.v", h6("Level very high", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpover", label = "", icon = icon("question"), style = "info", size = "extra-small")), 97.5, step=0.5, min = 0.5, max = 99.5)),
-                                         bsPopover(id = "helpover", title = "Very high intensity threshold", content = "Level of the confidence interval used to calculate the very high threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                         column(2, numericInput("tails", h6("Tails", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotai", label = "", icon = icon("question"), style = "info", size = "extra-small")), 1, step=1, min = 1, max = 2)),
-                                         bsPopover(id = "helpotai", title = "One or two-tailed confidence intervals", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                         column(2, numericInput("level.typical.curve", h6("Level average curve", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotlv", label = "", icon = icon("question"), style = "info", size = "extra-small")), 95.0, step=0.5, min = 0.5, max = 99.5)),
-                                         bsPopover(id = "helpotlv", title = "Average curve intervals", content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                         )
-                                       )
+                                   )
+                                   # ,
+                                   # 
+                                   # #######################################
+                                   # ### BODY/MAIN SECTION               ###
+                                   # ###   FIRST COLUMN DEFINITION       ###
+                                   # ###      SECOND PART: MEM OPTIONS   ###
+                                   # #######################################
+                                   # 
+                                   # box(title="MEM options", 
+                                   #     status = "primary", 
+                                   #     solidHeader = TRUE, 
+                                   #     width = 12,  
+                                   #     background = "black",
+                                   #     collapsible = TRUE, 
+                                   #     collapsed=TRUE,
+                                   #     fluidRow(
+                                   #       column(6,
+                                   #              h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Timing"),
+                                   #              column(8, 
+                                   #                     selectInput("method", h6("Method for timing", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotim", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4), size=1, selectize = FALSE, selected = 2),
+                                   #                     bsPopover(id = "helpotim", title = "Method for epidemic timing", content = "Original: uses the process shown in the original paper.<br>Fixed criterium: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br>Slope: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br>Second derivative: calculates the second derivative and equals to zero to search an inflexion point in the original curve.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #              ),
+                                   #              column(4,
+                                   #                     conditionalPanel(
+                                   #                       condition = "input.method == 2",
+                                   #                       numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpopar", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Slope parameter"), 2.8, step=0.1),
+                                   #                       bsPopover(id = "helpopar", title = "Window parameter", content = "Window parameter used in fixed criterium method.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                   #                     )
+                                   #              )
+                                   #       ),
+                                   #       column(6,
+                                   #              h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Goodness & optimize"),
+                                   #              column(8, 
+                                   #                     sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoopt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
+                                   #                     bsPopover(id = "helpoopt", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "top", trigger = "hover", options = list(container = "body"))
+                                   #              ),
+                                   #              column(4,
+                                   #                     selectInput("validation", h6("Validation", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpocro", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Cross"="cross", "Sequential"="sequential"), size=1, selectize = FALSE, selected = "cross"),
+                                   #                     bsPopover(id = "helpocro", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #              )
+                                   #              
+                                   #              )
+                                   #     ),
+                                   #     h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
+                                   #     fluidRow(
+                                   #       column(3, 
+                                   #              selectInput("type.threshold", h6("Epidemic thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoepi", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 5),
+                                   #              bsPopover(id = "helpoepi", title = "Epidemic threshold", content = "Method for calculating the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #              ),
+                                   #       column(3, 
+                                   #              selectInput("type.intensity", h6("intensity thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoint", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 6),
+                                   #              bsPopover(id = "helpoint", title = "Intensity thresholds", content = "Method for calculating the intensity threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #              ),
+                                   #       column(3, 
+                                   #              selectInput("type.curve", h6("Curve thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotyp", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 2),
+                                   #              bsPopover(id = "helpotyp", title = "Average curve intervals", content = "Method for calculating the average/typical curve confidence intervals.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #              ),
+                                   #       column(3, 
+                                   #              selectInput("type.other", h6("Other thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpooth", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 3),
+                                   #              bsPopover(id = "helpooth", title = "Otrher confidence intervals", content = "Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #              )
+                                   #       ),
+                                   #     fluidRow(
+                                   #       column(2, selectInput("n.max", h6("Values per season", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoval", label = "", icon = icon("question"), style = "info", size = "extra-small")), choices = list("30 in total"=-1,"All"=0,"1/season"=1,"2/season"=2,"3/season"=3,"4/season"=4,"5/season"=5,"6/season"=6,"7/season"=7,"8/season"=8,"9/season"=9,"10/season"=10), size=1, selectize = FALSE, selected = -1)),
+                                   #       bsPopover(id = "helpoval", title = "Number of values per seasons", content = "Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                   #       column(2, numericInput("level.intensity.m", h6("Level medium", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpomed", label = "", icon = icon("question"), style = "info", size = "extra-small")), 40, step=0.5, min = 0.5, max = 99.5)),
+                                   #       bsPopover(id = "helpomed", title = "Medium intensity threshold", content = "Level of the confidence interval used to calculate the medium threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                   #       column(2, numericInput("level.intensity.h", h6("Level high", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpohig", label = "", icon = icon("question"), style = "info", size = "extra-small")), 90, step=0.5, min = 0.5, max = 99.5)),
+                                   #       bsPopover(id = "helpohig", title = "High intensity threshold", content = "Level of the confidence interval used to calculate the high threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                   #       column(2, numericInput("level.intensity.v", h6("Level very high", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpover", label = "", icon = icon("question"), style = "info", size = "extra-small")), 97.5, step=0.5, min = 0.5, max = 99.5)),
+                                   #       bsPopover(id = "helpover", title = "Very high intensity threshold", content = "Level of the confidence interval used to calculate the very high threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                   #       column(2, numericInput("tails", h6("Tails", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotai", label = "", icon = icon("question"), style = "info", size = "extra-small")), 1, step=1, min = 1, max = 2)),
+                                   #       bsPopover(id = "helpotai", title = "One or two-tailed confidence intervals", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                   #       column(2, numericInput("level.typical.curve", h6("Level average curve", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotlv", label = "", icon = icon("question"), style = "info", size = "extra-small")), 95.0, step=0.5, min = 0.5, max = 99.5)),
+                                   #       bsPopover(id = "helpotlv", title = "Average curve intervals", content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   #       )
+                                   #     )
                                    ),
                             
                             ###################################
@@ -311,7 +307,7 @@ shinyUI(dashboardPage(skin = "black",
                             
                             column(3,
                                    box(
-                                     title="Graph text", status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                                     title="Text options", status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
                                      textInput("textMain", label = h6("Main title", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpgmai", label = "", icon = icon("question"), style = "info", size = "extra-small")), value = "Main title"),
                                      bsPopover(id = "helpgmai", title = "Main title", content = "Change the main title in most graphs.", placement = "right", trigger = "hover", options = list(container = "body")),
                                      textInput("textY", label = h6("Y-axis", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpgxla", label = "", icon = icon("question"), style = "info", size = "extra-small")), value = "Y-axis"),
@@ -335,11 +331,60 @@ shinyUI(dashboardPage(skin = "black",
                                      bsPopover(id = "helpgser", title = "Seasons palette", content = "Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines.", placement = "right", trigger = "hover", options = list(container = "body")),
                                      selectInput("colEpidemic", h6("Timing palette", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpgepi", label = "", icon = icon("question"), style = "info", size = "extra-small")), choices = c("default",rownames(brewer.pal.info)), size=1, selectize = FALSE, selected = "default"),
                                      bsPopover(id = "helpgepi", title = "Timing palette", content = "Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
-                                     )
-                                   )
+                                   ),
+                                   box(
+                                     title="MEM options", status = "danger", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=TRUE,
+                                     h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Timing"),
+                                     selectInput("method", h6("Method for timing", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotim", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4), size=1, selectize = FALSE, selected = 2),
+                                     bsPopover(id = "helpotim", title = "Method for epidemic timing", content = "Original: uses the process shown in the original paper.<br>Fixed criterium: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br>Slope: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br>Second derivative: calculates the second derivative and equals to zero to search an inflexion point in the original curve.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     conditionalPanel(condition = "input.method == 2", numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpopar", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Slope parameter"), 2.8, step=0.1),
+                                                      bsPopover(id = "helpopar", title = "Window parameter", content = "Window parameter used in fixed criterium method.", placement = "top", trigger = "hover", options = list(container = "body"))),
+                                     h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Goodness & optimize"),
+                                     selectInput("validation", h6("Validation", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpocro", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '230px', choices = list("Cross"="cross", "Sequential"="sequential"), size=1, selectize = FALSE, selected = "cross"),
+                                     bsPopover(id = "helpocro", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoopt", label = "", icon = icon("question"), style = "info", size = "extra-small"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
+                                     bsPopover(id = "helpoopt", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "top", trigger = "hover", options = list(container = "body")),
+                                     h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
+                                     fluidRow(
+                                       column(6,
+                                              selectInput("n.max", h6("Values per season", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoval", label = "", icon = icon("question"), style = "info", size = "extra-small")), choices = list("30 in total"=-1,"All"=0,"1/season"=1,"2/season"=2,"3/season"=3,"4/season"=4,"5/season"=5,"6/season"=6,"7/season"=7,"8/season"=8,"9/season"=9,"10/season"=10), size=1, selectize = FALSE, selected = -1),
+                                              bsPopover(id = "helpoval", title = "Number of values per seasons", content = "Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                       ),
+                                       column(6,
+                                              numericInput("tails", h6("Tails", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotai", label = "", icon = icon("question"), style = "info", size = "extra-small")), 1, step=1, min = 1, max = 2),
+                                              bsPopover(id = "helpotai", title = "Confidence intervals tails", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                       )
+                                     ),
+                                     selectInput("type.threshold", h6("Epidemic thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoepi", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 5),
+                                     bsPopover(id = "helpoepi", title = "Epidemic threshold", content = "Method for calculating the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     selectInput("type.intensity", h6("Intensity thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpoint", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 6),
+                                     bsPopover(id = "helpoint", title = "Intensity thresholds", content = "Method for calculating the intensity threshold.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     fluidRow(
+                                       column(4,
+                                              numericInput("level.intensity.m", h6("Medium lvl", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpomed", label = "", icon = icon("question"), style = "info", size = "extra-small")), 40, step=0.5, min = 0.5, max = 99.5),
+                                              bsPopover(id = "helpomed", title = "Medium intensity threshold", content = "Level of the confidence interval used to calculate the medium threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                       ),
+                                       column(4,
+                                              numericInput("level.intensity.h", h6("High lvl", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpohig", label = "", icon = icon("question"), style = "info", size = "extra-small")), 90, step=0.5, min = 0.5, max = 99.5),
+                                              bsPopover(id = "helpohig", title = "High intensity threshold", content = "Level of the confidence interval used to calculate the high threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                       ),
+                                       column(4,
+                                              numericInput("level.intensity.v", h6("Very high lvl", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpover", label = "", icon = icon("question"), style = "info", size = "extra-small")), 97.5, step=0.5, min = 0.5, max = 99.5),
+                                              bsPopover(id = "helpover", title = "Very high intensity threshold", content = "Level of the confidence interval used to calculate the very high threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                       )
+                                     ),
+                                     h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Other"),
+                                     selectInput("type.curve", h6("Average curve thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotyp", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 2),
+                                     bsPopover(id = "helpotyp", title = "Average curve intervals", content = "Method for calculating the average/typical curve confidence intervals.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     selectInput("type.other", h6("Other thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpooth", label = "", icon = icon("question"), style = "info", size = "extra-small")), width = '420px', choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 3),
+                                     bsPopover(id = "helpooth", title = "Otrher confidence intervals", content = "Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     numericInput("level.typical.curve", h6("Average curve level", tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("helpotlv", label = "", icon = icon("question"), style = "info", size = "extra-small")), 95.0, step=0.5, min = 0.5, max = 99.5),
+                                     bsPopover(id = "helpotlv", title = "Average curve intervals", content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                   )                                   
                             )
                           )
                         )
                       )
+)
 )
 
