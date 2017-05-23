@@ -270,6 +270,7 @@ observeEvent(input$firstWeek, {
     weeks<-rownames(datfile)
     cat("observe: Updating surveillance week\n")
     updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
+    updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",weeks), selected="")
   }
   cat("*********** OBSERVEEVENT/END - input$firstWeek ******************\n")
 })
@@ -284,6 +285,7 @@ observeEvent(input$lastWeek, {
     weeks<-rownames(datfile)
     cat("observe: Updating surveillance week\n")
     updateSelectInput(session, "SelectSurveillanceWeek", choices =weeks, selected=rev(weeks)[1])
+    updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",weeks), selected="")
   }
   cat("*********** OBSERVEEVENT/END - input$lastWeek ******************\n")
 })
@@ -1788,6 +1790,8 @@ output$tbsSurveillanceWeek <- renderPlotly({
     }
     if (is.null(input$SelectSurveillanceForceEpidemic)){
       force.start<-NA
+    }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+      force.start<-NA
     }else{
       force.start<-input$SelectSurveillanceForceEpidemic
     } 
@@ -1853,9 +1857,11 @@ output$tbsSurveillanceAnimated <- renderImage({
     }
     if (is.null(input$SelectSurveillanceForceEpidemic)){
       force.start<-NA
+    }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+      force.start<-NA
     }else{
       force.start<-input$SelectSurveillanceForceEpidemic
-    }
+    } 
     datamodel<-data_model()
     if(!is.null(datamodel)){
       e.thr<-datamodel$epidemic.thresholds
@@ -1937,9 +1943,11 @@ output$tbsSurveillanceAverage <- renderPlotly({
     }
     if (is.null(input$SelectSurveillanceForceEpidemic)){
       force.start<-NA
+    }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+      force.start<-NA
     }else{
       force.start<-input$SelectSurveillanceForceEpidemic
-    }
+    } 
     datamodel<-data_model()
     if(is.null(datamodel)){
       zfix<-NULL
