@@ -1958,7 +1958,7 @@ output$tbsSurveillanceAverage <- renderPlotly({
       survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
       datfile.plot[-(1:survweek),1]<-NA
       names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
-      colors.palette<-generate_palette(i.number.series=4,
+      colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
                                        i.colEpidemicStart=input$colEpidemicStart,
@@ -1988,7 +1988,7 @@ output$tbsSurveillanceAverage <- renderPlotly({
                        i.param=as.numeric(input$param),
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
-                       i.colSeasons=colors.palette$colSeasons[c(4,3,2,3)],
+                       i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
                        i.colThresholds=colors.palette$colThresholds)
       if (is.null(p)){
         zfix<-NULL
