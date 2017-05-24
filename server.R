@@ -2031,7 +2031,8 @@ output$tbmGoodness <- renderUI({
   }
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessSummary")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessDetail"))
+                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessDetail")),
+                tabPanel("Intensity", uiOutput("tbmGoodnessIntensity"))
     )
 })
 
@@ -2062,6 +2063,24 @@ output$tbmGoodnessDetail<-DT::renderDataTable({
   }
   good.table
 }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+
+output$tbmGoodnessIntensity <- renderUI({
+  good <- data_good()
+  peaks <- good$peaks
+  if(is.null(good)){
+    return(NULL)
+  }else{
+    fluidRow(
+      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==1]*100,1), "%"), paste0(peaks$description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==2]*100,1), "%"), paste0(peaks$description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=3, color="green"),
+      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==3]*100,1), "%"), paste0(peaks$description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=3, color="yellow"),
+      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==4]*100,1), "%"), paste0(peaks$description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=3, color="orange"),
+      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==5]*100,1), "%"), paste0(peaks$description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=3, color="red"),
+      valueBox(round(peaks$percentage[peaks[,1]==-1],0), peaks$description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==0]*100,1), "%"), peaks$description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="light-blue")
+    )
+  }
+})
 
 output$tbmOptimize <- renderUI({
   readdata <- read_data()
