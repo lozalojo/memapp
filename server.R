@@ -17,12 +17,12 @@ data_model <- reactive({
                                     i.exclude=input$SelectExclude,
                                     i.include="",
                                     i.pandemic=T,
-                                    i.seasons=input$SelectMaximum)
+                                    i.seasons=as.numeric(input$SelectMaximum))
     if (length(selectedcolumns)<2){
       epi<-NULL
     }else{
       epi <- memmodel(datfile[selectedcolumns],
-                      i.seasons=NA,
+                      i.seasons=as.numeric(input$SelectMaximum),
                       i.type.threshold=as.numeric(input$typethreshold),
                       i.tails.threshold=as.numeric(input$ntails),
                       i.type.intensity=as.numeric(input$typeintensity),
@@ -40,7 +40,7 @@ data_model <- reactive({
   epi
 })
 
-data_good <- reactive({
+data_good_model <- reactive({
   readdata <- read_data()
   datfile <- readdata$datasetread
   if(is.null(datfile)){
@@ -49,14 +49,54 @@ data_good <- reactive({
     selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
                                     i.exclude=input$SelectExclude, i.include="",
                                     i.pandemic=T,
-                                    i.seasons=input$SelectMaximum)
+                                    i.seasons=as.numeric(input$SelectMaximum))
     if (length(selectedcolumns)<3){
       good<-NULL
     }else{
       good<-memgoodness(datfile[,selectedcolumns],
                         i.graph=F,
                         i.min.seasons = 3,
-                        i.seasons=NA,
+                        i.seasons=as.numeric(input$SelectMaximum),
+                        i.type.threshold=as.numeric(input$typethreshold),
+                        i.tails.threshold=as.numeric(input$ntails),
+                        i.type.intensity=as.numeric(input$typeintensity),
+                        i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
+                        i.tails.intensity=as.numeric(input$ntails),
+                        i.type.curve=as.numeric(input$typecurve),
+                        i.level.curve=as.numeric(input$leveltypicalcurve)/100,
+                        i.type.other=as.numeric(input$typeother),
+                        i.level.other=as.numeric(input$leveltypicalcurve)/100,
+                        i.method=as.numeric(input$method),
+                        i.param=as.numeric(input$param),
+                        i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
+                        i.n.max=as.numeric(input$nvalues),
+                        i.goodness.method=as.character(input$validation))
+    }
+  }
+  good
+})
+
+data_good_global <- reactive({
+  readdata <- read_data()
+  datfile <- readdata$datasetread
+  if(is.null(datfile)){
+    good<-NULL
+  }else{
+    seasons<-names(datfile)
+    selectedcolumns<-select.columns(i.names=seasons, 
+                                    i.from=head(seasons,1), 
+                                    i.to=tail(seasons,1),
+                                    i.exclude=input$SelectExclude, 
+                                    i.include="",
+                                    i.pandemic=T,
+                                    i.seasons=NA)
+    if (length(selectedcolumns)<3){
+      good<-NULL
+    }else{
+      good<-memgoodness(datfile[,selectedcolumns],
+                        i.graph=F,
+                        i.min.seasons = 3,
+                        i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
                         i.tails.threshold=as.numeric(input$ntails),
                         i.type.intensity=as.numeric(input$typeintensity),
@@ -85,7 +125,7 @@ data_optim <- reactive({
     selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
                                     i.exclude=input$SelectExclude, i.include="",
                                     i.pandemic=T,
-                                    i.seasons=input$SelectMaximum)
+                                    i.seasons=as.numeric(input$SelectMaximum))
     if (length(selectedcolumns)<3){
       roca<-NULL
     }else{
@@ -94,7 +134,7 @@ data_optim <- reactive({
                          i.min.seasons = 3,
                          i.graph = F,
                          i.graph.file = F,
-                         i.seasons=NA,
+                         i.seasons=as.numeric(input$SelectMaximum),
                          i.type.threshold=as.numeric(input$typethreshold),
                          i.tails.threshold=as.numeric(input$ntails),
                          i.type.intensity=as.numeric(input$typeintensity),
@@ -326,8 +366,8 @@ observeEvent(input$firstWeek, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -379,8 +419,8 @@ observeEvent(input$firstWeek, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -432,8 +472,8 @@ observeEvent(input$firstWeek, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -513,8 +553,8 @@ observeEvent(input$lastWeek, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -566,8 +606,8 @@ observeEvent(input$lastWeek, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -619,8 +659,8 @@ observeEvent(input$lastWeek, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -699,8 +739,8 @@ observeEvent(input$dataset, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -752,8 +792,8 @@ observeEvent(input$dataset, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -805,8 +845,8 @@ observeEvent(input$dataset, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -885,8 +925,8 @@ observeEvent(input$transformation, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -938,8 +978,8 @@ observeEvent(input$transformation, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -991,8 +1031,8 @@ observeEvent(input$transformation, {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic
-        )
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.seasons=as.numeric(input$SelectMaximum))
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -1113,7 +1153,8 @@ output$tbdSeasons <- renderPlotly({
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=colors.palette$colSeasons,
-                       i.colThresholds=colors.palette$colThresholds)
+                       i.colThresholds=colors.palette$colThresholds,
+                       i.seasons=as.numeric(input$SelectMaximum))
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -1174,8 +1215,8 @@ output$tbdSeries <- renderPlotly({
                       i.colObservedLines=colors.palette$colObservedLines,
                       i.colThresholds=colors.palette$colThresholds,
                       i.colObservedPoints=colors.palette$colObservedPoints,
-                      i.colEpidemic=colors.palette$colEpidemic
-      )
+                      i.colEpidemic=colors.palette$colEpidemic,
+                      i.seasons=as.numeric(input$SelectMaximum))
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -1739,7 +1780,8 @@ output$tbmSeasons <- renderPlotly({
                      i.n.max=as.numeric(input$nvalues),
                      i.colObservedPoints=colors.palette$colObservedPoints,
                      i.colSeasons=colors.palette$colSeasons,
-                     i.colThresholds=colors.palette$colThresholds)
+                     i.colThresholds=colors.palette$colThresholds,
+                     i.seasons=as.numeric(input$SelectMaximum))
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1795,8 +1837,8 @@ output$tbmSeries <- renderPlotly({
                     i.colObservedLines=colors.palette$colObservedLines,
                     i.colThresholds=colors.palette$colThresholds,
                     i.colObservedPoints=colors.palette$colObservedPoints,
-                    i.colEpidemic=colors.palette$colEpidemic
-    )
+                    i.colEpidemic=colors.palette$colEpidemic,
+                    i.seasons=as.numeric(input$SelectMaximum))
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -1943,7 +1985,8 @@ output$tbmMemGraphMoving <- renderPlotly({
                      i.n.max=as.numeric(input$nvalues),
                      i.colObservedPoints=colors.palette$colObservedPoints,
                      i.colSeasons=colors.palette$colSeasons,
-                     i.colThresholds=colors.palette$colThresholds)
+                     i.colThresholds=colors.palette$colThresholds,
+                     i.seasons=as.numeric(input$SelectMaximum))
     if (is.null(p)){
       zfix<-NULL
     }else{
@@ -2030,14 +2073,27 @@ output$tbmGoodness <- renderUI({
     return(NULL)
   }
   else
-    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessSummary")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessDetail")),
-                tabPanel("Intensity", uiOutput("tbmGoodnessIntensity"))
+    tabsetPanel(tabPanel("Model", uiOutput("tbmGoodnessModel")),
+                tabPanel("Global", uiOutput("tbmGoodnessGlobal"))
     )
 })
 
-output$tbmGoodnessSummary <- renderUI({
-  good <- data_good()
+output$tbmGoodnessModel <- renderUI({
+  readdata <- read_data()
+  datfile <- readdata$datasetread
+  if(is.null(datfile)){
+    return(NULL)
+  }
+  else
+    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessModelSummary")),
+                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessModelDetail1")),
+                tabPanel("Intensity", uiOutput("tbmGoodnessModelIntensity")),
+                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessModelDetail2"))
+    )
+})
+
+output$tbmGoodnessModelSummary <- renderUI({
+  good <- data_good_model()
   if(is.null(good)){
     return(NULL)
   }else{
@@ -2052,8 +2108,8 @@ output$tbmGoodnessSummary <- renderUI({
   }
 })
 
-output$tbmGoodnessDetail<-DT::renderDataTable({
-  good <- data_good()
+output$tbmGoodnessModelDetail1<-DT::renderDataTable({
+  good <- data_good_model()
   if(!is.null(good)){
     good.table<-as.data.frame(good$validity.data)
     good.table$Total<-good$results
@@ -2064,23 +2120,105 @@ output$tbmGoodnessDetail<-DT::renderDataTable({
   good.table
 }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 
-output$tbmGoodnessIntensity <- renderUI({
-  good <- data_good()
+output$tbmGoodnessModelIntensity <- renderUI({
+  good <- data_good_model()
   peaks <- good$peaks
   if(is.null(good)){
     return(NULL)
   }else{
     fluidRow(
-      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==1]*100,1), "%"), paste0(peaks$description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=3, color="light-blue"),
-      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==2]*100,1), "%"), paste0(peaks$description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=3, color="green"),
-      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==3]*100,1), "%"), paste0(peaks$description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=3, color="yellow"),
-      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==4]*100,1), "%"), paste0(peaks$description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=3, color="orange"),
-      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==5]*100,1), "%"), paste0(peaks$description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=3, color="red"),
-      valueBox(round(peaks$percentage[peaks[,1]==-1],0), peaks$description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="light-blue"),
-      valueBox(paste0(roundF(peaks$percentage[peaks[,1]==0]*100,1), "%"), peaks$description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="light-blue")
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==1]*100,1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==2]*100,1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=3, color="green"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==3]*100,1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=3, color="yellow"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==4]*100,1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=3, color="orange"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==5]*100,1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=3, color="red"),
+      valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="light-blue")
     )
   }
 })
+
+output$tbmGoodnessModelDetail2<-DT::renderDataTable({
+  good <- data_good_model()
+  if(!is.null(good)){
+    peaks.data <- good$peaks.data
+    peaks.data[c(1,3:6)]<-roundF(peaks.data[c(1,3:6)],2)
+  }else{
+    peaks.data<-data.frame(Error="Number of columns must be greater than 2")
+  }
+  peaks.data
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+
+output$tbmGoodnessGlobal <- renderUI({
+  readdata <- read_data()
+  datfile <- readdata$datasetread
+  if(is.null(datfile)){
+    return(NULL)
+  }
+  else
+    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessGlobalSummary")),
+                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessGlobalDetail1")),
+                tabPanel("Intensity", uiOutput("tbmGoodnessGlobalIntensity")),
+                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessGlobalDetail2"))
+    )
+})
+
+output$tbmGoodnessGlobalSummary <- renderUI({
+  good <- data_good_global()
+  if(is.null(good)){
+    return(NULL)
+  }else{
+    fluidRow(
+      valueBox(roundF(good$results["Sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(roundF(good$results["Specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(roundF(good$results["Positive predictive value"],2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(roundF(good$results["Negative predictive value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(roundF(good$results["Percent agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+      valueBox(roundF(good$results["Matthews correlation coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+    )
+  }
+})
+
+output$tbmGoodnessGlobalDetail1<-DT::renderDataTable({
+  good <- data_good_global()
+  if(!is.null(good)){
+    good.table<-as.data.frame(good$validity.data)
+    good.table$Total<-good$results
+    good.table<-roundF(as.data.frame(t(good.table))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")],2)
+  }else{
+    good.table<-data.frame(Error="Number of columns must be greater than 2")
+  }
+  good.table
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+
+output$tbmGoodnessGlobalIntensity <- renderUI({
+  good <- data_good_global()
+  peaks <- good$peaks
+  if(is.null(good)){
+    return(NULL)
+  }else{
+    fluidRow(
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==1]*100,1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==2]*100,1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=3, color="green"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==3]*100,1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=3, color="yellow"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==4]*100,1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=3, color="orange"),
+      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==5]*100,1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=3, color="red"),
+      valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="light-blue")
+    )
+  }
+})
+
+output$tbmGoodnessGlobalDetail2<-DT::renderDataTable({
+  good <- data_good_global()
+  if(!is.null(good)){
+    peaks.data <- good$peaks.data
+    peaks.data[c(1,3:6)]<-roundF(peaks.data[c(1,3:6)],2)
+  }else{
+    peaks.data<-data.frame(Error="Number of columns must be greater than 2")
+  }
+  peaks.data
+}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 
 output$tbmOptimize <- renderUI({
   readdata <- read_data()
@@ -2208,106 +2346,6 @@ output$tbsData <- DT::renderDataTable({
   }
   datatoshow
 }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
-
-# output$tbsSeasons <- renderPlotly({
-#   datfile <- read_data()
-#   if(is.null(datfile)){
-#     zfix<-NULL
-#   }else{
-#     datamodel<-data_model()
-#     if(is.null(datamodel)){
-#       e.thr<-datamodel$epidemic.thresholds
-#       i.thr<-datamodel$intensity.thresholds
-#     }else{
-#       e.thr<-NA
-#       i.thr<-NA
-#     }
-#     selectedcolumns<-select.columns(i.names=names(datfile),
-#                                     i.from=input$SelectSurveillance,
-#                                     i.to=input$SelectSurveillance,
-#                                     i.exclude="",
-#                                     i.include=input$SelectSurveillance,
-#                                     i.pandemic=as.logical("TRUE"),
-#                                     i.seasons=NA)
-#     datfile.plot<-datfile[selectedcolumns]
-#     if (length(selectedcolumns)==0){
-#       zfix<-NULL
-#     }else{
-#       p <- plotSeasons(datfile.plot,
-#                        i.epidemic.thr=e.thr,
-#                        i.intensity.thr=i.thr,
-#                        i.pre.epidemic = as.logical(input$preepidemicthr),
-#                        i.post.epidemic = as.logical(input$postepidemicthr),
-#                        i.intensity = as.logical(input$intensitythr),
-#                        i.textMain=input$textMain,
-#                        i.textX=input$textX,
-#                        i.textY=input$textY,
-#                        i.type.threshold=as.numeric(input$typethreshold),
-#                        i.tails.threshold=as.numeric(input$ntails),
-#                        i.type.intensity=as.numeric(input$typeintensity),
-#                        i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
-#                        i.tails.intensity=as.numeric(input$ntails),
-#                        i.type.curve=as.numeric(input$typecurve),
-#                        i.type.other=as.numeric(input$typeother),
-#                        i.method=as.numeric(input$method),
-#                        i.param=as.numeric(input$param),
-#                        i.n.max=as.numeric(input$nvalues)
-#       )
-#       if (is.null(p)){
-#         zfix<-NULL
-#       }else{
-#         z <- ggplotly(p$plot, width = 800, height = 600)
-#         zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
-#       }
-#     }
-#   }
-#   zfix
-# })
-
-# output$tbsTiming <- renderPlotly({
-#   plotTiming(input$SelectSurveillance)
-# })
-
-# output$tbsTiming <- renderPlotly({
-#   datfile <- read_data()
-#   if(is.null(datfile)){
-#     zfix<-NULL
-#   }else{
-#     datfile.plot<-datfile[input$SelectSurveillance]
-#     #p <- plotTiming(datfile.plot)
-#     p <- plotSeries(datfile.plot,
-#                     i.plot.timing = T,
-#                     i.pre.epidemic=F,
-#                     i.post.epidemic=F,
-#                     i.intensity= F,
-#                     i.replace.x.cr=F,
-#                     i.textMain=input$textMain,
-#                     i.textX=input$textX,
-#                     i.textY=input$textY,
-#                     i.type.threshold=as.numeric(input$typethreshold),
-#                     i.tails.threshold=as.numeric(input$ntails),
-#                     i.type.intensity=as.numeric(input$typeintensity),
-#                     i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
-#                     i.tails.intensity=as.numeric(input$ntails),
-#                     i.type.curve=as.numeric(input$typecurve),
-#                     i.type.other=as.numeric(input$typeother),
-#                     i.method=as.numeric(input$method),
-#                     i.param=as.numeric(input$param),
-#                     i.n.max=as.numeric(input$nvalues)
-#     )
-#     if (is.null(p)){
-#       zfix<-NULL
-#     }else{
-#       z <- ggplotly(p$plot, width = 800, height = 600)
-#       zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
-#     }
-#   }
-#   zfix
-# })
-
-# output$tbsSurveillance_old <- renderPlot({
-#   plotSurveillance_old()
-# })
 
 output$tbsSurveillance <- renderUI({
   readdata <- read_data()
@@ -2540,7 +2578,8 @@ output$tbsSurveillanceAverage <- renderPlotly({
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-                       i.colThresholds=colors.palette$colThresholds)
+                       i.colThresholds=colors.palette$colThresholds,
+                       i.seasons=as.numeric(input$SelectMaximum))
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -2666,7 +2705,8 @@ output$tbvSeasons <- renderPlotly({
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=colors.palette$colSeasons,
-                       i.colThresholds=colors.palette$colThresholds)
+                       i.colThresholds=colors.palette$colThresholds,
+                       i.seasons=as.numeric(input$SelectMaximum))
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -2739,8 +2779,8 @@ output$tbvSeries <- renderPlotly({
                       i.colObservedLines=colors.palette$colObservedLines,
                       i.colThresholds=colors.palette$colThresholds,
                       i.colObservedPoints=colors.palette$colObservedPoints,
-                      i.colEpidemic=colors.palette$colEpidemic
-                      )
+                      i.colEpidemic=colors.palette$colEpidemic,
+                      i.seasons=as.numeric(input$SelectMaximum))
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -2856,7 +2896,6 @@ plotSeasons <- function(i.data,
 
     if (NCOL(i.data)>1){
       epi<-memmodel(i.data,
-                    i.seasons=NA,
                     ...)
       epidata<-epi$data
       epiindex<-as.data.frame(epi$season.indexes[,,1])
@@ -2869,7 +2908,6 @@ plotSeasons <- function(i.data,
       # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
       # the timing (which would be extracted with memtiming also)
       epi<-memmodel(cbind(i.data,i.data),
-                    i.seasons=NA,
                     ...)
       epidata<-epi$data[1]
       epiindex<-as.data.frame(epi$season.indexes[,1,1])
@@ -3052,7 +3090,6 @@ plotSeries<-function(i.data,
 
     if (NCOL(i.data)>1){
       epi<-memmodel(i.data,
-                    i.seasons=NA,
                     ...)
       epidata<-epi$data
       epiindex<-as.data.frame(epi$season.indexes[,,1])
@@ -3065,7 +3102,6 @@ plotSeries<-function(i.data,
       # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
       # the timing (which would be extracted with memtiming also)
       epi<-memmodel(cbind(i.data,i.data),
-                    i.seasons=NA,
                     ...)
       epidata<-epi$data[1]
       epiindex<-as.data.frame(epi$season.indexes[,1,1])
