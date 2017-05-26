@@ -1250,7 +1250,8 @@ output$tbdEvolution <- renderUI({
                 tabPanel("Start",plotlyOutput("tbdEstart", width ="100%", height ="100%")),
                 tabPanel("Percentage", plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
                 tabPanel("Thresholds",plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
-                tabPanel("Scheme", DT::dataTableOutput("tbdEscheme")),
+                #tabPanel("Scheme", DT::dataTableOutput("tbdEscheme")),
+                tabPanel("Scheme", formattableOutput("tbdEscheme")),
                 tabPanel("Details", DT::dataTableOutput("tbdEdetails"))
     )
   }
@@ -1454,15 +1455,28 @@ output$tbdEthresholds <- renderPlotly({
   zfix
 })
 
-output$tbdEscheme <- DT::renderDataTable({
+# output$tbdEscheme <- DT::renderDataTable({
+#   dataevolution <- data_evolution()
+#   if(is.null(dataevolution)){
+#     datashow<-NULL
+#   }else{
+#     datashow<-dataevolution$evolution.seasons
+#   }
+#   datashow
+# }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+
+output$tbdEscheme <- renderFormattable({
   dataevolution <- data_evolution()
   if(is.null(dataevolution)){
     datashow<-NULL
   }else{
-    datashow<-dataevolution$evolution.seasons
+    temp1<-dataevolution$evolution.seasons
+    datashow<-formattable(temp1, apply(temp1, 2, 
+       function(noxneeded) formatter("span", style = x ~ style(color = ifelse(x, "green", "red")), x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No"))))
+    )
   }
   datashow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+})
 
 output$tbdEdetails <- DT::renderDataTable({
   dataevolution <- data_evolution()
@@ -1485,7 +1499,8 @@ output$tbdStability <- renderUI({
                 tabPanel("Start",plotlyOutput("tbdSstart", width ="100%", height ="100%")),
                 tabPanel("Percentage", plotlyOutput("tbdSpercentage", width ="100%", height ="100%")),
                 tabPanel("Thresholds",plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
-                tabPanel("Scheme", DT::dataTableOutput("tbdSscheme")),
+                #tabPanel("Scheme", DT::dataTableOutput("tbdSscheme")),
+                tabPanel("Scheme", formattableOutput("tbdSscheme")),
                 tabPanel("Details", DT::dataTableOutput("tbdSdetails"))
     )
   }
@@ -1675,15 +1690,28 @@ output$tbdSthresholds <- renderPlotly({
   zfix
 })
 
-output$tbdSscheme <- DT::renderDataTable({
+# output$tbdSscheme <- DT::renderDataTable({
+#   datastability <- data_stability()
+#   if(is.null(datastability)){
+#     datashow<-NULL
+#   }else{
+#     datashow<-datastability$stability.seasons
+#   }
+#   datashow
+# }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+
+output$tbdSscheme <- renderFormattable({
   datastability <- data_stability()
   if(is.null(datastability)){
     datashow<-NULL
   }else{
-    datashow<-datastability$stability.seasons
+    temp1<-datastability$stability.seasons
+    datashow<-formattable(temp1, apply(temp1, 2,
+      function(noxneeded) formatter("span", style = x ~ style(color = ifelse(x, "green", "red")), x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No"))))
+    )
   }
   datashow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+})
 
 output$tbdSdetails <- DT::renderDataTable({
   datastability <- data_stability()
@@ -2060,9 +2088,9 @@ output$tbmGoodnessModel <- renderUI({
   }
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessModelSummary")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessModelDetail1")),
+                tabPanel("Detailed", formattableOutput("tbmGoodnessModelDetail1")),
                 tabPanel("Intensity", uiOutput("tbmGoodnessModelIntensity")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessModelDetail2"))
+                tabPanel("Detailed", formattableOutput("tbmGoodnessModelDetail2"))
     )
 })
 
@@ -2082,17 +2110,24 @@ output$tbmGoodnessModelSummary <- renderUI({
   }
 })
 
-output$tbmGoodnessModelDetail1<-DT::renderDataTable({
+output$tbmGoodnessModelDetail1<-renderFormattable({
   good <- data_good_model()
   if(!is.null(good)){
-    good.table<-as.data.frame(good$validity.data)
-    good.table$Total<-good$results
-    good.table<-roundF(as.data.frame(t(good.table))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")],2)
+    temp1<-as.data.frame(good$validity.data)
+    temp1$Total<-good$results
+    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+    temp1[is.na(temp1)]<--1
+    temp1<-roundF(temp1,2)
+    good.table<-formattable(temp1, list(
+      area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
+      area(col = names(temp1)[5:6]) ~ normalize_bar("#A5DBEB", 0.2)
+    ))    
   }else{
-    good.table<-data.frame(Error="Number of columns must be greater than 2")
+    temp1<-data.frame(Error="Number of columns must be greater than 2")
+    good.table<-formattable(temp1)
   }
   good.table
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+})
 
 output$tbmGoodnessModelIntensity <- renderUI({
   good <- data_good_model()
@@ -2112,16 +2147,29 @@ output$tbmGoodnessModelIntensity <- renderUI({
   }
 })
 
-output$tbmGoodnessModelDetail2<-DT::renderDataTable({
+output$tbmGoodnessModelDetail2<-renderFormattable({
   good <- data_good_model()
   if(!is.null(good)){
-    peaks.data <- good$peaks.data
-    peaks.data[c(1,3:6)]<-roundF(peaks.data[c(1,3:6)],2)
+    temp1 <- good$peaks.data
+    temp1[c(1,3:6)]<-roundF(temp1[c(1,3:6)],2)
+    thr.c<-c("#8c6bb1","#88419d","#810f7c","#4d004b")
+    lvl.n<-c(1:5)
+    lvl.t<-c("Baseline","Low","Medium","High","Very high")
+    lvl.c<-c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c")
+    peaks.data<-formattable(temp1, list(
+      Level = formatter("span", style = x ~ style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+      Description = formatter("span", style = x ~ style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+      "Epidemic threshold"=formatter("span", style = style(color = thr.c[1], font.weight = "bold")),
+      "Medium threshold"=formatter("span", style = style(color = thr.c[2], font.weight = "bold")),
+      "High threshold"=formatter("span", style = style(color = thr.c[3], font.weight = "bold")),
+      "Very high threshold"=formatter("span", style = style(color = thr.c[4], font.weight = "bold"))
+    ))
   }else{
-    peaks.data<-data.frame(Error="Number of columns must be greater than 2")
+    temp1<-data.frame(Error="Number of columns must be greater than 2")
+    peaks.data<-formattable(temp1)
   }
   peaks.data
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+})
 
 output$tbmGoodnessGlobal <- renderUI({
   readdata <- read_data()
@@ -2131,9 +2179,9 @@ output$tbmGoodnessGlobal <- renderUI({
   }
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessGlobalSummary")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessGlobalDetail1")),
+                tabPanel("Detailed", formattableOutput("tbmGoodnessGlobalDetail1")),
                 tabPanel("Intensity", uiOutput("tbmGoodnessGlobalIntensity")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmGoodnessGlobalDetail2"))
+                tabPanel("Detailed", formattableOutput("tbmGoodnessGlobalDetail2"))
     )
 })
 
@@ -2153,17 +2201,24 @@ output$tbmGoodnessGlobalSummary <- renderUI({
   }
 })
 
-output$tbmGoodnessGlobalDetail1<-DT::renderDataTable({
+output$tbmGoodnessGlobalDetail1<-renderFormattable({
   good <- data_good_global()
   if(!is.null(good)){
-    good.table<-as.data.frame(good$validity.data)
-    good.table$Total<-good$results
-    good.table<-roundF(as.data.frame(t(good.table))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")],2)
+    temp1<-as.data.frame(good$validity.data)
+    temp1$Total<-good$results
+    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+    temp1[is.na(temp1)]<--1
+    temp1<-roundF(temp1,2)
+    good.table<-formattable(temp1, list(
+      area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
+      area(col = names(temp1)[5:6]) ~ normalize_bar("#A5DBEB", 0.2)
+    ))
   }else{
-    good.table<-data.frame(Error="Number of columns must be greater than 2")
+    temp1<-data.frame(Error="Number of columns must be greater than 2")
+    good.table<-formattable(temp1)
   }
   good.table
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+})
 
 output$tbmGoodnessGlobalIntensity <- renderUI({
   good <- data_good_global()
@@ -2183,16 +2238,29 @@ output$tbmGoodnessGlobalIntensity <- renderUI({
   }
 })
 
-output$tbmGoodnessGlobalDetail2<-DT::renderDataTable({
+output$tbmGoodnessGlobalDetail2<-renderFormattable({
   good <- data_good_global()
   if(!is.null(good)){
-    peaks.data <- good$peaks.data
-    peaks.data[c(1,3:6)]<-roundF(peaks.data[c(1,3:6)],2)
+    temp1 <- good$peaks.data
+    temp1[c(1,3:6)]<-roundF(temp1[c(1,3:6)],2)
+    peaks.data<-thr.c<-c("#8c6bb1","#88419d","#810f7c","#4d004b")
+    lvl.n<-c(1:5)
+    lvl.t<-c("Baseline","Low","Medium","High","Very high")
+    lvl.c<-c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c")
+    peaks.data<-formattable(temp1, list(
+      Level = formatter("span", style = x ~ style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+      Description = formatter("span", style = x ~ style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+      "Epidemic threshold"=formatter("span", style = style(color = thr.c[1], font.weight = "bold")),
+      "Medium threshold"=formatter("span", style = style(color = thr.c[2], font.weight = "bold")),
+      "High threshold"=formatter("span", style = style(color = thr.c[3], font.weight = "bold")),
+      "Very high threshold"=formatter("span", style = style(color = thr.c[4], font.weight = "bold"))
+    ))
   }else{
-    peaks.data<-data.frame(Error="Number of columns must be greater than 2")
+    temp1<-data.frame(Error="Number of columns must be greater than 2")
+    peaks.data<-formattable(temp1)
   }
   peaks.data
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+})
 
 output$tbmOptimize <- renderUI({
   readdata <- read_data()
@@ -2201,7 +2269,7 @@ output$tbmOptimize <- renderUI({
     return(NULL)
   }else{
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmOptimizeSummary")),
-                tabPanel("Detailed", DT::dataTableOutput("tbmOptimizeDetail")),
+                tabPanel("Detailed", formattableOutput("tbmOptimizeDetail")),
                 tabPanel("Graphs",plotlyOutput("tbmOptimizeGraph"))
     )
   }
@@ -2227,17 +2295,24 @@ output$tbmOptimizeSummary <- renderUI({
   }
 })
 
-output$tbmOptimizeDetail<-DT::renderDataTable({
+output$tbmOptimizeDetail<-renderFormattable({
   dataoptim <- data_optim()
   if(!is.null(dataoptim)){
-    roca.table<-roundF(dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")],2)
-    names(roca.table)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
-    rownames(roca.table)<-NULL
+    temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+    names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+    rownames(temp1)<-NULL
+    temp1[is.na(temp1)]<--1
+    temp1<-roundF(temp1,2)
+    roca.table<-formattable(temp1, list(
+      area(col = names(roca.table)[2:5]) ~ normalize_bar("#FFBBFF", 0.2),
+      area(col = names(roca.table)[6:7]) ~ normalize_bar("#A5DBEB", 0.2)
+    ))
   }else{
-    roca.table<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
+    temp1<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
+    roca.table<-formattable(temp1)
   }
   roca.table
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))), rownames= FALSE)
+})
 
 output$tbmOptimizeGraph<- renderPlotly({
   dataoptim <- data_optim()
