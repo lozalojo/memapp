@@ -1,0 +1,35 @@
+Package: memapp
+Type: Package
+Title: The Moving Epidemic Method Shiny Web Application
+Version: 2.0
+Date: 2017-05-27
+Authors@R: person("Lozano", "Jose E.", email = "lozalojo@gmail.com", role = c("aut", "cre"))
+Depends:
+    R (>= 3.4.0)
+Imports:
+    shiny,
+    shinythemes,
+    shinydashboard,
+    shinyBS,
+    shinyjs,
+    RColorBrewer,
+    plotly,
+    ggthemes,
+    reshape2,
+    R.utils,
+    openxlsx,
+    XLConnect,
+    stringr,
+    readr,
+    magick,
+    DT,
+    gplots,
+    RODBC,
+    mixtools
+Remotes: 
+    lozalojo/memapp,
+    AnalytixWare/ShinySky
+    hadley/ggplot2
+Description: Web application created in the Shiny framework for the mem R library.
+License: GPL (>= 2)
+RoxygenNote: 6.0.1
