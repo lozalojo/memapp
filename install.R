@@ -5,7 +5,7 @@
 # Packages from the official R repositories
 
 list.packages<-c("rstudioapi","shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
-              "plotly", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
+              "plotly", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect", "formattable",
               "stringr", "readr", "magick", "DT", "gplots", "RODBC", "mixtools", "devtools")
 
 lapply(list.packages, function (x) if(sum(installed.packages()[, 1]%in%x)==0) install.packages(x))

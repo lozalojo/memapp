@@ -25,7 +25,8 @@ Imports:
     DT,
     gplots,
     RODBC,
-    mixtools
+    mixtools,
+    formattable
 Remotes: 
     lozalojo/memapp,
     AnalytixWare/ShinySky
