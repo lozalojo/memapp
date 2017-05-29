@@ -13,8 +13,9 @@
 Currently there is no CRAN version of the *memapp* library, so it has to be installed from its source.
 
 ```
-# development version from GitHub:
-# install.packages("devtools")
+# install the devtools package:
+install.packages("devtools")
+# install the memapp development version from GitHub:
 devtools::install_github("lozalojo/memapp")
 ```
 
@@ -27,7 +28,7 @@ To run the memapp application, just use the function:
 runmemapp()
 ```
 
-You can specify other parameters passed to *shiny::runApp*, such as `display = normal`, or  
+You can specify other parameters passed to `shiny::runApp`, such as `display = normal`, or  
 `launch.browser = TRUE`.
 
 ## More on the memapp
