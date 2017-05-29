@@ -28,7 +28,7 @@ Imports:
     RODBC,
     mixtools,
     formattable,
-    ShinySky,
+    shinysky,
     ggplot2,
     mem
 Remotes: 
