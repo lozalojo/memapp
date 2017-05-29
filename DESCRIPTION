@@ -28,9 +28,9 @@ Imports:
     mixtools,
     formattable
 Remotes: 
-  lozalojo/mem,
-  AnalytixWare/ShinySky,
-  hadley/ggplot2
+  github::lozalojo/mem,
+  github::AnalytixWare/ShinySky,
+  github::hadley/ggplot2
 Description: Web application created in the Shiny framework for the mem R library.
 License: GPL (>= 2)
 RoxygenNote: 6.0.1
