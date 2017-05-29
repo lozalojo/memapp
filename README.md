@@ -25,7 +25,7 @@ To run the memapp application, just use the function:
 
 ```
 # run the app:
-runmemapp()
+memapp::runmemapp()
 ```
 
 You can specify other parameters passed to `shiny::runApp`, such as `display = normal`, or  
