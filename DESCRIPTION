@@ -18,6 +18,7 @@ Imports:
     reshape2,
     R.utils,
     openxlsx,
+    XLConnectJars,
     XLConnect,
     stringr,
     readr,
