@@ -1,25 +1,41 @@
-# memapp
-## The Moving Epidemics Method Shiny Web Application
+# The Moving Epidemics Method Shiny Web Application
+
+[![Travis Build Status](https://travis-ci.org/lozalojo/memapp.svg?branch=master)](https://travis-ci.org/lozalojo/memapp)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/lozalojo/memapp?branch=master&svg=true)](https://ci.appveyor.com/project/lozalojo/memapp)
+[![Coverage Status](https://img.shields.io/codecov/c/github/lozalojo/memapp/master.svg)](https://codecov.io/github/lozalojo/memapp?branch=master)
+
+## Overview
 
 *memapp* is a web application created to serve as a graphical user interface for the R mem library. It was created using Shiny, a web application framework for R. This application uses the development version of the mem R library.
 
-*memapp* requires a set of packages to be installed from the official CRAN repositories:
+## Installation
 
->list.packages<-c("shiny", "shinythemes", "shinydashboard", "shinyBS", "shinyjs", "RColorBrewer",
->              "plotly", "ggthemes", "reshape2", "R.utils", "openxlsx", "XLConnect",
->              "stringr", "readr", "magick", "DT", "gplots", "RODBC", "mixtools", "devtools")
->
->lapply(list.packages, function (x) if(sum(installed.packages()[, 1]%in%x)==0) install.packages(x))
+Currently there is no CRAN version of the *memapp* library, so it has to be installed from its source.
 
-Also, some packages must be compiled from sources at github:
+```
+# development version from GitHub:
+# install.packages("devtools")
+devtools::install_github("lozalojo/memapp")
+```
 
->devtools::install_github("lozalojo/mem")
->
->devtools::install_github("AnalytixWare/ShinySky")
->
->devtools::install_github("hadley/ggplot2")
+## Usage
 
-To run it:
+To run the memapp application, just use the function:
 
->shiny::runGitHub("lozalojo/memapp", launch.browser = T)
+```
+# run the app:
+runmemapp()
+```
 
+You can specify other parameters passed to *shiny::runApp*, such as `display = normal`, or  
+`launch.browser = TRUE`.
+
+## More on the memapp
+
+There are two documents that you will find useful when running the app:
+
+1.  The *surveillance Guidelines*.
+    
+1.  The *Technical Manual*.
+
+Both are included in the help menu of the application.
