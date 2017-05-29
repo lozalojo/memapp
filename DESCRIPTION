@@ -31,7 +31,8 @@ Imports:
     shinysky,
     ggplot2,
     mem
-Remotes: 
+Remotes:
+  github::renkun-ken/formattable,
   github::AnalytixWare/ShinySky,
   github::hadley/ggplot2,
   github::lozalojo/mem
