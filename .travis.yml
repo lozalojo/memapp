@@ -1,10 +1,28 @@
-language: r
+language: R
 cache: packages
-r:
-  - oldrel
-  - release
-  - devel
- addons:
+sudo: true
+dist: trusty
+
+addons:
   apt:
     packages:
-      - libssl-dev libcurl4-openssl-dev mdbtools openjdk-8-* libmagick++-dev mdbtools unixodbc-dev
+      - mdbtools
+
+r:
+  - release
+  - devel
+
+env:
+  global:
+  - _R_CHECK_FORCE_SUGGESTS_=false
+
+r_github_packages:
+  - renkun-ken/formattable AnalytixWare/ShinySky hadley/ggplot2 lozalojo/mem
+
+after_success:
+  - Rscript -e 'covr::codecov()'
+
+before_install:
+  - sudo apt-get --yes --force-yes update -qq
+  - sudo apt-get install --yes libssl-dev libcurl4-openssl-dev openjdk-8-* libmagick++-dev mdbtools unixodbc-dev
+  - Rscript -e 'update.packages(ask = FALSE)'
