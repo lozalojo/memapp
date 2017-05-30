@@ -1,7 +1,6 @@
 # The Moving Epidemics Method Shiny Web Application
 
 [![Travis Build Status](https://travis-ci.org/lozalojo/memapp.svg?branch=master)](https://travis-ci.org/lozalojo/memapp)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/lozalojo/memapp?branch=master&svg=true)](https://ci.appveyor.com/project/lozalojo/memapp)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lozalojo/memapp/master.svg)](https://codecov.io/github/lozalojo/memapp?branch=master)
 
 ## Overview

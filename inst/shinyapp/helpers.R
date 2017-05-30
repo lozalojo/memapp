@@ -852,6 +852,12 @@ read.data<-function(i.file,
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
+    }else if (fileextension %in% c("rda","rdata")){
+      temp2<-read.data.rdata(i.file, filenameextension, i.dataset)
+      datasets=temp2$datasets
+      datasetread=temp2$datasetread
+      dataweeks=temp2$dataweeks
+      rm("temp2")
     }else{
       datasets=NULL
       datasetread=NULL
@@ -1208,6 +1214,45 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
       datasetread<-readRDS(i.file)
       dataweeks<-as.numeric(row.names(datasetread))
       #if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
+      cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
+    }
+  }
+  list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks)
+}
+
+read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
+  if (!file.exists(i.file)){
+    datasets=NULL
+    datasetread=NULL
+    dataweeks=NULL
+    cat("read_data> Warning: file not found\n")
+  }else{
+    if (is.na(i.file.name)){
+      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)]<-""
+      filename<-temp1[1,3]
+      fileextension<-tolower(temp1[1,5])
+    }else{
+      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      filename<-temp1[1,2]
+      fileextension<-tolower(temp1[1,3])
+    }
+    filenameextension<-paste(filename, fileextension, sep=".")
+    cat("read_data> RData file detected: ",filenameextension,"\n",sep="")
+    rdaenv = local({load(i.file); environment()})
+    datasets<-names(rdaenv)
+    n.datasets<-length(datasets)
+    if (is.na(i.dataset)){
+      datasetread<-NULL
+      dataweeks=NULL
+    }else if (!(i.dataset %in% datasets)){
+      datasetread<-NULL
+      dataweeks=NULL
+      cat("read_data> Warning: Table ",i.dataset," not found\n")
+    }else{
+      cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
+      datasetread<-rdaenv[[i.dataset]]
+      dataweeks<-as.numeric(row.names(datasetread))
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
     }
   }
