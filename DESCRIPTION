@@ -4,6 +4,8 @@ Title: The Moving Epidemic Method Shiny Web Application
 Version: 2.0
 Date: 2017-05-30
 Authors@R: person("Lozano", "Jose E.", email = "lozalojo@gmail.com", role = c("aut", "cre"))
+Author: Jose E. Lozano [aut, cre]
+Maintainer: Jose E. Lozano <lozalojo@gmail.com>
 Depends:
     R (>= 3.4.0)
 Imports:
