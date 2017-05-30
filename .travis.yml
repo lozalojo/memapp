@@ -1,0 +1,10 @@
+language: r
+cache: packages
+r:
+  - oldrel
+  - release
+  - devel
+ addons:
+  apt:
+    packages:
+      - libssl-dev libcurl4-openssl-dev mdbtools openjdk-8-* libmagick++-dev mdbtools unixodbc-dev
