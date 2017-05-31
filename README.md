@@ -6,12 +6,19 @@
 
 ## Installation
 
-Currently there is no CRAN version of the *memapp* library, so it has to be installed from its source.
+The package can be installed from the official R repositories (*CRAN*) using the built-in install function:
 
 ```
-# install the devtools package:
+# install the memapp CRAN version
+install.packages("memapp")
+```
+
+Nevertheless, *memapp* uses some sensible packages that are updated frequently in their respective development versions hosted at github. To install the development version of *memapp* along with development versions of their dependencies, it is recommended to install it from the sources at github.
+
+```
+# install the devtools package
 install.packages("devtools")
-# install the memapp development version from GitHub:
+# install the memapp development version from GitHub
 devtools::install_github("lozalojo/memapp")
 ```
 
@@ -39,10 +46,10 @@ Both are included in the help menu of the application.
 
 ## References
 
-Vega T., Lozano J.E. (2004) Modelling influenza epidemic - can we detect the beginning 
-and predict the intensity and duration? International Congress Series 1263 (2004) 
-281-283.
+Vega T., Lozano J.E. (2004) Modelling influenza epidemic - can we detect the beginning and predict the intensity and duration? International Congress Series 1263 (2004) 281-283.
 
-Vega T., Lozano J.E. (2012) Influenza surveillance in Europe: establishing epidemic 
-thresholds by the Moving Epidemic Method. Influenza and Other Respiratory Viruses, 
-DOI:10.1111/j.1750-2659.2012.00422.x.
+Vega T., Lozano J.E. (2012) Influenza surveillance in Europe: establishing epidemic thresholds by the Moving Epidemic Method. Influenza and Other Respiratory Viruses, DOI:10.1111/j.1750-2659.2012.00422.x.
+
+Lozano, Jose E. mem R package: First version of the MEM R library [Internet]. Valladolid, Spain: Foundation Institute of Health Sciences Studies of Castilla y Leon; 2014. Available from: https://cran.r-project.org/web/packages/mem/index.html
+
+Lozano, Jose E. lozalojo/mem: Second release of the MEM R library. Zenodo [Internet]. [cited 2017 Feb 1]; Available from: https://zenodo.org/record/165983
