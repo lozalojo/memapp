@@ -989,8 +989,13 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
     }
     filenameextension<-paste(filename, fileextension, sep=".")
     cat("read_data> Excel 97-2003 file detected: ",filenameextension,"\n",sep="")
-    wb <- XLConnect::loadWorkbook(i.file)
-    datasets<-XLConnect::getSheets(wb)
+    #wb <- XLConnect::loadWorkbook(i.file)
+    #datasets<-XLConnect::getSheets(wb)
+    # readxl needs the extension to be xls, sigh!
+    i.file.xls<-tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".xls")
+    file.copy(i.file,i.file.xls)
+    datasets<-readxl::excel_sheets(i.file.xls)
+    rm("i.file.xls")
     n.datasets<-length(datasets)
     if (is.na(i.dataset)){
       datasetread<-NULL
@@ -1001,9 +1006,11 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
       cat("read_data> Warning: Table ",i.dataset," not found\n")
     }else{
       cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
-      temp1<-as.character(XLConnect::readWorksheet(wb, sheet = i.dataset, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))
-      datasetread<-XLConnect::readWorksheet(wb, sheet = i.dataset, rownames=NA, colTypes=XLC$DATA_TYPE.NUMERIC)
-      names(datasetread)<-temp1
+      #temp1<-as.character(XLConnect::readWorksheet(wb, sheet = i.dataset, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))
+      #datasetread<-XLConnect::readWorksheet(wb, sheet = i.dataset, rownames=NA, colTypes=XLC$DATA_TYPE.NUMERIC)
+      #names(datasetread)<-temp1
+      datasetread<-as.data.frame(readxl::read_xls(i.file, sheet = i.dataset, col_types= "numeric"), stringsAsFactors = F)
+      # First column is the week name      
       if (all(datasetread[,1] %in% 1:53)){
         rownames(datasetread)<-as.character(datasetread[,1])
         datasetread<-datasetread[-1]
