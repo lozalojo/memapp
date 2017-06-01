@@ -1433,3 +1433,14 @@ export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
   if (i.format=="csv") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
                                    file=choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv")))
 }
+
+# is rtools installed?
+
+rtools.installed<-function(){
+  temp1<-Sys.getenv("PATH")
+  temp2<-as.numeric(gregexpr("Rtools", temp1)[[1]])
+  temp3<-c(0,as.numeric(gregexpr(";",temp1)[[1]]),nchar(temp1)+1)
+  temp4<-(1:length(temp3))[temp3[temp3>=temp2][1]==temp3]
+  temp5<-substr(temp1,temp3[temp4-1]+1,temp3[temp4]-1)
+  file.exists(paste(temp5,"/zip.exe",sep=""))
+}
