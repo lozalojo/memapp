@@ -60,13 +60,14 @@ plotSeasons <- function(i.data,
                         i.textX="",
                         i.textY="",
                         i.colObservedPoints="#000000",
-                        i.colSeasons="Accent",
+                        i.colSeasons=NA,
                         i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
                         ...){
-  
+
   if(is.null(i.data)){
     p<-NULL
   }else{
+    if (any(is.na(i.colSeasons))) i.colSeasons <- colorRampPalette(brewer.pal(max(3,min(8,NCOL(i.data))),"Accent"))(NCOL(i.data))
     if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(max(1,NROW(i.data)-2)):NROW(i.data)])))
     if (i.range.x[1] < 1) i.range.x[1] <- 1
     if (i.range.x[1] > 52) i.range.x[1] <- 52
@@ -181,7 +182,7 @@ plotSeasons <- function(i.data,
     dgraf$week<-1:NROW(dgraf)
     
     dgrafgg<-melt(dgraf,id="week")
-    
+
     selected.indicators<-(1:(2*NCOL(data.full)))[apply(dgraf[1:(2*NCOL(data.full))],2,function(x) !all(is.na(x)))]
     if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+1)
     if (i.post.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+5)
@@ -232,7 +233,8 @@ plotSeasons <- function(i.data,
       theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
       ggthemes::theme_few()
     
-    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=i.range.x.values$week.lab)
+    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
+            weeklabels=i.range.x.values$week.lab, gdata=dgrafgg.s)
   }
   p
 }
@@ -467,7 +469,8 @@ plotSeries<-function(i.data,
       labs(title = i.textMain, x = i.textX, y = i.textY) +
       ggthemes::theme_few()
     
-    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""))
+    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
+            weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""), gdata=dgrafgg.s)
   }
   p
 }
@@ -733,7 +736,8 @@ plotSurveillance<-function(i.data,
       labs(title = i.textMain, x = i.textX, y = i.textY) +
       ggthemes::theme_few()
     
-    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,weeklabels=current.season$nombre.semana)
+    p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
+            weeklabels=current.season$nombre.semana, gdata=dgrafgg.s)
   }
   p
 }
@@ -785,7 +789,7 @@ plotGeneric <- function(i.data,
       axis.y.labels <- i.range.y.labels[axis.y.otick$tickmarks]
     }
     
-    p<-ggplot(dgrafgg) +
+    gplot<-ggplot(dgrafgg) +
       geom_line(aes(x=num,y=value,group=variable, color=variable, linetype=variable),size=i.linesize) +
       geom_point(aes(x=num,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
       scale_shape_manual(values=i.shapes, name="Legend", labels=labels) +
@@ -797,6 +801,7 @@ plotGeneric <- function(i.data,
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
       ggthemes::theme_few()
+    p<-list(plot=gplot, gdata=dgrafgg)
   }
   p
 }
@@ -1413,3 +1418,18 @@ add.alpha.to.color <- function(col, alpha=1){
 # roundF and format
 
 roundF <- function(x, k=2) format(round(x, k), nsmall=k)
+
+# export functions
+
+export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
+  if (is.na(i.sheet)) i.sheet<-"data"
+  if (!is.na(i.rownames)){
+    i.data$dummy<-as.numeric(row.names(i.data))
+    i.data<-i.data[c(NCOL(i.data), 1:(NCOL(i.data)-1))]
+    names(i.data)[1]<-i.rownames
+  }
+  if (i.format=="xlsx") openxlsx::write.xlsx(i.data, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, asTable = TRUE, 
+                                             file=choose.files(caption="Save As...",  filters = c("Excel 2007+ files (.xlsx)","*.xlsx")))
+  if (i.format=="csv") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
+                                   file=choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv")))
+}
