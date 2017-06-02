@@ -9,6 +9,7 @@ Maintainer: Lozano Jose E. <lozalojo@gmail.com>
 Depends:
     R (>= 3.4.0)
 Imports:
+    tcltk,
     shiny,
     shinythemes,
     shinydashboard,
