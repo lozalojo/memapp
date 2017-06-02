@@ -1109,7 +1109,7 @@ output$tbdData <- DT::renderDataTable({
                                     i.pandemic=T,
                                     i.seasons=NA)
     if (length(selectedcolumns)>0){
-      datatoshow<-roundF(datfile[selectedcolumns],2)
+      datatoshow<-format(round(datfile[selectedcolumns], 2), nsmall=2)
     }else{
       datatoshow<-data.frame(Message="No data selected",row.names = NULL)
     }
@@ -1530,7 +1530,7 @@ output$tbdEdetails <- DT::renderDataTable({
   if(is.null(dataevolution)){
     datashow<-NULL
   }else{
-    datashow<-roundF(dataevolution$evolution.data,2)
+    datashow<-format(round(dataevolution$evolution.data, 2), nsmall=2)
     names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
   }
   datashow
@@ -1783,7 +1783,7 @@ output$tbdSdetails <- DT::renderDataTable({
   if(is.null(datastability)){
     datashow<-NULL
   }else{
-    datashow<-roundF(datastability$stability.data,2)
+    datashow<-format(round(datastability$stability.data, 2), nsmall=2)
     names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
   }
   datashow
@@ -1834,7 +1834,7 @@ output$tbmData <- DT::renderDataTable({
   if(is.null(datamodel)) {
     datatoshow<-data.frame(Message="No data selected",row.names = NULL)
   }else{
-    datatoshow<-roundF(datatoshow<-datamodel$param.data,2)
+    datatoshow<-format(round(datamodel$param.data, 2), nsmall=2)
   }
   datatoshow
 }, 
@@ -1996,12 +1996,12 @@ output$tbmMemSummary <- renderUI({
     fluidRow(
       valueBox(datamodel$n.seasons, "Seasons in the model", icon = icon("heartbeat"), width=3, color="light-blue"),
       valueBox(datamodel$ci.start[2,2], "Average epidemic start week", icon = icon("heartbeat"), width=3, color="light-blue"),
-      valueBox(roundF(datamodel$ci.length[1,2],1), "Average epidemic length", icon = icon("heartbeat"), width=3, color="light-blue"),
-      valueBox(paste0(roundF(datamodel$ci.percent[2],1), "%"), "Epidemic percentage", icon = icon("heartbeat"), width=3, color="light-blue"),
-      valueBox(roundF(datamodel$pre.post.intervals[1,3],1), "Epidemic threshold", icon = icon("thermometer-1"), width=3, color="green"),
-      valueBox(roundF(datamodel$epi.intervals[1,4],1), "Medium threshold", icon = icon("thermometer-2"), width=3, color="yellow"),
-      valueBox(roundF(datamodel$epi.intervals[2,4],1), "High threshold", icon = icon("thermometer-3"), width=3, color="orange"),
-      valueBox(roundF(datamodel$epi.intervals[3,4],1), "Very high threshold", icon = icon("thermometer-4"), width=3, color="red")
+      valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), "Average epidemic length", icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), "Epidemic percentage", icon = icon("heartbeat"), width=3, color="light-blue"),
+      valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), "Epidemic threshold", icon = icon("thermometer-1"), width=3, color="green"),
+      valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), "Medium threshold", icon = icon("thermometer-2"), width=3, color="yellow"),
+      valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), "High threshold", icon = icon("thermometer-3"), width=3, color="orange"),
+      valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), "Very high threshold", icon = icon("thermometer-4"), width=3, color="red")
     )
   }
 })
@@ -2012,14 +2012,14 @@ output$tbmMemOutput <- renderPrint({
     nam.t<-datamodel
     nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
                      c("",paste0("Threshold ",
-                                 roundF(nam.t$"pre.post.intervals"[1,3],2)," ",
-                                 roundF(nam.t$"pre.post.intervals"[2,3],2))),
+                                 format(round(nam.t$"pre.post.intervals"[1,3], 2), nsmall=2)," ",
+                                 format(round(nam.t$"pre.post.intervals"[2,3], 2), nsmall=2))),
                      c("", ""),
                      c("Intensity thresholds:",""),
                      c("                  Threshold", ""),
-                     c(paste0("Medium (40%)          ", roundF(nam.t$"epi.intervals"[1,4],2)), ""),
-                     c(paste0("High (90%)            ", roundF(nam.t$"epi.intervals"[2,4],2)), ""),
-                     c(paste0("Very high (97.5%)     ", roundF(nam.t$"epi.intervals"[3,4],2)), ""))
+                     c(paste0("Medium (40%)          ", format(round(nam.t$"epi.intervals"[1,4], 2), nsmall=2)), ""),
+                     c(paste0("High (90%)            ", format(round(nam.t$"epi.intervals"[2,4], 2), nsmall=2)), ""),
+                     c(paste0("Very high (97.5%)     ", format(round(nam.t$"epi.intervals"[3,4], 2), nsmall=2)), ""))
 
     nam.ttt <- format(nam.ttt, justify = "left")
     nam.ttt <- as.data.frame(nam.ttt)
@@ -2210,12 +2210,12 @@ output$tbmGoodnessModelSummary <- renderUI({
     return(NULL)
   }else{
     fluidRow(
-      valueBox(roundF(good$results["Sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Positive predictive value"],2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Negative predictive value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Percent agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-      valueBox(roundF(good$results["Matthews correlation coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+      valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+      valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
     )
   }
 })
@@ -2271,11 +2271,11 @@ output$tbmGoodnessModelIntensity <- renderUI({
     return(NULL)
   }else{
     fluidRow(
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==1]*100,1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==2]*100,1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==3]*100,1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==4]*100,1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==5]*100,1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
       valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
       valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
     )
@@ -2287,7 +2287,6 @@ output$tbmGoodnessModelDetail2<-renderFormattable({
   if(!is.null(good)){
     temp1 <- good$peaks.data
     temp1$Level<-as.character(temp1$Level)
-    #temp1[c(1,3:6)]<-roundF(temp1[c(1,3:6)],2)
     thr.c<-generate_palette(i.colThresholds=input$colThresholds)$colThresholds
     lvl.n<-as.character(c(1:5))
     lvl.t<-c("Baseline","Low","Medium","High","Very high")
@@ -2359,12 +2358,12 @@ output$tbmGoodnessGlobalSummary <- renderUI({
     return(NULL)
   }else{
     fluidRow(
-      valueBox(roundF(good$results["Sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Positive predictive value"],2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Negative predictive value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(good$results["Percent agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-      valueBox(roundF(good$results["Matthews correlation coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+      valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+      valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
     )
   }
 })
@@ -2420,11 +2419,11 @@ output$tbmGoodnessGlobalIntensity <- renderUI({
     return(NULL)
   }else{
     fluidRow(
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==1]*100,1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==2]*100,1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==3]*100,1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==4]*100,1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
-      valueBox(paste0(roundF(peaks$Percentage[peaks[,1]==5]*100,1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
       valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
       valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
     )
@@ -2501,14 +2500,14 @@ output$tbmOptimizeSummary <- renderUI({
     doptim<-dataoptim$roc.data
     optim<-doptim[doptim$value==as.numeric(dataoptim$optimum["matthews"]),]
     fluidRow(
-      valueBox(roundF(optim["sensitivity"],2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(optim["specificity"],2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(optim["positive.predictive.value"],2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(optim["negative.predictive.value"],2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(roundF(optim["percent.agreement"],2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-      valueBox(roundF(optim["matthews.correlation.coefficient"],2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
-      valueBox(roundF(input$param,1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
-      valueBox(roundF(as.numeric(dataoptim$optimum["matthews"]),1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
+      valueBox(format(round(optim["sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(optim["specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+      valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+      valueBox(format(round(input$param, 2), nsmall=1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
+      valueBox(format(round(as.numeric(dataoptim$optimum["matthews"]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
     )
   }
 })
@@ -2631,7 +2630,7 @@ output$tbsData <- DT::renderDataTable({
                                     i.pandemic=as.logical("TRUE"),
                                     i.seasons=NA)
     if (length(selectedcolumns)>0){
-      datatoshow<-roundF(datfile[selectedcolumns],2)
+      datatoshow<-format(round(datfile[selectedcolumns], 2), nsmall=2)
     }else{
       datatoshow<-data.frame(Message="No data selected",row.names = NULL)
     }
@@ -3087,7 +3086,7 @@ output$tbvData <- DT::renderDataTable({
                                     i.pandemic=as.logical("TRUE"),
                                     i.seasons=NA)
     if (length(selectedcolumns)>0){
-      datatoshow<-roundF(datfile[selectedcolumns],2)
+      datatoshow<-format(round(datfile[selectedcolumns], 2), nsmall=2)
     }else{
       datatoshow<-data.frame(Message="No data selected",row.names = NULL)
     }

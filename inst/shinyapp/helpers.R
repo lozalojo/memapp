@@ -1415,10 +1415,6 @@ add.alpha.to.color <- function(col, alpha=1){
   apply(sapply(col, col2rgb)/255, 2, function(x) rgb(x[1], x[2], x[3], alpha=alpha))  
 }
 
-# roundF and format
-
-roundF <- function(x, k=2) format(round(x, k), nsmall=k)
-
 # export functions
 
 export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
