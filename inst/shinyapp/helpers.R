@@ -1420,7 +1420,7 @@ add.alpha.to.color <- function(col, alpha=1){
 export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
   if (is.na(i.sheet)) i.sheet<-"data"
   if (!is.na(i.rownames)){
-    i.data$dummy<-as.numeric(row.names(i.data))
+    i.data$dummy<-row.names(i.data)
     i.data<-i.data[c(NCOL(i.data), 1:(NCOL(i.data)-1))]
     names(i.data)[1]<-i.rownames
   }

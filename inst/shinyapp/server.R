@@ -1290,7 +1290,6 @@ output$tbdEvolution <- renderUI({
                 tabPanel("Start",plotlyOutput("tbdEstart", width ="100%", height ="100%")),
                 tabPanel("Percentage", plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
                 tabPanel("Thresholds",plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
-                #tabPanel("Scheme", DT::dataTableOutput("tbdEscheme")),
                 tabPanel("Scheme", formattableOutput("tbdEscheme")),
                 tabPanel("Details", 
                          DT::dataTableOutput("tbdEdetails"),
@@ -1540,12 +1539,16 @@ options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip'
 
 observeEvent(input$tbdEdetails_x, {
   dataevolution <- data_evolution()
-  if(!is.null(dataevolution)) export.mydata(i.data=dataevolution$evolution.data, i.sheet="Evolution", i.rownames="Season", i.format="xlsx")
+  datashow<-dataevolution$evolution.data
+  names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+  if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="xlsx")
 })
 
 observeEvent(input$tbdEdetails_c, {
   dataevolution <- data_evolution()
-  if(!is.null(dataevolution)) export.mydata(i.data=dataevolution$evolution.data, i.sheet="Evolution", i.rownames="Season", i.format="csv")
+  datashow<-dataevolution$evolution.data
+  names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+  if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="csv")
 })
 
 output$tbdStability <- renderUI({
@@ -1793,12 +1796,16 @@ options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip'
 
 observeEvent(input$tbdSdetails_x, {
   datastability <- data_stability()
-  if(!is.null(datastability)) export.mydata(i.data=datastability$stability.data, i.sheet="Stability", i.rownames="Seasons", i.format="xlsx")
+  datashow<-datastability$stability.data
+  names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+  if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="xlsx")
 })
 
 observeEvent(input$tbdSdetails_c, {
   datastability <- data_stability()
-  if(!is.null(datastability)) export.mydata(i.data=datastability$stability.data, i.sheet="Stability", i.rownames="Seasons", i.format="csv")
+  datashow<-datastability$stability.data
+  names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+  if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="csv")
 })
 
 #####################################
