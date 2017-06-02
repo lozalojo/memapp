@@ -1,4 +1,5 @@
 source("helpers.R")
+set.rzip()
 
 shinyServer(function(input, output, session) {
 
@@ -1065,7 +1066,7 @@ output$tbData <- renderUI({
                          # div(class="row-fluid",h4("Export")),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbdData_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbdData_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbdData_c","csv",styleclass="primary",size="small"))
                          )                         
                          ),
@@ -1114,7 +1115,9 @@ output$tbdData <- DT::renderDataTable({
     }
   }
   datatoshow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+}, 
+#extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
 observeEvent(input$tbdData_x, {
   readdata <- read_data()
@@ -1293,7 +1296,7 @@ output$tbdEvolution <- renderUI({
                          DT::dataTableOutput("tbdEdetails"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbdEdetails_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbdEdetails_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbdEdetails_c","csv",styleclass="primary",size="small"))
                          )
                          )
@@ -1531,7 +1534,9 @@ output$tbdEdetails <- DT::renderDataTable({
     names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
   }
   datashow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+}, 
+#extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
 observeEvent(input$tbdEdetails_x, {
   dataevolution <- data_evolution()
@@ -1559,7 +1564,7 @@ output$tbdStability <- renderUI({
                          DT::dataTableOutput("tbdSdetails"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbdSdetails_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbdSdetails_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbdSdetails_c","csv",styleclass="primary",size="small"))
                          ))
     )
@@ -1782,7 +1787,9 @@ output$tbdSdetails <- DT::renderDataTable({
     names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
   }
   datashow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+}, 
+#extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
 observeEvent(input$tbdSdetails_x, {
   datastability <- data_stability()
@@ -1808,7 +1815,7 @@ output$tbModel <- renderUI({
                          DT::dataTableOutput("tbmData"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbmData_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbmData_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbmData_c","csv",styleclass="primary",size="small"))
                          )
                          ),
@@ -1830,7 +1837,9 @@ output$tbmData <- DT::renderDataTable({
     datatoshow<-roundF(datatoshow<-datamodel$param.data,2)
   }
   datatoshow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+}, 
+#extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
 observeEvent(input$tbmData_x, {
   datamodel<-data_model()
@@ -2179,7 +2188,7 @@ output$tbmGoodnessModel <- renderUI({
                          formattableOutput("tbmGoodnessModelDetail1"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbmGoodnessModelDetail1_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessModelDetail1_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbmGoodnessModelDetail1_c","csv",styleclass="primary",size="small"))
                          )
                          ),
@@ -2188,7 +2197,7 @@ output$tbmGoodnessModel <- renderUI({
                          formattableOutput("tbmGoodnessModelDetail2"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbmGoodnessModelDetail2_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessModelDetail2_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbmGoodnessModelDetail2_c","csv",styleclass="primary",size="small"))
                          )
                          )
@@ -2328,7 +2337,7 @@ output$tbmGoodnessGlobal <- renderUI({
                          formattableOutput("tbmGoodnessGlobalDetail1"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbmGoodnessGlobalDetail1_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessGlobalDetail1_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbmGoodnessGlobalDetail1_c","csv",styleclass="primary",size="small"))
                          )
                          ),
@@ -2337,7 +2346,7 @@ output$tbmGoodnessGlobal <- renderUI({
                          formattableOutput("tbmGoodnessGlobalDetail2"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbmGoodnessGlobalDetail2_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessGlobalDetail2_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbmGoodnessGlobalDetail2_c","csv",styleclass="primary",size="small"))
                          )
                          )
@@ -2475,7 +2484,7 @@ output$tbmOptimize <- renderUI({
                          formattableOutput("tbmOptimizeDetail"),
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbmOptimizeDetail_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbmOptimizeDetail_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbmOptimizeDetail_c","csv",styleclass="primary",size="small"))
                          )
                          ),
@@ -2628,7 +2637,9 @@ output$tbsData <- DT::renderDataTable({
     }
   }
   datatoshow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+}, 
+#extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
 output$tbsSurveillance <- renderUI({
   readdata <- read_data()
@@ -2645,7 +2656,7 @@ output$tbsSurveillance <- renderUI({
                          ,
                          fluidRow(
                            column(10),
-                           column(1,shinysky::actionButton("tbsSurveillanceAverage_x","xlsx",styleclass="primary",size="mini")),
+                           column(1,if (zip.present()) shinysky::actionButton("tbsSurveillanceAverage_x","xlsx",styleclass="primary",size="mini")),
                            column(1,shinysky::actionButton("tbsSurveillanceAverage_c","csv",styleclass="primary",size="small"))
                          )
                          )
@@ -3082,7 +3093,9 @@ output$tbvData <- DT::renderDataTable({
     }
   }
   datatoshow
-}, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+}, 
+#extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
+options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
 output$tbvSeasons <- renderPlotly({
   readdata <- read_data()

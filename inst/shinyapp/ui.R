@@ -21,6 +21,8 @@ library("mixtools")
 library("mem")
 library("shinysky")
 library("formattable")
+library("tcltk")
+
 shinyUI(dashboardPage(skin = "black",
                       ###################################
                       ### HEADER SECTION              ###
@@ -28,7 +30,7 @@ shinyUI(dashboardPage(skin = "black",
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
                       dashboardHeader(title = "MEM dashboard",
-                                      tags$li("01JUN2017, code under GPLv2 at",
+                                      tags$li("02JUN2017, code under GPLv2 at",
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 img(src = 'GitHub_Logo.png',

@@ -1428,19 +1428,96 @@ export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
     i.data<-i.data[c(NCOL(i.data), 1:(NCOL(i.data)-1))]
     names(i.data)[1]<-i.rownames
   }
-  if (i.format=="xlsx") openxlsx::write.xlsx(i.data, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, asTable = TRUE, 
-                                             file=choose.files(caption="Save As...",  filters = c("Excel 2007+ files (.xlsx)","*.xlsx")))
-  if (i.format=="csv") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
-                                   file=choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv")))
+  if (i.format=="xlsx"){
+    o.file <- file.selector("xlsx")
+    if (o.file!="") openxlsx::write.xlsx(i.data, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, 
+                         asTable = TRUE, file=o.file)
+  }else if (i.format=="csv"){
+    o.file <- file.selector("csv")
+    if (o.file!="") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
+                file=o.file)
+  } 
 }
 
-# is rtools installed?
+# impossible to find a solution to the input file problem for all the OS at the same time
+# choose.file only works for windows
+# file.choose does not force the extension to be of a given type
+# tkgetSaveFile goes to the background and stays hidden until you focus it with the mouse
 
-rtools.installed<-function(){
-  temp1<-Sys.getenv("PATH")
-  temp2<-as.numeric(gregexpr("Rtools", temp1)[[1]])
-  temp3<-c(0,as.numeric(gregexpr(";",temp1)[[1]]),nchar(temp1)+1)
-  temp4<-(1:length(temp3))[temp3[temp3>=temp2][1]==temp3]
-  temp5<-substr(temp1,temp3[temp4-1]+1,temp3[temp4]-1)
-  file.exists(paste(temp5,"/zip.exe",sep=""))
+file.selector<-function(i.format){
+  if (i.format=="xlsx"){
+    if (.Platform$OS.type=="windows"){
+      o.file <- choose.files(caption="Save As...",  filters = c("Excel 2007+ files (.xlsx)","*.xlsx"))
+    }else if (capabilities()["tcltk"]){
+      o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
+                                                     defaultextension=paste(".", i.format, sep="")))
+    }else{
+      o.file <- file.choose()
+    }
+  }else if (i.format=="csv"){
+    if (.Platform$OS.type=="windows"){
+      o.file<-choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv"))
+    }else if (capabilities()["tcltk"]){
+      o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
+                                                     defaultextension=paste(".", i.format, sep="")))
+    }else{
+      o.file <- file.choose()
+    }
+  }else{
+    o.file<-""
+  }
+  o.file
 }
+
+# Configure a zip extractor in the system, required for openxlsx saving, it is installed with Rtools
+
+set.rzip<-function(){
+  if (.Platform$OS.type=="windows"){
+    cat("Windows system detected\n")
+    if (file.exists("c:\\Rtools\\bin\\zip.exe")){
+      ziploc<-"c:\\Rtools\\bin\\zip.exe"
+      cat("zip found at default dir ",ziploc,"\n")
+    }else{
+      temp1<-Sys.getenv("PATH")
+      if (grepl("rtools", tolower(temp1))){
+        temp2<-as.numeric(gregexpr("rtools", tolower(temp1))[[1]])
+        temp3<-c(0,as.numeric(gregexpr(";",temp1)[[1]]),nchar(temp1)+1)
+        temp6<-unlist(lapply(temp2,function(x) {
+          temp4<-(1:length(temp3))[temp3[temp3>=x][1]==temp3]
+          temp5<-substr(temp1,temp3[temp4-1]+1,temp3[temp4]-1)
+        }))
+        temp7<-unlist(lapply(temp6,function(x){
+          file.exists(paste(x,"\\zip.exe",sep=""))
+        }))
+        if (any(temp7)){
+          ziploc<-paste(temp6[temp7][1],"\\zip.exe",sep="")
+          cat("zip found at path ",ziploc,"\n")
+        }else{
+          ziploc<-""
+          cat("no zip found\n")
+        }
+      }else{
+        ziploc<-""
+        cat("no zip found\n")
+      }
+    }
+  }else if (.Platform$OS.type=="unix"){
+    cat("*nix system detected\n")
+    if (file.exists("/usr/bin/zip")){
+      ziploc<-"/usr/bin/zip"
+      cat("zip found at ",ziploc,"\n")
+    }else{
+      ziploc<-""
+      cat("no zip found\n")
+    }
+  }else{
+    cat("No windows or *nix system detected\n")
+    ziploc<-""
+    cat("no zip found\n")
+  }
+  Sys.setenv(R_ZIPCMD = ziploc)
+}
+
+# check if a zip extractor is installed
+
+zip.present<-function() file.exists(Sys.getenv("R_ZIPCMD"))
