@@ -1570,7 +1570,7 @@ options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip'
 # })
 
 output$tbdEdetails_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
       dataevolution <- data_evolution()
       datashow<-dataevolution$evolution.data
@@ -1852,7 +1852,7 @@ options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip'
 # })
 
 output$tbdSdetails_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     datastability <- data_stability()
     datashow<-datastability$stability.data
@@ -1926,7 +1926,7 @@ options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip'
 # })
 
 output$tbmData_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     datamodel<-data_model()
     if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file, 
@@ -2359,7 +2359,7 @@ output$tbmGoodnessModelDetail1<-renderFormattable({
 # })
 
 output$tbmGoodnessModelDetail1_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     good <- data_good_model()
     if(!is.null(good)){
@@ -2449,7 +2449,7 @@ output$tbmGoodnessModelDetail2<-renderFormattable({
 # })
 
 output$tbmGoodnessModelDetail2_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     good <- data_good_model()
     if(!is.null(good)){
@@ -2565,7 +2565,7 @@ output$tbmGoodnessGlobalDetail1<-renderFormattable({
 # })
 
 output$tbmGoodnessGlobalDetail1_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     good <- data_good_global()
     if(!is.null(good)){
@@ -2655,7 +2655,7 @@ output$tbmGoodnessGlobalDetail2<-renderFormattable({
 # })
 
 output$tbmGoodnessGlobalDetail2_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     good <- data_good_global()
     if(!is.null(good)){
@@ -2767,7 +2767,7 @@ output$tbmOptimizeDetail<-renderFormattable({
 # })
 
 output$tbmOptimizeDetail_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     dataoptim <- data_optim()
     if(!is.null(dataoptim)){
@@ -3276,7 +3276,7 @@ output$tbsSurveillanceAverage <- renderPlotly({
 # })
 
 output$tbsSurveillanceAverage_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     readdata <- read_data()
     datfile <- readdata$datasetread
