@@ -1053,21 +1053,11 @@ output$tbData <- renderUI({
   }else{
     tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
                 tabPanel("Data", 
-                           DT::dataTableOutput("tbdData"),
-                         # ,
-                         # fluidRow(
-                         #   column(8),
-                         #   column(2,actionButton("button", "xlsx", icon("paper-plane"), style="color: #08519c; background-color: #ffffff; border-color: #000000")),
-                         #   column(2,actionButton("run", "Run Analysis", icon("paper-plane"), 
-                         #                         style="color: #fff; background-color: #337ab7; border-color: #2e6da4"))
-                         # )
-                         # actionButton("tbdData_x", label="xlsx", icon=icon("file-excel-o")),
-                         # actionButton("tbdData_c" label="csv", icon=icon("file-text-o"))
-                         # div(class="row-fluid",h4("Export")),
+                         DT::dataTableOutput("tbdData"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbdData_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbdData_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbdData_x","xlsx")),
+                           column(1,downloadButton("tbdData_c","csv"))
                          )                         
                          ),
                 tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
@@ -1119,23 +1109,53 @@ output$tbdData <- DT::renderDataTable({
 #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
-observeEvent(input$tbdData_x, {
-  readdata <- read_data()
-  datfile <- readdata$datasetread
-  if(!is.null(datfile)){
-    selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
-    if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.sheet=input$dataset, i.rownames="Week no", i.format="xlsx")
-  }
-})
+# observeEvent(input$tbdData_x, {
+#   readdata <- read_data()
+#   datfile <- readdata$datasetread
+#   if(!is.null(datfile)){
+#     selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
+#     if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.sheet=input$dataset, i.rownames="Week no", i.format="xlsx")
+#   }
+# })
 
-observeEvent(input$tbdData_c, {
-  readdata <- read_data()
-  datfile <- readdata$datasetread
-  if(!is.null(datfile)){
-    selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
-    if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.sheet=input$dataset, i.rownames="Week no", i.format="csv")
-  }
-})
+# observeEvent(input$tbdData_c, {
+#   readdata <- read_data()
+#   datfile <- readdata$datasetread
+#   if(!is.null(datfile)){
+#     selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
+#     if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.sheet=input$dataset, i.rownames="Week no", i.format="csv")
+#   }
+# })
+
+output$tbdData_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
+  content = function(file) {
+    readdata <- read_data()
+    datfile <- readdata$datasetread
+    if(!is.null(datfile)){
+      selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
+      if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file, 
+                                                   i.sheet="Data", i.rownames="Week no", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbdData_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    readdata <- read_data()
+    datfile <- readdata$datasetread
+    if(!is.null(datfile)){
+      selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
+      if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file, 
+                                                   i.sheet="Data", i.rownames="Week no", i.format="csv")
+    }
+    
+    write.csv(datasetInput(), file)
+  },
+  contentType="text/csv"
+)
 
 output$tbdSeasons <- renderPlotly({
   readdata <- read_data()
@@ -1295,8 +1315,8 @@ output$tbdEvolution <- renderUI({
                          DT::dataTableOutput("tbdEdetails"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbdEdetails_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbdEdetails_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbdEdetails_x","xlsx")),
+                           column(1,downloadButton("tbdEdetails_c","csv"))
                          )
                          )
     )
@@ -1537,19 +1557,44 @@ output$tbdEdetails <- DT::renderDataTable({
 #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
-observeEvent(input$tbdEdetails_x, {
-  dataevolution <- data_evolution()
-  datashow<-dataevolution$evolution.data
-  names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
-  if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="xlsx")
-})
+# observeEvent(input$tbdEdetails_x, {
+#   dataevolution <- data_evolution()
+#   datashow<-dataevolution$evolution.data
+#   names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+#   if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="xlsx")
+# })
+# 
+# observeEvent(input$tbdEdetails_c, {
+#   dataevolution <- data_evolution()
+#   datashow<-dataevolution$evolution.data
+#   names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+#   if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="csv")
+# })
 
-observeEvent(input$tbdEdetails_c, {
-  dataevolution <- data_evolution()
-  datashow<-dataevolution$evolution.data
-  names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
-  if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="csv")
-})
+output$tbdEdetails_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+      dataevolution <- data_evolution()
+      datashow<-dataevolution$evolution.data
+      names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+      if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
+                                                i.sheet="Evolution", i.rownames="Season", i.format="xlsx")
+    
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbdEdetails_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+      dataevolution <- data_evolution()
+      datashow<-dataevolution$evolution.data
+      names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+      if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file, 
+                                                i.sheet="Evolution", i.rownames="Season", i.format="csv")
+  },
+  contentType="text/csv"
+)
 
 output$tbdStability <- renderUI({
   readdata <- read_data()
@@ -1567,8 +1612,8 @@ output$tbdStability <- renderUI({
                          DT::dataTableOutput("tbdSdetails"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbdSdetails_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbdSdetails_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbdSdetails_x","xlsx")),
+                           column(1,downloadButton("tbdSdetails_c","csv"))
                          ))
     )
   }
@@ -1794,19 +1839,43 @@ output$tbdSdetails <- DT::renderDataTable({
 #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
-observeEvent(input$tbdSdetails_x, {
-  datastability <- data_stability()
-  datashow<-datastability$stability.data
-  names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
-  if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="xlsx")
-})
+# observeEvent(input$tbdSdetails_x, {
+#   datastability <- data_stability()
+#   datashow<-datastability$stability.data
+#   names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+#   if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="xlsx")
+# })
+# 
+# observeEvent(input$tbdSdetails_c, {
+#   datastability <- data_stability()
+#   datashow<-datastability$stability.data
+#   names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+#   if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="csv")
+# })
 
-observeEvent(input$tbdSdetails_c, {
-  datastability <- data_stability()
-  datashow<-datastability$stability.data
-  names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
-  if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="csv")
-})
+output$tbdSdetails_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    datastability <- data_stability()
+    datashow<-datastability$stability.data
+    names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+    if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file, 
+                                              i.sheet="Stability", i.rownames="Seasons", i.format="xlsx")
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbdSdetails_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    datastability <- data_stability()
+    datashow<-datastability$stability.data
+    names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
+    if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file, 
+                                              i.sheet="Stability", i.rownames="Seasons", i.format="csv")
+  },
+  contentType="text/csv"
+)
 
 #####################################
 ### MODEL TAB
@@ -1822,8 +1891,8 @@ output$tbModel <- renderUI({
                          DT::dataTableOutput("tbmData"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbmData_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbmData_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbmData_x","xlsx")),
+                           column(1,downloadButton("tbmData_c","csv"))
                          )
                          ),
                 tabPanel("Seasons", plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
@@ -1848,15 +1917,35 @@ output$tbmData <- DT::renderDataTable({
 #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
-observeEvent(input$tbmData_x, {
-  datamodel<-data_model()
-  if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.sheet=input$dataset, i.rownames="Week no", i.format="xlsx")
-})
+# observeEvent(input$tbmData_x, {
+#   datamodel<-data_model()
+#   if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.sheet=input$dataset, i.rownames="Week no", i.format="xlsx")
+# })
+# 
+# observeEvent(input$tbmData_c, {
+#   datamodel<-data_model()
+#   if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.sheet=input$dataset, i.rownames="Week no", i.format="csv")
+# })
 
-observeEvent(input$tbmData_c, {
-  datamodel<-data_model()
-  if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.sheet=input$dataset, i.rownames="Week no", i.format="csv")
-})
+output$tbmData_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    datamodel<-data_model()
+    if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file, 
+                                          i.sheet="Model data", i.rownames="Week no", i.format="xlsx")
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbmData_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    datamodel<-data_model()
+    if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file, 
+                                          i.sheet="Model data", i.rownames="Week no", i.format="csv")
+  },
+  contentType="text/csv"
+)
 
 output$tbmSeasons <- renderPlotly({
   datamodel<-data_model()
@@ -2195,8 +2284,8 @@ output$tbmGoodnessModel <- renderUI({
                          formattableOutput("tbmGoodnessModelDetail1"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessModelDetail1_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbmGoodnessModelDetail1_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbmGoodnessModelDetail1_x","xlsx")),
+                           column(1,downloadButton("tbmGoodnessModelDetail1_c","csv"))
                          )
                          ),
                 tabPanel("Intensity", uiOutput("tbmGoodnessModelIntensity")),
@@ -2204,8 +2293,8 @@ output$tbmGoodnessModel <- renderUI({
                          formattableOutput("tbmGoodnessModelDetail2"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessModelDetail2_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbmGoodnessModelDetail2_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbmGoodnessModelDetail2_x","xlsx")),
+                           column(1,downloadButton("tbmGoodnessModelDetail2_c","csv"))
                          )
                          )
     )
@@ -2251,25 +2340,55 @@ output$tbmGoodnessModelDetail1<-renderFormattable({
   good.table
 })
 
-observeEvent(input$tbmGoodnessModelDetail1_x, {
-  good <- data_good_model()
-  if(!is.null(good)){
-    temp1<-as.data.frame(good$validity.data)
-    temp1$Total<-good$results
-    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-    export.mydata(i.data=temp1, i.sheet="Goodness_model_1", i.rownames="Season", i.format="xlsx")
-  }
-})
+# observeEvent(input$tbmGoodnessModelDetail1_x, {
+#   good <- data_good_model()
+#   if(!is.null(good)){
+#     temp1<-as.data.frame(good$validity.data)
+#     temp1$Total<-good$results
+#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+#     export.mydata(i.data=temp1, i.sheet="Goodness_model_1", i.rownames="Season", i.format="xlsx")
+#   }
+# })
+# 
+# observeEvent(input$tbmGoodnessModelDetail1_c, {
+#   good <- data_good_model()
+#   if(!is.null(good)){
+#     temp1<-as.data.frame(good$validity.data)
+#     temp1$Total<-good$results
+#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+#     export.mydata(i.data=temp1, i.sheet="Goodness_model_1", i.rownames="Season", i.format="csv")
+#   }
+# })
 
-observeEvent(input$tbmGoodnessModelDetail1_c, {
-  good <- data_good_model()
-  if(!is.null(good)){
-    temp1<-as.data.frame(good$validity.data)
-    temp1$Total<-good$results
-    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-    export.mydata(i.data=temp1, i.sheet="Goodness_model_1", i.rownames="Season", i.format="csv")
-  }
-})
+output$tbmGoodnessModelDetail1_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_model()
+    if(!is.null(good)){
+      temp1<-as.data.frame(good$validity.data)
+      temp1$Total<-good$results
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Model goodness indicators", i.rownames="Season", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbmGoodnessModelDetail1_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_model()
+    if(!is.null(good)){
+      temp1<-as.data.frame(good$validity.data)
+      temp1$Total<-good$results
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Model goodness indicators", i.rownames="Season", i.format="csv")
+    }
+  },
+  contentType="text/csv"
+)
 
 output$tbmGoodnessModelIntensity <- renderUI({
   good <- data_good_model()
@@ -2313,23 +2432,51 @@ output$tbmGoodnessModelDetail2<-renderFormattable({
   peaks.data
 })
 
-observeEvent(input$tbmGoodnessModelDetail2_x, {
-  good <- data_good_model()
-  if(!is.null(good)){
-    temp1 <- good$peaks.data
-    temp1$Level<-as.character(temp1$Level)
-    export.mydata(i.data=temp1, i.sheet="Goodness_model_2", i.rownames="Season", i.format="xlsx")
-  }
-})
+# observeEvent(input$tbmGoodnessModelDetail2_x, {
+#   good <- data_good_model()
+#   if(!is.null(good)){
+#     temp1 <- good$peaks.data
+#     temp1$Level<-as.character(temp1$Level)
+#     export.mydata(i.data=temp1, i.sheet="Goodness_model_2", i.rownames="Season", i.format="xlsx")
+#   }
+# })
+# 
+# observeEvent(input$tbmGoodnessModelDetail2_c, {
+#   good <- data_good_model()
+#   if(!is.null(good)){
+#     temp1 <- good$peaks.data
+#     temp1$Level<-as.character(temp1$Level)
+#     export.mydata(i.data=temp1, i.sheet="Goodness_model_2", i.rownames="Season", i.format="csv")
+#   }
+# })
 
-observeEvent(input$tbmGoodnessModelDetail2_c, {
-  good <- data_good_model()
-  if(!is.null(good)){
-    temp1 <- good$peaks.data
-    temp1$Level<-as.character(temp1$Level)
-    export.mydata(i.data=temp1, i.sheet="Goodness_model_2", i.rownames="Season", i.format="csv")
-  }
-})
+output$tbmGoodnessModelDetail2_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_model()
+    if(!is.null(good)){
+      temp1 <- good$peaks.data
+      temp1$Level<-as.character(temp1$Level)
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Model goodness intensity", i.rownames="Season", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbmGoodnessModelDetail2_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_model()
+    if(!is.null(good)){
+      temp1 <- good$peaks.data
+      temp1$Level<-as.character(temp1$Level)
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Model goodness intensity", i.rownames="Season", i.format="csv")
+    }
+  },
+  contentType="text/csv"
+)
 
 output$tbmGoodnessGlobal <- renderUI({
   readdata <- read_data()
@@ -2343,8 +2490,8 @@ output$tbmGoodnessGlobal <- renderUI({
                          formattableOutput("tbmGoodnessGlobalDetail1"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessGlobalDetail1_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbmGoodnessGlobalDetail1_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbmGoodnessGlobalDetail1_x","xlsx")),
+                           column(1,downloadButton("tbmGoodnessGlobalDetail1_c","csv"))
                          )
                          ),
                 tabPanel("Intensity", uiOutput("tbmGoodnessGlobalIntensity")),
@@ -2352,8 +2499,8 @@ output$tbmGoodnessGlobal <- renderUI({
                          formattableOutput("tbmGoodnessGlobalDetail2"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbmGoodnessGlobalDetail2_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbmGoodnessGlobalDetail2_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbmGoodnessGlobalDetail2_x","xlsx")),
+                           column(1,downloadButton("tbmGoodnessGlobalDetail2_c","csv"))
                          )
                          )
     )
@@ -2399,25 +2546,55 @@ output$tbmGoodnessGlobalDetail1<-renderFormattable({
   good.table
 })
 
-observeEvent(input$tbmGoodnessGlobalDetail1_x, {
-  good <- data_good_global()
-  if(!is.null(good)){
-    temp1<-as.data.frame(good$validity.data)
-    temp1$Total<-good$results
-    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-    export.mydata(i.data=temp1, i.sheet="Goodness_global_1", i.rownames="Season", i.format="xlsx")
-  }
-})
+# observeEvent(input$tbmGoodnessGlobalDetail1_x, {
+#   good <- data_good_global()
+#   if(!is.null(good)){
+#     temp1<-as.data.frame(good$validity.data)
+#     temp1$Total<-good$results
+#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+#     export.mydata(i.data=temp1, i.sheet="Goodness_global_1", i.rownames="Season", i.format="xlsx")
+#   }
+# })
+# 
+# observeEvent(input$tbmGoodnessGlobalDetail1_c, {
+#   good <- data_good_global()
+#   if(!is.null(good)){
+#     temp1<-as.data.frame(good$validity.data)
+#     temp1$Total<-good$results
+#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+#     export.mydata(i.data=temp1, i.sheet="Goodness_global_1", i.rownames="Season", i.format="csv")
+#   }
+# })
 
-observeEvent(input$tbmGoodnessGlobalDetail1_c, {
-  good <- data_good_global()
-  if(!is.null(good)){
-    temp1<-as.data.frame(good$validity.data)
-    temp1$Total<-good$results
-    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-    export.mydata(i.data=temp1, i.sheet="Goodness_global_1", i.rownames="Season", i.format="csv")
-  }
-})
+output$tbmGoodnessGlobalDetail1_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1<-as.data.frame(good$validity.data)
+      temp1$Total<-good$results
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness indicators", i.rownames="Season", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbmGoodnessGlobalDetail1_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1<-as.data.frame(good$validity.data)
+      temp1$Total<-good$results
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness indicators", i.rownames="Season", i.format="csv")
+    }
+  },
+  contentType="text/csv"
+)
 
 output$tbmGoodnessGlobalIntensity <- renderUI({
   good <- data_good_global()
@@ -2461,23 +2638,51 @@ output$tbmGoodnessGlobalDetail2<-renderFormattable({
   peaks.data
 })
 
-observeEvent(input$tbmGoodnessGlobalDetail2_x, {
-  good <- data_good_global()
-  if(!is.null(good)){
-    temp1 <- good$peaks.data
-    temp1$Level<-as.character(temp1$Level)
-    export.mydata(i.data=temp1, i.sheet="Goodness_global_2", i.rownames="Season", i.format="xlsx")
-  }
-})
+# observeEvent(input$tbmGoodnessGlobalDetail2_x, {
+#   good <- data_good_global()
+#   if(!is.null(good)){
+#     temp1 <- good$peaks.data
+#     temp1$Level<-as.character(temp1$Level)
+#     export.mydata(i.data=temp1, i.sheet="Goodness_global_2", i.rownames="Season", i.format="xlsx")
+#   }
+# })
+# 
+# observeEvent(input$tbmGoodnessGlobalDetail2_c, {
+#   good <- data_good_global()
+#   if(!is.null(good)){
+#     temp1 <- good$peaks.data
+#     temp1$Level<-as.character(temp1$Level)
+#     export.mydata(i.data=temp1, i.sheet="Goodness_global_2", i.rownames="Season", i.format="csv")
+#   }
+# })
 
-observeEvent(input$tbmGoodnessGlobalDetail2_c, {
-  good <- data_good_global()
-  if(!is.null(good)){
-    temp1 <- good$peaks.data
-    temp1$Level<-as.character(temp1$Level)
-    export.mydata(i.data=temp1, i.sheet="Goodness_global_2", i.rownames="Season", i.format="csv")
-  }
-})
+output$tbmGoodnessGlobalDetail2_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1 <- good$peaks.data
+      temp1$Level<-as.character(temp1$Level)
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness intensity", i.rownames="Season", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbmGoodnessGlobalDetail2_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1 <- good$peaks.data
+      temp1$Level<-as.character(temp1$Level)
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness intensity", i.rownames="Season", i.format="csv")
+    }
+  },
+  contentType="text/csv"
+)
 
 output$tbmOptimize <- renderUI({
   readdata <- read_data()
@@ -2490,8 +2695,8 @@ output$tbmOptimize <- renderUI({
                          formattableOutput("tbmOptimizeDetail"),
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbmOptimizeDetail_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbmOptimizeDetail_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbmOptimizeDetail_x","xlsx")),
+                           column(1,downloadButton("tbmOptimizeDetail_c","csv"))
                          )
                          ),
                 tabPanel("Graphs",plotlyOutput("tbmOptimizeGraph"))
@@ -2543,25 +2748,55 @@ output$tbmOptimizeDetail<-renderFormattable({
   roca.table
 })
 
-observeEvent(input$tbmOptimizeDetail_x, {
-  dataoptim <- data_optim()
-  if(!is.null(dataoptim)){
-    temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
-    names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
-    rownames(temp1)<-NULL
-    export.mydata(i.data=temp1, i.sheet="Optimize", i.rownames=NA, i.format="xlsx")
-  }
-})
+# observeEvent(input$tbmOptimizeDetail_x, {
+#   dataoptim <- data_optim()
+#   if(!is.null(dataoptim)){
+#     temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+#     names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+#     rownames(temp1)<-NULL
+#     export.mydata(i.data=temp1, i.sheet="Optimize", i.rownames=NA, i.format="xlsx")
+#   }
+# })
+# 
+# observeEvent(input$tbmOptimizeDetail_c, {
+#   dataoptim <- data_optim()
+#   if(!is.null(dataoptim)){
+#     temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+#     names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+#     rownames(temp1)<-NULL
+#     export.mydata(i.data=temp1, i.sheet="Optimize", i.rownames=NA, i.format="csv")
+#   }
+# })
 
-observeEvent(input$tbmOptimizeDetail_c, {
-  dataoptim <- data_optim()
-  if(!is.null(dataoptim)){
-    temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
-    names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
-    rownames(temp1)<-NULL
-    export.mydata(i.data=temp1, i.sheet="Optimize", i.rownames=NA, i.format="csv")
-  }
-})
+output$tbmOptimizeDetail_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    dataoptim <- data_optim()
+    if(!is.null(dataoptim)){
+      temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+      names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+      rownames(temp1)<-NULL
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Optimization", i.rownames=NA, i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbmOptimizeDetail_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    dataoptim <- data_optim()
+    if(!is.null(dataoptim)){
+      temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+      names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+      rownames(temp1)<-NULL
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Optimization", i.rownames=NA, i.format="csv")
+    }
+  },
+  contentType="text/csv"
+)
 
 output$tbmOptimizeGraph<- renderPlotly({
   dataoptim <- data_optim()
@@ -2662,8 +2897,8 @@ output$tbsSurveillance <- renderUI({
                          ,
                          fluidRow(
                            column(10),
-                           column(1,if (zip.present()) shinysky::actionButton("tbsSurveillanceAverage_x","xlsx",styleclass="primary",size="mini")),
-                           column(1,shinysky::actionButton("tbsSurveillanceAverage_c","csv",styleclass="primary",size="small"))
+                           column(1,if (zip.present()) downloadButton("tbsSurveillanceAverage_x","xlsx")),
+                           column(1,downloadButton("tbsSurveillanceAverage_c","csv"))
                          )
                          )
     )
@@ -2898,150 +3133,303 @@ output$tbsSurveillanceAverage <- renderPlotly({
   zfix
 })
 
-observeEvent(input$tbsSurveillanceAverage_x, {
-  readdata <- read_data()
-  datfile <- readdata$datasetread
-  if(!is.null(datfile)){
-    if(input$SelectSurveillance %in% names(datfile)){
-      if(is.null(input$SelectSurveillanceWeek)){
-        SurveillanceWeek<-tail(row.names(datfile),1)
-      }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
-        SurveillanceWeek<-tail(row.names(datfile),1)
-      }else{
-        SurveillanceWeek<-input$SelectSurveillanceWeek
-      }
-      if (is.null(input$SelectSurveillanceForceEpidemic)){
-        force.start<-NA
-      }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
-        force.start<-NA
-      }else{
-        force.start<-input$SelectSurveillanceForceEpidemic
-      } 
-      datamodel<-data_model()
-      if(!is.null(datamodel)){
-        e.thr<-datamodel$epidemic.thresholds
-        i.thr<-datamodel$intensity.thresholds
-        datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
-        survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
-        datfile.plot[-(1:survweek),1]<-NA
-        names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
-        colors.palette<-generate_palette(i.number.series=3,
-                                         i.colObservedLines=input$colObservedLines,
-                                         i.colObservedPoints=input$colObservedPoints,
-                                         i.colEpidemicStart=input$colEpidemicStart,
-                                         i.colEpidemicStop=input$colEpidemicStop,
-                                         i.colThresholds=input$colThresholds,
-                                         i.colSeasons=input$colSeasons,
-                                         i.colEpidemic=input$colEpidemic)
-        p <- plotSeasons(datfile.plot,
-                         i.epidemic.thr=e.thr,
-                         i.intensity.thr=i.thr,
-                         i.pre.epidemic = as.logical(input$preepidemicthr),
-                         i.post.epidemic = as.logical(input$postepidemicthr),
-                         i.intensity = as.logical(input$intensitythr),
-                         i.textMain=input$textMain,
-                         i.textX=input$textX,
-                         i.textY=input$textY,
-                         i.type.threshold=as.numeric(input$typethreshold),
-                         i.tails.threshold=as.numeric(input$ntails),
-                         i.type.intensity=as.numeric(input$typeintensity),
-                         i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
-                         i.tails.intensity=as.numeric(input$ntails),
-                         i.type.curve=as.numeric(input$typecurve),
-                         i.level.curve=as.numeric(input$leveltypicalcurve)/100,
-                         i.type.other=as.numeric(input$typeother),
-                         i.level.other=as.numeric(input$leveltypicalcurve)/100,
-                         i.method=as.numeric(input$method),
-                         i.param=as.numeric(input$param),
-                         i.n.max=as.numeric(input$nvalues),
-                         i.colObservedPoints=colors.palette$colObservedPoints,
-                         i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-                         i.colThresholds=colors.palette$colThresholds)
-        if (!is.null(p)){
-          temp1<-p$gdata
-          temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
-          temp2<-temp2[order(temp2$week),p$labels]
-          row.names(temp2)<-p$weeklabels
-          temp2$week<-NULL
-          export.mydata(i.data=temp2, i.sheet="Average", i.rownames="Week no", i.format="xlsx") 
+# observeEvent(input$tbsSurveillanceAverage_x, {
+#   readdata <- read_data()
+#   datfile <- readdata$datasetread
+#   if(!is.null(datfile)){
+#     if(input$SelectSurveillance %in% names(datfile)){
+#       if(is.null(input$SelectSurveillanceWeek)){
+#         SurveillanceWeek<-tail(row.names(datfile),1)
+#       }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
+#         SurveillanceWeek<-tail(row.names(datfile),1)
+#       }else{
+#         SurveillanceWeek<-input$SelectSurveillanceWeek
+#       }
+#       if (is.null(input$SelectSurveillanceForceEpidemic)){
+#         force.start<-NA
+#       }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+#         force.start<-NA
+#       }else{
+#         force.start<-input$SelectSurveillanceForceEpidemic
+#       } 
+#       datamodel<-data_model()
+#       if(!is.null(datamodel)){
+#         e.thr<-datamodel$epidemic.thresholds
+#         i.thr<-datamodel$intensity.thresholds
+#         datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
+#         survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
+#         datfile.plot[-(1:survweek),1]<-NA
+#         names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
+#         colors.palette<-generate_palette(i.number.series=3,
+#                                          i.colObservedLines=input$colObservedLines,
+#                                          i.colObservedPoints=input$colObservedPoints,
+#                                          i.colEpidemicStart=input$colEpidemicStart,
+#                                          i.colEpidemicStop=input$colEpidemicStop,
+#                                          i.colThresholds=input$colThresholds,
+#                                          i.colSeasons=input$colSeasons,
+#                                          i.colEpidemic=input$colEpidemic)
+#         p <- plotSeasons(datfile.plot,
+#                          i.epidemic.thr=e.thr,
+#                          i.intensity.thr=i.thr,
+#                          i.pre.epidemic = as.logical(input$preepidemicthr),
+#                          i.post.epidemic = as.logical(input$postepidemicthr),
+#                          i.intensity = as.logical(input$intensitythr),
+#                          i.textMain=input$textMain,
+#                          i.textX=input$textX,
+#                          i.textY=input$textY,
+#                          i.type.threshold=as.numeric(input$typethreshold),
+#                          i.tails.threshold=as.numeric(input$ntails),
+#                          i.type.intensity=as.numeric(input$typeintensity),
+#                          i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
+#                          i.tails.intensity=as.numeric(input$ntails),
+#                          i.type.curve=as.numeric(input$typecurve),
+#                          i.level.curve=as.numeric(input$leveltypicalcurve)/100,
+#                          i.type.other=as.numeric(input$typeother),
+#                          i.level.other=as.numeric(input$leveltypicalcurve)/100,
+#                          i.method=as.numeric(input$method),
+#                          i.param=as.numeric(input$param),
+#                          i.n.max=as.numeric(input$nvalues),
+#                          i.colObservedPoints=colors.palette$colObservedPoints,
+#                          i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
+#                          i.colThresholds=colors.palette$colThresholds)
+#         if (!is.null(p)){
+#           temp1<-p$gdata
+#           temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+#           temp2<-temp2[order(temp2$week),p$labels]
+#           row.names(temp2)<-p$weeklabels
+#           temp2$week<-NULL
+#           export.mydata(i.data=temp2, i.sheet="Average", i.rownames="Week no", i.format="xlsx") 
+#         }
+#       }
+#     }
+#   }
+# })
+# 
+# observeEvent(input$tbsSurveillanceAverage_c, {
+#   readdata <- read_data()
+#   datfile <- readdata$datasetread
+#   if(!is.null(datfile)){
+#     if(input$SelectSurveillance %in% names(datfile)){
+#       if(is.null(input$SelectSurveillanceWeek)){
+#         SurveillanceWeek<-tail(row.names(datfile),1)
+#       }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
+#         SurveillanceWeek<-tail(row.names(datfile),1)
+#       }else{
+#         SurveillanceWeek<-input$SelectSurveillanceWeek
+#       }
+#       if (is.null(input$SelectSurveillanceForceEpidemic)){
+#         force.start<-NA
+#       }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+#         force.start<-NA
+#       }else{
+#         force.start<-input$SelectSurveillanceForceEpidemic
+#       } 
+#       datamodel<-data_model()
+#       if(!is.null(datamodel)){
+#         e.thr<-datamodel$epidemic.thresholds
+#         i.thr<-datamodel$intensity.thresholds
+#         datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
+#         survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
+#         datfile.plot[-(1:survweek),1]<-NA
+#         names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
+#         colors.palette<-generate_palette(i.number.series=3,
+#                                          i.colObservedLines=input$colObservedLines,
+#                                          i.colObservedPoints=input$colObservedPoints,
+#                                          i.colEpidemicStart=input$colEpidemicStart,
+#                                          i.colEpidemicStop=input$colEpidemicStop,
+#                                          i.colThresholds=input$colThresholds,
+#                                          i.colSeasons=input$colSeasons,
+#                                          i.colEpidemic=input$colEpidemic)
+#         p <- plotSeasons(datfile.plot,
+#                          i.epidemic.thr=e.thr,
+#                          i.intensity.thr=i.thr,
+#                          i.pre.epidemic = as.logical(input$preepidemicthr),
+#                          i.post.epidemic = as.logical(input$postepidemicthr),
+#                          i.intensity = as.logical(input$intensitythr),
+#                          i.textMain=input$textMain,
+#                          i.textX=input$textX,
+#                          i.textY=input$textY,
+#                          i.type.threshold=as.numeric(input$typethreshold),
+#                          i.tails.threshold=as.numeric(input$ntails),
+#                          i.type.intensity=as.numeric(input$typeintensity),
+#                          i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
+#                          i.tails.intensity=as.numeric(input$ntails),
+#                          i.type.curve=as.numeric(input$typecurve),
+#                          i.level.curve=as.numeric(input$leveltypicalcurve)/100,
+#                          i.type.other=as.numeric(input$typeother),
+#                          i.level.other=as.numeric(input$leveltypicalcurve)/100,
+#                          i.method=as.numeric(input$method),
+#                          i.param=as.numeric(input$param),
+#                          i.n.max=as.numeric(input$nvalues),
+#                          i.colObservedPoints=colors.palette$colObservedPoints,
+#                          i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
+#                          i.colThresholds=colors.palette$colThresholds)
+#         if (!is.null(p)){
+#           temp1<-p$gdata
+#           temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+#           temp2<-temp2[order(temp2$week),p$labels]
+#           row.names(temp2)<-p$weeklabels
+#           temp2$week<-NULL
+#           export.mydata(i.data=temp2, i.sheet="Average", i.rownames="Week no", i.format="csv")
+#         } 
+#       }
+#     }
+#   }
+# })
+
+output$tbsSurveillanceAverage_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    readdata <- read_data()
+    datfile <- readdata$datasetread
+    if(!is.null(datfile)){
+      if(input$SelectSurveillance %in% names(datfile)){
+        if(is.null(input$SelectSurveillanceWeek)){
+          SurveillanceWeek<-tail(row.names(datfile),1)
+        }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
+          SurveillanceWeek<-tail(row.names(datfile),1)
+        }else{
+          SurveillanceWeek<-input$SelectSurveillanceWeek
+        }
+        if (is.null(input$SelectSurveillanceForceEpidemic)){
+          force.start<-NA
+        }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+          force.start<-NA
+        }else{
+          force.start<-input$SelectSurveillanceForceEpidemic
+        } 
+        datamodel<-data_model()
+        if(!is.null(datamodel)){
+          e.thr<-datamodel$epidemic.thresholds
+          i.thr<-datamodel$intensity.thresholds
+          datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
+          survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
+          datfile.plot[-(1:survweek),1]<-NA
+          names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
+          colors.palette<-generate_palette(i.number.series=3,
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
+          p <- plotSeasons(datfile.plot,
+                           i.epidemic.thr=e.thr,
+                           i.intensity.thr=i.thr,
+                           i.pre.epidemic = as.logical(input$preepidemicthr),
+                           i.post.epidemic = as.logical(input$postepidemicthr),
+                           i.intensity = as.logical(input$intensitythr),
+                           i.textMain=input$textMain,
+                           i.textX=input$textX,
+                           i.textY=input$textY,
+                           i.type.threshold=as.numeric(input$typethreshold),
+                           i.tails.threshold=as.numeric(input$ntails),
+                           i.type.intensity=as.numeric(input$typeintensity),
+                           i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
+                           i.tails.intensity=as.numeric(input$ntails),
+                           i.type.curve=as.numeric(input$typecurve),
+                           i.level.curve=as.numeric(input$leveltypicalcurve)/100,
+                           i.type.other=as.numeric(input$typeother),
+                           i.level.other=as.numeric(input$leveltypicalcurve)/100,
+                           i.method=as.numeric(input$method),
+                           i.param=as.numeric(input$param),
+                           i.n.max=as.numeric(input$nvalues),
+                           i.colObservedPoints=colors.palette$colObservedPoints,
+                           i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
+                           i.colThresholds=colors.palette$colThresholds)
+          if (!is.null(p)){
+            temp1<-p$gdata
+            temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+            temp2<-temp2[order(temp2$week),p$labels]
+            row.names(temp2)<-p$weeklabels
+            temp2$week<-NULL
+            export.mydata(i.data=temp2, i.file = file, 
+                          i.sheet="Average curve", i.rownames="Week no", i.format="xlsx") 
+          }
         }
       }
     }
-  }
-})
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
 
-observeEvent(input$tbsSurveillanceAverage_c, {
-  readdata <- read_data()
-  datfile <- readdata$datasetread
-  if(!is.null(datfile)){
-    if(input$SelectSurveillance %in% names(datfile)){
-      if(is.null(input$SelectSurveillanceWeek)){
-        SurveillanceWeek<-tail(row.names(datfile),1)
-      }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
-        SurveillanceWeek<-tail(row.names(datfile),1)
-      }else{
-        SurveillanceWeek<-input$SelectSurveillanceWeek
-      }
-      if (is.null(input$SelectSurveillanceForceEpidemic)){
-        force.start<-NA
-      }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
-        force.start<-NA
-      }else{
-        force.start<-input$SelectSurveillanceForceEpidemic
-      } 
-      datamodel<-data_model()
-      if(!is.null(datamodel)){
-        e.thr<-datamodel$epidemic.thresholds
-        i.thr<-datamodel$intensity.thresholds
-        datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
-        survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
-        datfile.plot[-(1:survweek),1]<-NA
-        names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
-        colors.palette<-generate_palette(i.number.series=3,
-                                         i.colObservedLines=input$colObservedLines,
-                                         i.colObservedPoints=input$colObservedPoints,
-                                         i.colEpidemicStart=input$colEpidemicStart,
-                                         i.colEpidemicStop=input$colEpidemicStop,
-                                         i.colThresholds=input$colThresholds,
-                                         i.colSeasons=input$colSeasons,
-                                         i.colEpidemic=input$colEpidemic)
-        p <- plotSeasons(datfile.plot,
-                         i.epidemic.thr=e.thr,
-                         i.intensity.thr=i.thr,
-                         i.pre.epidemic = as.logical(input$preepidemicthr),
-                         i.post.epidemic = as.logical(input$postepidemicthr),
-                         i.intensity = as.logical(input$intensitythr),
-                         i.textMain=input$textMain,
-                         i.textX=input$textX,
-                         i.textY=input$textY,
-                         i.type.threshold=as.numeric(input$typethreshold),
-                         i.tails.threshold=as.numeric(input$ntails),
-                         i.type.intensity=as.numeric(input$typeintensity),
-                         i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
-                         i.tails.intensity=as.numeric(input$ntails),
-                         i.type.curve=as.numeric(input$typecurve),
-                         i.level.curve=as.numeric(input$leveltypicalcurve)/100,
-                         i.type.other=as.numeric(input$typeother),
-                         i.level.other=as.numeric(input$leveltypicalcurve)/100,
-                         i.method=as.numeric(input$method),
-                         i.param=as.numeric(input$param),
-                         i.n.max=as.numeric(input$nvalues),
-                         i.colObservedPoints=colors.palette$colObservedPoints,
-                         i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-                         i.colThresholds=colors.palette$colThresholds)
-        if (!is.null(p)){
-          temp1<-p$gdata
-          temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
-          temp2<-temp2[order(temp2$week),p$labels]
-          row.names(temp2)<-p$weeklabels
-          temp2$week<-NULL
-          export.mydata(i.data=temp2, i.sheet="Average", i.rownames="Week no", i.format="csv")
+output$tbsSurveillanceAverage_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    readdata <- read_data()
+    datfile <- readdata$datasetread
+    if(!is.null(datfile)){
+      if(input$SelectSurveillance %in% names(datfile)){
+        if(is.null(input$SelectSurveillanceWeek)){
+          SurveillanceWeek<-tail(row.names(datfile),1)
+        }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
+          SurveillanceWeek<-tail(row.names(datfile),1)
+        }else{
+          SurveillanceWeek<-input$SelectSurveillanceWeek
+        }
+        if (is.null(input$SelectSurveillanceForceEpidemic)){
+          force.start<-NA
+        }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
+          force.start<-NA
+        }else{
+          force.start<-input$SelectSurveillanceForceEpidemic
         } 
+        datamodel<-data_model()
+        if(!is.null(datamodel)){
+          e.thr<-datamodel$epidemic.thresholds
+          i.thr<-datamodel$intensity.thresholds
+          datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
+          survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
+          datfile.plot[-(1:survweek),1]<-NA
+          names(datfile.plot)<-c(input$SelectSurveillance,"Lower interval","Average curve","Higher interval")
+          colors.palette<-generate_palette(i.number.series=3,
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
+          p <- plotSeasons(datfile.plot,
+                           i.epidemic.thr=e.thr,
+                           i.intensity.thr=i.thr,
+                           i.pre.epidemic = as.logical(input$preepidemicthr),
+                           i.post.epidemic = as.logical(input$postepidemicthr),
+                           i.intensity = as.logical(input$intensitythr),
+                           i.textMain=input$textMain,
+                           i.textX=input$textX,
+                           i.textY=input$textY,
+                           i.type.threshold=as.numeric(input$typethreshold),
+                           i.tails.threshold=as.numeric(input$ntails),
+                           i.type.intensity=as.numeric(input$typeintensity),
+                           i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
+                           i.tails.intensity=as.numeric(input$ntails),
+                           i.type.curve=as.numeric(input$typecurve),
+                           i.level.curve=as.numeric(input$leveltypicalcurve)/100,
+                           i.type.other=as.numeric(input$typeother),
+                           i.level.other=as.numeric(input$leveltypicalcurve)/100,
+                           i.method=as.numeric(input$method),
+                           i.param=as.numeric(input$param),
+                           i.n.max=as.numeric(input$nvalues),
+                           i.colObservedPoints=colors.palette$colObservedPoints,
+                           i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
+                           i.colThresholds=colors.palette$colThresholds)
+          if (!is.null(p)){
+            temp1<-p$gdata
+            temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+            temp2<-temp2[order(temp2$week),p$labels]
+            row.names(temp2)<-p$weeklabels
+            temp2$week<-NULL
+            export.mydata(i.data=temp2, i.file = file, 
+                          i.sheet="Average curve", i.rownames="Week no", i.format="csv")
+          } 
+        }
       }
     }
-  }
-})
-
+  },
+  contentType="text/csv"
+)
 
 #####################################
 ### VISUALIZE TAB

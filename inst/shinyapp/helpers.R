@@ -1417,7 +1417,25 @@ add.alpha.to.color <- function(col, alpha=1){
 
 # export functions
 
-export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
+# export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
+#   if (is.na(i.sheet)) i.sheet<-"data"
+#   if (!is.na(i.rownames)){
+#     i.data$dummy<-row.names(i.data)
+#     i.data<-i.data[c(NCOL(i.data), 1:(NCOL(i.data)-1))]
+#     names(i.data)[1]<-i.rownames
+#   }
+#   if (i.format=="xlsx"){
+#     o.file <- file.selector("xlsx")
+#     if (o.file!="") openxlsx::write.xlsx(i.data, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, 
+#                          asTable = TRUE, file=o.file)
+#   }else if (i.format=="csv"){
+#     o.file <- file.selector("csv")
+#     if (o.file!="") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
+#                 file=o.file)
+#   } 
+# }
+
+export.mydata<-function(i.data, i.file, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
   if (is.na(i.sheet)) i.sheet<-"data"
   if (!is.na(i.rownames)){
     i.data$dummy<-row.names(i.data)
@@ -1425,13 +1443,9 @@ export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
     names(i.data)[1]<-i.rownames
   }
   if (i.format=="xlsx"){
-    o.file <- file.selector("xlsx")
-    if (o.file!="") openxlsx::write.xlsx(i.data, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, 
-                         asTable = TRUE, file=o.file)
+    if (i.file!="") openxlsx::write.xlsx(i.data, file=i.file, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, asTable = TRUE)
   }else if (i.format=="csv"){
-    o.file <- file.selector("csv")
-    if (o.file!="") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
-                file=o.file)
+    if (i.file!="") write.table(i.data, file=i.file, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "")
   } 
 }
 
@@ -1440,30 +1454,30 @@ export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
 # file.choose does not force the extension to be of a given type
 # tkgetSaveFile goes to the background and stays hidden until you focus it with the mouse
 
-file.selector<-function(i.format){
-  if (i.format=="xlsx"){
-    if (.Platform$OS.type=="windows"){
-      o.file <- choose.files(caption="Save As...",  filters = c("Excel 2007+ files (.xlsx)","*.xlsx"))
-    }else if (capabilities()["tcltk"]){
-      o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
-                                                     defaultextension=paste(".", i.format, sep="")))
-    }else{
-      o.file <- file.choose()
-    }
-  }else if (i.format=="csv"){
-    if (.Platform$OS.type=="windows"){
-      o.file<-choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv"))
-    }else if (capabilities()["tcltk"]){
-      o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
-                                                     defaultextension=paste(".", i.format, sep="")))
-    }else{
-      o.file <- file.choose()
-    }
-  }else{
-    o.file<-""
-  }
-  o.file
-}
+# file.selector<-function(i.format){
+#   if (i.format=="xlsx"){
+#     if (.Platform$OS.type=="windows"){
+#       o.file <- choose.files(caption="Save As...",  filters = c("Excel 2007+ files (.xlsx)","*.xlsx"))
+#     }else if (capabilities()["tcltk"]){
+#       o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
+#                                                      defaultextension=paste(".", i.format, sep="")))
+#     }else{
+#       o.file <- file.choose()
+#     }
+#   }else if (i.format=="csv"){
+#     if (.Platform$OS.type=="windows"){
+#       o.file<-choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv"))
+#     }else if (capabilities()["tcltk"]){
+#       o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
+#                                                      defaultextension=paste(".", i.format, sep="")))
+#     }else{
+#       o.file <- file.choose()
+#     }
+#   }else{
+#     o.file<-""
+#   }
+#   o.file
+# }
 
 # Configure a zip extractor in the system, required for openxlsx saving, it is installed with Rtools
 
