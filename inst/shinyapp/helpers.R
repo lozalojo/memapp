@@ -1445,7 +1445,7 @@ export.mydata<-function(i.data, i.file, i.sheet=NA, i.rownames=NA, i.format="xls
   if (i.format=="xlsx"){
     if (i.file!="") openxlsx::write.xlsx(i.data, file=i.file, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, asTable = TRUE)
   }else if (i.format=="csv"){
-    if (i.file!="") write.table(i.data, file=i.file, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "")
+    if (i.file!="") write.table(i.data, file=i.file, row.names = FALSE, col.names = TRUE, sep=";", dec=".", na = "")
   } 
 }
 
