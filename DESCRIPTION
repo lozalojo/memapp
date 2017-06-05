@@ -15,7 +15,6 @@ Imports:
     shinyBS,
     shinyjs,
     RColorBrewer,
-    plotly,
     ggthemes,
     reshape2,
     R.utils,
@@ -31,6 +30,7 @@ Imports:
     formattable,
     shinysky,
     ggplot2,
+    plotly,
     mem (>= 2.5)
 Remotes:
   github::renkun-ken/formattable,
