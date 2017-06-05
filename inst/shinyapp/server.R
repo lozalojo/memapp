@@ -1151,8 +1151,6 @@ output$tbdData_c <- downloadHandler(
       if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file, 
                                                    i.sheet="Data", i.rownames="Week no", i.format="csv")
     }
-    
-    write.csv(datasetInput(), file)
   },
   contentType="text/csv"
 )
