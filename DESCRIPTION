@@ -36,7 +36,6 @@ Remotes:
   github::renkun-ken/formattable,
   github::AnalytixWare/ShinySky,
   github::hadley/ggplot2,
-  github::ropensci/plotly,
   github::lozalojo/mem
 Description: Web application created in the Shiny framework for the mem R library.
 License: GPL (>= 2)
