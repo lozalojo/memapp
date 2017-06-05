@@ -13,6 +13,7 @@
 #'
 #' @name runmemapp
 #'
+#' @param launch.browser whether if you want to launch the app in an external browser.
 #' @param ... other parameters passed to shiny::runApp.
 #' 
 #' @examples
@@ -43,10 +44,10 @@
 #'
 #' @export
 #' @importFrom shiny runApp
-runmemapp <- function(launch.browser = TRUE, display.mode = "auto") {
+runmemapp <- function(launch.browser = TRUE, ...) {
   appDir <- system.file("shinyapp", package = "memapp")
   if (appDir == "") {
     stop("Could not find app directory. Try re-installing `memapp`.", call. = FALSE)
   }
-  shiny::runApp(appDir, launch.browser = launch.browser, display.mode = display.mode)
+  shiny::runApp(appDir, launch.browser = launch.browser, ...)
 }
