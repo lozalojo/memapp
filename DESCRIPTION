@@ -2,7 +2,7 @@ Package: memapp
 Type: Package
 Title: The Moving Epidemics Method Shiny Web Application
 Version: 2.0.20170606
-Date: 2017-06-05
+Date: 2017-06-06
 Authors@R: person("Lozano", "Jose E.", email = "lozalojo@gmail.com", role = c("aut", "cre"))
 Author: Lozano Jose E. [aut, cre]
 Maintainer: Lozano Jose E. <lozalojo@gmail.com>
