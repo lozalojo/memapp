@@ -28,13 +28,11 @@ Imports:
     RODBC,
     mixtools,
     formattable,
-    shinysky,
     ggplot2,
     plotly,
     mem (>= 2.5)
 Remotes:
   github::renkun-ken/formattable,
-  github::AnalytixWare/ShinySky,
   github::hadley/ggplot2,
   github::lozalojo/mem
 Description: Web application created in the Shiny framework for the mem R library.
