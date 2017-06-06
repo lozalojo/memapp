@@ -1541,7 +1541,6 @@ zip.present<-function() file.exists(Sys.getenv("R_ZIPCMD"))
 #' @param wait The amount of time to wait before showing the busy indicator. The
 #'   default is 1000 which is 1 second.
 #'
-#' @keywords internal
 busyIndicator <- function(text = "Calculation in progress..",img = "shinyapp/www/ajaxloaderq.gif", wait=1000) {
   tagList(
     singleton(tags$head(
@@ -1559,7 +1558,7 @@ busyIndicator <- function(text = "Calculation in progress..",img = "shinyapp/www
       } else {
       $('div.shinysky-busy-indicator').hide()
       }
-},100)
+      },100)
       ",wait)
     )
   )	

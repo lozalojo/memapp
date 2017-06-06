@@ -19,7 +19,6 @@ library("gplots")
 library("RODBC")
 library("mixtools")
 library("mem")
-# library("shinysky")
 library("formattable")
 
 shinyUI(dashboardPage(skin = "black",
