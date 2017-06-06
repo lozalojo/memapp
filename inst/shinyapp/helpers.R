@@ -1532,4 +1532,4 @@ set.rzip<-function(){
 
 zip.present<-function() file.exists(Sys.getenv("R_ZIPCMD"))
 
-mdbtools.present<-function() file.exists("/usr/bin/mdb-tables")
+mdbtools.present<-function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
