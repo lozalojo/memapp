@@ -28,7 +28,7 @@ shinyUI(dashboardPage(skin = "black",
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
                       dashboardHeader(title = "MEM dashboard",
-                                      tags$li("05JUN2017, code under GPLv2 at",
+                                      tags$li("06JUN2017, code under GPLv2 at",
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 img(src = 'GitHub_Logo.png',
@@ -137,10 +137,94 @@ shinyUI(dashboardPage(skin = "black",
                                    #######################################
                                    tabBox(
                                      title = "MEM", width = 12, height = "800px",
-                                     tabPanel("Check & describe", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Check data series, timing and describe the data", uiOutput("tbData")),
-                                     tabPanel("Model", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
-                                     tabPanel("Surveillance", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Surveillance tools", uiOutput("tbSurveillance")),
-                                     tabPanel("Visualize", busyIndicator(text = "Calculation in progress. This may take a while...", wait = 500), "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
+                                     tabPanel("Check & describe", 
+                                              tagList(
+                                                singleton(tags$head(
+                                                  tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
+                                                ))
+                                                ,div(class="shinysky-busy-indicator",p("Calculation in progress. This may take a while..."),img(src="ajaxloaderq.gif"))
+                                                ,tags$script(sprintf(
+                                                  "	setInterval(function(){
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  setTimeout(function() {
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  $('div.shinysky-busy-indicator').show()
+                                                  }
+                                                  }, %d)  		    
+                                                  } else {
+                                                  $('div.shinysky-busy-indicator').hide()
+                                                  }
+                                                  },100)
+                                                  ",500)
+                                                )
+                                              ),
+                                              "Check data series, timing and describe the data", uiOutput("tbData")),
+                                     tabPanel("Model", 
+                                              tagList(
+                                                singleton(tags$head(
+                                                  tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
+                                                ))
+                                                ,div(class="shinysky-busy-indicator",p("Calculation in progress. This may take a while..."),img(src="ajaxloaderq.gif"))
+                                                ,tags$script(sprintf(
+                                                  "	setInterval(function(){
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  setTimeout(function() {
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  $('div.shinysky-busy-indicator').show()
+                                                  }
+                                                  }, %d)  		    
+                                                  } else {
+                                                  $('div.shinysky-busy-indicator').hide()
+                                                  }
+                                                  },100)
+                                                  ",500)
+                                                )
+                                              ),
+                                              "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
+                                     tabPanel("Surveillance", 
+                                              tagList(
+                                                singleton(tags$head(
+                                                  tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
+                                                ))
+                                                ,div(class="shinysky-busy-indicator",p("Calculation in progress. This may take a while..."),img(src="ajaxloaderq.gif"))
+                                                ,tags$script(sprintf(
+                                                  "	setInterval(function(){
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  setTimeout(function() {
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  $('div.shinysky-busy-indicator').show()
+                                                  }
+                                                  }, %d)  		    
+                                                  } else {
+                                                  $('div.shinysky-busy-indicator').hide()
+                                                  }
+                                                  },100)
+                                                  ",500)
+                                                )
+                                              ),
+                                              "Surveillance tools", uiOutput("tbSurveillance")),
+                                     tabPanel("Visualize", 
+                                              tagList(
+                                                singleton(tags$head(
+                                                  tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
+                                                ))
+                                                ,div(class="shinysky-busy-indicator",p("Calculation in progress. This may take a while..."),img(src="ajaxloaderq.gif"))
+                                                ,tags$script(sprintf(
+                                                  "	setInterval(function(){
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  setTimeout(function() {
+                                                  if ($('html').hasClass('shiny-busy')) {
+                                                  $('div.shinysky-busy-indicator').show()
+                                                  }
+                                                  }, %d)  		    
+                                                  } else {
+                                                  $('div.shinysky-busy-indicator').hide()
+                                                  }
+                                                  },100)
+                                                  ",500)
+                                                )
+                                              ),
+                                              "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
                                    )
                             ),
                             ###################################
