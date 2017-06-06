@@ -17,7 +17,7 @@ env:
   - _R_CHECK_FORCE_SUGGESTS_=false
 
 r_github_packages:
-  - renkun-ken/formattable AnalytixWare/ShinySky hadley/ggplot2 lozalojo/mem
+  - renkun-ken/formattable hadley/ggplot2 lozalojo/mem
 
 r_packages:
   - covr

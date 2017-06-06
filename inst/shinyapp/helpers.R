@@ -1073,7 +1073,7 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
       odbcCloseAll()
     }else if (.Platform$OS.type=="unix"){
       # check if mdbtools is installed
-      if (system("mdb-tables")==127){
+      if (!mdbtools.present()){
         datasets <- NULL
         datasetread<-NULL
         dataweeks=NULL
@@ -1532,3 +1532,4 @@ set.rzip<-function(){
 
 zip.present<-function() file.exists(Sys.getenv("R_ZIPCMD"))
 
+mdbtools.present<-function() file.exists("usr/bin/mdb-tables")
