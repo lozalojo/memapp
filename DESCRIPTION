@@ -3,7 +3,7 @@ Type: Package
 Title: The Moving Epidemics Method Shiny Web Application
 Version: 2.1.20170607
 Date: 2017-06-07
-Authors@R: person("Lozano", "Jose E.", email = "lozalojo@gmail.com", role = c("aut", "cre"))
+Authors@R: person(given = "Jose", family = "Lozano", middle = "E", email = "lozalojo@gmail.com", role = c("aut", "cre"))
 Depends:
     R (>= 3.4.0)
 Imports:
