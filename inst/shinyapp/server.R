@@ -2889,7 +2889,12 @@ output$tbsSurveillance <- renderUI({
     return(NULL)
   }else{
     tabsetPanel(tabPanel("Week", plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
-                tabPanel("Animated", imageOutput("tbsSurveillanceAnimated")),
+                if (requireNamespace("magick", quietly = TRUE)){
+                  tabPanel("Animated", imageOutput("tbsSurveillanceAnimated"))
+                }else{
+                  cat('magick package needed for this function to work. Please install it.\n')
+                  tabPanel("Animated", tableOutput("tbsSurveillanceAnimated_nomagick"))
+                },
                 tabPanel("Average", 
                          plotlyOutput("tbsSurveillanceAverage", width ="100%", height ="100%")
                          ,
@@ -3040,12 +3045,12 @@ output$tbsSurveillanceAnimated <- renderImage({
                           i.colThresholds=colors.palette$colThresholds)
       imgfile<-paste(tempdir(),"/animatedplot_",i,".png",sep="")
       ggsave(imgfile, plot=p$plot, width=8, height=6, dpi=150)
-      if (i==1) imgfilem<-image_read(imgfile) else imgfilem<-c(imgfilem,image_read(imgfile))
+      if (i==1) imgfilem<-magick::image_read(imgfile) else imgfilem<-c(imgfilem,magick::image_read(imgfile))
       #cat(imgfile,"\n")
     }
     imgfilegif<-paste(tempdir(),"/animated.gif",sep="")
-    anim <- image_animate(imgfilem, fps = 2)
-    image_write(anim,path=imgfilegif)
+    anim <- magick::image_animate(imgfilem, fps = 2)
+    magick::image_write(anim,path=imgfilegif)
     #cat(imgfilegif,"\n")
     outdistAnimated<-list(src = paste(tempdir(),"/animated.gif",sep=""),
                           contentType = 'image/gif',
@@ -3055,6 +3060,12 @@ output$tbsSurveillanceAnimated <- renderImage({
   }
   outdistAnimated
 }, deleteFile = TRUE)
+
+output$tbsSurveillanceAnimated_nomagick <- renderTable({
+  data.show<-data.frame(var="magick package needed for this function to work. Please install it.")
+  names(data.show)=""
+  data.show
+})
 
 output$tbsSurveillanceAverage <- renderPlotly({
   readdata <- read_data()
