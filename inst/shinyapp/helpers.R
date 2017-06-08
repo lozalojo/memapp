@@ -1398,14 +1398,16 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   return(i.plotly)
 }
 
-
-
 fixed_color_bar <- function (color = "lightgray", fixedWidth=150, alpha=0.5,...){
-  formatter("span", style = function(x) ifelse(is.na(x),
-                                               style(color = "white"),
-                                               style(display = "inline-block", direction = "rtl", `border-radius` = "4px", 
-                                                     `padding-right` = "2px", `background-color` = csscolor(add.alpha.to.color(color, alpha)), 
-                                                     width = paste(fixedWidth*proportion(x, na.rm = T),"px",sep=""), ...)
+  formattable::formatter("span", style = function(x) ifelse(is.na(x),
+                                                            formattable::style(color = "white"),
+                                                            formattable::style(display = "inline-block", 
+                                                                               direction = "rtl", 
+                                                                               `border-radius` = "4px", 
+                                                                               `padding-right` = "2px", 
+                                                                               `background-color` = formattable::csscolor(add.alpha.to.color(color, alpha)), 
+                                                                               width = paste(fixedWidth*formattable::proportion(x, na.rm = T), "px", sep=""), 
+                                                                               ...)
   )
   )
 }
