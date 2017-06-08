@@ -25,7 +25,8 @@ Imports:
     formattable,
     ggplot2,
     plotly,
-    mem (>= 2.5)
+    mem (>= 2.5),
+    R.utils
 Suggests:
     magick
 Remotes:

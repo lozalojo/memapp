@@ -1315,7 +1315,7 @@ output$tbdEvolution <- renderUI({
                 tabPanel("Start",plotlyOutput("tbdEstart", width ="100%", height ="100%")),
                 tabPanel("Percentage", plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
                 tabPanel("Thresholds",plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
-                tabPanel("Scheme", formattableOutput("tbdEscheme")),
+                tabPanel("Scheme", formattable::formattableOutput("tbdEscheme")),
                 tabPanel("Details", 
                          DT::dataTableOutput("tbdEdetails"),
                          fluidRow(
@@ -1543,7 +1543,7 @@ output$tbdEthresholds <- renderPlotly({
 #   datashow
 # }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 
-output$tbdEscheme <- renderFormattable({
+output$tbdEscheme <- formattable::renderFormattable({
   dataevolution <- data_evolution()
   if(is.null(dataevolution)){
     datashow<-NULL
@@ -1619,7 +1619,7 @@ output$tbdStability <- renderUI({
                 tabPanel("Percentage", plotlyOutput("tbdSpercentage", width ="100%", height ="100%")),
                 tabPanel("Thresholds",plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
                 #tabPanel("Scheme", DT::dataTableOutput("tbdSscheme")),
-                tabPanel("Scheme", formattableOutput("tbdSscheme")),
+                tabPanel("Scheme", formattable::formattableOutput("tbdSscheme")),
                 tabPanel("Details", 
                          DT::dataTableOutput("tbdSdetails"),
                          fluidRow(
@@ -1832,7 +1832,7 @@ output$tbdSthresholds <- renderPlotly({
 #   datashow
 # }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 
-output$tbdSscheme <- renderFormattable({
+output$tbdSscheme <- formattable::renderFormattable({
   datastability <- data_stability()
   if(is.null(datastability)){
     datashow<-NULL
@@ -2307,7 +2307,7 @@ output$tbmGoodnessModel <- renderUI({
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessModelSummary")),
                 tabPanel("Detailed", 
-                         formattableOutput("tbmGoodnessModelDetail1"),
+                         formattable::formattableOutput("tbmGoodnessModelDetail1"),
                          fluidRow(
                            column(8),
                            column(2,
@@ -2323,7 +2323,7 @@ output$tbmGoodnessModel <- renderUI({
                          ),
                 tabPanel("Intensity", uiOutput("tbmGoodnessModelIntensity")),
                 tabPanel("Detailed", 
-                         formattableOutput("tbmGoodnessModelDetail2"),
+                         formattable::formattableOutput("tbmGoodnessModelDetail2"),
                          fluidRow(
                            column(8),
                            column(2,
@@ -2356,7 +2356,7 @@ output$tbmGoodnessModelSummary <- renderUI({
   }
 })
 
-output$tbmGoodnessModelDetail1<-renderFormattable({
+output$tbmGoodnessModelDetail1 <- formattable::renderFormattable({
   good <- data_good_model()
   if(!is.null(good)){
     temp1<-as.data.frame(good$validity.data)
@@ -2448,7 +2448,7 @@ output$tbmGoodnessModelIntensity <- renderUI({
   }
 })
 
-output$tbmGoodnessModelDetail2<-renderFormattable({
+output$tbmGoodnessModelDetail2 <- formattable::renderFormattable({
   good <- data_good_model()
   if(!is.null(good)){
     temp1 <- good$peaks.data
@@ -2527,7 +2527,7 @@ output$tbmGoodnessGlobal <- renderUI({
   else
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessGlobalSummary")),
                 tabPanel("Detailed", 
-                         formattableOutput("tbmGoodnessGlobalDetail1"),
+                         formattable::formattableOutput("tbmGoodnessGlobalDetail1"),
                          fluidRow(
                            column(8),
                            column(2,
@@ -2543,7 +2543,7 @@ output$tbmGoodnessGlobal <- renderUI({
                          ),
                 tabPanel("Intensity", uiOutput("tbmGoodnessGlobalIntensity")),
                 tabPanel("Detailed", 
-                         formattableOutput("tbmGoodnessGlobalDetail2"),
+                         formattable::formattableOutput("tbmGoodnessGlobalDetail2"),
                          fluidRow(
                            column(8),
                            column(2,
@@ -2576,7 +2576,7 @@ output$tbmGoodnessGlobalSummary <- renderUI({
   }
 })
 
-output$tbmGoodnessGlobalDetail1<-renderFormattable({
+output$tbmGoodnessGlobalDetail1 <- formattable::renderFormattable({
   good <- data_good_global()
   if(!is.null(good)){
     temp1<-as.data.frame(good$validity.data)
@@ -2668,7 +2668,7 @@ output$tbmGoodnessGlobalIntensity <- renderUI({
   }
 })
 
-output$tbmGoodnessGlobalDetail2<-renderFormattable({
+output$tbmGoodnessGlobalDetail2 <- formattable::renderFormattable({
   good <- data_good_global()
   if(!is.null(good)){
     temp1 <- good$peaks.data
@@ -2746,7 +2746,7 @@ output$tbmOptimize <- renderUI({
   }else{
     tabsetPanel(tabPanel("Indicators", uiOutput("tbmOptimizeSummary")),
                 tabPanel("Detailed", 
-                         formattableOutput("tbmOptimizeDetail"),
+                         formattable::formattableOutput("tbmOptimizeDetail"),
                          fluidRow(
                            column(8),
                            column(2,
@@ -2785,7 +2785,7 @@ output$tbmOptimizeSummary <- renderUI({
   }
 })
 
-output$tbmOptimizeDetail<-renderFormattable({
+output$tbmOptimizeDetail <- formattable::renderFormattable({
   dataoptim <- data_optim()
   if(!is.null(dataoptim)){
     temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
