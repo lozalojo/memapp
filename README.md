@@ -41,16 +41,6 @@ memapp::runmemapp()
 You can specify other parameters passed to `shiny::runApp`, such as `display = normal`, or  
 `launch.browser = TRUE`.
 
-## More on the memapp
-
-There are two documents that you will find useful when running the app:
-
-1.  The *surveillance Guidelines*.
-    
-1.  The *Technical Manual*.
-
-Both are included in the help menu of the application.
-
 ## References
 
 Vega T., Lozano J.E. (2004) Modelling influenza epidemic - can we detect the beginning and predict the intensity and duration? International Congress Series 1263 (2004) 281-283.
