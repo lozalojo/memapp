@@ -23,7 +23,6 @@ Imports:
     DT,
     gplots,
     RODBC,
-    mixtools,
     formattable,
     ggplot2,
     plotly,
