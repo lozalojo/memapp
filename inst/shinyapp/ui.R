@@ -17,7 +17,6 @@ library("formattable")
 library("ggplot2")
 library("plotly")
 library("mem")
-library("R.utils")
 
 shinyUI(dashboardPage(skin = "black",
                       ###################################
