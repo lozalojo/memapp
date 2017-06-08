@@ -1055,9 +1055,16 @@ output$tbData <- renderUI({
                 tabPanel("Data", 
                          DT::dataTableOutput("tbdData"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbdData_x","xlsx")),
-                           column(1,downloadButton("tbdData_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbdData_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbdData_c","csv"))
                          )                         
                          ),
                 tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
@@ -1312,9 +1319,16 @@ output$tbdEvolution <- renderUI({
                 tabPanel("Details", 
                          DT::dataTableOutput("tbdEdetails"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbdEdetails_x","xlsx")),
-                           column(1,downloadButton("tbdEdetails_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbdEdetails_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbdEdetails_c","csv"))
                          )
                          )
     )
@@ -1609,9 +1623,16 @@ output$tbdStability <- renderUI({
                 tabPanel("Details", 
                          DT::dataTableOutput("tbdSdetails"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbdSdetails_x","xlsx")),
-                           column(1,downloadButton("tbdSdetails_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbdSdetails_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbdSdetails_c","csv"))
                          ))
     )
   }
@@ -1888,9 +1909,16 @@ output$tbModel <- renderUI({
     tabsetPanel(tabPanel("Data", 
                          DT::dataTableOutput("tbmData"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbmData_x","xlsx")),
-                           column(1,downloadButton("tbmData_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbmData_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbmData_c","csv"))
                          )
                          ),
                 tabPanel("Seasons", plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
@@ -2281,18 +2309,32 @@ output$tbmGoodnessModel <- renderUI({
                 tabPanel("Detailed", 
                          formattableOutput("tbmGoodnessModelDetail1"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbmGoodnessModelDetail1_x","xlsx")),
-                           column(1,downloadButton("tbmGoodnessModelDetail1_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbmGoodnessModelDetail1_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbmGoodnessModelDetail1_c","csv"))
                          )
                          ),
                 tabPanel("Intensity", uiOutput("tbmGoodnessModelIntensity")),
                 tabPanel("Detailed", 
                          formattableOutput("tbmGoodnessModelDetail2"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbmGoodnessModelDetail2_x","xlsx")),
-                           column(1,downloadButton("tbmGoodnessModelDetail2_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbmGoodnessModelDetail2_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbmGoodnessModelDetail2_c","csv"))
                          )
                          )
     )
@@ -2487,18 +2529,32 @@ output$tbmGoodnessGlobal <- renderUI({
                 tabPanel("Detailed", 
                          formattableOutput("tbmGoodnessGlobalDetail1"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbmGoodnessGlobalDetail1_x","xlsx")),
-                           column(1,downloadButton("tbmGoodnessGlobalDetail1_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbmGoodnessGlobalDetail1_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbmGoodnessGlobalDetail1_c","csv"))
                          )
                          ),
                 tabPanel("Intensity", uiOutput("tbmGoodnessGlobalIntensity")),
                 tabPanel("Detailed", 
                          formattableOutput("tbmGoodnessGlobalDetail2"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbmGoodnessGlobalDetail2_x","xlsx")),
-                           column(1,downloadButton("tbmGoodnessGlobalDetail2_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbmGoodnessGlobalDetail2_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbmGoodnessGlobalDetail2_c","csv"))
                          )
                          )
     )
@@ -2692,9 +2748,16 @@ output$tbmOptimize <- renderUI({
                 tabPanel("Detailed", 
                          formattableOutput("tbmOptimizeDetail"),
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbmOptimizeDetail_x","xlsx")),
-                           column(1,downloadButton("tbmOptimizeDetail_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbmOptimizeDetail_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbmOptimizeDetail_c","csv"))
                          )
                          ),
                 tabPanel("Graphs",plotlyOutput("tbmOptimizeGraph"))
@@ -2899,9 +2962,16 @@ output$tbsSurveillance <- renderUI({
                          plotlyOutput("tbsSurveillanceAverage", width ="100%", height ="100%")
                          ,
                          fluidRow(
-                           column(10),
-                           column(1,if (zip.present()) downloadButton("tbsSurveillanceAverage_x","xlsx")),
-                           column(1,downloadButton("tbsSurveillanceAverage_c","csv"))
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbsSurveillanceAverage_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbsSurveillanceAverage_c","csv"))
                          )
                          )
     )
