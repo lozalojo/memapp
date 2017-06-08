@@ -1,6 +1,6 @@
 Package: memapp
 Type: Package
-Title: The Moving Epidemic Method Shiny Web Application
+Title: The Moving Epidemic Method Web Application
 Version: 2.1.20170608
 Date: 2017-06-08
 Authors@R: person(given = "Jose E.", family = "Lozano", email = "lozalojo@gmail.com", role = c("aut", "cre"))

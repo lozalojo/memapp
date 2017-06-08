@@ -124,7 +124,7 @@ shinyUI(dashboardPage(skin = "black",
                         tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
                         fluidPage(
                           # Application title
-                          titlePanel(h1("The Moving Epidemics Method Shiny Web Application")),
+                          titlePanel(h1("The Moving Epidemic Method Web Application")),
                           tagList(
                             singleton(tags$head(
                               tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
