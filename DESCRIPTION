@@ -15,7 +15,6 @@ Imports:
     RColorBrewer,
     ggthemes,
     reshape2,
-    R.utils,
     openxlsx,
     readxl,
     stringr,
