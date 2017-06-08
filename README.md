@@ -1,4 +1,4 @@
-# The Moving Epidemics Method Shiny Web Application
+# The Moving Epidemic Method Shiny Web Application
 
 [![Travis Build Status](https://travis-ci.org/lozalojo/memapp.svg?branch=master)](https://travis-ci.org/lozalojo/memapp)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lozalojo/memapp/master.svg)](https://codecov.io/github/lozalojo/memapp?branch=master)
@@ -9,7 +9,7 @@
 
 ## Overview
 
-*memapp* is a web application created to serve as a graphical user interface for the R mem library. It was created using Shiny, a web application framework for R. This application uses the development version of the mem R library.
+*memapp* is a web application created to serve as a graphical user interface for the R mem package. It was created using Shiny, a web application framework for R. This application uses the development version of the mem R library.
 
 ## Installation
 
