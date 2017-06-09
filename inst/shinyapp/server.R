@@ -1,3 +1,4 @@
+options(warn =-1)
 source("helpers.R")
 set.rzip()
 
