@@ -1102,9 +1102,15 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
           filecsv <- tempfile()
           system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.dataset), '>', filecsv))
           # detect encoding
-          encodings<-readr::guess_encoding(filecsv, n_max = -1)
-          encodings<-encodings[order(encodings$confidence,decreasing = T),]
-          myencoding<-as.character(encodings$encoding[1])
+          # encodings<-readr::guess_encoding(filecsv, n_max = -1)
+          # encodings<-encodings[order(encodings$confidence,decreasing = T),]
+          # myencoding<-as.character(encodings$encoding[1])
+          lines <- paste(readLines(filecsv, n = -1),collapse="")
+          if (stringi::stri_enc_isascii(lines)) {
+            myencoding<-"ASCII"
+          }else{
+            myencoding <- stringi::stri_enc_detect(lines)[[1]]$`Encoding`[1]
+          }
           # detect separator and decimal separator
           firstline<-readLines(filecsv,1,encoding=myencoding)
           separators<-c(',',';','\t','\\|')
@@ -1155,9 +1161,15 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
     n.datasets<-length(datasets)
     # text files
     # detect encoding
-    temp1<-readr::guess_encoding(i.file, n_max = -1)
-    temp1<-temp1[order(temp1$confidence,decreasing = T),]
-    myencoding<-as.character(temp1$encoding[1])
+    # temp1<-readr::guess_encoding(i.file, n_max = -1)
+    # temp1<-temp1[order(temp1$confidence,decreasing = T),]
+    # myencoding<-as.character(temp1$encoding[1])
+    lines <- paste(readLines(i.file, n = -1),collapse="")
+    if (stringi::stri_enc_isascii(lines)) {
+      myencoding<-"ASCII"
+    }else{
+      myencoding <- stringi::stri_enc_detect(lines)[[1]]$`Encoding`[1]
+    }
     cat("read_data> Text file detected: ",filenameextension," (encoding: ",myencoding,")\n",sep="")
     if (is.na(i.dataset)){
       datasetread<-NULL
