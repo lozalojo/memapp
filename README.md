@@ -20,7 +20,7 @@ The package can be installed from the official R repositories (*CRAN*) using the
 install.packages("memapp")
 ```
 
-Nevertheless, *memapp* uses some sensible packages that are updated frequently in their respective development versions hosted at github. To install the development version of *memapp* along with development versions of their dependencies, it is recommended to install it from the sources at github.
+Nevertheless, *memapp* uses some sensitive packages that are updated frequently in their respective development versions hosted at github. To install the development version of *memapp* along with development versions of their dependencies, it is recommended to install it from the sources at github.
 
 ```
 # install the devtools package
