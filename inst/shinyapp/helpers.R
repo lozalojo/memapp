@@ -28,10 +28,10 @@ generate_palette <- function(i.number.series=NA,
   if (is.null(i.colEpidemic)) i.colEpidemic<-"default" else if (is.na(i.colEpidemic)) i.colEpidemic<-"default"
   
   # First four are simple colors
-  if (i.colObservedLines=="default") i.colObservedLines<-params.default$colObservedLines else i.colObservedLines<-col2hex(i.colObservedLines)
-  if (i.colObservedPoints=="default") i.colObservedPoints<-params.default$colObservedPoints else i.colObservedPoints<-col2hex(i.colObservedPoints)
-  if (i.colEpidemicStart=="default") i.colEpidemicStart<-params.default$colEpidemicStart else i.colEpidemicStart<-col2hex(i.colEpidemicStart)
-  if (i.colEpidemicStop=="default") i.colEpidemicStop<-params.default$colEpidemicStop else i.colEpidemicStop<-col2hex(i.colEpidemicStop)
+  if (i.colObservedLines=="default") i.colObservedLines<-params.default$colObservedLines else i.colObservedLines<-rgb(t(col2rgb(i.colObservedLines))/255)
+  if (i.colObservedPoints=="default") i.colObservedPoints<-params.default$colObservedPoints else i.colObservedPoints<-rgb(t(col2rgb(i.colObservedPoints))/255)
+  if (i.colEpidemicStart=="default") i.colEpidemicStart<-params.default$colEpidemicStart else i.colEpidemicStart<-rgb(t(col2rgb(i.colEpidemicStart))/255)
+  if (i.colEpidemicStop=="default") i.colEpidemicStop<-params.default$colEpidemicStop else i.colEpidemicStop<-rgb(t(col2rgb(i.colEpidemicStop))/255)
   # Fifth to Seventh are palettes that I must create
   if (i.colThresholds=="default") i.colThresholds<-params.default$colThresholds else i.colThresholds<-brewer.pal(7,i.colThresholds)[2:6]
   if (i.colSeasons=="default") i.colSeasons<-params.default$colSeasons
