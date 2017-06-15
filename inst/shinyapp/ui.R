@@ -24,7 +24,7 @@ shinyUI(dashboardPage(skin = "black",
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
                       dashboardHeader(title = "MEM dashboard",
-                                      tags$li("memapp v2.1.20170611, code under GPLv2 at",
+                                      tags$li("memapp v2.1.20170615, code under GPLv2 at",
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 img(src = 'GitHub_Logo.png',
@@ -241,7 +241,13 @@ shinyUI(dashboardPage(skin = "black",
                                      bsPopover(id = "typeother", title = "Other confidence intervals", content = "Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.", placement = "left", trigger = "hover", options = list(container = "body")),
                                      numericInput("leveltypicalcurve", h6("Average curve/Other CI. level", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5),
                                      bsPopover(id = "leveltypicalcurve", title = "Average curve intervals", content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "left", trigger = "hover", options = list(container = "body"))
-                                   )                                   
+                                   ),
+                                   shinydashboard::box(
+                                     title="Support", status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                                     #h5(a("Surveillance guidelines", href="NULL", target="_blank")),
+                                     h5(a("Technical manual", href="https://drive.google.com/file/d/0B0IUo_0NhTOoeWdBcnRVcl9HUFk/view?usp=sharing", target="_blank")),
+                                     h5(a("Submit issues", href="https://github.com/lozalojo/memapp/issues", target="_blank"))
+                                   )
                             )
                           )
                         )
