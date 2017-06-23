@@ -24,11 +24,7 @@ shinyUI(dashboardPage(skin = "black",
                       # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown, 
                       # so we can pass such elements instead of dropdownMenus
                       dashboardHeader(title = "MEM dashboard",
-<<<<<<< HEAD
                                       tags$li("memapp v2.2.20170623, code under GPLv2 at",
-=======
-                                      tags$li("memapp v2.1.20170618, code under GPLv2 at",
->>>>>>> d207a3ad819313c231caaf598641781bbaa90164
                                               class = "dropdown"),
                                       tags$li(a(href = 'https://github.com/lozalojo/memapp',
                                                 target="_blank",
