@@ -1072,7 +1072,8 @@ output$tbData <- renderUI({
                 tabPanel("Series",plotlyOutput("tbdSeries", width ="100%", height ="100%")),
                 tabPanel("Timing",uiOutput("tbdTiming")),
                 tabPanel("Evolution",uiOutput("tbdEvolution")),
-                tabPanel("Stability",uiOutput("tbdStability"))
+                tabPanel("Stability",uiOutput("tbdStability")),
+                tabPanel("Goodness",uiOutput("tbdGoodness"))
     )
   }
 })
@@ -1317,19 +1318,19 @@ output$tbdEvolution <- renderUI({
                 tabPanel("Percentage", plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
                 tabPanel("Thresholds",plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
                 tabPanel("Scheme", formattable::formattableOutput("tbdEscheme")),
-                tabPanel("Details", 
-                         DT::dataTableOutput("tbdEdetails"),
+                tabPanel("Detailed", 
+                         DT::dataTableOutput("tbdEdetailed"),
                          fluidRow(
                            column(8),
                            column(2,
                                   if (zip.present()){
-                                    downloadButton("tbdEdetails_x","xlsx")
+                                    downloadButton("tbdEdetailed_x","xlsx")
                                   }else if (.Platform$OS.type=="windows"){
                                     shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                   }else if (.Platform$OS.type=="unix"){
                                     shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
                                   }),
-                           column(2,downloadButton("tbdEdetails_c","csv"))
+                           column(2,downloadButton("tbdEdetailed_c","csv"))
                          )
                          )
     )
@@ -1559,7 +1560,7 @@ output$tbdEscheme <- formattable::renderFormattable({
   datashow
 })
 
-output$tbdEdetails <- DT::renderDataTable({
+output$tbdEdetailed <- DT::renderDataTable({
   dataevolution <- data_evolution()
   if(is.null(dataevolution)){
     datashow<-NULL
@@ -1572,21 +1573,21 @@ output$tbdEdetails <- DT::renderDataTable({
 #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
-# observeEvent(input$tbdEdetails_x, {
+# observeEvent(input$tbdEdetailed_x, {
 #   dataevolution <- data_evolution()
 #   datashow<-dataevolution$evolution.data
 #   names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
 #   if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="xlsx")
 # })
 # 
-# observeEvent(input$tbdEdetails_c, {
+# observeEvent(input$tbdEdetailed_c, {
 #   dataevolution <- data_evolution()
 #   datashow<-dataevolution$evolution.data
 #   names(datashow)<-c("Seasons","Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
 #   if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet="Evolution", i.rownames="Season", i.format="csv")
 # })
 
-output$tbdEdetails_x <- downloadHandler(
+output$tbdEdetailed_x <- downloadHandler(
   filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
       dataevolution <- data_evolution()
@@ -1599,7 +1600,7 @@ output$tbdEdetails_x <- downloadHandler(
   contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-output$tbdEdetails_c <- downloadHandler(
+output$tbdEdetailed_c <- downloadHandler(
   filename = function() { paste(input$dataset, '.csv', sep='') },
   content = function(file) {
       dataevolution <- data_evolution()
@@ -1623,19 +1624,19 @@ output$tbdStability <- renderUI({
                 tabPanel("Thresholds",plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
                 #tabPanel("Scheme", DT::dataTableOutput("tbdSscheme")),
                 tabPanel("Scheme", formattable::formattableOutput("tbdSscheme")),
-                tabPanel("Details", 
-                         DT::dataTableOutput("tbdSdetails"),
+                tabPanel("Detailed", 
+                         DT::dataTableOutput("tbdSdetailed"),
                          fluidRow(
                            column(8),
                            column(2,
                                   if (zip.present()){
-                                    downloadButton("tbdSdetails_x","xlsx")
+                                    downloadButton("tbdSdetailed_x","xlsx")
                                   }else if (.Platform$OS.type=="windows"){
                                     shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                   }else if (.Platform$OS.type=="unix"){
                                     shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
                                   }),
-                           column(2,downloadButton("tbdSdetails_c","csv"))
+                           column(2,downloadButton("tbdSdetailed_c","csv"))
                          ))
     )
   }
@@ -1850,7 +1851,7 @@ output$tbdSscheme <- formattable::renderFormattable({
   datashow
 })
 
-output$tbdSdetails <- DT::renderDataTable({
+output$tbdSdetailed <- DT::renderDataTable({
   datastability <- data_stability()
   if(is.null(datastability)){
     datashow<-NULL
@@ -1863,21 +1864,21 @@ output$tbdSdetails <- DT::renderDataTable({
 #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
 options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
 
-# observeEvent(input$tbdSdetails_x, {
+# observeEvent(input$tbdSdetailed_x, {
 #   datastability <- data_stability()
 #   datashow<-datastability$stability.data
 #   names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
 #   if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="xlsx")
 # })
 # 
-# observeEvent(input$tbdSdetails_c, {
+# observeEvent(input$tbdSdetailed_c, {
 #   datastability <- data_stability()
 #   datashow<-datastability$stability.data
 #   names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
 #   if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet="Stability", i.rownames="Seasons", i.format="csv")
 # })
 
-output$tbdSdetails_x <- downloadHandler(
+output$tbdSdetailed_x <- downloadHandler(
   filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     datastability <- data_stability()
@@ -1889,7 +1890,7 @@ output$tbdSdetails_x <- downloadHandler(
   contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-output$tbdSdetails_c <- downloadHandler(
+output$tbdSdetailed_c <- downloadHandler(
   filename = function() { paste(input$dataset, '.csv', sep='') },
   content = function(file) {
     datastability <- data_stability()
@@ -1897,6 +1898,194 @@ output$tbdSdetails_c <- downloadHandler(
     names(datashow)<-c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr.")
     if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file, 
                                               i.sheet="Stability", i.rownames="Seasons", i.format="csv")
+  },
+  contentType="text/csv"
+)
+
+output$tbdGoodness <- renderUI({
+  readdata <- read_data()
+  datfile <- readdata$datasetread
+  if(is.null(datfile)){
+    return(NULL)
+  }
+  else
+    tabsetPanel(tabPanel("Indicators", uiOutput("tbdGoodnessIndicators")),
+                tabPanel("Summary", 
+                         formattable::formattableOutput("tbdGoodnessSummary"),
+                         fluidRow(
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbdGoodnessSummary_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbdGoodnessSummary_c","csv"))
+                         )
+                ),
+                tabPanel("Intensity", uiOutput("tbdGoodnessIntensity")),
+                tabPanel("Detailed", 
+                         formattable::formattableOutput("tbdGoodnessDetailed"),
+                         fluidRow(
+                           column(8),
+                           column(2,
+                                  if (zip.present()){
+                                    downloadButton("tbdGoodnessDetailed_x","xlsx")
+                                  }else if (.Platform$OS.type=="windows"){
+                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                  }else if (.Platform$OS.type=="unix"){
+                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                  }),
+                           column(2,downloadButton("tbdGoodnessDetailed_c","csv"))
+                         )
+                )
+    )
+})
+
+output$tbdGoodnessIndicators <- renderUI({
+  good <- data_good_global()
+  if(is.null(good)){
+    return(NULL)
+  }else{
+    fluidRow(
+      valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+      valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+      valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+    )
+  }
+})
+
+output$tbdGoodnessSummary <- formattable::renderFormattable({
+  good <- data_good_global()
+  if(!is.null(good)){
+    temp1<-as.data.frame(good$validity.data)
+    temp1$Total<-good$results
+    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+    # temp1[is.na(temp1)]<--1
+    good.table<-formattable::formattable(temp1, list(
+      # area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
+      # area(col = names(temp1)[5:6]) ~ normalize_bar("#A5DBEB", 0.2)
+      "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+      "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+      "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+      "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+      "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
+      "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
+    ), digits = 2, format = "f")    
+  }else{
+    temp1<-data.frame(Error="Number of columns must be greater than 2")
+    good.table<-formattable::formattable(temp1)
+  }
+  good.table
+})
+
+output$tbdGoodnessSummary_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1<-as.data.frame(good$validity.data)
+      temp1$Total<-good$results
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness indicators", i.rownames="Season", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbdGoodnessSummary_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1<-as.data.frame(good$validity.data)
+      temp1$Total<-good$results
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness indicators", i.rownames="Season", i.format="csv")
+    }
+  },
+  contentType="text/csv"
+)
+
+output$tbdGoodnessIntensity <- renderUI({
+  good <- data_good_global()
+  peaks <- good$peaks
+  if(is.null(good)){
+    return(NULL)
+  }else{
+    fluidRow(
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+      valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
+      valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
+    )
+  }
+})
+
+output$tbdGoodnessDetailed <- formattable::renderFormattable({
+  good <- data_good_global()
+  if(!is.null(good)){
+    temp1 <- good$peaks.data
+    temp1$Level<-as.character(temp1$Level)
+    thr.c<-generate_palette(i.colThresholds=input$colThresholds)$colThresholds
+    lvl.n<-as.character(c(1:5))
+    lvl.t<-c("Baseline","Low","Medium","High","Very high")
+    lvl.c<-c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c")
+    peaks.data<-formattable::formattable(temp1, list(
+      Level = formattable::formatter("span", 
+                                     style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+      Description = formattable::formatter("span", 
+                                           style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+      "Epidemic threshold"=formattable::formatter("span", 
+                                                  style = formattable::style(color = thr.c[1], font.weight = "bold")),
+      "Medium threshold"=formattable::formatter("span", 
+                                                style = formattable::style(color = thr.c[2], font.weight = "bold")),
+      "High threshold"=formattable::formatter("span", 
+                                              style = formattable::style(color = thr.c[3], font.weight = "bold")),
+      "Very high threshold"=formattable::formatter("span", 
+                                                   style = formattable::style(color = thr.c[4], font.weight = "bold"))
+    ), digits = 2, format = "f")
+  }else{
+    temp1<-data.frame(Error="Number of columns must be greater than 2")
+    peaks.data<-formattable::formattable(temp1)
+  }
+  peaks.data
+})
+
+output$tbdGoodnessDetailed_x <- downloadHandler(
+  filename = function() { paste(input$dataset, '.xlsx', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1 <- good$peaks.data
+      temp1$Level<-as.character(temp1$Level)
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness intensity", i.rownames="Season", i.format="xlsx")
+    }
+  },
+  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+output$tbdGoodnessDetailed_c <- downloadHandler(
+  filename = function() { paste(input$dataset, '.csv', sep='') },
+  content = function(file) {
+    good <- data_good_global()
+    if(!is.null(good)){
+      temp1 <- good$peaks.data
+      temp1$Level<-as.character(temp1$Level)
+      export.mydata(i.data=temp1, i.file = file, 
+                    i.sheet="Global goodness intensity", i.rownames="Season", i.format="csv")
+    }
   },
   contentType="text/csv"
 )
@@ -2291,6 +2480,18 @@ output$tbmMemGraphAverage <- renderPlotly({
   zfix
 })
 
+# output$tbmGoodness <- renderUI({
+#   readdata <- read_data()
+#   datfile <- readdata$datasetread
+#   if(is.null(datfile)){
+#     return(NULL)
+#   }
+#   else
+#     tabsetPanel(tabPanel("Model", uiOutput("tbmGoodnessModel")),
+#                 tabPanel("Global", uiOutput("tbmGoodnessGlobal"))
+#     )
+# })
+
 output$tbmGoodness <- renderUI({
   readdata <- read_data()
   datfile <- readdata$datasetread
@@ -2298,54 +2499,42 @@ output$tbmGoodness <- renderUI({
     return(NULL)
   }
   else
-    tabsetPanel(tabPanel("Model", uiOutput("tbmGoodnessModel")),
-                tabPanel("Global", uiOutput("tbmGoodnessGlobal"))
-    )
-})
-
-output$tbmGoodnessModel <- renderUI({
-  readdata <- read_data()
-  datfile <- readdata$datasetread
-  if(is.null(datfile)){
-    return(NULL)
-  }
-  else
-    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessModelSummary")),
-                tabPanel("Detailed", 
-                         formattable::formattableOutput("tbmGoodnessModelDetail1"),
+    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessIndicators")),
+                tabPanel("Summary", 
+                         formattable::formattableOutput("tbmGoodnessSummary"),
                          fluidRow(
                            column(8),
                            column(2,
                                   if (zip.present()){
-                                    downloadButton("tbmGoodnessModelDetail1_x","xlsx")
+                                    downloadButton("tbmGoodnessSummary_x","xlsx")
                                   }else if (.Platform$OS.type=="windows"){
                                     shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                   }else if (.Platform$OS.type=="unix"){
                                     shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
                                   }),
-                           column(2,downloadButton("tbmGoodnessModelDetail1_c","csv"))
+                           column(2,downloadButton("tbmGoodnessSummary_c","csv"))
                          )
-                         ),
-                tabPanel("Intensity", uiOutput("tbmGoodnessModelIntensity")),
+                ),
+                tabPanel("Intensity", uiOutput("tbmGoodnessIntensity")),
                 tabPanel("Detailed", 
-                         formattable::formattableOutput("tbmGoodnessModelDetail2"),
+                         formattable::formattableOutput("tbmGoodnessDetailed"),
                          fluidRow(
                            column(8),
                            column(2,
                                   if (zip.present()){
-                                    downloadButton("tbmGoodnessModelDetail2_x","xlsx")
+                                    downloadButton("tbmGoodnessDetailed_x","xlsx")
                                   }else if (.Platform$OS.type=="windows"){
                                     shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                   }else if (.Platform$OS.type=="unix"){
                                     shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
                                   }),
-                           column(2,downloadButton("tbmGoodnessModelDetail2_c","csv"))
+                           column(2,downloadButton("tbmGoodnessDetailed_c","csv"))
                          )
-                         )
+                )
     )
 })
 
-output$tbmGoodnessModelSummary <- renderUI({
+output$tbmGoodnessIndicators <- renderUI({
   good <- data_good_model()
   if(is.null(good)){
     return(NULL)
@@ -2361,7 +2550,7 @@ output$tbmGoodnessModelSummary <- renderUI({
   }
 })
 
-output$tbmGoodnessModelDetail1 <- formattable::renderFormattable({
+output$tbmGoodnessSummary <- formattable::renderFormattable({
   good <- data_good_model()
   if(!is.null(good)){
     temp1<-as.data.frame(good$validity.data)
@@ -2385,27 +2574,7 @@ output$tbmGoodnessModelDetail1 <- formattable::renderFormattable({
   good.table
 })
 
-# observeEvent(input$tbmGoodnessModelDetail1_x, {
-#   good <- data_good_model()
-#   if(!is.null(good)){
-#     temp1<-as.data.frame(good$validity.data)
-#     temp1$Total<-good$results
-#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-#     export.mydata(i.data=temp1, i.sheet="Goodness_model_1", i.rownames="Season", i.format="xlsx")
-#   }
-# })
-# 
-# observeEvent(input$tbmGoodnessModelDetail1_c, {
-#   good <- data_good_model()
-#   if(!is.null(good)){
-#     temp1<-as.data.frame(good$validity.data)
-#     temp1$Total<-good$results
-#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-#     export.mydata(i.data=temp1, i.sheet="Goodness_model_1", i.rownames="Season", i.format="csv")
-#   }
-# })
-
-output$tbmGoodnessModelDetail1_x <- downloadHandler(
+output$tbmGoodnessSummary_x <- downloadHandler(
   filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
     good <- data_good_model()
@@ -2420,7 +2589,7 @@ output$tbmGoodnessModelDetail1_x <- downloadHandler(
   contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-output$tbmGoodnessModelDetail1_c <- downloadHandler(
+output$tbmGoodnessSummary_c <- downloadHandler(
   filename = function() { paste(input$dataset, '.csv', sep='') },
   content = function(file) {
     good <- data_good_model()
@@ -2435,7 +2604,7 @@ output$tbmGoodnessModelDetail1_c <- downloadHandler(
   contentType="text/csv"
 )
 
-output$tbmGoodnessModelIntensity <- renderUI({
+output$tbmGoodnessIntensity <- renderUI({
   good <- data_good_model()
   peaks <- good$peaks
   if(is.null(good)){
@@ -2453,234 +2622,8 @@ output$tbmGoodnessModelIntensity <- renderUI({
   }
 })
 
-output$tbmGoodnessModelDetail2 <- formattable::renderFormattable({
+output$tbmGoodnessDetailed <- formattable::renderFormattable({
   good <- data_good_model()
-  if(!is.null(good)){
-    temp1 <- good$peaks.data
-    temp1$Level<-as.character(temp1$Level)
-    thr.c<-generate_palette(i.colThresholds=input$colThresholds)$colThresholds
-    lvl.n<-as.character(c(1:5))
-    lvl.t<-c("Baseline","Low","Medium","High","Very high")
-    lvl.c<-c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c")
-    peaks.data<-formattable::formattable(temp1, list(
-      Level = formattable::formatter("span", 
-                                     style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
-      Description = formattable::formatter("span", 
-                              style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
-      "Epidemic threshold"=formattable::formatter("span", 
-                                                  style = formattable::style(color = thr.c[1], font.weight = "bold")),
-      "Medium threshold"=formattable::formatter("span", 
-                                   style = formattable::style(color = thr.c[2], font.weight = "bold")),
-      "High threshold"=formattable::formatter("span", 
-                                              style = formattable::style(color = thr.c[3], font.weight = "bold")),
-      "Very high threshold"=formattable::formatter("span", 
-                                                   style = formattable::style(color = thr.c[4], font.weight = "bold"))
-    ), digits = 2, format = "f")
-  }else{
-    temp1<-data.frame(Error="Number of columns must be greater than 2")
-    peaks.data<-formattable::formattable(temp1)
-  }
-  peaks.data
-})
-
-# observeEvent(input$tbmGoodnessModelDetail2_x, {
-#   good <- data_good_model()
-#   if(!is.null(good)){
-#     temp1 <- good$peaks.data
-#     temp1$Level<-as.character(temp1$Level)
-#     export.mydata(i.data=temp1, i.sheet="Goodness_model_2", i.rownames="Season", i.format="xlsx")
-#   }
-# })
-# 
-# observeEvent(input$tbmGoodnessModelDetail2_c, {
-#   good <- data_good_model()
-#   if(!is.null(good)){
-#     temp1 <- good$peaks.data
-#     temp1$Level<-as.character(temp1$Level)
-#     export.mydata(i.data=temp1, i.sheet="Goodness_model_2", i.rownames="Season", i.format="csv")
-#   }
-# })
-
-output$tbmGoodnessModelDetail2_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.xlsx', sep='') },
-  content = function(file) {
-    good <- data_good_model()
-    if(!is.null(good)){
-      temp1 <- good$peaks.data
-      temp1$Level<-as.character(temp1$Level)
-      export.mydata(i.data=temp1, i.file = file, 
-                    i.sheet="Model goodness intensity", i.rownames="Season", i.format="xlsx")
-    }
-  },
-  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
-
-output$tbmGoodnessModelDetail2_c <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
-  content = function(file) {
-    good <- data_good_model()
-    if(!is.null(good)){
-      temp1 <- good$peaks.data
-      temp1$Level<-as.character(temp1$Level)
-      export.mydata(i.data=temp1, i.file = file, 
-                    i.sheet="Model goodness intensity", i.rownames="Season", i.format="csv")
-    }
-  },
-  contentType="text/csv"
-)
-
-output$tbmGoodnessGlobal <- renderUI({
-  readdata <- read_data()
-  datfile <- readdata$datasetread
-  if(is.null(datfile)){
-    return(NULL)
-  }
-  else
-    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessGlobalSummary")),
-                tabPanel("Detailed", 
-                         formattable::formattableOutput("tbmGoodnessGlobalDetail1"),
-                         fluidRow(
-                           column(8),
-                           column(2,
-                                  if (zip.present()){
-                                    downloadButton("tbmGoodnessGlobalDetail1_x","xlsx")
-                                  }else if (.Platform$OS.type=="windows"){
-                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
-                                  }else if (.Platform$OS.type=="unix"){
-                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
-                                  }),
-                           column(2,downloadButton("tbmGoodnessGlobalDetail1_c","csv"))
-                         )
-                         ),
-                tabPanel("Intensity", uiOutput("tbmGoodnessGlobalIntensity")),
-                tabPanel("Detailed", 
-                         formattable::formattableOutput("tbmGoodnessGlobalDetail2"),
-                         fluidRow(
-                           column(8),
-                           column(2,
-                                  if (zip.present()){
-                                    downloadButton("tbmGoodnessGlobalDetail2_x","xlsx")
-                                  }else if (.Platform$OS.type=="windows"){
-                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
-                                  }else if (.Platform$OS.type=="unix"){
-                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
-                                  }),
-                           column(2,downloadButton("tbmGoodnessGlobalDetail2_c","csv"))
-                         )
-                         )
-    )
-})
-
-output$tbmGoodnessGlobalSummary <- renderUI({
-  good <- data_good_global()
-  if(is.null(good)){
-    return(NULL)
-  }else{
-    fluidRow(
-      valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(format(round(good$results["Specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-      valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-      valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
-    )
-  }
-})
-
-output$tbmGoodnessGlobalDetail1 <- formattable::renderFormattable({
-  good <- data_good_global()
-  if(!is.null(good)){
-    temp1<-as.data.frame(good$validity.data)
-    temp1$Total<-good$results
-    temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-    # temp1[is.na(temp1)]<--1
-    good.table<-formattable::formattable(temp1, list(
-      # area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
-      # area(col = names(temp1)[5:6]) ~ normalize_bar("#A5DBEB", 0.2)
-      "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-      "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-      "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-      "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-      "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-      "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
-    ), digits = 2, format = "f")    
-  }else{
-    temp1<-data.frame(Error="Number of columns must be greater than 2")
-    good.table<-formattable::formattable(temp1)
-  }
-  good.table
-})
-
-# observeEvent(input$tbmGoodnessGlobalDetail1_x, {
-#   good <- data_good_global()
-#   if(!is.null(good)){
-#     temp1<-as.data.frame(good$validity.data)
-#     temp1$Total<-good$results
-#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-#     export.mydata(i.data=temp1, i.sheet="Goodness_global_1", i.rownames="Season", i.format="xlsx")
-#   }
-# })
-# 
-# observeEvent(input$tbmGoodnessGlobalDetail1_c, {
-#   good <- data_good_global()
-#   if(!is.null(good)){
-#     temp1<-as.data.frame(good$validity.data)
-#     temp1$Total<-good$results
-#     temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-#     export.mydata(i.data=temp1, i.sheet="Goodness_global_1", i.rownames="Season", i.format="csv")
-#   }
-# })
-
-output$tbmGoodnessGlobalDetail1_x <- downloadHandler(
-  filename = function() { paste(input$dataset, '.xlsx', sep='') },
-  content = function(file) {
-    good <- data_good_global()
-    if(!is.null(good)){
-      temp1<-as.data.frame(good$validity.data)
-      temp1$Total<-good$results
-      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-      export.mydata(i.data=temp1, i.file = file, 
-                    i.sheet="Global goodness indicators", i.rownames="Season", i.format="xlsx")
-    }
-  },
-  contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
-
-output$tbmGoodnessGlobalDetail1_c <- downloadHandler(
-  filename = function() { paste(input$dataset, '.csv', sep='') },
-  content = function(file) {
-    good <- data_good_global()
-    if(!is.null(good)){
-      temp1<-as.data.frame(good$validity.data)
-      temp1$Total<-good$results
-      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
-      export.mydata(i.data=temp1, i.file = file, 
-                    i.sheet="Global goodness indicators", i.rownames="Season", i.format="csv")
-    }
-  },
-  contentType="text/csv"
-)
-
-output$tbmGoodnessGlobalIntensity <- renderUI({
-  good <- data_good_global()
-  peaks <- good$peaks
-  if(is.null(good)){
-    return(NULL)
-  }else{
-    fluidRow(
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
-      valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
-      valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
-    )
-  }
-})
-
-output$tbmGoodnessGlobalDetail2 <- formattable::renderFormattable({
-  good <- data_good_global()
   if(!is.null(good)){
     temp1 <- good$peaks.data
     temp1$Level<-as.character(temp1$Level)
@@ -2709,47 +2652,29 @@ output$tbmGoodnessGlobalDetail2 <- formattable::renderFormattable({
   peaks.data
 })
 
-# observeEvent(input$tbmGoodnessGlobalDetail2_x, {
-#   good <- data_good_global()
-#   if(!is.null(good)){
-#     temp1 <- good$peaks.data
-#     temp1$Level<-as.character(temp1$Level)
-#     export.mydata(i.data=temp1, i.sheet="Goodness_global_2", i.rownames="Season", i.format="xlsx")
-#   }
-# })
-# 
-# observeEvent(input$tbmGoodnessGlobalDetail2_c, {
-#   good <- data_good_global()
-#   if(!is.null(good)){
-#     temp1 <- good$peaks.data
-#     temp1$Level<-as.character(temp1$Level)
-#     export.mydata(i.data=temp1, i.sheet="Goodness_global_2", i.rownames="Season", i.format="csv")
-#   }
-# })
-
-output$tbmGoodnessGlobalDetail2_x <- downloadHandler(
+output$tbmGoodnessDetailed_x <- downloadHandler(
   filename = function() { paste(input$dataset, '.xlsx', sep='') },
   content = function(file) {
-    good <- data_good_global()
+    good <- data_good_model()
     if(!is.null(good)){
       temp1 <- good$peaks.data
       temp1$Level<-as.character(temp1$Level)
       export.mydata(i.data=temp1, i.file = file, 
-                    i.sheet="Global goodness intensity", i.rownames="Season", i.format="xlsx")
+                    i.sheet="Model goodness intensity", i.rownames="Season", i.format="xlsx")
     }
   },
   contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
-output$tbmGoodnessGlobalDetail2_c <- downloadHandler(
+output$tbmGoodnessDetailed_c <- downloadHandler(
   filename = function() { paste(input$dataset, '.csv', sep='') },
   content = function(file) {
-    good <- data_good_global()
+    good <- data_good_model()
     if(!is.null(good)){
       temp1 <- good$peaks.data
       temp1$Level<-as.character(temp1$Level)
       export.mydata(i.data=temp1, i.file = file, 
-                    i.sheet="Global goodness intensity", i.rownames="Season", i.format="csv")
+                    i.sheet="Model goodness intensity", i.rownames="Season", i.format="csv")
     }
   },
   contentType="text/csv"
