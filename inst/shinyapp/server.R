@@ -57,8 +57,9 @@ data_good_model <- reactive({
     if (length(selectedcolumns)<3){
       good<-NULL
     }else{
+      tfile<-tempfile()
       good<-memgoodness(datfile[,selectedcolumns],
-                        i.graph=F,
+                        i.graph=T, i.prefix=basename(tfile), i.output = dirname(tfile),
                         i.min.seasons = 3,
                         i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
@@ -97,8 +98,9 @@ data_good_global <- reactive({
     if (length(selectedcolumns)<3){
       good<-NULL
     }else{
+      tfile<-tempfile()
       good<-memgoodness(datfile[,selectedcolumns],
-                        i.graph=F,
+                        i.graph=T, i.prefix=basename(tfile), i.output = dirname(tfile),
                         i.min.seasons = 3,
                         i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
@@ -852,6 +854,31 @@ observeEvent(input$dataset, {
       zfix
     })})
   }
+  # Goodness graphs
+  # good <- data_good_global()
+  # if (!is.null(good)){
+  #   no.seasons<-NCOL(good$param.data)
+  #   nu.seasons<-1:no.seasons
+  #   na.seasons<-names(good$param.data)
+  #   lapply(data.frame(rbind(nu.seasons,na.seasons)), function(s){output[[paste0("tbdGoodnessGraphs_",as.character(s[2]))]] <- renderImage({
+  #       graph.file<-paste(good$param.output, "\\", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").tiff", sep="")
+  #       cat(graph.file,"\t",file.exists(graph.file),"\n")
+  #       if (!file.exists(graph.file)){
+  #         gfile<-NULL
+  #       }else{
+  #         outfile <- tempfile(fileext='.gif')
+  #         frink <- magick::image_read(graph.file)
+  #         magick::image_write(frink, outfile)
+  #         cat(outfile,"\t",file.exists(outfile),"\n")
+  #         gfile<-list(src = outfile,
+  #                     contentType = 'image/gif',
+  #                     width = 800,
+  #                     height = 600,
+  #                     alt = "No image found")
+  #       }
+  #       gfile
+  #     })})
+  # }
   cat("observe/dataset> end\n")
 })
 
@@ -1925,6 +1952,7 @@ output$tbdGoodness <- renderUI({
                            column(2,downloadButton("tbdGoodnessSummary_c","csv"))
                          )
                 ),
+                #tabPanel("Graphs", uiOutput("tbdGoodnessGraphs")),
                 tabPanel("Intensity", uiOutput("tbdGoodnessIntensity")),
                 tabPanel("Detailed", 
                          formattable::formattableOutput("tbdGoodnessDetailed"),
@@ -1941,6 +1969,7 @@ output$tbdGoodness <- renderUI({
                            column(2,downloadButton("tbdGoodnessDetailed_c","csv"))
                          )
                 )
+                
     )
 })
 
@@ -2089,6 +2118,20 @@ output$tbdGoodnessDetailed_c <- downloadHandler(
   },
   contentType="text/csv"
 )
+
+# output$tbdGoodnessGraphs = renderUI({
+#   good <- data_good_global()
+#   if(is.null(good)) {
+#     return(NULL)
+#   }else{
+#     tabnames<-names(good$param.data)
+#     do.call(tabsetPanel,
+#             lapply(tabnames,function(s){
+#               call("tabPanel",s,call('imageOutput',outputId=paste0("tbdGoodnessGraphs_",s), width ="100%", height ="100%"))
+#             })
+#     )
+#   }
+# })
 
 #####################################
 ### MODEL TAB
