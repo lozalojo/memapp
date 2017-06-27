@@ -156,11 +156,11 @@ shinyUI(dashboardPage(skin = "black",
                                    ###      FIRST PART: OUTPUTS        ###
                                    #######################################
                                    tabBox(
-                                     title = "MEM", width = 12, height = "800px",
-                                     tabPanel("Check & describe", "Check data series, timing and describe the data", uiOutput("tbData")),
-                                     tabPanel("Model", "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
-                                     tabPanel("Surveillance", "Surveillance tools", uiOutput("tbSurveillance")),
-                                     tabPanel("Visualize", "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
+                                     title = h3("Procedures", tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "800px",
+                                     tabPanel(h4("Check & describe", tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Check data series, timing and describe the data", uiOutput("tbData")),
+                                     tabPanel(h4("Model", tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
+                                     tabPanel(h4("Surveillance", tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Surveillance tools", uiOutput("tbSurveillance")),
+                                     tabPanel(h4("Visualize", tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
                                    )
                             ),
                             ###################################
