@@ -1553,7 +1553,7 @@ extract.pfe<-function(i.file){
     temp2[is.na(temp2)]<-""
     extract.pfe.output<-list()
     extract.pfe.output$param.file<-temp2[1,1]
-    extract.pfe.output$path<-temp2[1,2]
+    if (substring(temp2[1,2],nchar(temp2[1,2]),nchar(temp2[1,2]))=="/") extract.pfe.output$path<-substring(temp2[1,2],1,nchar(temp2[1,2])-1) else extract.pfe.output$path<-temp2[1,2]
     extract.pfe.output$name<-temp2[1,3]
     extract.pfe.output$extension<-temp2[1,5]
   }
