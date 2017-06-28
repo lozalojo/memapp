@@ -59,7 +59,7 @@ data_good_model <- reactive({
     }else{
       tfile<-tempfile()
       tfile.div<-extract.pfe(tfile)
-      cat("-",tfile.div$name,"-",tfile.div$path,"-\n")
+      print("-",tfile.div$name,"-",tfile.div$path,"-\n")
       good<-memgoodness(datfile[,selectedcolumns],
                         i.graph=T, i.prefix = tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
