@@ -78,6 +78,24 @@ data_good_model <- reactive({
                         i.goodness.method=as.character(input$validation))
     }
   }
+  # Update goodness graphs tabs
+  no.seasons<-NCOL(good$param.data)
+  if (good$param.goodness.method=="sequential") se.seasons<-3:no.seasons else se.seasons<-1:no.seasons
+  nu.seasons<-(1:no.seasons)[se.seasons]
+  na.seasons<-(names(good$param.data))[se.seasons]
+  lapply(data.frame(rbind(nu.seasons,na.seasons)), function(s){output[[paste0("tbmGoodnessGraphs_",as.character(s[2]))]] <- renderImage({
+    graph.file<-paste(good$param.output, "\\", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").png", sep="")
+    if (!file.exists(graph.file)){
+      gfile<-NULL
+    }else{
+      gfile<-list(src = graph.file,
+                  contentType = 'image/png',
+                  width = 800,
+                  height = 600,
+                  alt = "No image found")
+    }
+    gfile
+  })})  
   good
 })
 
@@ -98,6 +116,7 @@ data_good_global <- reactive({
     if (length(selectedcolumns)<3){
       good<-NULL
     }else{
+      #tfile<-tempfile(tmpdir="C:/Users/lozalojo/Desktop/Rtemp")
       tfile<-tempfile()
       good<-memgoodness(datfile[,selectedcolumns],
                         i.graph=T, i.prefix=basename(tfile), i.output = dirname(tfile),
@@ -116,9 +135,28 @@ data_good_global <- reactive({
                         i.param=as.numeric(input$param),
                         i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                         i.n.max=as.numeric(input$nvalues),
-                        i.goodness.method=as.character(input$validation))
+                        i.goodness.method=as.character(input$validation),
+                        i.calculation.method="threshold")
     }
   }
+  # Update goodness graphs tabs
+  no.seasons<-NCOL(good$param.data)
+  if (good$param.goodness.method=="sequential") se.seasons<-3:no.seasons else se.seasons<-1:no.seasons
+  nu.seasons<-(1:no.seasons)[se.seasons]
+  na.seasons<-(names(good$param.data))[se.seasons]
+  lapply(data.frame(rbind(nu.seasons,na.seasons)), function(s){output[[paste0("tbdGoodnessGraphs_",as.character(s[2]))]] <- renderImage({
+    graph.file<-paste(good$param.output, "\\", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").png", sep="")
+    if (!file.exists(graph.file)){
+      gfile<-NULL
+    }else{
+      gfile<-list(src = graph.file,
+                  contentType = 'image/png',
+                  width = 800,
+                  height = 600,
+                  alt = "No image found")
+    }
+    gfile
+  })})  
   good
 })
 
@@ -1952,7 +1990,7 @@ output$tbdGoodness <- renderUI({
                            column(2,downloadButton("tbdGoodnessSummary_c","csv"))
                          )
                 ),
-                #tabPanel("Graphs", uiOutput("tbdGoodnessGraphs")),
+                tabPanel("Graphs", uiOutput("tbdGoodnessGraphs")),
                 tabPanel("Intensity", uiOutput("tbdGoodnessIntensity")),
                 tabPanel("Detailed", 
                          formattable::formattableOutput("tbdGoodnessDetailed"),
@@ -2119,19 +2157,22 @@ output$tbdGoodnessDetailed_c <- downloadHandler(
   contentType="text/csv"
 )
 
-# output$tbdGoodnessGraphs = renderUI({
-#   good <- data_good_global()
-#   if(is.null(good)) {
-#     return(NULL)
-#   }else{
-#     tabnames<-names(good$param.data)
-#     do.call(tabsetPanel,
-#             lapply(tabnames,function(s){
-#               call("tabPanel",s,call('imageOutput',outputId=paste0("tbdGoodnessGraphs_",s), width ="100%", height ="100%"))
-#             })
-#     )
-#   }
-# })
+output$tbdGoodnessGraphs = renderUI({
+  good <- data_good_global()
+  if(is.null(good)) {
+    return(NULL)
+  }else{
+    no.seasons<-NCOL(good$param.data)
+    if (good$param.goodness.method=="sequential") se.seasons<-3:no.seasons else se.seasons<-1:no.seasons
+    nu.seasons<-(1:no.seasons)[se.seasons]
+    na.seasons<-(names(good$param.data))[se.seasons]
+    do.call(tabsetPanel,
+            lapply(na.seasons,function(s){
+              call("tabPanel",s,call('imageOutput',outputId=paste0("tbdGoodnessGraphs_",s), width ="100%", height ="100%"))
+            })
+    )
+  }
+})
 
 #####################################
 ### MODEL TAB
@@ -2558,6 +2599,7 @@ output$tbmGoodness <- renderUI({
                            column(2,downloadButton("tbmGoodnessSummary_c","csv"))
                          )
                 ),
+                tabPanel("Graphs", uiOutput("tbmGoodnessGraphs")),
                 tabPanel("Intensity", uiOutput("tbmGoodnessIntensity")),
                 tabPanel("Detailed", 
                          formattable::formattableOutput("tbmGoodnessDetailed"),
@@ -2646,6 +2688,23 @@ output$tbmGoodnessSummary_c <- downloadHandler(
   },
   contentType="text/csv"
 )
+
+output$tbmGoodnessGraphs = renderUI({
+  good <- data_good_model()
+  if(is.null(good)) {
+    return(NULL)
+  }else{
+    no.seasons<-NCOL(good$param.data)
+    if (good$param.goodness.method=="sequential") se.seasons<-3:no.seasons else se.seasons<-1:no.seasons
+    nu.seasons<-(1:no.seasons)[se.seasons]
+    na.seasons<-(names(good$param.data))[se.seasons]
+    do.call(tabsetPanel,
+            lapply(na.seasons, function(s){
+              call("tabPanel",s,call('imageOutput',outputId=paste0("tbmGoodnessGraphs_",s), width ="100%", height ="100%"))
+            })
+    )
+  }
+})
 
 output$tbmGoodnessIntensity <- renderUI({
   good <- data_good_model()
