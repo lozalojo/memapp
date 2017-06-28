@@ -817,12 +817,12 @@ read.data<-function(i.file,
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -888,9 +888,9 @@ read.data<-function(i.file,
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
     if (NCOL(datasetread)>1){
-      seasons<-data.frame(names(datasetread),matrix(str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=NCOL(datasetread),byrow=F)[,-1],stringsAsFactors = F)
+      seasons<-data.frame(names(datasetread),matrix(stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=NCOL(datasetread),byrow=F)[,-1],stringsAsFactors = F)
     }else{
-      seasons<-data.frame(t(c(names(datasetread),str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
+      seasons<-data.frame(t(c(names(datasetread),stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
     }
     names(seasons)<-c("column","anioi","aniof","aniow")
     seasons[is.na(seasons)]<-""
@@ -938,12 +938,12 @@ read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -983,12 +983,12 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -1036,12 +1036,12 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -1147,12 +1147,12 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -1211,12 +1211,12 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -1252,12 +1252,12 @@ read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
     cat("read_data> Warning: file not found\n")
   }else{
     if (is.na(i.file.name)){
-      temp1<-str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1<-stringr::str_match(i.file,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
       temp1[is.na(temp1)]<-""
       filename<-temp1[1,3]
       fileextension<-tolower(temp1[1,5])
     }else{
-      temp1<-str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
+      temp1<-stringr::str_match(i.file.name,"^(.*)\\.([^\\.]*)$")
       filename<-temp1[1,2]
       fileextension<-tolower(temp1[1,3])
     }
@@ -1292,9 +1292,9 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
   if (!(i.to=="" | is.na(i.to) | is.null(i.to)) & (i.to %in% i.names)) to<-grep(i.to,i.names,fixed=T) else to<-length(i.names)
   if (to<from) to<-from
   if (length(i.names)>1){
-    seasons<-data.frame(i.names,matrix(str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=length(i.names),byrow=F)[,-1],stringsAsFactors = F)
+    seasons<-data.frame(i.names,matrix(stringr::str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=length(i.names),byrow=F)[,-1],stringsAsFactors = F)
   }else{
-    seasons<-data.frame(t(c(i.names,str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
+    seasons<-data.frame(t(c(i.names,stringr::str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
   }
   names(seasons)<-c("season.original","anioi","aniof","aniow")
   seasons[is.na(seasons)]<-""
@@ -1540,6 +1540,25 @@ set.rzip<-function(){
     cat("no zip found\n")
   }
   Sys.setenv(R_ZIPCMD = ziploc)
+}
+
+# extract path, filename and extension
+
+extract.pfe<-function(i.file){
+  if (is.na(i.file)){
+    extract.pfe.output<-NULL
+  }else{
+    temp1<-gsub("\\","/",i.file, fixed=T)
+    temp2<-stringr::str_match(temp1,"^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+    temp2[is.na(temp2)]<-""
+    extract.pfe.output<-list()
+    extract.pfe.output$param.file<-temp2[1,1]
+    extract.pfe.output$path<-temp2[1,2]
+    extract.pfe.output$name<-temp2[1,3]
+    extract.pfe.output$extension<-temp2[1,5]
+  }
+  rm("temp1","temp2")
+  extract.pfe.output
 }
 
 # check if a zip extractor is installed

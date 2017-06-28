@@ -58,8 +58,10 @@ data_good_model <- reactive({
       good<-NULL
     }else{
       tfile<-tempfile()
+      tfile.div<-extract.pfe(tfile)
+      #cat(tfile.div$name,"-",tfile.div$path,"\n")
       good<-memgoodness(datfile[,selectedcolumns],
-                        i.graph=T, i.prefix=basename(tfile), i.output = dirname(tfile),
+                        i.graph=T, i.prefix = tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
                         i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
@@ -118,8 +120,10 @@ data_good_global <- reactive({
     }else{
       #tfile<-tempfile(tmpdir="C:/Users/lozalojo/Desktop/Rtemp")
       tfile<-tempfile()
+      tfile.div<-extract.pfe(tfile)
+      #cat(tfile.div$name,"-",tfile.div$path,"\n")
       good<-memgoodness(datfile[,selectedcolumns],
-                        i.graph=T, i.prefix=basename(tfile), i.output = dirname(tfile),
+                        i.graph=T, i.prefix=tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
                         i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
