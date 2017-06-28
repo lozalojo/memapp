@@ -59,7 +59,7 @@ data_good_model <- reactive({
     }else{
       tfile<-tempfile()
       tfile.div<-extract.pfe(tfile)
-      cat("-",tfile.div$name,"-",tfile.div$path,"-\n")
+      # cat("-",tfile.div$name,"-",tfile.div$path,"-\n")
       good<-memgoodness(datfile[,selectedcolumns],
                         i.graph=T, i.prefix = tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
@@ -86,7 +86,7 @@ data_good_model <- reactive({
   nu.seasons<-(1:no.seasons)[se.seasons]
   na.seasons<-(names(good$param.data))[se.seasons]
   lapply(data.frame(rbind(nu.seasons,na.seasons)), function(s){output[[paste0("tbmGoodnessGraphs_",as.character(s[2]))]] <- renderImage({
-    graph.file<-paste(good$param.output, "\\", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").png", sep="")
+    graph.file<-paste(good$param.output, "/", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").png", sep="")
     if (!file.exists(graph.file)){
       gfile<-NULL
     }else{
@@ -121,7 +121,7 @@ data_good_global <- reactive({
       #tfile<-tempfile(tmpdir="C:/Users/lozalojo/Desktop/Rtemp")
       tfile<-tempfile()
       tfile.div<-extract.pfe(tfile)
-      cat(tfile.div$name,"-",tfile.div$path,"\n")
+      # cat(tfile.div$name,"-",tfile.div$path,"\n")
       good<-memgoodness(datfile[,selectedcolumns],
                         i.graph=T, i.prefix=tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
@@ -149,7 +149,7 @@ data_good_global <- reactive({
   nu.seasons<-(1:no.seasons)[se.seasons]
   na.seasons<-(names(good$param.data))[se.seasons]
   lapply(data.frame(rbind(nu.seasons,na.seasons)), function(s){output[[paste0("tbdGoodnessGraphs_",as.character(s[2]))]] <- renderImage({
-    graph.file<-paste(good$param.output, "\\", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").png", sep="")
+    graph.file<-paste(good$param.output, "/", good$param.prefix," Goodness ", s[1], " (",format(round(input$param,1),digits=3,nsmall=1),").png", sep="")
     if (!file.exists(graph.file)){
       gfile<-NULL
     }else{
