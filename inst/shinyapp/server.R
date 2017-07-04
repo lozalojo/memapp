@@ -61,7 +61,7 @@ data_good_model <- reactive({
       tfile.div<-extract.pfe(tfile)
       # cat("-",tfile.div$name,"-",tfile.div$path,"-\n")
       good<-memgoodness(datfile[,selectedcolumns],
-                        i.graph=T, i.prefix = tfile.div$name, i.output = tfile.div$path,
+                        i.graph=as.logical(input$advancedfeatures), i.prefix = tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
                         i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
@@ -123,7 +123,7 @@ data_good_global <- reactive({
       tfile.div<-extract.pfe(tfile)
       # cat(tfile.div$name,"-",tfile.div$path,"\n")
       good<-memgoodness(datfile[,selectedcolumns],
-                        i.graph=T, i.prefix=tfile.div$name, i.output = tfile.div$path,
+                        i.graph=as.logical(input$advancedfeatures), i.prefix=tfile.div$name, i.output = tfile.div$path,
                         i.min.seasons = 3,
                         i.seasons=as.numeric(input$SelectMaximum),
                         i.type.threshold=as.numeric(input$typethreshold),
@@ -1121,29 +1121,54 @@ output$tbData <- renderUI({
   if(is.null(datfile)){
     return(NULL)
   }else{
-    tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
-                tabPanel("Data", 
-                         DT::dataTableOutput("tbdData"),
-                         fluidRow(
-                           column(8),
-                           column(2,
-                                  if (zip.present()){
-                                    downloadButton("tbdData_x","xlsx")
-                                  }else if (.Platform$OS.type=="windows"){
-                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
-                                  }else if (.Platform$OS.type=="unix"){
-                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
-                                  }),
-                           column(2,downloadButton("tbdData_c","csv"))
-                         )                         
-                         ),
-                tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
-                tabPanel("Series",plotlyOutput("tbdSeries", width ="100%", height ="100%")),
-                tabPanel("Timing",uiOutput("tbdTiming")),
-                tabPanel("Evolution",uiOutput("tbdEvolution")),
-                tabPanel("Stability",uiOutput("tbdStability")),
-                tabPanel("Goodness",uiOutput("tbdGoodness"))
-    )
+    if (as.logical(input$advancedfeatures)){
+      tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
+                  tabPanel("Data", 
+                           DT::dataTableOutput("tbdData"),
+                           fluidRow(
+                             column(8),
+                             column(2,
+                                    if (zip.present()){
+                                      downloadButton("tbdData_x","xlsx")
+                                    }else if (.Platform$OS.type=="windows"){
+                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                    }else if (.Platform$OS.type=="unix"){
+                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                    }),
+                             column(2,downloadButton("tbdData_c","csv"))
+                           )                         
+                  ),
+                  tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
+                  tabPanel("Series",plotlyOutput("tbdSeries", width ="100%", height ="100%")),
+                  tabPanel("Timing",uiOutput("tbdTiming")),
+                  tabPanel("Evolution",uiOutput("tbdEvolution")),
+                  tabPanel("Stability",uiOutput("tbdStability")),
+                  tabPanel("Goodness",uiOutput("tbdGoodness"))
+      )
+    }else{
+      tabsetPanel(tabPanel("File", tableOutput("tbdFile")),
+                  tabPanel("Data", 
+                           DT::dataTableOutput("tbdData"),
+                           fluidRow(
+                             column(8),
+                             column(2,
+                                    if (zip.present()){
+                                      downloadButton("tbdData_x","xlsx")
+                                    }else if (.Platform$OS.type=="windows"){
+                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                    }else if (.Platform$OS.type=="unix"){
+                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                    }),
+                             column(2,downloadButton("tbdData_c","csv"))
+                           )                         
+                  ),
+                  tabPanel("Seasons", plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
+                  tabPanel("Series",plotlyOutput("tbdSeries", width ="100%", height ="100%")),
+                  tabPanel("Timing",uiOutput("tbdTiming")),
+                  tabPanel("Evolution",uiOutput("tbdEvolution")),
+                  tabPanel("Stability",uiOutput("tbdStability"))
+      )
+    }
   }
 })
 
@@ -2585,42 +2610,78 @@ output$tbmGoodness <- renderUI({
   datfile <- readdata$datasetread
   if(is.null(datfile)){
     return(NULL)
+  }else{
+    if (as.logical(input$advancedfeatures)){
+      tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessIndicators")),
+                  tabPanel("Summary", 
+                           formattable::formattableOutput("tbmGoodnessSummary"),
+                           fluidRow(
+                             column(8),
+                             column(2,
+                                    if (zip.present()){
+                                      downloadButton("tbmGoodnessSummary_x","xlsx")
+                                    }else if (.Platform$OS.type=="windows"){
+                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                    }else if (.Platform$OS.type=="unix"){
+                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                    }),
+                             column(2,downloadButton("tbmGoodnessSummary_c","csv"))
+                           )
+                  ),
+                  tabPanel("Graphs", uiOutput("tbmGoodnessGraphs")),
+                  tabPanel("Intensity", uiOutput("tbmGoodnessIntensity")),
+                  tabPanel("Detailed", 
+                           formattable::formattableOutput("tbmGoodnessDetailed"),
+                           fluidRow(
+                             column(8),
+                             column(2,
+                                    if (zip.present()){
+                                      downloadButton("tbmGoodnessDetailed_x","xlsx")
+                                    }else if (.Platform$OS.type=="windows"){
+                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                    }else if (.Platform$OS.type=="unix"){
+                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                    }),
+                             column(2,downloadButton("tbmGoodnessDetailed_c","csv"))
+                           )
+                  )
+      )
+    }else{
+      tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessIndicators")),
+                  tabPanel("Summary", 
+                           formattable::formattableOutput("tbmGoodnessSummary"),
+                           fluidRow(
+                             column(8),
+                             column(2,
+                                    if (zip.present()){
+                                      downloadButton("tbmGoodnessSummary_x","xlsx")
+                                    }else if (.Platform$OS.type=="windows"){
+                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                    }else if (.Platform$OS.type=="unix"){
+                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                    }),
+                             column(2,downloadButton("tbmGoodnessSummary_c","csv"))
+                           )
+                  ),
+                  tabPanel("Intensity", uiOutput("tbmGoodnessIntensity")),
+                  tabPanel("Detailed", 
+                           formattable::formattableOutput("tbmGoodnessDetailed"),
+                           fluidRow(
+                             column(8),
+                             column(2,
+                                    if (zip.present()){
+                                      downloadButton("tbmGoodnessDetailed_x","xlsx")
+                                    }else if (.Platform$OS.type=="windows"){
+                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                    }else if (.Platform$OS.type=="unix"){
+                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                    }),
+                             column(2,downloadButton("tbmGoodnessDetailed_c","csv"))
+                           )
+                  )
+      )
+    }
   }
-  else
-    tabsetPanel(tabPanel("Indicators", uiOutput("tbmGoodnessIndicators")),
-                tabPanel("Summary", 
-                         formattable::formattableOutput("tbmGoodnessSummary"),
-                         fluidRow(
-                           column(8),
-                           column(2,
-                                  if (zip.present()){
-                                    downloadButton("tbmGoodnessSummary_x","xlsx")
-                                  }else if (.Platform$OS.type=="windows"){
-                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
-                                  }else if (.Platform$OS.type=="unix"){
-                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
-                                  }),
-                           column(2,downloadButton("tbmGoodnessSummary_c","csv"))
-                         )
-                ),
-                tabPanel("Graphs", uiOutput("tbmGoodnessGraphs")),
-                tabPanel("Intensity", uiOutput("tbmGoodnessIntensity")),
-                tabPanel("Detailed", 
-                         formattable::formattableOutput("tbmGoodnessDetailed"),
-                         fluidRow(
-                           column(8),
-                           column(2,
-                                  if (zip.present()){
-                                    downloadButton("tbmGoodnessDetailed_x","xlsx")
-                                  }else if (.Platform$OS.type=="windows"){
-                                    shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
-                                  }else if (.Platform$OS.type=="unix"){
-                                    shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
-                                  }),
-                           column(2,downloadButton("tbmGoodnessDetailed_c","csv"))
-                         )
-                )
-    )
 })
 
 output$tbmGoodnessIndicators <- renderUI({

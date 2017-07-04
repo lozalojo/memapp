@@ -9,18 +9,18 @@
 
 ## Overview
 
-*memapp* is a web application created to serve as a graphical user interface for the R mem package. It was created using Shiny, a web application framework for R. This application uses the development version of the mem R library.
+*memapp* is a web application created to serve as a graphical user interface for the R mem package. It was created using Shiny, a web application framework for R.
 
 ## Installation
 
-The package can be installed from the official R repositories (*CRAN*) using the built-in install function:
+The stable package can be installed from the official R repositories (*CRAN*) using the built-in install function (or from the package manager in some GUIs for R):
 
 ```
 # install the memapp CRAN version
 install.packages("memapp")
 ```
 
-Nevertheless, *memapp* uses some sensitive packages that are updated frequently in their respective development versions hosted at github. To install the development version of *memapp* along with development versions of their dependencies, it is recommended to install it from the sources at github.
+To install the development version of *memapp* use the *devtools* package.
 
 ```
 # install the devtools package
@@ -28,6 +28,7 @@ install.packages("devtools")
 # install the memapp development version from GitHub
 devtools::install_github("lozalojo/memapp")
 ```
+When installing this version also you are intalling development versions of some sensitive packages that are used by *memapp* (including the *mem* package).
 
 ## Usage
 
