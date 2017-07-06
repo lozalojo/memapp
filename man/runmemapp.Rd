@@ -25,7 +25,7 @@ available) or any other scale.\cr
 Parameters sent to the mem R library are set in the application itself.\cr
 }
 \examples{
-\dontrun{
+\donttest{
 library("memapp")
 runmemapp(launch.browser = TRUE)
 }

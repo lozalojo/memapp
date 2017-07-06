@@ -17,7 +17,7 @@
 #' @param ... other parameters passed to shiny::runApp.
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library("memapp")
 #' runmemapp(launch.browser = TRUE)
 #' }
