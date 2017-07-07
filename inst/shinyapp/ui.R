@@ -247,7 +247,7 @@ shinyUI(dashboardPage(skin = "black",
                                    shinydashboard::box(
                                      title="Support", status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
                                      #h5(a("Surveillance guidelines", href="NULL", target="_blank")),
-                                     h5(a("Technical manual", href="https://drive.google.com/file/d/0B0IUo_0NhTOoeWdBcnRVcl9HUFk/view?usp=sharing", target="_blank")),
+                                     h5(a("Technical manual", href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
                                      h5(a("Submit issues", href="https://github.com/lozalojo/memapp/issues", target="_blank")),
                                      checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Show advanced features"), value = FALSE),
                                      bsPopover(id = "advancedfeatures", title = "Advanced features", content = "Show advanced features of memapp.", placement = "right", trigger = "hover", options = list(container = "body"))
