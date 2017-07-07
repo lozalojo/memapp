@@ -2116,15 +2116,26 @@ output$tbdGoodnessIntensity <- renderUI({
   if(is.null(good)){
     return(NULL)
   }else{
-    fluidRow(
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
-      valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
-      valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
-    )
+    if (as.logical(input$advancedfeatures)){
+      fluidRow(
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+        valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
+        valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
+      )      
+    }else{
+      fluidRow(
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+        valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal")
+      )      
+    }
   }
 })
 
@@ -2777,15 +2788,26 @@ output$tbmGoodnessIntensity <- renderUI({
   if(is.null(good)){
     return(NULL)
   }else{
-    fluidRow(
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
-      valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
-      valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
-      valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
-    )
+    if (as.logical(input$advancedfeatures)){
+      fluidRow(
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+        valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal"),
+        valueBox(peaks$Count[peaks[,1]==0], peaks$Description[peaks[,1]==0], icon = icon("heartbeat"), width=3, color="teal")
+      )      
+    }else{
+      fluidRow(
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==1]," level"), icon = icon("heartbeat"), width=2, color="lime"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==2]," level"), icon = icon("thermometer-1"), width=2, color="green"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==3]," level"), icon = icon("thermometer-2"), width=2, color="yellow"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==4]," level"), icon = icon("thermometer-3"), width=2, color="orange"),
+        valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), paste0(peaks$Description[peaks[,1]==5]," level"), icon = icon("thermometer-4"), width=2, color="red"),
+        valueBox(peaks$Count[peaks[,1]==-1], peaks$Description[peaks[,1]==-1], icon = icon("heartbeat"), width=3, color="teal")
+      )      
+    }
   }
 })
 
