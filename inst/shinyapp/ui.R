@@ -71,7 +71,7 @@ shinyUI(dashboardPage(skin = "black",
                                            bsPopover(id = "SelectTo", title = "Select seasons for the model", content = "Last column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body")),
                                            selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Exclude"), multiple = TRUE, choices = NULL),
                                            bsPopover(id = "SelectExclude", title = "Select seasons for the model", content = "Select any number of seasons to be excluded from the model.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                           numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Max. seasons:"), 10, step=1),
+                                           numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Maximum seasons:"), 10, step=1),
                                            bsPopover(id = "SelectMaximum", title = "Select seasons for the model", content = "Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons to avoid cyclical trends.", placement = "right", trigger = "hover", options = list(container = "body"))
                                        ),
                                        
