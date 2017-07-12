@@ -40,6 +40,10 @@ generate_palette <- function(i.number.series=NA,
   # Last one is a number between 0 and 1
   # colTransparency<-input$colTransparency
   # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
+  
+  # i.colEpidemicStart<-mem:::add.alpha(i.colEpidemicStart,alpha=0.4)
+  # i.colEpidemicStop<-mem:::add.alpha(i.colEpidemicStop,alpha=0.4)
+  
   colors.final<-list(colObservedLines=i.colObservedLines, colObservedPoints=i.colObservedPoints,
                      colEpidemicStart=i.colEpidemicStart, colEpidemicStop=i.colEpidemicStop,
                      colThresholds=i.colThresholds, colSeasons=i.colSeasons,colEpidemic=i.colEpidemic
@@ -1566,3 +1570,21 @@ extract.pfe<-function(i.file){
 zip.present<-function() file.exists(Sys.getenv("R_ZIPCMD"))
 
 mdbtools.present<-function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
+
+# functions for the optimize plots
+
+tail.order<-function(i.data, i.n, i.order){
+  res<-tail(i.data, n=i.n)
+  res<-res[order(res[i.order]),]
+  res$id.tail<-1:NROW(res)
+  res
+}
+
+extract.two<-function(i.data, i.order, i.column){
+  # data<-unique(i.data, fromLast=T)
+  data<-i.data
+  results <- do.call("rbind", by(data, data[i.column], tail.order, i.n=2, i.order=i.order))
+  return(results)
+}
+
+
