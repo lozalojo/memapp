@@ -3668,7 +3668,6 @@ shinyServer(function(input, output, session) {
                                                param.graph.title=i.graph.title,
                                                param.graph.subtitle=i.graph.subtitle,
                                                param.output=i.output)
-          optimum.by.inspection.output$call <- match.call()
           
           # Graph all data
           if (i.graph){
@@ -3725,8 +3724,6 @@ shinyServer(function(input, output, session) {
           })})
           
           optim<-memgoodness(datfile[selectedcolumns],
-                             i.graph=F,
-                             i.min.seasons = 3,
                              i.seasons=as.numeric(input$SelectMaximum),
                              i.type.threshold=as.numeric(input$typethreshold),
                              i.tails.threshold=as.numeric(input$ntails),
@@ -3739,21 +3736,55 @@ shinyServer(function(input, output, session) {
                              i.level.other=as.numeric(input$levelaveragecurve)/100,
                              i.method=as.numeric(input$method),
                              i.param=as.numeric(optimum.by.inspection.output$optimum["matthews"]),
-                             i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                              i.n.max=as.numeric(input$nvalues),
-                             i.goodness.method=as.character(input$validation))$results
+                             i.calculation.method = "default",
+                             i.goodness.method=as.character(input$validation),
+                             i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
+                             i.weeks.above = 1,
+                             i.graph=F,
+                             i.min.seasons = 3)$results
           
           fluidRow(
-            valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
-            valueBox(format(round(optim["Specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
-            valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-            valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
-            valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-            valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
-            valueBox(format(round(input$param, 2), nsmall=1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
-            valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum["matthews"]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
+            fluidRow(              
+              valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
+              valueBox(format(round(optim["Specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
+              valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
+              valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow")
+            ),
+            fluidRow(
+              valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
+              valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+              valueBox(format(round(input$param, 2), nsmall=1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
+              valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum["matthews"]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
+              
+            ),
+            fluidRow(
+              
+              formattable::renderFormattable({
+                if(!is.null(optimum.by.inspection.output$insp.data)){
+                  temp1 <- optimum.by.inspection.output$insp.data
+                  temp1<-temp1[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
+                  names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+                  rownames(temp1)<-NULL
+                  opt.table<-formattable::formattable(temp1, list(
+                    "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+                    "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+                    "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+                    "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
+                    "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
+                    "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
+                  ), digits = 2, format = "f")
+                }else{
+                  temp1<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
+                  opt.table<-formattable::formattable(data.frame(Error="Number of columns must be greater than 2",row.names = NULL))
+                }
+                opt.table
+              })
+              
+              
+            )
+            
           )
-          
           
         }
       }
