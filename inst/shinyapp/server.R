@@ -522,9 +522,47 @@ shinyServer(function(input, output, session) {
         values$origdata <- origdata
         values$plotdata <- plotdata
         values$clickdata <- data.frame()
+        values$optimizegraphs <- data.frame()
         # values$idscreated = character()
         rm("origdata", "plotdata", "epidata")
-        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderPlot({
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
+          fluidRow(
+            plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
+                       click = paste0("tbmOptimizeM_",as.character(s),"_click"),
+                       width = "800px", height = "600px"),
+            tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table")),
+            imageOutput(paste0("tbmOptimizeM_",as.character(s),"_image"))
+          )
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_table")]] <- renderTable({
+          if (NROW(values$clickdata)>0){
+            etwo<-extract.two(values$clickdata,"weekno","season")
+            etwo2<-subset(etwo,etwo$season==as.character(s))[c("season","weekno","weekna","id.tail",paste0(as.character(s),"_fixed"))]
+            names(etwo2)[5]<-as.character(s)
+          }else{
+            etwo2<-data.frame(message="No data")
+          }
+          etwo2
+        })})        
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_image")]] <- renderImage({
+          imgfile<-""
+          if (NROW(values$optimizegraphs)>0){
+            imgtmp<-values$optimizegraphs
+            imgtmp2<-subset(imgtmp,imgtmp$season==as.character(s))
+            if (NROW(imgtmp2)>0){
+              if (file.exists(imgtmp2$file)){
+                imgfile<-imgtmp2$file
+              } 
+            }
+          }          
+          gfile<-list(src = imgfile,
+                      contentType = 'image/png',
+                      width = 800,
+                      height = 600,
+                      alt = "No image found")
+          gfile
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_plot")]] <- renderPlot({
           i.cutoff.original<-min(as.numeric(values$origdata$weekna[1:(min(3,NROW(values$origdata)))]))
           if (i.cutoff.original < 1) i.cutoff.original <- 1
           if (i.cutoff.original > 52) i.cutoff.original <- 52
@@ -584,11 +622,11 @@ shinyServer(function(input, output, session) {
             #cat("1",paste(values$idscreated,collapse=","),"\n")
             observeEvent(input[[nameid]], {
               np <- nearPoints(values$origdata, input[[nameid]], maxpoints=1 , threshold = 10000)
-              values$clickdata<-rbind(values$clickdata,cbind(data.frame(variable=as.character(s), stringsAsFactors = F), np))
+              values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
               if (NROW(values$clickdata)>0){
-                p0<-extract.two(values$clickdata,"weekno","variable")
-                p1<-subset(p0, variable==as.character(s) & id.tail==1)
-                p2<-subset(p0, variable==as.character(s) & id.tail==2)
+                p0<-extract.two(values$clickdata,"weekno","season")
+                p1<-subset(p0, season==as.character(s) & id.tail==1)
+                p2<-subset(p0, season==as.character(s) & id.tail==2)
                 if (NROW(p1)>0) {
                   values$plotdata[values$plotdata[,paste0(as.character(s),"_color")]!="3", paste0(as.character(s),"_color")]<-"1"
                   values$plotdata[values$origdata$weekno==p1$weekno,paste0(as.character(s),"_color")]<-"2"
@@ -823,9 +861,47 @@ shinyServer(function(input, output, session) {
         values$origdata <- origdata
         values$plotdata <- plotdata
         values$clickdata <- data.frame()
+        values$optimizegraphs <- data.frame()
         # values$idscreated = character()
         rm("origdata", "plotdata", "epidata")
-        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderPlot({
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
+          fluidRow(
+            plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
+                       click = paste0("tbmOptimizeM_",as.character(s),"_click"),
+                       width = "800px", height = "600px"),
+            tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table")),
+            imageOutput(paste0("tbmOptimizeM_",as.character(s),"_image"))
+          )
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_table")]] <- renderTable({
+          if (NROW(values$clickdata)>0){
+            etwo<-extract.two(values$clickdata,"weekno","season")
+            etwo2<-subset(etwo,etwo$season==as.character(s))[c("season","weekno","weekna","id.tail",paste0(as.character(s),"_fixed"))]
+            names(etwo2)[5]<-as.character(s)
+          }else{
+            etwo2<-data.frame(message="No data")
+          }
+          etwo2
+        })})        
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_image")]] <- renderImage({
+          imgfile<-""
+          if (NROW(values$optimizegraphs)>0){
+            imgtmp<-values$optimizegraphs
+            imgtmp2<-subset(imgtmp,imgtmp$season==as.character(s))
+            if (NROW(imgtmp2)>0){
+              if (file.exists(imgtmp2$file)){
+                imgfile<-imgtmp2$file
+              } 
+            }
+          }          
+          gfile<-list(src = imgfile,
+                      contentType = 'image/png',
+                      width = 800,
+                      height = 600,
+                      alt = "No image found")
+          gfile
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_plot")]] <- renderPlot({
           i.cutoff.original<-min(as.numeric(values$origdata$weekna[1:(min(3,NROW(values$origdata)))]))
           if (i.cutoff.original < 1) i.cutoff.original <- 1
           if (i.cutoff.original > 52) i.cutoff.original <- 52
@@ -885,11 +961,11 @@ shinyServer(function(input, output, session) {
             #cat("1",paste(values$idscreated,collapse=","),"\n")
             observeEvent(input[[nameid]], {
               np <- nearPoints(values$origdata, input[[nameid]], maxpoints=1 , threshold = 10000)
-              values$clickdata<-rbind(values$clickdata,cbind(data.frame(variable=as.character(s), stringsAsFactors = F), np))
+              values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
               if (NROW(values$clickdata)>0){
-                p0<-extract.two(values$clickdata,"weekno","variable")
-                p1<-subset(p0, variable==as.character(s) & id.tail==1)
-                p2<-subset(p0, variable==as.character(s) & id.tail==2)
+                p0<-extract.two(values$clickdata,"weekno","season")
+                p1<-subset(p0, season==as.character(s) & id.tail==1)
+                p2<-subset(p0, season==as.character(s) & id.tail==2)
                 if (NROW(p1)>0) {
                   values$plotdata[values$plotdata[,paste0(as.character(s),"_color")]!="3", paste0(as.character(s),"_color")]<-"1"
                   values$plotdata[values$origdata$weekno==p1$weekno,paste0(as.character(s),"_color")]<-"2"
@@ -1122,9 +1198,47 @@ shinyServer(function(input, output, session) {
         values$origdata <- origdata
         values$plotdata <- plotdata
         values$clickdata <- data.frame()
+        values$optimizegraphs <- data.frame()
         # values$idscreated = character()
         rm("origdata", "plotdata", "epidata")
-        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderPlot({
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
+          fluidRow(
+            plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
+                       click = paste0("tbmOptimizeM_",as.character(s),"_click"),
+                       width = "800px", height = "600px"),
+            tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table")),
+            imageOutput(paste0("tbmOptimizeM_",as.character(s),"_image"))
+          )
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_table")]] <- renderTable({
+          if (NROW(values$clickdata)>0){
+            etwo<-extract.two(values$clickdata,"weekno","season")
+            etwo2<-subset(etwo,etwo$season==as.character(s))[c("season","weekno","weekna","id.tail",paste0(as.character(s),"_fixed"))]
+            names(etwo2)[5]<-as.character(s)
+          }else{
+            etwo2<-data.frame(message="No data")
+          }
+          etwo2
+        })})        
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_image")]] <- renderImage({
+          imgfile<-""
+          if (NROW(values$optimizegraphs)>0){
+            imgtmp<-values$optimizegraphs
+            imgtmp2<-subset(imgtmp,imgtmp$season==as.character(s))
+            if (NROW(imgtmp2)>0){
+              if (file.exists(imgtmp2$file)){
+                imgfile<-imgtmp2$file
+              } 
+            }
+          }          
+          gfile<-list(src = imgfile,
+                      contentType = 'image/png',
+                      width = 800,
+                      height = 600,
+                      alt = "No image found")
+          gfile
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_plot")]] <- renderPlot({
           i.cutoff.original<-min(as.numeric(values$origdata$weekna[1:(min(3,NROW(values$origdata)))]))
           if (i.cutoff.original < 1) i.cutoff.original <- 1
           if (i.cutoff.original > 52) i.cutoff.original <- 52
@@ -1184,11 +1298,11 @@ shinyServer(function(input, output, session) {
             #cat("1",paste(values$idscreated,collapse=","),"\n")
             observeEvent(input[[nameid]], {
               np <- nearPoints(values$origdata, input[[nameid]], maxpoints=1 , threshold = 10000)
-              values$clickdata<-rbind(values$clickdata,cbind(data.frame(variable=as.character(s), stringsAsFactors = F), np))
+              values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
               if (NROW(values$clickdata)>0){
-                p0<-extract.two(values$clickdata,"weekno","variable")
-                p1<-subset(p0, variable==as.character(s) & id.tail==1)
-                p2<-subset(p0, variable==as.character(s) & id.tail==2)
+                p0<-extract.two(values$clickdata,"weekno","season")
+                p1<-subset(p0, season==as.character(s) & id.tail==1)
+                p2<-subset(p0, season==as.character(s) & id.tail==2)
                 if (NROW(p1)>0) {
                   values$plotdata[values$plotdata[,paste0(as.character(s),"_color")]!="3", paste0(as.character(s),"_color")]<-"1"
                   values$plotdata[values$origdata$weekno==p1$weekno,paste0(as.character(s),"_color")]<-"2"
@@ -1421,9 +1535,47 @@ shinyServer(function(input, output, session) {
         values$origdata <- origdata
         values$plotdata <- plotdata
         values$clickdata <- data.frame()
+        values$optimizegraphs <- data.frame()
         # values$idscreated = character()
         rm("origdata", "plotdata", "epidata")
-        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderPlot({
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
+          fluidRow(
+            plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
+                       click = paste0("tbmOptimizeM_",as.character(s),"_click"),
+                       width = "800px", height = "600px"),
+            tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table")),
+            imageOutput(paste0("tbmOptimizeM_",as.character(s),"_image"))
+          )
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_table")]] <- renderTable({
+          if (NROW(values$clickdata)>0){
+            etwo<-extract.two(values$clickdata,"weekno","season")
+            etwo2<-subset(etwo,etwo$season==as.character(s))[c("season","weekno","weekna","id.tail",paste0(as.character(s),"_fixed"))]
+            names(etwo2)[5]<-as.character(s)
+          }else{
+            etwo2<-data.frame(message="No data")
+          }
+          etwo2
+        })})        
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_image")]] <- renderImage({
+          imgfile<-""
+          if (NROW(values$optimizegraphs)>0){
+            imgtmp<-values$optimizegraphs
+            imgtmp2<-subset(imgtmp,imgtmp$season==as.character(s))
+            if (NROW(imgtmp2)>0){
+              if (file.exists(imgtmp2$file)){
+                imgfile<-imgtmp2$file
+              } 
+            }
+          }          
+          gfile<-list(src = imgfile,
+                      contentType = 'image/png',
+                      width = 800,
+                      height = 600,
+                      alt = "No image found")
+          gfile
+        })})
+        lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_plot")]] <- renderPlot({
           i.cutoff.original<-min(as.numeric(values$origdata$weekna[1:(min(3,NROW(values$origdata)))]))
           if (i.cutoff.original < 1) i.cutoff.original <- 1
           if (i.cutoff.original > 52) i.cutoff.original <- 52
@@ -1483,11 +1635,11 @@ shinyServer(function(input, output, session) {
             #cat("1",paste(values$idscreated,collapse=","),"\n")
             observeEvent(input[[nameid]], {
               np <- nearPoints(values$origdata, input[[nameid]], maxpoints=1 , threshold = 10000)
-              values$clickdata<-rbind(values$clickdata,cbind(data.frame(variable=as.character(s), stringsAsFactors = F), np))
+              values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
               if (NROW(values$clickdata)>0){
-                p0<-extract.two(values$clickdata,"weekno","variable")
-                p1<-subset(p0, variable==as.character(s) & id.tail==1)
-                p2<-subset(p0, variable==as.character(s) & id.tail==2)
+                p0<-extract.two(values$clickdata,"weekno","season")
+                p1<-subset(p0, season==as.character(s) & id.tail==1)
+                p2<-subset(p0, season==as.character(s) & id.tail==2)
                 if (NROW(p1)>0) {
                   values$plotdata[values$plotdata[,paste0(as.character(s),"_color")]!="3", paste0(as.character(s),"_color")]<-"1"
                   values$plotdata[values$origdata$weekno==p1$weekno,paste0(as.character(s),"_color")]<-"2"
@@ -3291,8 +3443,7 @@ shinyServer(function(input, output, session) {
         do.call(tabsetPanel,
                 c(
                   lapply(tabnames,function(s){
-                    call("tabPanel",s,call("plotOutput", outputId=paste0("tbmOptimizeM_",as.character(s)),
-                                           click = paste0("tbmOptimizeM_",as.character(s),"_click")))
+                    call("tabPanel",s,call("uiOutput", outputId=paste0("tbmOptimizeM_",as.character(s))))
                   }),
                   list(
                     tabPanel("Start & end",tableOutput("tbmOptimizeMstartend")),
@@ -3313,8 +3464,9 @@ shinyServer(function(input, output, session) {
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
-      etwo<-extract.two(values$clickdata,"weekno","variable")
-      optr<-subset(etwo,etwo$variable %in% names(datfile)[selectedcolumns])
+      etwo<-extract.two(values$clickdata,"weekno","season")
+      optr<-subset(etwo,etwo$season %in% names(datfile)[selectedcolumns])[c("season","weekno","weekna","id.tail",paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      names(optr)[5:(length(selectedcolumns)+4)]<-names(datfile)[selectedcolumns]
     }else{
       optr<-NULL
     }
@@ -3332,25 +3484,33 @@ shinyServer(function(input, output, session) {
       # cat(paste(selectedcolumns,collapse=","),"\n")
       clickd<-values$clickdata
       # print(clickd)
-      optr<-subset(clickd,clickd$variable %in% names(datfile)[selectedcolumns])
+      optr<-subset(clickd,clickd$season %in% names(datfile)[selectedcolumns])[c("season","weekno","weekna",paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      names(optr)[4:(length(selectedcolumns)+3)]<-names(datfile)[selectedcolumns]
     }else{
       optr<-NULL
     }
-    optr 
+    optr
   })
   
   output$tbmOptimizeMresults<-renderUI({
     readdata <- read_data()
     datfile <- readdata$datasetread
+    # cat("--------------------")
+    # cat(NROW(values$clickdata),"\n")
+
     if (NROW(values$clickdata)>0){
-      etwo<-extract.two(values$clickdata,"weekno","variable")
-      etwot<-reshape2::dcast(etwo, variable ~  id.tail, value.var="weekno")
+      etwo<-extract.two(values$clickdata,"weekno","season")
+      etwot<-reshape2::dcast(etwo, season ~  id.tail, value.var="weekno")
       selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
-      if (selectedcolumns>2){
-        if (all(names(datfile)[selectedcolumns] %in% etwo$variable) & NCOL(etwot)==3 & sum(is.na(etwot))==0){
+      # cat(length(selectedcolumns),"\n")
+      if (length(selectedcolumns)>2){
+        if (all(names(datfile)[selectedcolumns] %in% etwo$season) & NCOL(etwot)==3 & sum(is.na(etwot))==0){
+          # cat(NCOL(etwot),"\n")
+          # cat(sum(is.na(etwot)),"\n")
+          # cat("--------------------")
           i.data<-values$plotdata[grepl("^.*_fixed$",names(values$plotdata))]
           names(i.data)<-sub("_fixed","",names(i.data),fixed=T)
           i.data<-i.data[names(i.data) %in% names(datfile)[selectedcolumns]]
@@ -3366,7 +3526,7 @@ shinyServer(function(input, output, session) {
           i.graph.title=""
           i.graph.subtitle=""
           i.output = tfile.div$path
-          cat(tfile.div$name,"*",tfile.div$path,"\n")
+          # cat(tfile.div$name,"*",tfile.div$path,"\n")
           
           semanas<-dim(i.data)[1]
           anios<-dim(i.data)[2]
@@ -3385,8 +3545,8 @@ shinyServer(function(input, output, session) {
           for (i in 1:anios){
             cur<-i.data[i]
             itsnotok<-T
-            i.timing.1.1<-etwo$weekno[etwo$variable==nombre.anios[i] & etwo$id.tail==1]
-            i.timing.1.2<-etwo$weekno[etwo$variable==nombre.anios[i] & etwo$id.tail==2]
+            i.timing.1.1<-etwo$weekno[etwo$season==nombre.anios[i] & etwo$id.tail==1]
+            i.timing.1.2<-etwo$weekno[etwo$season==nombre.anios[i] & etwo$id.tail==2]
             i.timing.1.i<-c(i.timing.1.1,i.timing.1.2)
             # cat(i.timing.1.i)
             i.timing.1[i,]<-i.timing.1.i
@@ -3542,8 +3702,27 @@ shinyServer(function(input, output, session) {
             }
             
             values$optimizegraphs<-all.graph.names
-            #print(all.graph.names)
+            # print(all.graph.names)
           }
+          
+          lapply(nombre.anios, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_image")]] <- renderImage({
+            imgfile<-""
+            if (NROW(all.graph.names)>0){
+              imgtmp<-all.graph.names
+              imgtmp2<-subset(imgtmp,imgtmp$season==as.character(s))
+              if (NROW(imgtmp2)>0){
+                if (file.exists(imgtmp2$file)){
+                  imgfile<-imgtmp2$file
+                } 
+              }
+            }          
+            gfile<-list(src = imgfile,
+                        contentType = 'image/png',
+                        width = 800,
+                        height = 600,
+                        alt = "No image found")
+            gfile
+          })})
           
           optim<-memgoodness(datfile[selectedcolumns],
                              i.graph=F,
