@@ -604,9 +604,10 @@ shinyServer(function(input, output, session) {
                                            i.colThresholds=input$colThresholds,
                                            i.colSeasons=input$colSeasons,
                                            i.colEpidemic=input$colEpidemic)
+          colormixed<-"#FF00FF"
           ggplot(values$plotdata, aes_(x=as.name("weekno"), y=as.name(paste0(s,"_fixed")))) +
             geom_point(aes_(as.name("weekno"), as.name(s), colour=as.name(paste0(s,"_color")), size=as.name(paste0(s,"_color")))) +
-            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = "purple")) +
+            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = colormixed)) +
             scale_size_manual(values = c("1" = 4, "2" = 6, "3" = 6, "4" = 8)) +
             geom_line(aes_(x=as.name("weekno"), y=as.name(s)), color=colors.palette$colObservedLines) +
             scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
@@ -943,9 +944,10 @@ shinyServer(function(input, output, session) {
                                            i.colThresholds=input$colThresholds,
                                            i.colSeasons=input$colSeasons,
                                            i.colEpidemic=input$colEpidemic)
+          colormixed<-"#FF00FF"
           ggplot(values$plotdata, aes_(x=as.name("weekno"), y=as.name(paste0(s,"_fixed")))) +
             geom_point(aes_(as.name("weekno"), as.name(s), colour=as.name(paste0(s,"_color")), size=as.name(paste0(s,"_color")))) +
-            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = "purple")) +
+            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = colormixed)) +
             scale_size_manual(values = c("1" = 4, "2" = 6, "3" = 6, "4" = 8)) +
             geom_line(aes_(x=as.name("weekno"), y=as.name(s)), color=colors.palette$colObservedLines) +
             scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
@@ -1280,9 +1282,10 @@ shinyServer(function(input, output, session) {
                                            i.colThresholds=input$colThresholds,
                                            i.colSeasons=input$colSeasons,
                                            i.colEpidemic=input$colEpidemic)
+          colormixed<-"#FF00FF"
           ggplot(values$plotdata, aes_(x=as.name("weekno"), y=as.name(paste0(s,"_fixed")))) +
             geom_point(aes_(as.name("weekno"), as.name(s), colour=as.name(paste0(s,"_color")), size=as.name(paste0(s,"_color")))) +
-            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = "purple")) +
+            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = colormixed)) +
             scale_size_manual(values = c("1" = 4, "2" = 6, "3" = 6, "4" = 8)) +
             geom_line(aes_(x=as.name("weekno"), y=as.name(s)), color=colors.palette$colObservedLines) +
             scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
@@ -1617,9 +1620,10 @@ shinyServer(function(input, output, session) {
                                            i.colThresholds=input$colThresholds,
                                            i.colSeasons=input$colSeasons,
                                            i.colEpidemic=input$colEpidemic)
+          colormixed<-"#FF00FF"
           ggplot(values$plotdata, aes_(x=as.name("weekno"), y=as.name(paste0(s,"_fixed")))) +
             geom_point(aes_(as.name("weekno"), as.name(s), colour=as.name(paste0(s,"_color")), size=as.name(paste0(s,"_color")))) +
-            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = "purple")) +
+            scale_color_manual(values = c("1" = colors.palette$colObservedPoints, "2" = colors.palette$colEpidemicStart, "3" = colors.palette$colEpidemicStop, "4" = colormixed)) +
             scale_size_manual(values = c("1" = 4, "2" = 6, "3" = 6, "4" = 8)) +
             geom_line(aes_(x=as.name("weekno"), y=as.name(s)), color=colors.palette$colObservedLines) +
             scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
@@ -3538,9 +3542,6 @@ shinyServer(function(input, output, session) {
           i.timing.1<-array(dim=c(anios,2))
           resultados.i<-array(dim=c(anios,14,n.values),
                               dimnames=list(year=nombre.anios,indicator=LETTERS[1:14],parameter=i.param.values))
-          
-          col.points<-c("#FF0000","#40FF40")
-          col.points.alpha<-mem:::add.alpha(col.points,alpha=0.4)
           
           for (i in 1:anios){
             cur<-i.data[i]
