@@ -664,6 +664,17 @@ shinyServer(function(input, output, session) {
     cat("observe/transformation> end\n")
   })
   
+  # Pass url parameters to the app, in this case to advanced features, once the server is run, you can
+  # use http://127.0.0.1:7910/?advancedfeatures=TRUE to enable/disable advanced features
+  
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    # print(query)
+    if (!is.null(query[['advancedfeatures']])) {
+      updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
+    }
+  })
+  
   #####################################
   ### DEFINING TABS STRUCTURE
   #####################################
