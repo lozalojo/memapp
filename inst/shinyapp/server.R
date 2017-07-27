@@ -539,13 +539,33 @@ shinyServer(function(input, output, session) {
         # values$idscreated = character()
         rm("origdata", "plotdata", "epidata")
         lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
-          fluidRow(
-            plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
-                       click = paste0("tbmOptimizeM_",as.character(s),"_click"),
-                       width = "800px", height = "600px"),
-            tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table")),
-            imageOutput(paste0("tbmOptimizeM_",as.character(s),"_image"))
-          )
+          imgfileok<-F
+          if (NROW(values$optimizegraphs)>0){
+            imgtmp<-values$optimizegraphs
+            imgtmp2<-subset(imgtmp,imgtmp$season==as.character(s))
+            if (NROW(imgtmp2)>0){
+              if (file.exists(imgtmp2$file)){
+                imgfile<-imgtmp2$file
+                imgfileok<-T
+              } 
+            }
+          }           
+          if (imgfileok){
+            fluidRow(
+              plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
+                         click = paste0("tbmOptimizeM_",as.character(s),"_click"),
+                         width = "800px", height = "600px"),
+              tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table")),
+              imageOutput(paste0("tbmOptimizeM_",as.character(s),"_image"))
+            )            
+          }else{
+            fluidRow(
+              plotOutput(outputId=paste0("tbmOptimizeM_",as.character(s),"_plot"), 
+                         click = paste0("tbmOptimizeM_",as.character(s),"_click"),
+                         width = "800px", height = "600px"),
+              tableOutput(paste0("tbmOptimizeM_",as.character(s),"_table"))
+            )            
+          }
         })})
         lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_table")]] <- renderTable({
           if (NROW(values$clickdata)>0){
