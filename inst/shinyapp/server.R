@@ -334,7 +334,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(read_data(), {
-    cat("observe/transformation> begin\n")
+    cat("observe/read_data> begin\n")
     readdata <- read_data()
     datfile <- readdata$datasetread
     datsheets <- readdata$datasets
@@ -342,17 +342,17 @@ shinyServer(function(input, output, session) {
     # cat(paste(datweeks,collapse=","),"\n")
     if (!is.null(datfile)){
       seasons<-names(datfile)
-      cat("observe/transformation> updating from/to, exclude\n")
+      cat("observe/read_data> updating from/to, exclude\n")
       updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
       updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
       updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
-      cat("observe/transformation> updating surveillance season, week and force epidemic\n")
+      cat("observe/read_data> updating surveillance season, week and force epidemic\n")
       updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=tail(seasons,1))
       updateSelectInput(session, "SelectSurveillanceWeek", choices =datweeks, selected=tail(datweeks,1))
       updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",datweeks), selected="")
-      cat("observe/transformation> updating visualize seasons list\n")
+      cat("observe/read_data> updating visualize seasons list\n")
       updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
-      cat("observe/transformation> updating timing plots\n")
+      cat("observe/read_data> updating timing plots\n")
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
         if(is.null(datfile)){
           zfix<-NULL
@@ -507,7 +507,7 @@ shinyServer(function(input, output, session) {
         }
         zfix
       })})
-      cat("observe/transformation> updating manual optimization plots\n")
+      cat("observe/read_data> updating manual optimization plots\n")
       selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
@@ -681,7 +681,7 @@ shinyServer(function(input, output, session) {
         })
       }
     }
-    cat("observe/transformation> end\n")
+    cat("observe/read_data> end\n")
   })
   
   # Pass url parameters to the app, in this case to advanced features, once the server is run, you can
@@ -1812,28 +1812,54 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel("Data",
-                           DT::dataTableOutput("tbmData"),
-                           fluidRow(
-                             column(8),
-                             column(2,
-                                    if (zip.present()){
-                                      downloadButton("tbmData_x","xlsx")
-                                    }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
-                                    }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
-                                    }),
-                             column(2,downloadButton("tbmData_c","csv"))
-                           )
-      ),
-      tabPanel("Seasons", plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
-      tabPanel("Series",plotlyOutput("tbmSeries", width ="100%", height ="100%")),
-      tabPanel("Timing",uiOutput("tbmTiming")),
-      tabPanel("MEM", uiOutput("tbmMem")),
-      tabPanel("Goodness",uiOutput("tbmGoodness")),
-      tabPanel("Optimize",uiOutput("tbmOptimize"))
-      )
+      if (as.logical(input$advancedfeatures)){
+        tabsetPanel(tabPanel("Data",
+                             DT::dataTableOutput("tbmData"),
+                             fluidRow(
+                               column(8),
+                               column(2,
+                                      if (zip.present()){
+                                        downloadButton("tbmData_x","xlsx")
+                                      }else if (.Platform$OS.type=="windows"){
+                                        shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      }else if (.Platform$OS.type=="unix"){
+                                        shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                      }),
+                               column(2,downloadButton("tbmData_c","csv"))
+                             )
+        ),
+        tabPanel("Seasons", plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
+        tabPanel("Series",plotlyOutput("tbmSeries", width ="100%", height ="100%")),
+        tabPanel("Timing",uiOutput("tbmTiming")),
+        tabPanel("MEM", uiOutput("tbmMem")),
+        tabPanel("Goodness",uiOutput("tbmGoodness")),
+        tabPanel("Optimize",uiOutput("tbmOptimize"))
+        )        
+      }else{
+        tabsetPanel(tabPanel("Data",
+                             DT::dataTableOutput("tbmData"),
+                             fluidRow(
+                               column(8),
+                               column(2,
+                                      if (zip.present()){
+                                        downloadButton("tbmData_x","xlsx")
+                                      }else if (.Platform$OS.type=="windows"){
+                                        shiny::actionButton(inputId='noziplink', label="Rtools not found", icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      }else if (.Platform$OS.type=="unix"){
+                                        shiny::actionButton(inputId='noziplink', label="Zip not found", icon = icon("file-excel-o"))
+                                      }),
+                               column(2,downloadButton("tbmData_c","csv"))
+                             )
+        ),
+        tabPanel("Seasons", plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
+        tabPanel("Series",plotlyOutput("tbmSeries", width ="100%", height ="100%")),
+        tabPanel("Timing",uiOutput("tbmTiming")),
+        tabPanel("MEM", uiOutput("tbmMem")),
+        tabPanel("Goodness",uiOutput("tbmGoodness")),
+        tabPanel("Optimize",uiOutput("tbmOptimizeA"))
+        )        
+      }
+      
     }
   })
   
