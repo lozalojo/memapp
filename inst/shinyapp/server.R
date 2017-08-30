@@ -179,6 +179,20 @@ shinyServer(function(input, output, session) {
       if (length(selectedcolumns)<3){
         roca<-NULL
       }else{
+	  
+	  cat(paste(selectedcolumns,collapse="-"),"\n")
+	  cat(paste(seq(input$paramrange[1],input$paramrange[2],by=0.1),collapse="-"),"\n")
+	  cat(paste(c(3,F,F,as.numeric(input$SelectMaximum),as.numeric(input$typethreshold),as.numeric(input$ntails),as.numeric(input$typeintensity),
+                           as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
+                           as.numeric(input$ntails),
+                           as.numeric(input$typecurve),
+                           as.numeric(input$levelaveragecurve)/100,
+                           as.numeric(input$typeother),
+                           as.numeric(input$levelaveragecurve)/100), collapse="-"),"\n")
+						   cat(paste(seq(input$paramrange[1],input$paramrange[2],by=0.1),collapse="-"),"\n")
+						   cat(as.numeric(input$nvalues),"\n")
+						   cat(as.character(input$validation),"\n")
+	  
         roca<-roc.analysis(datfile[selectedcolumns],
                            i.param.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                            i.min.seasons = 3,
