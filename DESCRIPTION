@@ -1,8 +1,8 @@
 Package: memapp
 Type: Package
 Title: The Moving Epidemic Method Web Application
-Version: 2.4.20170830
-Date: 2017-08-30
+Version: 2.4.20170901
+Date: 2017-09-01
 Authors@R: person(given = "Jose E.", family = "Lozano", email = "lozalojo@gmail.com", role = c("aut", "cre"))
 Depends:
     R (>= 3.4.0)
@@ -24,7 +24,7 @@ Imports:
     formattable,
     ggplot2,
     plotly,
-    mem (>= 2.9)
+    mem (>= 2.10)
 Suggests:
     magick
 Remotes:

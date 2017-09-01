@@ -1639,7 +1639,8 @@ shinyServer(function(input, output, session) {
         valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
         valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
         valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), "Youdens Index", icon = icon("heartbeat"), width=3, color="aqua")
       )
     }
   })
@@ -1649,7 +1650,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(good)){
       temp1<-as.data.frame(good$validity.data)
       temp1$Total<-good$results
-      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index")]
       # temp1[is.na(temp1)]<--1
       good.table<-formattable::formattable(temp1, list(
         # area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
@@ -1659,7 +1660,8 @@ shinyServer(function(input, output, session) {
         "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-        "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
+        "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
+        "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
     }else{
       temp1<-data.frame(Error="Number of columns must be greater than 2")
@@ -1675,7 +1677,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
-        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet="Global goodness indicators", i.rownames="Season", i.format="xlsx")
       }
@@ -1690,7 +1692,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
-        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet="Global goodness indicators", i.rownames="Season", i.format="csv")
       }
@@ -2308,7 +2310,8 @@ shinyServer(function(input, output, session) {
         valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), "Positive predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
         valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
         valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua")
+        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), "Youdens Index", icon = icon("heartbeat"), width=3, color="aqua")
       )
     }
   })
@@ -2318,7 +2321,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(good)){
       temp1<-as.data.frame(good$validity.data)
       temp1$Total<-good$results
-      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+      temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
       # temp1[is.na(temp1)]<--1
       good.table<-formattable::formattable(temp1, list(
         # area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
@@ -2328,7 +2331,8 @@ shinyServer(function(input, output, session) {
         "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-        "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
+        "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
+        "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
     }else{
       temp1<-data.frame(Error="Number of columns must be greater than 2")
@@ -2344,7 +2348,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
-        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet="Model goodness indicators", i.rownames="Season", i.format="xlsx")
       }
@@ -2359,7 +2363,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
-        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")]
+        temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet="Model goodness indicators", i.rownames="Season", i.format="csv")
       }
@@ -2592,8 +2596,8 @@ shinyServer(function(input, output, session) {
           n.values<-length(i.param.values)
           
           i.timing.1<-array(dim=c(anios,2))
-          resultados.i<-array(dim=c(anios,14,n.values),
-                              dimnames=list(year=nombre.anios,indicator=LETTERS[1:14],parameter=i.param.values))
+          resultados.i<-array(dim=c(anios,15,n.values),
+                              dimnames=list(year=nombre.anios,indicator=LETTERS[1:15],parameter=i.param.values))
           
           for (i in 1:anios){
             cur<-i.data[i]
@@ -2635,6 +2639,8 @@ shinyServer(function(input, output, session) {
           resultado[13]<-(resultado[3]+resultado[5])/(resultado[3]+resultado[4]+resultado[5]+resultado[6])
           # Matthews correlation coefficient
           resultado[14]<-(resultado[3]*resultado[5]-resultado[4]*resultado[6])/sqrt((resultado[3]+resultado[4])*(resultado[3]+resultado[6])*(resultado[5]+resultado[4])*(resultado[5]+resultado[6]))
+          # Youdens Index
+          resultado[15]<-resultado[7]+resultado[8]-1
           
           resultado[resultado=="NaN"]<-NA
           
@@ -2643,35 +2649,22 @@ shinyServer(function(input, output, session) {
           
           if (!any(!is.na(resultados$sensitivity)) | !any(!is.na(resultados$specificity))) {
             rankings.1<-NA
-            rankings.2<-NA
-            rankings.5<-NA
             optimo.1 <- NA
-            optimo.2 <- NA
-            optimo.5 <- NA
           } else {
-            # rankings.1<-rank(resultados$sensitivity,na.last=F)+rank(resultados$specificity,na.last=F)
-            # optimo.1<-i.param.values[which.max(rankings.1)]
             rankings.1 <- rank(-resultados$sensitivity, na.last = T) + rank(-resultados$specificity, na.last = T)
             optimo.1 <- i.param.values[which.min(rankings.1)]
-            
-            # rankings.2<-rank(resultados$sensitivity*resultados$specificity,na.last=F)
-            # optimo.2<-i.param.values[which.max(rankings.2)]
+          }
+          if (!any(!is.na(resultados$sensitivity)) | !any(!is.na(resultados$specificity))) {
+            rankings.2<-NA
+            optimo.2 <- NA
+          } else {
             rankings.2 <- rank(-resultados$sensitivity * resultados$specificity, na.last = T)
             optimo.2 <- i.param.values[which.min(rankings.2)]
-            
-            qf <- abs(resultados$sensitivity - resultados$specificity)
-            qe <- 2 - resultados$sensitivity - resultados$specificity
-            qs <- (1 - resultados$sensitivity)^2 + (1 - resultados$specificity)^2
-            
-            rankings.5 <- rank(qf) + rank(qe) + rank(qs)
-            optimo.5 <- i.param.values[which.min(rankings.5)]
           }
           if (!any(!is.na(resultados$positive.likehood.ratio))) {
             rankings.3<-NA
             optimo.3 <- NA
           } else {
-            # rankings.3<-rank(resultados$positive.likehood.ratio,na.last=F)
-            # optimo.3<-i.param.values[which.max(rankings.3)]
             rankings.3 <- rank(-resultados$positive.likehood.ratio, na.last = T)
             optimo.3 <- i.param.values[which.min(rankings.3)]
           }
@@ -2679,21 +2672,26 @@ shinyServer(function(input, output, session) {
             rankings.4<-NA
             optimo.4 <- NA
           } else {
-            # rankings.4<-rank(resultados$negative.likehood.ratio,na.last=F)
-            # optimo.4<-i.param.values[which.max(rankings.4)]
             rankings.4 <- rank(-resultados$negative.likehood.ratio, na.last = T)
             optimo.4 <- i.param.values[which.min(rankings.4)]
+          }
+          if (!any(!is.na(resultados$sensitivity)) | !any(!is.na(resultados$specificity))) {
+            rankings.5<-NA
+            optimo.5 <- NA
+          } else {
+            qf <- abs(resultados$sensitivity - resultados$specificity)
+            qe <- 2 - resultados$sensitivity - resultados$specificity
+            qs <- (1 - resultados$sensitivity)^2 + (1 - resultados$specificity)^2
+            rankings.5 <- rank(qf) + rank(qe) + rank(qs)
+            optimo.5 <- i.param.values[which.min(rankings.5)]
           }
           if (!any(!is.na(resultados$percent.agreement))) {
             rankings.6 <- NA
             optimo.6 <- NA
           } else {
-            # rankings.6<-rank(resultados$percent.agreement,na.last=F)
-            # optimo.6<-i.param.values[which.max(rankings.6)]
             rankings.6 <- rank(-resultados$percent.agreement, na.last = T)
             optimo.6 <- i.param.values[which.min(rankings.6)]
           }
-          
           if (!any(!is.na(resultados$matthews.correlation.coefficient))) {
             rankings.7 <- NA
             optimo.7 <- NA
@@ -2701,13 +2699,20 @@ shinyServer(function(input, output, session) {
             rankings.7 <- rank(-resultados$matthews.correlation.coefficient, na.last = T)
             optimo.7 <- i.param.values[which.min(rankings.7)]
           }
+          if (!any(!is.na(resultados$youdens.index))) {
+            rankings.8 <- NA
+            optimo.8 <- NA
+          } else {
+            rankings.8 <- rank(-resultados$youdens.index, na.last = T)
+            optimo.8 <- i.param.values[which.min(rankings.8)]
+          }
           
           
           optimum <- data.frame(pos.likehood = optimo.3, neg.likehood = optimo.4, aditive = optimo.1, multiplicative = optimo.2,
-                                mixed = optimo.5, percent = optimo.6, matthews=optimo.7)
+                                mixed = optimo.5, percent = optimo.6, matthews=optimo.7, youden=optimo.8)
           
           rankings <- data.frame(pos.likehood = rankings.3, neg.likehood = rankings.4, aditive = rankings.1, multiplicative = rankings.2,
-                                 mixed = rankings.5, percent = rankings.6, matthews=rankings.7)
+                                 mixed = rankings.5, percent = rankings.6, matthews=rankings.7, youden=rankings.8)
           
           
           optimum.by.inspection.output <- list(optimum = optimum,
@@ -2776,6 +2781,8 @@ shinyServer(function(input, output, session) {
             gfile
           })})
           
+          print(optimum.by.inspection.output$optimum)
+          
           optim<-memgoodness(datfile[selectedcolumns],
                              i.seasons=as.numeric(input$SelectMaximum),
                              i.type.threshold=as.numeric(input$typethreshold),
@@ -2788,7 +2795,7 @@ shinyServer(function(input, output, session) {
                              i.type.other=as.numeric(input$typeother),
                              i.level.other=as.numeric(input$levelaveragecurve)/100,
                              i.method=as.numeric(input$method),
-                             i.param=as.numeric(optimum.by.inspection.output$optimum["matthews"]),
+                             i.param=as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]),
                              i.n.max=as.numeric(input$nvalues),
                              i.calculation.method = "default",
                              i.goodness.method=as.character(input$validation),
@@ -2807,8 +2814,9 @@ shinyServer(function(input, output, session) {
             fluidRow(
               valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
               valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+              valueBox(format(round(optim["Youdens Index"], 2), nsmall=2), "Youdens Index", icon = icon("heartbeat"), width=3, color="aqua"),
               valueBox(format(round(input$param, 2), nsmall=1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
-              valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum["matthews"]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
+              valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
               
             ),
             fluidRow(
@@ -2816,8 +2824,8 @@ shinyServer(function(input, output, session) {
               formattable::renderFormattable({
                 if(!is.null(optimum.by.inspection.output$insp.data)){
                   temp1 <- optimum.by.inspection.output$insp.data
-                  temp1<-temp1[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
-                  names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+                  temp1<-temp1[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
+                  names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
                   rownames(temp1)<-NULL
                   opt.table<-formattable::formattable(temp1, list(
                     "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
@@ -2825,7 +2833,8 @@ shinyServer(function(input, output, session) {
                     "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
                     "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
                     "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-                    "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
+                    "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
+                    "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
                   ), digits = 2, format = "f")
                 }else{
                   temp1<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
@@ -2879,7 +2888,7 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       doptim<-dataoptim$roc.data
-      optim<-doptim[doptim$value==as.numeric(dataoptim$optimum["matthews"]),]
+      optim<-doptim[doptim$value==as.numeric(dataoptim$optimum[as.character(input$optimmethod)]),]
       fluidRow(
         valueBox(format(round(optim["sensitivity"], 2), nsmall=2), "Sensitivity", icon = icon("heartbeat"), width=3, color="yellow"),
         valueBox(format(round(optim["specificity"], 2), nsmall=2), "Specificity", icon = icon("heartbeat"), width=3, color="yellow"),
@@ -2887,8 +2896,9 @@ shinyServer(function(input, output, session) {
         valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), "Negative predictive value", icon = icon("heartbeat"), width=3, color="yellow"),
         valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), "Percent agreement", icon = icon("heartbeat"), width=3, color="aqua"),
         valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), "Matthews correlation coefficient", icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(optim["youdens.index"], 2), nsmall=2), "Youdens Index", icon = icon("heartbeat"), width=3, color="aqua"),
         valueBox(format(round(input$param, 2), nsmall=1), "Current parameter", icon = icon("heartbeat"), width=3, color="red"),
-        valueBox(format(round(as.numeric(dataoptim$optimum["matthews"]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
+        valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), "Optimum parameter", icon = icon("heartbeat"), width=3, color="olive")
       )
     }
   })
@@ -2896,8 +2906,8 @@ shinyServer(function(input, output, session) {
   output$tbmOptimizeADetail <- formattable::renderFormattable({
     dataoptim <- data_optim()
     if(!is.null(dataoptim)){
-      temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
-      names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+      temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
+      names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
       rownames(temp1)<-NULL
       # temp1[is.na(temp1)]<--1
       roca.table<-formattable::formattable(temp1, list(
@@ -2908,7 +2918,8 @@ shinyServer(function(input, output, session) {
         "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-        "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
+        "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
+        "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
     }else{
       temp1<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
@@ -2922,8 +2933,8 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dataoptim <- data_optim()
       if(!is.null(dataoptim)){
-        temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
-        names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+        temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
+        names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
         rownames(temp1)<-NULL
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet="Optimization", i.rownames=NA, i.format="xlsx")
@@ -2937,8 +2948,8 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dataoptim <- data_optim()
       if(!is.null(dataoptim)){
-        temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient")]
-        names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+        temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
+        names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
         rownames(temp1)<-NULL
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet="Optimization", i.rownames=NA, i.format="csv")
@@ -2952,8 +2963,8 @@ shinyServer(function(input, output, session) {
     if(is.null(dataoptim)){
       z<-NULL
     }else{
-      dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient"))
-      names(dgraf)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient")
+      dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index"))
+      names(dgraf)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
       dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
       colors.palette<-generate_palette(i.number.series=NCOL(dgraf)-1,
                                        i.colObservedLines=input$colObservedLines,

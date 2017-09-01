@@ -213,9 +213,9 @@ shinyUI(dashboardPage(skin = "black",
                                               bsPopover(id = "ntails", title = "Confidence intervals tails", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "left", trigger = "hover", options = list(container = "body"))
                                        )
                                      ),
-                                     selectInput("typethreshold", h6("Epidemic thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 5),
+                                     selectInput("typethreshold", h6("Epidemic threshold", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 5),
                                      bsPopover(id = "typethreshold", title = "Epidemic threshold", content = "Method for calculating the epidemic threshold.", placement = "left", trigger = "hover", options = list(container = "body")),
-                                     selectInput("typeintensity", h6("Intensity thr.", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 6),
+                                     selectInput("typeintensity", h6("Intensity thresholds", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6), size=1, selectize = FALSE, selected = 6),
                                      bsPopover(id = "typeintensity", title = "Intensity thresholds", content = "Method for calculating the intensity threshold.", placement = "left", trigger = "hover", options = list(container = "body")),
                                      fluidRow(
                                        column(4,
@@ -232,8 +232,25 @@ shinyUI(dashboardPage(skin = "black",
                                        )
                                      ),
                                      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Goodness & optimize"),
-                                     selectInput("validation", h6("Validation", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list("Cross"="cross", "Sequential"="sequential"), size=1, selectize = FALSE, selected = "cross"),
-                                     bsPopover(id = "validation", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "left", trigger = "hover", options = list(container = "body")),
+                                     fluidRow(
+                                       column(6,
+                                              selectInput("validation", h6("Validation", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list("Cross"="cross", "Sequential"="sequential"), size=1, selectize = FALSE, selected = "cross"),
+                                              bsPopover(id = "validation", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "left", trigger = "hover", options = list(container = "body"))
+                                       ),
+                                       column(6,
+                                              selectInput("optimmethod", h6("Optimization method", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = list(
+                                                "Positive likehood"="pos.likehood", 
+                                                "Negative likehood"="neg.likehood", 
+                                                "Aditive"="aditive", 
+                                                "Multiplicative"="multiplicative", 
+                                                "Mixed"="mixed", 
+                                                "Percent agreement"="percent",
+                                                "Matthews Correlation Coefficient"="matthews",
+                                                "Youden's Index"="youden"
+                                              ), size=1, selectize = FALSE, selected = "matthews"),
+                                              bsPopover(id = "optimmethod", title = "Optimization method", content = "Method to choose the optimum parameter.", placement = "left", trigger = "hover", options = list(container = "body"))
+                                       )
+                                     ),
                                      sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Parameter range"), min = 0.1, max = 10, value = c(2, 4), step=0.1),
                                      bsPopover(id = "paramrange", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "left", trigger = "hover", options = list(container = "body")),
                                      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Other"),
