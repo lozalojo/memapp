@@ -26,24 +26,38 @@ generate_palette <- function(i.number.series=NA,
   if (is.null(i.colThresholds)) i.colThresholds<-"default" else if (is.na(i.colThresholds)) i.colThresholds<-"default"
   if (is.null(i.colSeasons)) i.colSeasons<-"default" else if (is.na(i.colSeasons)) i.colSeasons<-"default"
   if (is.null(i.colEpidemic)) i.colEpidemic<-"default" else if (is.na(i.colEpidemic)) i.colEpidemic<-"default"
-  
   # First four are simple colors
   if (i.colObservedLines=="default") i.colObservedLines<-params.default$colObservedLines else i.colObservedLines<-rgb(t(col2rgb(i.colObservedLines))/255)
   if (i.colObservedPoints=="default") i.colObservedPoints<-params.default$colObservedPoints else i.colObservedPoints<-rgb(t(col2rgb(i.colObservedPoints))/255)
   if (i.colEpidemicStart=="default") i.colEpidemicStart<-params.default$colEpidemicStart else i.colEpidemicStart<-rgb(t(col2rgb(i.colEpidemicStart))/255)
   if (i.colEpidemicStop=="default") i.colEpidemicStop<-params.default$colEpidemicStop else i.colEpidemicStop<-rgb(t(col2rgb(i.colEpidemicStop))/255)
   # Fifth to Seventh are palettes that I must create
-  if (i.colThresholds=="default") i.colThresholds<-params.default$colThresholds else i.colThresholds<-RColorBrewer::brewer.pal(7,i.colThresholds)[2:6]
-  if (i.colSeasons=="default") i.colSeasons<-params.default$colSeasons
-  i.colSeasons <- colorRampPalette(RColorBrewer::brewer.pal(max(3,min(8,i.number.series)),i.colSeasons))(i.number.series)
-  if (i.colEpidemic=="default") i.colEpidemic<-params.default$colEpidemic else i.colEpidemic<-RColorBrewer::brewer.pal(5,i.colEpidemic)[2:4]
+  if(i.colThresholds %in% colors()){
+    i.colThresholds<-rep(rgb(t(col2rgb(i.colThresholds))/255),5)
+  }else if(i.colThresholds %in% rownames(brewer.pal.info)){
+    i.colThresholds<-RColorBrewer::brewer.pal(7,i.colThresholds)[2:6]
+  }else{
+    i.colThresholds<-params.default$colThresholds
+  }
+  if(i.colSeasons %in% colors()){
+    i.colSeasons<-rep(rgb(t(col2rgb(i.colSeasons))/255),i.number.series)
+  }else if(i.colSeasons %in% rownames(brewer.pal.info)){
+    i.colSeasons <- colorRampPalette(RColorBrewer::brewer.pal(max(3,min(8,i.number.series)),i.colSeasons))(i.number.series)
+  }else{
+    i.colSeasons <- colorRampPalette(RColorBrewer::brewer.pal(max(3,min(8,i.number.series)),params.default$colSeasons))(i.number.series)
+  }
+  if (i.colEpidemic %in% colors()){
+    i.colEpidemic<-rep(rgb(t(col2rgb(i.colEpidemic))/255),3)
+  }else if(i.colEpidemic %in% rownames(brewer.pal.info)){
+    i.colEpidemic<-RColorBrewer::brewer.pal(5,i.colEpidemic)[2:4]
+  }else{
+    i.colEpidemic<-params.default$colEpidemic
+  }
   # Last one is a number between 0 and 1
   # colTransparency<-input$colTransparency
   # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
-  
   # i.colEpidemicStart<-mem:::add.alpha(i.colEpidemicStart,alpha=0.4)
   # i.colEpidemicStop<-mem:::add.alpha(i.colEpidemicStop,alpha=0.4)
-  
   colors.final<-list(colObservedLines=i.colObservedLines, colObservedPoints=i.colObservedPoints,
                      colEpidemicStart=i.colEpidemicStart, colEpidemicStop=i.colEpidemicStop,
                      colThresholds=i.colThresholds, colSeasons=i.colSeasons,colEpidemic=i.colEpidemic
