@@ -1,4 +1,7 @@
 options(warn =-1)
+# route messages to output in the server
+if (!interactive()) sink(stderr(), type = "output")
+
 source("helpers.R")
 set.rzip()
 
