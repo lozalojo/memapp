@@ -3221,7 +3221,9 @@ shinyServer(function(input, output, session) {
         cat(paste0("animated gif> image\t",i,"/",n.surveillance.week,"\t",imgfile,"\n"))
       }
       imgfilegif<-paste(tempdir(),"/animated.gif",sep="")
+      cat(paste0("animated gif> creating\t\t",imgfilegif,"\n")
       anim <- magick::image_animate(imgfilem, fps = 2)
+      cat(paste0("animated gif> saving\t\t",imgfilegif,"\n")
       magick::image_write(anim,path=imgfilegif)
       cat(paste0("animated gif> gif created\t\t",imgfilegif,"\n"))
       cat("animated gif> end\n")
