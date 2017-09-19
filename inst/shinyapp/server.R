@@ -3191,7 +3191,7 @@ shinyServer(function(input, output, session) {
                                        i.colThresholds=input$colThresholds,
                                        i.colSeasons=input$colSeasons,
                                        i.colEpidemic=input$colEpidemic)
-      
+      cat("animated gif> begin\n")
       for (i in 1:n.surveillance.week){
         p<-plotSurveillance(i.data=datfile.plot,
                             i.week.report=rownames(datfile)[i],
@@ -3215,12 +3215,13 @@ shinyServer(function(input, output, session) {
         imgfile<-paste(tempdir(),"/animatedplot_",i,".png",sep="")
         ggsave(imgfile, plot=p$plot, width=8, height=6, dpi=150)
         if (i==1) imgfilem<-magick::image_read(imgfile) else imgfilem<-c(imgfilem,magick::image_read(imgfile))
-        #cat(imgfile,"\n")
+        cat(paste0("animated gif> image\t",i,"/",n.surveillance.week,"\t",imgfile,"\n"))
       }
       imgfilegif<-paste(tempdir(),"/animated.gif",sep="")
       anim <- magick::image_animate(imgfilem, fps = 2)
       magick::image_write(anim,path=imgfilegif)
-      #cat(imgfilegif,"\n")
+      cat(paste0("animated gif> gif created\t\t",imgfilegif,"\n"))
+      cat("animated gif> end\n")
       outdistAnimated<-list(src = paste(tempdir(),"/animated.gif",sep=""),
                             contentType = 'image/gif',
                             width = 800,
