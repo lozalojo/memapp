@@ -1585,6 +1585,54 @@ zip.present<-function() file.exists(Sys.getenv("R_ZIPCMD"))
 
 mdbtools.present<-function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
 
+# check what animation method has to be used
+
+animation.method<-function(){
+  if (.Platform$OS.type=="windows"){
+    cat("Windows system detected\n")
+    path.env<-Sys.getenv("PATH")
+    if ("animation" %in% rownames(installed.packages()) & grepl("GraphicsMagick", path.env, fixed=T)){
+      # GraphicsMagick program + animation package
+      cat("GraphicsMagick+animation detected. Using animation package\n")
+      animation.method<-1
+    }else if ("animation" %in% rownames(installed.packages()) & grepl("ImageMagick", path.env, fixed=T)){
+      # ImageMagick program + animation package
+      cat("ImageMagick+animation detected. Using animation package\n")
+      animation.method<-2
+    }else if ("magick" %in% rownames(installed.packages())){
+      # magick package
+      cat("magick detected. Using magick package\n")
+      animation.method<-3
+    }else{
+      cat("No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      animation.method<-4      
+    }
+  }else if (.Platform$OS.type=="unix"){
+    cat("*nix system detected\n")
+    if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/gm")){
+      # GraphicsMagick program + animation package
+      cat("GraphicsMagick+animation detected. Using animation package\n")
+      animation.method<-1
+    }else if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/magick")){
+      # ImageMagick program + animation package
+      cat("ImageMagick+animation detected. Using animation package\n")
+      animation.method<-2
+    }else if("magick" %in% rownames(installed.packages())){
+      # magick package
+      cat("magick detected. Using magick package\n")
+      animation.method<-3
+    }else{
+      cat("No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      animation.method<-4      
+    }
+  }else{
+    cat("No windows or *nix system detected\n")
+    animation.method<-4
+  }
+  # animation.method<-3
+  return(animation.method)
+}
+
 # functions for the optimize plots
 
 tail.order<-function(i.data, i.n, i.order){

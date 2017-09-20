@@ -17,8 +17,8 @@ env:
   - _R_CHECK_FORCE_SUGGESTS_=false
 
 r_github_packages:
-  - renkun-ken/formattable hadley/ggplot2 lozalojo/mem
-
+  - hadley/ggplot2 ropensci/plotly lozalojo/mem renkun-ken/formattable ropensci/magick yihui/animation
+  
 r_packages:
   - covr
 
@@ -27,5 +27,5 @@ after_success:
 
 before_install:
   - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install --yes libssl-dev libcurl4-openssl-dev libmagick++-dev mdbtools unixodbc-dev zip
+  - sudo apt-get install --yes libssl-dev libcurl4-openssl-dev libmagick++-dev mdbtools unixodbc-dev zip graphicsmagick imagemagick
   - Rscript -e 'update.packages(ask = FALSE)'
