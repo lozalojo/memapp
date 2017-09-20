@@ -1613,7 +1613,7 @@ animation.method<-function(){
       # GraphicsMagick program + animation package
       cat("GraphicsMagick+animation detected. Using animation package\n")
       animation.method<-1
-    }else if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/magick")){
+    }else if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/convert")){
       # ImageMagick program + animation package
       cat("ImageMagick+animation detected. Using animation package\n")
       animation.method<-2
