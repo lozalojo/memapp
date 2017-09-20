@@ -651,6 +651,7 @@ shinyServer(function(input, output, session) {
             scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
             labs(title = input$textMain, x = input$textX, y = input$textY) +
             ggthemes::theme_few() +
+            theme(plot.title = element_text(hjust = 0.5)) +
             guides(color=FALSE, size=FALSE)
         })})
         lapply(modseasons,function(s){
@@ -2997,7 +2998,9 @@ shinyServer(function(input, output, session) {
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         scale_color_manual(values=colors.palette$colSeasons) +
         labs(title = input$textMain, x = input$textX, y = input$textY) +
-        ggthemes::theme_few()
+        ggthemes::theme_few() +
+        theme(plot.title = element_text(hjust = 0.5))
+      
       z<-ggplotly(p, width = 800, height = 600)
     }
     z

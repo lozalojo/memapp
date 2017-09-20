@@ -248,9 +248,8 @@ plotSeasons <- function(i.data,
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-      ggthemes::theme_few()
-    
+      ggthemes::theme_few() +
+      theme(plot.title = element_text(hjust = 0.5))
     p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
             weeklabels=i.range.x.values$week.lab, gdata=dgrafgg.s)
   }
@@ -485,8 +484,8 @@ plotSeries<-function(i.data,
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
-      ggthemes::theme_few()
-    
+      ggthemes::theme_few() +
+      theme(plot.title = element_text(hjust = 0.5))
     p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
             weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""), gdata=dgrafgg.s)
   }
@@ -752,8 +751,8 @@ plotSurveillance<-function(i.data,
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
-      ggthemes::theme_few()
-    
+      ggthemes::theme_few() +
+      theme(plot.title = element_text(hjust = 0.5))
     p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
             weeklabels=current.season$nombre.semana, gdata=dgrafgg.s)
   }
@@ -818,7 +817,8 @@ plotGeneric <- function(i.data,
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
-      ggthemes::theme_few()
+      ggthemes::theme_few() +
+      theme(plot.title = element_text(hjust = 0.5))
     p<-list(plot=gplot, gdata=dgrafgg)
   }
   p
