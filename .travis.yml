@@ -3,11 +3,6 @@ cache: packages
 sudo: true
 dist: trusty
 
-addons:
-  apt:
-    packages:
-      - mdbtools
-
 r:
   - release
   - devel
