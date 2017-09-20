@@ -1590,12 +1590,12 @@ mdbtools.present<-function() file.exists("/usr/bin/mdb-tables") | file.exists("/
 animation.method<-function(){
   if (.Platform$OS.type=="windows"){
     cat("Windows system detected\n")
-    path.env<-Sys.getenv("PATH")
-    if ("animation" %in% rownames(installed.packages()) & grepl("GraphicsMagick", path.env, fixed=T)){
+    path.env<-tolower(Sys.getenv("PATH"))
+    if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, ignore.case = T, fixed=T)){
       # GraphicsMagick program + animation package
       cat("GraphicsMagick+animation detected. Using animation package\n")
       animation.method<-1
-    }else if ("animation" %in% rownames(installed.packages()) & grepl("ImageMagick", path.env, fixed=T)){
+    }else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, ignore.case = T, fixed=T)){
       # ImageMagick program + animation package
       cat("ImageMagick+animation detected. Using animation package\n")
       animation.method<-2
