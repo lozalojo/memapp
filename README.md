@@ -42,6 +42,37 @@ memapp::runmemapp()
 You can specify other parameters passed to `shiny::runApp`, such as `display = normal`, or  
 `launch.browser = TRUE`.
 
+## Notes
+
+In order to use the Surveillance/Animation graph, *magick* package must be installed:
+
+```
+install.packages("magick")
+```
+
+Or alternatively, for low specs machines, the *animation* package:
+
+```
+install.packages("animation")
+```
+
+Along with one of the following programs: *GraphicsMagick* or *ImageMagick*:
+
+www.imagemagick.org
+www.graphicsmagick.org
+
+The installers can be downloaded from their webpages or can be installed directly from R:
+
+```
+# check if installr is installed, and install it otherwise
+if(!require("installr")) install.packages('installr')
+library("installr")
+# install GraphicsMagic
+install.GraphicsMagick()
+# install ImageMagick
+install.ImageMagick()
+```
+
 ## References
 
 Vega T, Lozano JE, Ortiz de Lejarazu R, Gutierrez Perez M. Modelling influenza epidemic—can we detect the beginning and predict the intensity and duration? Int Congr Ser. 2004 Jun;1263:281–3. 
