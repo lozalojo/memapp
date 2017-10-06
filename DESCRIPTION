@@ -1,8 +1,8 @@
 Package: memapp
 Type: Package
 Title: The Moving Epidemic Method Web Application
-Version: 2.6.20170925
-Date: 2017-09-25
+Version: 2.6.20171006
+Date: 2017-10-06
 Authors@R: person(given = "Jose E.", family = "Lozano", email = "lozalojo@gmail.com", role = c("aut", "cre"))
 Depends:
     R (>= 3.4.0)
@@ -29,24 +29,8 @@ Suggests:
     magick,
     animation
 Remotes:
-  github::rstudio/shiny,
-  github::rstudio/shinythemes,
-  github::rstudio/shinydashboard,
-  github::ebailey78/shinyBS,
-  github::daattali/shinyjs,
-  github::jrnold/ggthemes,
-  github::hadley/reshape,
-  github::awalker89/openxlsx,
-  github::tidyverse/readxl,
-  github::tidyverse/stringr,
-  github::gagolews/stringi,
-  github::rstudio/DT,
-  github::renkun-ken/formattable,
   github::hadley/ggplot2,
-  github::ropensci/plotly,
-  github::lozalojo/mem,
-  github::ropensci/magick,
-  github::yihui/animation
+  github::lozalojo/mem
 Description: Web application created in the Shiny framework for the 'mem' R package.
 License: GPL (>= 2)
 URL: https://github.com/lozalojo/memapp
