@@ -2,6 +2,8 @@
 ### CUSTOM FUNCTIONS
 #####################################
 
+load("lang/translation.bin")
+
 generate_palette <- function(i.number.series=NA,
                              i.colObservedLines=NULL,
                              i.colObservedPoints=NULL,
@@ -177,8 +179,8 @@ plotSeasons <- function(i.data,
     }
     
     labels<-c(names(data.full),
-              paste(names(data.full)," (missing)",sep=""),
-              "Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
+              paste(names(data.full)," (",tr.item("missing"),")",sep=""),
+              tr.item("Epidemic thr."),tr.item("Medium thr."),tr.item("High thr."),tr.item("Very high thr."),tr.item("Post thr."))
     haspoints<-c(rep(F,NCOL(data.full)),rep(T,NCOL(data.full)),F,F,F,F,F)
     haslines<-c(rep(T,NCOL(data.full)),rep(F,NCOL(data.full)),T,T,T,T,T)
     shapes<-c(rep(NA,NCOL(data.full)),rep(24,NCOL(data.full)),NA,NA,NA,NA,NA)
@@ -240,11 +242,11 @@ plotSeasons <- function(i.data,
     gplot<-ggplot(dgrafgg.s) +
       geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
       geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=shapes.s, name="Legend", labels=labels.s) +
-      scale_color_manual(values=colors.s, name="Legend", labels=labels.s) +
-      scale_fill_manual(values=fills.s, name="Legend", labels=labels.s) +
-      scale_size_manual(values=sizes.s, name="Legend", labels=labels.s) +
-      scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) +
+      scale_shape_manual(values=shapes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_color_manual(values=colors.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_fill_manual(values=fills.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_size_manual(values=sizes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_linetype_manual(values=linetypes.s, name=tr.item("Legend"), labels=labels.s) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -392,7 +394,7 @@ plotSeries<-function(i.data,
       }
     }
     
-    labels<-c("Weekly rates","Pre-epidemic","Pre-epidemic (missing)","Epidemic","Epidemic (missing)","Post-epidemic","Post-epidemic (missing)","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")
+    labels<-c(tr.item("Weekly data"),tr.item("Pre-epidemic"),tr.item("Pre-epidemic (missing)"),tr.item("Epidemic"),tr.item("Epidemic (missing)"),tr.item("Post-epidemic"),tr.item("Post-epidemic (missing)"),tr.item("Epidemic thr."),tr.item("Medium thr."),tr.item("High thr."),tr.item("Very high thr."),tr.item("Post thr."))
     haspoints<-c(F,T,T,T,T,T,T,F,F,F,F,F)
     haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
     shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
@@ -476,11 +478,11 @@ plotSeries<-function(i.data,
     gplot<-ggplot(dgrafgg.s) +
       geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
       geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=shapes.s, name="Legend", labels=labels.s) +
-      scale_color_manual(values=colors.s, name="Legend", labels=labels.s) +
-      scale_fill_manual(values=fills.s, name="Legend", labels=labels.s) +
-      scale_size_manual(values=sizes.s, name="Legend", labels=labels.s) +
-      scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) +
+      scale_shape_manual(values=shapes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_color_manual(values=colors.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_fill_manual(values=fills.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_size_manual(values=sizes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_linetype_manual(values=linetypes.s, name=tr.item("Legend"), labels=labels.s) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -680,7 +682,7 @@ plotSurveillance<-function(i.data,
     intensidades.3<-array(dim=c(semanas,3))
     intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
     
-    labels<-c("Weekly rates","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End")
+    labels<-c(tr.item("Weekly data"),tr.item("Epidemic thr."),tr.item("Medium thr."),tr.item("High thr."),tr.item("Very high thr."),tr.item("Post thr."),tr.item("Start"),tr.item("End"))
     haspoints<-c(T,F,F,F,F,F,T,T)
     haslines<-c(T,T,T,T,T,T,F,F)
     shapes<-c(21,NA,NA,NA,NA,NA,21,21)
@@ -743,11 +745,11 @@ plotSurveillance<-function(i.data,
     gplot<-ggplot(dgrafgg.s) +
       geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=1.2) +
       geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=shapes.s, name="Legend", labels=labels.s) +
-      scale_color_manual(values=colors.s, name="Legend", labels=labels.s) +
-      scale_fill_manual(values=fills.s, name="Legend", labels=labels.s) +
-      scale_size_manual(values=sizes.s, name="Legend", labels=labels.s) +
-      scale_linetype_manual(values=linetypes.s, name="Legend", labels=labels.s) +
+      scale_shape_manual(values=shapes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_color_manual(values=colors.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_fill_manual(values=fills.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_size_manual(values=sizes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_linetype_manual(values=linetypes.s, name=tr.item("Legend"), labels=labels.s) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -809,11 +811,11 @@ plotGeneric <- function(i.data,
     gplot<-ggplot(dgrafgg) +
       geom_line(aes(x=num,y=value,group=variable, color=variable, linetype=variable),size=i.linesize) +
       geom_point(aes(x=num,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=i.shapes, name="Legend", labels=labels) +
-      scale_color_manual(values=i.colors, name="Legend", labels=labels) +
-      scale_fill_manual(values=i.fills, name="Legend", labels=labels) +
-      scale_size_manual(values=i.sizes, name="Legend", labels=labels) +
-      scale_linetype_manual(values=i.linetypes, name="Legend", labels=labels) +
+      scale_shape_manual(values=i.shapes, name=tr.item("Legend"), labels=labels) +
+      scale_color_manual(values=i.colors, name=tr.item("Legend"), labels=labels) +
+      scale_fill_manual(values=i.fills, name=tr.item("Legend"), labels=labels) +
+      scale_size_manual(values=i.sizes, name=tr.item("Legend"), labels=labels) +
+      scale_linetype_manual(values=i.linetypes, name=tr.item("Legend"), labels=labels) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -1649,4 +1651,13 @@ extract.two<-function(i.data, i.order, i.column){
   return(results)
 }
 
+# localization
+
+tr.item <- function(i.text){ # translates text into current language
+  o.text<-tail(translation$translated[translation$original==i.text])
+  if (NROW(o.text)!=1) o.text<-i.text
+  o.text
+}
+
+tr <- function(x) unlist(lapply(x,tr.item))
 
