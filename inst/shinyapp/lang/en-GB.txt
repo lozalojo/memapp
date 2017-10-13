@@ -1,102 +1,187 @@
-Load file;Load file
-Dataset;Dataset
-First Week;First Week
-Last Week;Last Week
-Transform;Transform
-Model;Model
-From;From
-To;To
-Exclude;Exclude
-Maximum seasons;Maximum seasons
-Surveillance;Surveillance
-Season;Season
-Week;Week
-Force epidemic start;Force epidemic start
-Visualize;Visualize
-Seasons;Seasons
-Thresholds;Thresholds
-Pre-epidemic threshold;Pre-epidemic threshold
-Post-epidemic threshold;Post-epidemic threshold
-Intensity thresholds/levels;Intensity thresholds/levels
-The Moving Epidemic Method Web Application;The Moving Epidemic Method Web Application
-Procedures;Procedures
+1/season;1/season
+10/season;10/season
+2/season;2/season
+3/season;3/season
+30 in total;30 in total
+4/season;4/season
+5/season;5/season
+6/season;6/season
+7/season;7/season
+8/season;8/season
+9/season;9/season
+Aditive;Aditive
+All;All
+Animated;Animated
+Arithmetic mean and mean confidence interval;Arithmetic mean and mean confidence interval
+Arithmetic mean and point confidence interval;Arithmetic mean and point confidence interval
+Average;Average
+Average curve;Average curve
+Average curve CI.;Average curve CI.
+Average curve/Other CI. level;Average curve/Other CI. level
+Average epidemic length;Average epidemic length
+Average epidemic start week;Average epidemic start week
+Baseline;Baseline
+Baseline level;Baseline level
 Check & describe;Check & describe
-Text options;Text options
-Main title;Main title
-Y-axis;Y-axis
-X-axis;X-axis
-File;File
-Series;Series
-Timing;Timing
-Evolution;Evolution
-Stability;Stability
-Goodness;Goodness
-Weekly data;Weekly data
-Epidemic thr.;Epidemic thr.
-Medium thr.;Medium thr.
-High thr.;High thr.
-Very high thr.;Very high thr.
-Pre-epidemic;Pre-epidemic
-Epidemic;Epidemic
-Post-epidemic;Post-epidemic
+Cross;Cross
+Current parameter;Current parameter
+Data;Data
+Dataset;Dataset
+Detailed;Detailed
 Duration;Duration
 Duration (lower limit);Duration (lower limit)
 Duration (upper limit);Duration (upper limit)
+End;End
+Epidemic;Epidemic
+Epidemic %;Epidemic %
+Epidemic (missing);Epidemic (missing)
+Epidemic end;Epidemic end
+Epidemic percentage;Epidemic percentage
+Epidemic percentage (lower limit);Epidemic percentage (lower limit)
+Epidemic percentage (upper limit);Epidemic percentage (upper limit)
+Epidemic start;Epidemic start
+Epidemic thr.;Epidemic thr.
+Epidemic threshold;Epidemic threshold
+Estimators;Estimators
+Evolution;Evolution
+Exclude;Exclude
+File;File
+Fill missings;Fill missings
+First Week;First Week
+Fixed criterium method;Fixed criterium method
+Force epidemic start;Force epidemic start
+From;From
+Geometric mean and mean confidence interval;Geometric mean and mean confidence interval
+Geometric mean and point confidence interval;Geometric mean and point confidence interval
+Global goodness indicators;Global goodness indicators
+Global goodness intensity;Global goodness intensity
+Goodness;Goodness
+Goodness & optimize;Goodness & optimize
+Graph options;Graph options
+Graphs;Graphs
+High;High
+High int. thr.;High int. thr.
+High level;High level
+High lvl;High lvl
+High thr.;High thr.
+High threshold;High threshold
+Indicators;Indicators
+Intensity;Intensity
+Intensity thresholds/levels;Intensity thresholds/levels
+Last Week;Last Week
+Legend;Legend
+level;level
+Level;Level
+Load file;Load file
+Loess;Loess
+Low;Low
+Low level;Low level
+Lower interval;Lower interval
+Lower limit;Lower limit
+Main title;Main title
+Matthews Correlation Coefficient;Matthews Correlation Coefficient
+Matthews correlation coefficient;Matthews correlation coefficient
+Maximum seasons;Maximum seasons
+Mean end;Mean end
+Mean start;Mean start
+Median and bootstrap confidence interval;Median and bootstrap confidence interval
+Median and the KC Method to calculate its confidence interval;Median and the KC Method to calculate its confidence interval
+Medium;Medium
+Medium int. thr.;Medium int. thr.
+Medium level;Medium level
+Medium lvl;Medium lvl
+Medium thr.;Medium thr.
+Medium threshold;Medium threshold
+MEM options;MEM options
+Method for timing;Method for timing
+missing;missing
+Mixed;Mixed
+Model;Model
+Model data;Model data
+Model goodness indicators;Model goodness indicators
+Model goodness intensity;Model goodness intensity
+Moving epidemics;Moving epidemics
+Multiplicative;Multiplicative
+Negative likehood;Negative likehood
+Negative predictive value;Negative predictive value
+next;next
+No data seasons;No data seasons
+No transformation;No transformation
+Observed (line);Observed (line)
+Observed (points);Observed (points)
+Odd;Odd
+Optimization;Optimization
+Optimization method;Optimization method
+Optimize;Optimize
+Optimum parameter;Optimum parameter
+Original method;Original method
+Other;Other
+Other CI.;Other CI.
+Parameter range;Parameter range
+Percent agreement;Percent agreement
+Positive likehood;Positive likehood
+Positive predictive value;Positive predictive value
+Post thr.;Post thr.
+Post-epidemic;Post-epidemic
+Post-epidemic (missing);Post-epidemic (missing)
+Post-epidemic thr.;Post-epidemic thr.
+Post-epidemic threshold;Post-epidemic threshold
+Pre-epidemic;Pre-epidemic
+Pre-epidemic (missing);Pre-epidemic (missing)
+Pre-epidemic thr.;Pre-epidemic thr.
+Pre-epidemic threshold;Pre-epidemic threshold
+Procedures;Procedures
+Rtools not found;Rtools not found
+Scheme;Scheme
+Season;Season
+Seasons;Seasons
+Seasons in the model;Seasons in the model
+Seasons palette;Seasons palette
+Second derivative method;Second derivative method
+Sensitivity;Sensitivity
+Sequential;Sequential
+Series;Series
+Show advanced features;Show advanced features
+Slope method;Slope method
+Slope parameter;Slope parameter
+Specificity;Specificity
+Stability;Stability
 Start;Start
 Start (lower limit);Start (lower limit)
 Start (upper limit);Start (upper limit)
-Epidemic %;Epidemic %
-Epidemic percentage (lower limit;Epidemic percentage (lower limit
-Epidemic percentage (upper limit);Epidemic percentage (upper limit)
-Post-epidemic thr.;Post-epidemic thr.
-Scheme;Scheme
-Detailed;Detailed
-Lower limit;Lower limit
-Upper limit;Upper limit
-Indicators;Indicators
-Summary;Summary
-Graphs;Graphs
-Intensity;Intensity
-Estimators;Estimators
-Moving epidemics;Moving epidemics
-Average curve;Average curve
-Optimize;Optimize
-Animated;Animated
-Average;Average
-Lower interval;Lower interval
-Upper interval;Upper interval
-Graph options;Graph options
-Observed (line);Observed (line)
-Observed (points);Observed (points)
-Epidemic start;Epidemic start
-Epidemic end;Epidemic end
-Thresholds palette;Thresholds palette
-Seasons palette;Seasons palette
-Timing palette;Timing palette
-MEM options;MEM options
-Method for timing;Method for timing
-Slope parameter;Slope parameter
-Values per season;Values per season
-Tails;Tails
-Epidemic threshold;Epidemic threshold
-Medium lvl;Medium lvl
-High lvl;High lvl
-Very high lvl;Very high lvl
-Goodness & optimize;Goodness & optimize
-Validation;Validation
-Optimization method;Optimization method
-Parameter range;Parameter range
-Other;Other
-Average curve CI.;Average curve CI.
-Other CI.;Other CI.
-Average curve/Other CI. level;Average curve/Other CI. level
-Support;Support
-Technical manual;Technical manual
 Submit issues;Submit issues
-Show advanced features;Show advanced features
-No transformation;No transformation
-Odd;Odd
-Fill missings;Fill missings
-Loess;Loess
-Two waves (observed);Two waves (observed)
+Summary;Summary
+Support;Support
+Surveillance;Surveillance
+Tails;Tails
+Technical manual;Technical manual
+Text options;Text options
+The Moving Epidemic Method Web Application;The Moving Epidemic Method Web Application
+Thresholds;Thresholds
+Thresholds palette;Thresholds palette
+Timing;Timing
+Timing palette;Timing palette
+To;To
+Total seasons;Total seasons
+Transform;Transform
 Two waves (expected);Two waves (expected)
+Two waves (observed);Two waves (observed)
+Upper interval;Upper interval
+Upper limit;Upper limit
+Validation;Validation
+Values per season;Values per season
+Very high;Very high
+Very high int. thr.;Very high int. thr.
+Very high level;Very high level
+Very high lvl;Very high lvl
+Very high thr.;Very high thr.
+Very high threshold;Very high threshold
+Visualize;Visualize
+Week;Week
+Week no;Week no
+Weekly data;Weekly data
+X-axis;X-axis
+Y-axis;Y-axis
+Youdens Index;Youdens Index
+Youden's Index;Youden's Index
+Zip not found;Zip not found

@@ -1,187 +1,187 @@
-Load file;Abrir fichero
-Dataset;Datos
-First Week;Semana inicio
-Last Week;Semana fin
-Transform;Transformación
-Model;Modelizar
-From;Desde
-To;A
-Exclude;Excluir
-Maximum seasons;Máximo temporadas
-Surveillance;Vigilar
-Season;Temporada
-Week;Semana
-Force epidemic start;Forzar inicio epidemia
-Visualize;Visualizar
-Seasons;Temporadas
-Thresholds;Umbrales
-Pre-epidemic threshold;Umbral pre-epidémico
-Post-epidemic threshold;Umbral pos-epidémico
-Intensity thresholds/levels;Umbrales/niveles de intensidad
-The Moving Epidemic Method Web Application;Aplicación Web del Método de la Epidemia Móvil
-Procedures;Procedimientos
-Check & describe;Comprobar y describir
-Text options;Opciones de texto
-Main title;Título
-Y-axis;Eje Y
-X-axis;Eje X
-File;Fichero
-Data;Datos
-Series;Serie
-Timing;Localización
-Evolution;Evolución
-Stability;Estabilidad
-Goodness;Bondad
-Weekly data;Datos semanales
-Epidemic thr.;Umb. epidémico
-Medium thr.;Umb. medio
-High thr.;Umb. alto
-Very high thr.;Umb. muy alto
-Pre-epidemic;Pre-epidemia
-Epidemic;Epidemia
-Post-epidemic;Pos-epidemia
-Duration;Duración
-Duration (lower limit);Duración (límite inf.)
-Duration (upper limit);Duración (límite sup.)
-Start;Inicio
-End;Fin
-Start (lower limit);Inicio (límite inf.)
-Start (upper limit);Inicio (límite sup.)
-Epidemic %;Porc. epidémico
-Epidemic percentage;Porc. epidemico
-Epidemic percentage (lower limit);Porc. epidemico (límite inf.)
-Epidemic percentage (upper limit);Porc. epidemico (límite sup.)
-Scheme;Esquema
-Detailed;Detallado
-Lower limit;Límite inferior
-Upper limit;Límite superior
-Indicators;Indicadores
-Summary;Resumen
-Graphs;Gráficos
-Intensity;Intensidad
-Estimators;Estimadores
-Moving epidemics;Epidemias móviles
-Average curve;Curva media
-Optimize;Optimizar
-Animated;Animación
-Average;Media
-Lower interval;Intervalo inferior
-Upper interval;Intervalo superior
-Graph options;Opciones gráficas
-Observed (line);Datos (línea)
-Observed (points);Datos (puntos)
-Epidemic start;Inicio epidemia
-Epidemic end;Fin epidemia
-Thresholds palette;Paleta umbrales
-Seasons palette;Paleta temporadas
-Timing palette;Paleta localización
-MEM options;Opciones MEM
-Method for timing;Método localización
-Slope parameter;Parametro pendiente
-Values per season;Datos temporada
-Tails;Colas
-Epidemic threshold;Umbral epidémico
-Medium lvl;Nvl medio
-High lvl;Nvl alto
-Very high lvl;Nvl muy alto
-Goodness & optimize;Bondad y optimización
-Validation;Validación
-Optimization method;Método optimización
-Parameter range;Rango parámetro
-Other;Otros
-Average curve CI.;IC curva media
-Other CI.;Otros IC
-Average curve/Other CI. level;Nivel curva media/otros IC
-Support;Ayuda
-Technical manual;Manual técnico
-Submit issues;Notificar errores
-Show advanced features;Características avanzadas
-No transformation;Ninguna
-Odd;Odd
-Fill missings;Rellenar ausentes
-Loess;Loess
-Two waves (observed);Dos ondas (observados)
-Two waves (expected);Dos ondas (esperados)
-Original method;Original
-Fixed criterium method;Criterio fijo
-Slope method;Pendiente
-Second derivative method;Segunda derivada
-30 in total;30 en total
-All;Todos
 1/season;1/temporada
+10/season;10/temporada
 2/season;2/temporada
 3/season;3/temporada
+30 in total;30 en total
 4/season;4/temporada
 5/season;5/temporada
 6/season;6/temporada
 7/season;7/temporada
 8/season;8/temporada
 9/season;9/temporada
-10/season;10/temporada
-Cross;Cruzada
-Sequential;Secuencial
-Positive likehood;Verosimilitud +
-Negative likehood;Verosimilitud -
 Aditive;Aditivo
-Multiplicative;Multiplicativo
-Mixed;Mixto
-Matthews Correlation Coefficient;Coeficiente de Correlación de Matthews
-Youden's Index;Índice de Youden
+All;Todos
+Animated;Animación
 Arithmetic mean and mean confidence interval;Media aritmética e IC de la media
-Geometric mean and mean confidence interval;Media geométrica e IC de la media
-Median and the KC Method to calculate its confidence interval;Mediana e IC método KC
-Median and bootstrap confidence interval;Mediana e IC remuestreo
 Arithmetic mean and point confidence interval;Media aritmética e IC de los datos
-Geometric mean and point confidence interval;Media geométrica e IC de los datos
-Pre-epidemic thr.;Umb. pre-epidémico
-Medium int. thr.;Umb. medio
-High int. thr.;Umb. alto
-Very high int. thr.;Umb. muy alto
-Post-epidemic thr.;Umb. pos-epidémico
-Seasons in the model;Temporadas en el modelo
-Average epidemic start week;Semana de inicio media
+Average;Media
+Average curve;Curva media
+Average curve CI.;IC curva media
+Average curve/Other CI. level;Nivel curva media/otros IC
 Average epidemic length;Duración epidémica media
-Medium threshold;Umbral medio
-High threshold;Umbral alto
-Very high threshold;Umbral muy alto
-Pre-epidemic (missing);Pre-epidemia (ausentes)
-Epidemic (missing);Epidemia (ausentes)
-Post-epidemic (missing);Pos-epidemia (ausentes)
-Post thr.;Umb. pos
-Legend;Leyenda
-next;próxima
-missing;ausentes
-Sensitivity;Sensibilidad
-Specificity;Especificidad
-Positive predictive value;Valor predictivo positivo
-Negative predictive value;Valor predictivo negativo
-Percent agreement;Porcentaje de acuerdo
-Matthews correlation coefficient;Coeficiente de correlación de Matthews
-Youdens Index;Índice de Youden
-Global goodness indicators;Indicadores de bondad globales
-Model goodness indicators;Indicadores de bondad del modelo
-Current parameter;Parámetro actual
-Optimum parameter;Parámetro óptimo
-Optimization;Optimización
-Rtools not found;No se ha encontrado Rtools
-Zip not found;No se ha encontrado zip
-Week no;Semana no
-Model data;Modelo
-Global goodness intensity;Intensidad bondad global
-Model goodness intensity;Intensidad bondad del modelo
+Average epidemic start week;Semana de inicio media
 Baseline;Basal
-Low;Bajo
-Medium;Medio
-High;Alto
-Very high;Muy alto
-level;nivel
 Baseline level;Nivel basal
-Low level;Nivel bajo
-Medium level;Nivel medio
+Check & describe;Comprobar y describir
+Cross;Cruzada
+Current parameter;Parámetro actual
+Data;Datos
+Dataset;Datos
+Detailed;Detallado
+Duration;Duración
+Duration (lower limit);Duración (límite inf.)
+Duration (upper limit);Duración (límite sup.)
+End;Fin
+Epidemic;Epidemia
+Epidemic %;Porc. epidémico
+Epidemic (missing);Epidemia (ausentes)
+Epidemic end;Fin epidemia
+Epidemic percentage;Porc. epidemico
+Epidemic percentage (lower limit);Porc. epidemico (límite inf.)
+Epidemic percentage (upper limit);Porc. epidemico (límite sup.)
+Epidemic start;Inicio epidemia
+Epidemic thr.;Umb. epidémico
+Epidemic threshold;Umbral epidémico
+Estimators;Estimadores
+Evolution;Evolución
+Exclude;Excluir
+File;Fichero
+Fill missings;Rellenar ausentes
+First Week;Semana inicio
+Fixed criterium method;Criterio fijo
+Force epidemic start;Forzar inicio epidemia
+From;Desde
+Geometric mean and mean confidence interval;Media geométrica e IC de la media
+Geometric mean and point confidence interval;Media geométrica e IC de los datos
+Global goodness indicators;Indicadores de bondad globales
+Global goodness intensity;Intensidad bondad global
+Goodness;Bondad
+Goodness & optimize;Bondad y optimización
+Graph options;Opciones gráficas
+Graphs;Gráficos
+High;Alto
+High int. thr.;Umb. alto
 High level;Nivel alto
-Very high level;Nivel muy alto
-Total seasons;Total temporada
-No data seasons;Temporadas sin datos
+High lvl;Nvl alto
+High thr.;Umb. alto
+High threshold;Umbral alto
+Indicators;Indicadores
+Intensity;Intensidad
+Intensity thresholds/levels;Umbrales/niveles de intensidad
+Last Week;Semana fin
+Legend;Leyenda
+level;nivel
 Level;Nivel
-Mean start;Inicio medio
+Load file;Abrir fichero
+Loess;Loess
+Low;Bajo
+Low level;Nivel bajo
+Lower interval;Intervalo inferior
+Lower limit;Límite inferior
+Main title;Título
+Matthews Correlation Coefficient;Coeficiente de Correlación de Matthews
+Matthews correlation coefficient;Coeficiente de correlación de Matthews
+Maximum seasons;Máximo temporadas
 Mean end;Fin medio
+Mean start;Inicio medio
+Median and bootstrap confidence interval;Mediana e IC remuestreo
+Median and the KC Method to calculate its confidence interval;Mediana e IC método KC
+Medium;Medio
+Medium int. thr.;Umb. medio
+Medium level;Nivel medio
+Medium lvl;Nvl medio
+Medium thr.;Umb. medio
+Medium threshold;Umbral medio
+MEM options;Opciones MEM
+Method for timing;Método localización
+missing;ausentes
+Mixed;Mixto
+Model;Modelizar
+Model data;Modelo
+Model goodness indicators;Indicadores de bondad del modelo
+Model goodness intensity;Intensidad bondad del modelo
+Moving epidemics;Epidemias móviles
+Multiplicative;Multiplicativo
+Negative likehood;Verosimilitud -
+Negative predictive value;Valor predictivo negativo
+next;próxima
+No data seasons;Temporadas sin datos
+No transformation;Ninguna
+Observed (line);Datos (línea)
+Observed (points);Datos (puntos)
+Odd;Odd
+Optimization;Optimización
+Optimization method;Método optimización
+Optimize;Optimizar
+Optimum parameter;Parámetro óptimo
+Original method;Original
+Other;Otros
+Other CI.;Otros IC
+Parameter range;Rango parámetro
+Percent agreement;Porcentaje de acuerdo
+Positive likehood;Verosimilitud +
+Positive predictive value;Valor predictivo positivo
+Post thr.;Umb. pos
+Post-epidemic;Pos-epidemia
+Post-epidemic (missing);Pos-epidemia (ausentes)
+Post-epidemic thr.;Umb. pos-epidémico
+Post-epidemic threshold;Umbral pos-epidémico
+Pre-epidemic;Pre-epidemia
+Pre-epidemic (missing);Pre-epidemia (ausentes)
+Pre-epidemic thr.;Umb. pre-epidémico
+Pre-epidemic threshold;Umbral pre-epidémico
+Procedures;Procedimientos
+Rtools not found;No se ha encontrado Rtools
+Scheme;Esquema
+Season;Temporada
+Seasons;Temporadas
+Seasons in the model;Temporadas en el modelo
+Seasons palette;Paleta temporadas
+Second derivative method;Segunda derivada
+Sensitivity;Sensibilidad
+Sequential;Secuencial
+Series;Serie
+Show advanced features;Características avanzadas
+Slope method;Pendiente
+Slope parameter;Parametro pendiente
+Specificity;Especificidad
+Stability;Estabilidad
+Start;Inicio
+Start (lower limit);Inicio (límite inf.)
+Start (upper limit);Inicio (límite sup.)
+Submit issues;Notificar errores
+Summary;Resumen
+Support;Ayuda
+Surveillance;Vigilar
+Tails;Colas
+Technical manual;Manual técnico
+Text options;Opciones de texto
+The Moving Epidemic Method Web Application;Aplicación Web del Método de la Epidemia Móvil
+Thresholds;Umbrales
+Thresholds palette;Paleta umbrales
+Timing;Localización
+Timing palette;Paleta localización
+To;A
+Total seasons;Total temporada
+Transform;Transformación
+Two waves (expected);Dos ondas (esperados)
+Two waves (observed);Dos ondas (observados)
+Upper interval;Intervalo superior
+Upper limit;Límite superior
+Validation;Validación
+Values per season;Datos temporada
+Very high;Muy alto
+Very high int. thr.;Umb. muy alto
+Very high level;Nivel muy alto
+Very high lvl;Nvl muy alto
+Very high thr.;Umb. muy alto
+Very high threshold;Umbral muy alto
+Visualize;Visualizar
+Week;Semana
+Week no;Semana no
+Weekly data;Datos semanales
+X-axis;Eje X
+Y-axis;Eje Y
+Youdens Index;Índice de Youden
+Youden's Index;Índice de Youden
+Zip not found;No se ha encontrado zip
