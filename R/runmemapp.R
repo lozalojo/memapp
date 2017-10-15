@@ -51,6 +51,6 @@ runmemapp <- function(launch.browser = TRUE, language = "en-GB", ...) {
     stop("Could not find app directory. Try re-installing `memapp`.", call. = FALSE)
   }
   cat(language,"\n")
-  build.language(language)
+  build.languages(language)
   shiny::runApp(appDir, launch.browser = launch.browser, ...)
 }

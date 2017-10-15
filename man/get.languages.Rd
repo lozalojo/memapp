@@ -4,7 +4,7 @@
 \alias{get.languages}
 \title{get a list of available languages}
 \usage{
-get.languages(i.where)
+get.languages()
 }
 \description{
 get a list of available languages

@@ -17,6 +17,10 @@ library("ggplot2")
 library("plotly")
 library("mem")
 
+jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
+
+language<-"es-ES"
+
 load("lang/translation.bin")
 # print(translation)
 source("helpers.R")
@@ -138,13 +142,15 @@ shinyUI(dashboardPage(skin = "black",
                         tags$body(inlineCSS(list(".shinysky-busy-indicator" = "position: absolute !important; z-index:800; "))),
                         tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
                         fluidPage(
+                          # useShinyjs(),                                           # Include shinyjs in the UI
+                          # extendShinyjs(text = jsResetCode),
                           # Application title
                           titlePanel(h1(tr.item("The Moving Epidemic Method Web Application"))),
                           tagList(
                             singleton(tags$head(
                               tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
                             ))
-                            ,div(class="shinysky-busy-indicator",p("Calculation in progress. This may take a while..."),img(src="ajaxloaderq.gif"))
+                            ,div(class="shinysky-busy-indicator",p(tr.item("Calculation in progress. This may take a while...")),img(src="ajaxloaderq.gif"))
                             ,tags$script(sprintf(
                               "	setInterval(function(){
                               if ($('html').hasClass('shiny-busy')) {
@@ -266,7 +272,7 @@ shinyUI(dashboardPage(skin = "black",
                                      selectInput("typeother", h6(tr.item("Other CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 3),
                                      bsPopover(id = "typeother", title = "Other confidence intervals", content = "Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.", placement = "left", trigger = "hover", options = list(container = "body")),
                                      numericInput("levelaveragecurve", h6(tr.item("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5),
-                                     bsPopover(id = "levelaveragecurve", title = "Average curve intervals", content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "left", trigger = "hover", options = list(container = "body"))
+                                     bsPopover(id = "levelaveragecurve", title = tr.item("Average curve/Other CI. level"), content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "left", trigger = "hover", options = list(container = "body"))
                                    ),
                                    shinydashboard::box(
                                      title=tr.item("Support"), status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
@@ -274,7 +280,9 @@ shinyUI(dashboardPage(skin = "black",
                                      h5(a(tr.item("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
                                      h5(a(tr.item("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
                                      checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Show advanced features")), value = FALSE),
-                                     bsPopover(id = "advancedfeatures", title = "Advanced features", content = "Show advanced features of memapp.", placement = "right", trigger = "hover", options = list(container = "body"))
+                                     bsPopover(id = "advancedfeatures", title = "Advanced features", content = "Show advanced features of memapp.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                     selectInput("lang", h6(tr.item("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = memapp:::get.languages(), size=1, selectize = FALSE, selected = language),
+                                     bsPopover(id = "lang", title = tr.item("Language"), content = "Choose language of the app. A change in language will restart the app.", placement = "left", trigger = "hover", options = list(container = "body"))
                                    )
                             )
                           )

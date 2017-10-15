@@ -185,3 +185,6 @@ Y-axis;Y-axis
 Youdens Index;Youdens Index
 Youden's Index;Youden's Index
 Zip not found;Zip not found
+Number of columns must be greater than 2;Number of columns must be greater than 2
+Language;Language
+Calculation in progress. This may take a while...;Calculation in progress. This may take a while...

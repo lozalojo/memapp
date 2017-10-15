@@ -185,3 +185,6 @@ Y-axis;Eje Y
 Youdens Index;Índice de Youden
 Youden's Index;Índice de Youden
 Zip not found;No se ha encontrado zip
+Number of columns must be greater than 2;El número de columnas debe ser mayor que 2
+Language;Idioma
+Calculation in progress. This may take a while...;Realizando cálculos. Espere, por favor, tardará un rato...

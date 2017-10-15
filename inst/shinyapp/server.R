@@ -7,11 +7,20 @@ animationmethod<-animation.method()
 
 shinyServer(function(input, output, session) {
   
-  values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, optimizegraphs = NULL)
+  values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, 
+                           optimizegraphs = NULL)
   
   #####################################
   ### REACTIVE FUNCTIONS
   #####################################
+  
+  observeEvent(input$lang, {
+    cat("observe/lang> begin\n")
+    language<<-input$lang
+    cat("observe/file> updating language to",language,"\n")
+    cat("observe/lang> end\n")
+    # values$idscreated = character()
+  })
   
   data_model <- reactive({
     readdata <- read_data()
@@ -1667,8 +1676,10 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
         "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
+      names(good.table)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index"))
+      names(attr(good.table, "formattable")$format[[1]])<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index"))
     }else{
-      temp1<-data.frame(Error="Number of columns must be greater than 2")
+      temp1<-data.frame(Error=tr.item("Number of columns must be greater than 2"))
       good.table<-formattable::formattable(temp1)
     }
     good.table
@@ -2344,8 +2355,11 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
         "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
+      names(good.table)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      names(attr(good.table, "formattable")$format[[1]])<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      
     }else{
-      temp1<-data.frame(Error="Number of columns must be greater than 2")
+      temp1<-data.frame(Error=tr.item("Number of columns must be greater than 2"))
       good.table<-formattable::formattable(temp1)
     }
     good.table
