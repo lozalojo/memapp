@@ -19,7 +19,7 @@ library("mem")
 
 jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
 
-language<-"es-ES"
+language<-"en-GB"
 
 load("lang/translation.bin")
 # print(translation)
