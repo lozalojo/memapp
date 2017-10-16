@@ -1306,10 +1306,15 @@ read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 
 select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pandemic=T, i.seasons=NA){
+  if (is.null(i.from)) i.from=""
+  if (is.null(i.to)) i.to=""
+  if (is.na(i.from)) i.from=""
+  if (is.na(i.to)) i.to=""
+  
   indexes<-1:length(i.names)
   toinclude<-indexes[i.names %in% i.include]
-  if (!(i.from=="" | is.na(i.from) | is.null(i.from)) & (i.from %in% i.names)) from<-grep(i.from,i.names,fixed=T) else from<-1
-  if (!(i.to=="" | is.na(i.to) | is.null(i.to)) & (i.to %in% i.names)) to<-grep(i.to,i.names,fixed=T) else to<-length(i.names)
+  if (!(i.from=="") & (i.from %in% i.names)) from<-grep(i.from,i.names,fixed=T) else from<-1
+  if (!(i.to=="") & (i.to %in% i.names)) to<-grep(i.to,i.names,fixed=T) else to<-length(i.names)
   if (to<from) to<-from
   if (length(i.names)>1){
     seasons<-data.frame(i.names,matrix(stringr::str_match(i.names,"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=length(i.names),byrow=F)[,-1],stringsAsFactors = F)
@@ -1655,7 +1660,7 @@ extract.two<-function(i.data, i.order, i.column){
 
 tr.item <- function(i.text){ # translates text into current language
   # cat(language)
-  # o.text<-tail(translation[translation$original==i.text,language])
+  # o.text<-tail(translation[translation$original==i.text,input$lang])
   o.text<-tail(translation[translation$original==i.text,"translated"])
   if (NROW(o.text)!=1) o.text<-i.text
   o.text
