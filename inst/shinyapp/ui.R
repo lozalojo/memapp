@@ -21,7 +21,7 @@ library("mem")
 
 # language<-"en-GB"
 # 
-load("lang/translation.bin")
+# load("lang/translation.bin")
 # print(translation)
 source("helpers.R")
 # transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
