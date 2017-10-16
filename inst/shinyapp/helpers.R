@@ -1654,7 +1654,7 @@ extract.two<-function(i.data, i.order, i.column){
 # localization
 
 tr.item <- function(i.text){ # translates text into current language
-  cat(language)
+  # cat(language)
   # o.text<-tail(translation[translation$original==i.text,language])
   o.text<-tail(translation[translation$original==i.text,"translated"])
   if (NROW(o.text)!=1) o.text<-i.text
