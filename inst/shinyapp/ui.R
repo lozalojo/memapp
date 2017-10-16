@@ -69,17 +69,25 @@ shinyUI(dashboardPage(skin = "black",
                                        ################################
                                        ###    Load data          ######
                                        ################################
-                                       fileInput('file', label=h4(tr.item("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata")),
-                                       bsPopover(id = "file_b", title = tr.item("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                        box(title=tr.item("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=TRUE,
-                                           selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Dataset")), size=1, selectize = FALSE, choices = "", selected = NULL),
-                                           bsPopover(id = "dataset", title = tr.item("Dataset"), content = "If the format is able to store different datasets, select the one you want to open.", placement = "right", trigger = "hover", options = list(container = "body")),
-                                           selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("First Week")), size=1, selectize = FALSE, choices = "", selected = NULL),
-                                           bsPopover(id = "firstWeek", title = tr.item("First Week"), content = "First week of the datasets` surveillance period.",                                    placement = "right", trigger = "hover", options = list(container = "body")),
-                                           selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Last Week")), size=1, selectize = FALSE, choices = "", selected = NULL),
-                                           bsPopover(id = "lastWeek", title = tr.item("Last Week"), content = "Last week of the datasets surveillance period.",                                     placement = "right", trigger = "hover", options = list(container = "body")),
-                                           selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1),
-                                           bsPopover(id = "transformation", title = tr.item("Transform"), content = "Select the transformation to apply to the original data.",                            placement = "right", trigger = "hover", options = list(container = "body"))
+                                       # fileInput('file', label=h4(tr.item("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata")),
+                                       # bsPopover(id = "file_b", title = tr.item("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                       uiOutput("uifile"),
+                                       # uiOutput("uiDataset"),
+                                       # box(title=tr.item("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=TRUE,
+                                       #     selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Dataset")), size=1, selectize = FALSE, choices = "", selected = NULL),
+                                       #     bsPopover(id = "dataset", title = tr.item("Dataset"), content = "If the format is able to store different datasets, select the one you want to open.", placement = "right", trigger = "hover", options = list(container = "body")),
+                                       #     selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("First Week")), size=1, selectize = FALSE, choices = "", selected = NULL),
+                                       #     bsPopover(id = "firstWeek", title = tr.item("First Week"), content = "First week of the datasets` surveillance period.",                                    placement = "right", trigger = "hover", options = list(container = "body")),
+                                       #     selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Last Week")), size=1, selectize = FALSE, choices = "", selected = NULL),
+                                       #     bsPopover(id = "lastWeek", title = tr.item("Last Week"), content = "Last week of the datasets surveillance period.",                                     placement = "right", trigger = "hover", options = list(container = "body")),
+                                       #     selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1),
+                                       #     bsPopover(id = "transformation", title = tr.item("Transform"), content = "Select the transformation to apply to the original data.",                            placement = "right", trigger = "hover", options = list(container = "body"))
+                                       # ),
+                                       box(title=tr.item("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=TRUE,
+                                           uiOutput("uidataset"),
+                                           uiOutput("uifirstWeek"),
+                                           uiOutput("uilastWeek"),
+                                           uiOutput("uitransformation")
                                        ),
                                        ################################
                                        ###    Model                ####
@@ -94,7 +102,12 @@ shinyUI(dashboardPage(skin = "black",
                                            numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Maximum seasons")), 10, step=1),
                                            bsPopover(id = "SelectMaximum", title = tr.item("Maximum seasons"), content = "Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons to avoid cyclical trends.", placement = "right", trigger = "hover", options = list(container = "body"))
                                        ),
-                                       
+                                       # box(title=tr.item("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                                       #     uiOutput("uiSelectFrom"),
+                                       #     uiOutput("uiSelectTo"),
+                                       #     uiOutput("uiSelectExclude"),
+                                       #     uiOutput("uiSelectMaximum")
+                                       # ),
                                        ################################
                                        ###    Surveillance         ####
                                        ################################
@@ -107,7 +120,11 @@ shinyUI(dashboardPage(skin = "black",
                                            selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Force epidemic start")), size=1, selectize = FALSE, choices = NULL, select = NULL),
                                            bsPopover(id = "SelectSurveillanceForceEpidemic", title = tr.item("Force epidemic start"), content = "Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
                                        ),
-                                       
+                                       # box(title=tr.item("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
+                                       #     uiOutput("uiSelectSurveillance"),
+                                       #     uiOutput("uiSelectSurveillanceWeek"),
+                                       #     uiOutput("uiSelectSurveillanceForceEpidemic")
+                                       # ),
                                        ################################
                                        ###    Visualize            ####
                                        ################################
@@ -116,7 +133,9 @@ shinyUI(dashboardPage(skin = "black",
                                            selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Seasons")), choices = NULL, multiple = TRUE),
                                            bsPopover(id = "SelectSeasons", title = tr.item("Seasons"), content = "Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard.", placement = "right", trigger = "hover", options = list(container = "body"))
                                        ),
-                                       
+                                       # box(title=tr.item("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                                       #     uiOutput("uiSelectSeasons")
+                                       # ),
                                        ################################
                                        ###  Thresholds             ####
                                        ################################
@@ -129,6 +148,11 @@ shinyUI(dashboardPage(skin = "black",
                                            checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Intensity thresholds/levels")), value = TRUE),
                                            bsPopover(id = "intensitythr", title = tr.item("Intensity thresholds/levels"), content = "Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
                                        )
+                                       # box(title=tr.item("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+                                       #     uiOutput("uipreepidemicthr"),
+                                       #     uiOutput("uipostepidemicthr"),
+                                       #     uiOutput("uiintensitythr")
+                                       # )
                                        
                       ),
                       

@@ -83,7 +83,7 @@ plotSeasons <- function(i.data,
                         i.colSeasons=NA,
                         i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
                         ...){
-
+  
   if(is.null(i.data)){
     p<-NULL
   }else{
@@ -202,7 +202,7 @@ plotSeasons <- function(i.data,
     dgraf$week<-1:NROW(dgraf)
     
     dgrafgg<-melt(dgraf,id="week")
-
+    
     selected.indicators<-(1:(2*NCOL(data.full)))[apply(dgraf[1:(2*NCOL(data.full))],2,function(x) !all(is.na(x)))]
     if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+1)
     if (i.post.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+5)

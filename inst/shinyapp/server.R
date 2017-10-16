@@ -190,7 +190,7 @@ shinyServer(function(input, output, session) {
       if (length(selectedcolumns)<3){
         roca<-NULL
       }else{
-	  
+        
         roca<-roc.analysis(datfile[selectedcolumns],
                            i.param.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                            i.min.seasons = 3,
@@ -271,8 +271,8 @@ shinyServer(function(input, output, session) {
     indataset <- input$dataset
     inname <- infile$name
     i.range.x<-rep(NA,2)
-    i.range.x[1]<-as.numeric(input$firstWeek)
-    i.range.x[2]<-as.numeric(input$lastWeek)
+    if (!is.null(input$firstWeek)) i.range.x[1]<-as.numeric(input$firstWeek)
+    if (!is.null(input$lastWeek)) i.range.x[2]<-as.numeric(input$lastWeek)
     cat("read_data> ------------------------------------------\n")
     cat("read_data> Name: ",inname,"\n")
     cat("read_data> Dataset: ",indataset,"\n")
@@ -317,32 +317,66 @@ shinyServer(function(input, output, session) {
     readdata
   })
   
-  observeEvent(input$file, {
-    cat("observe/file> begin\n")
+  # observeEvent(input$file, {
+  #   cat("observe/file> begin\n")
+  #   readdata <- read_data()
+  #   datfile <- readdata$datasetread
+  #   datsheets <- readdata$datasets
+  #   datweeks <- readdata$dataweeks
+  #   if (!is.null(datsheets)){
+  #     cat("observe/file> updating dataset list\n")
+  #     cat(paste0(datsheets,collapse=";"),"\n")
+  #     updateSelectInput(session, "dataset", choices = datsheets, selected=head(datsheets,1))
+  #   }
+  #   cat("observe/file> end\n")
+  # })
+  
+  getDatasets <- eventReactive(input$file, {
+    cat("reactive/getDatasets> begin\n")
     readdata <- read_data()
     datfile <- readdata$datasetread
     datsheets <- readdata$datasets
     datweeks <- readdata$dataweeks
-    if (!is.null(datsheets)){
-      cat("observe/file> updating dataset list\n")
-      updateSelectInput(session, "dataset", choices = datsheets, selected=head(datsheets,1))
-    }
-    cat("observe/file> end\n")
-    # values$idscreated = character()
+    if (!is.null(datsheets)) cat("reactive/getDatasets> updating dataset list\n")    
+    cat("reactive/getDatasets> end\n")
+    return(datsheets)
   })
   
-  observeEvent(input$dataset, {
-    cat("observe/dataset> begin\n")
+  # observeEvent(input$dataset, {
+  #   cat("observe/dataset> begin\n")
+  #   readdata <- read_data()
+  #   datfile <- readdata$datasetread
+  #   datsheets <- readdata$datasets
+  #   datweeks <- readdata$dataweeks
+  #   if (!is.null(datweeks)){
+  #     cat("observe/dataset> updating first/last week list\n")
+  #     updateSelectInput(session, "firstWeek", choices = datweeks, selected=head(datweeks,1))
+  #     updateSelectInput(session, "lastWeek", choices = datweeks, selected=tail(datweeks,1))
+  #   }
+  #   cat("observe/dataset> end\n")
+  # })
+  
+  getWeeks <- eventReactive(input$dataset, {
+    cat("reactive/getWeeks> begin\n")
     readdata <- read_data()
     datfile <- readdata$datasetread
     datsheets <- readdata$datasets
     datweeks <- readdata$dataweeks
-    if (!is.null(datweeks)){
-      cat("observe/dataset> updating first/last week list\n")
-      updateSelectInput(session, "firstWeek", choices = datweeks, selected=head(datweeks,1))
-      updateSelectInput(session, "lastWeek", choices = datweeks, selected=tail(datweeks,1))
-    }
-    cat("observe/dataset> end\n")
+    if (!is.null(datweeks)) cat("reactive/getWeeks> updating first/last week list\n")
+    cat("reactive/getWeeks> end\n")
+    return(datweeks)
+  })
+  
+  getSeasons <- reactive({
+    cat("reactive/getSeasons> begin\n")
+    readdata <- read_data()
+    datfile <- readdata$datasetread
+    datsheets <- readdata$datasets
+    datweeks <- readdata$dataweeks
+    if (!is.null(datfile)) cat("reactive/getSeasons> updating from/to/exclude\n")
+    seasons<-names(datfile)
+    cat("reactive/getSeasons> end\n")
+    return(seasons)
   })
   
   observeEvent(read_data(), {
@@ -354,16 +388,16 @@ shinyServer(function(input, output, session) {
     # cat(paste(datweeks,collapse=","),"\n")
     if (!is.null(datfile)){
       seasons<-names(datfile)
-      cat("observe/read_data> updating from/to, exclude\n")
-      updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
-      updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
-      updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
-      cat("observe/read_data> updating surveillance season, week and force epidemic\n")
-      updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=tail(seasons,1))
-      updateSelectInput(session, "SelectSurveillanceWeek", choices =datweeks, selected=tail(datweeks,1))
-      updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",datweeks), selected="")
-      cat("observe/read_data> updating visualize seasons list\n")
-      updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
+      # cat("observe/read_data> updating from/to, exclude\n")
+      # updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
+      # updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
+      # updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
+      # cat("observe/read_data> updating surveillance season, week and force epidemic\n")
+      # updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=tail(seasons,1))
+      # updateSelectInput(session, "SelectSurveillanceWeek", choices =datweeks, selected=tail(datweeks,1))
+      # updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",datweeks), selected="")
+      # cat("observe/read_data> updating visualize seasons list\n")
+      # updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
       cat("observe/read_data> updating timing plots\n")
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
         if(is.null(datfile)){
@@ -2587,7 +2621,7 @@ shinyServer(function(input, output, session) {
     datfile <- readdata$datasetread
     # cat("--------------------")
     # cat(NROW(values$clickdata),"\n")
-
+    
     if (NROW(values$clickdata)>0){
       etwo<-extract.two(values$clickdata,"weekno","season")
       etwot<-reshape2::dcast(etwo, season ~  id.tail, value.var="weekno")
@@ -3890,6 +3924,91 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # UI structure
+  
+  output$uifile = renderUI({
+    fileInput('file', label=h4(tr.item("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
+  })
+  addPopover(session, id = "uifile", title = tr.item("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
+  
+  output$uidataset = renderUI({
+    selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
+  })
+  addPopover(session, id = "uidataset", title = tr.item("Dataset"), content = "If the format is able to store different datasets, select the one you want to open.", placement = "right", trigger = "hover", options = list(container = "body"))
+  
+  output$uifirstWeek = renderUI({
+    selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("First Week")), size=1, selectize = FALSE, choices = getWeeks(), selected = head(getWeeks(),1))
+  })
+  
+  addPopover(session, id = "uifirstWeek", title = tr.item("First Week"), content = "First week of the datasets` surveillance period.",                                    placement = "right", trigger = "hover", options = list(container = "body"))
+  
+  output$uilastWeek = renderUI({
+    selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Last Week")), size=1, selectize = FALSE, choices = getWeeks(), selected = tail(getWeeks(),1))
+  })
+  addPopover(session, id = "uilastWeek", title = tr.item("Last Week"), content = "Last week of the datasets surveillance period.",                                     placement = "right", trigger = "hover", options = list(container = "body"))
+  
+  output$uitransformation = renderUI({
+    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
+    names(transformation.list)<-tr(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
+    selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
+  })
+  addPopover(session, id = "uitransformation", title = tr.item("Transform"), content = "Select the transformation to apply to the original data.",                            placement = "right", trigger = "hover", options = list(container = "body"))
+  
+  # output$uiSelectFrom = renderUI({
+  #   selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
+  # })
+  # addPopover(session, id = "uiSelectFrom", title = tr.item("From"), content = "First column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectTo = renderUI({
+  #   selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2))
+  # })
+  # addPopover(session, id = "uiSelectTo", title = tr.item("To"), content = "Last column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectExclude = renderUI({
+  #   selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
+  # })
+  # addPopover(session, id = "uiSelectExclude", title = tr.item("Exclude"), content = "Select any number of seasons to be excluded from the model.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectMaximum = renderUI({
+  #   numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Maximum seasons")), 10, step=1)
+  # })
+  # addPopover(session, id = "uiSelectMaximum", title = tr.item("Maximum seasons"), content = "Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons to avoid cyclical trends.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectSurveillance = renderUI({
+  #   selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
+  # })
+  # addPopover(session, id = "SelectSurveillance", title = tr.item("Season"), content = "Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectSurveillanceWeek = renderUI({
+  #   selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Week")), size=1, selectize = FALSE, choices = getWeeks(), selected = tail(getWeeks(),1))
+  # })
+  # addPopover(session, id = "SelectSurveillanceWeek", title = tr.item("Week"), content = "Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectSurveillanceForceEpidemic = renderUI({
+  #   selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeks()), select = "")
+  # })
+  # addPopover(session, id = "SelectSurveillanceForceEpidemic", title = tr.item("Force epidemic start"), content = "Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiSelectSeasons = renderUI({
+  #   selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
+  # })
+  # addPopover(session, id = "SelectSeasons", title = tr.item("Seasons"), content = "Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uipreepidemicthr = renderUI({
+  #   checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Pre-epidemic threshold")), value = TRUE)
+  # })
+  # addPopover(session, id = "uipreepidemicthr", title = tr.item("Pre-epidemic threshold"), content = "Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uipostepidemicthr = renderUI({
+  #   checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Post-epidemic threshold")), value = FALSE)
+  # })
+  # addPopover(session, id = "uipostepidemicthr", title = tr.item("Post-epidemic threshold"), content = "Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
+  # output$uiintensitythr = renderUI({
+  #   checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Intensity thresholds/levels")), value = TRUE)
+  # })
+  # addPopover(session, id = "uiintensitythr", title = tr.item("Intensity thresholds/levels"), content = "Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # 
   
   session$onSessionEnded(function() {
     stopApp()
