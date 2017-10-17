@@ -17,30 +17,11 @@ library("ggplot2")
 library("plotly")
 library("mem")
 
-# jsResetCode <- "shinyjs.reset = function() {history.go(0)}"
-
-# language<-"en-GB"
-# 
-# load("lang/translation.bin")
-# print(translation)
 source("helpers.R")
-# transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
-# names(transformation.list)<-tr(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
-# method.list<-list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4)
-# names(method.list)<-tr(c("Original method", "Fixed criterium method", "Slope method", "Second derivative method"))
-# nvalues.list<-list("30 in total"=-1,"All"=0,"1/season"=1,"2/season"=2,"3/season"=3,"4/season"=4,"5/season"=5,"6/season"=6,"7/season"=7,"8/season"=8,"9/season"=9,"10/season"=10)
-# names(nvalues.list)<-tr(c("30 in total","All","1/season","2/season","3/season","4/season","5/season","6/season","7/season","8/season","9/season","10/season"))
-# validation.list<-list("Cross"="cross", "Sequential"="sequential")
-# names(validation.list)<-tr(c("Cross", "Sequential"))
-# optimmethod.list<-list("Positive likehood"="pos.likehood", "Negative likehood"="neg.likehood", "Aditive"="aditive", "Multiplicative"="multiplicative", "Mixed"="mixed", "Percent agreement"="percent","Matthews Correlation Coefficient"="matthews","Youden's Index"="youden")
-# names(optimmethod.list)<-tr(c("Positive likehood", "Negative likehood", "Aditive", "Multiplicative", "Mixed", "Percent agreement","Matthews Correlation Coefficient","Youden's Index"))
-# type.list<-list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6)
-# names(type.list)<-tr(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and the KC Method to calculate its confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
 
 languages<-memapp:::get.languages()
 languages.list<-as.list(languages$lcidstring)
 names(languages.list)<-languages$locale
-# print(languages.list)
 
 shinyUI(
   dashboardPage(skin = "black",
