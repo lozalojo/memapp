@@ -7,7 +7,7 @@ build.languages <- function(){
   # cat(libs.ok,"\n")
   langs<-get.languages()
   cat("List of available languages:\n",paste0(paste0(langs$filename,"/",langs$locale),collapse="\n"),"\n")
-  translationContent<-do.call(rbind,lapply(langs$lcidstring,function(x) read.language(x)))
+  translationContent<-do.call(rbind,lapply(langs$filename,function(x) read.language(x)))
   translation<-reshape2::dcast(translationContent, original~lang, fun.aggregate=NULL, value.var="translated")
   # translation$translated<-translation[i.lang]
   cat("Language file built\n")

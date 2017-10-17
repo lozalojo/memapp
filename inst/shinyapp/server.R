@@ -3967,8 +3967,12 @@ shinyServer(function(input, output, session) {
   # UI structure
   
   output$uifile = renderUI({
-    fileInput('file', label=h4(tr("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
+    popify(
+      fileInput('file', label=h4(tr("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
+      , title = tr("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
   })
+  
+  # popify(el = "uifile", title = "Load file",      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover")
   # addPopover(session, id = "uifile", title = tr("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uiDataset = renderUI({
