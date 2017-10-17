@@ -222,7 +222,13 @@ shinyUI(dashboardPage(skin = "black",
                                    uiOutput("uiTextoptions"),
                                    uiOutput("uiGraphoptions"),
                                    uiOutput("uiMEMoptions"),
-                                   uiOutput("uiSupport")
+                                   uiOutput("uiSupport"),
+                                   box(
+                                     #title="", width = 12,  background = "orange",
+                                     title="", status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
+                                     uiOutput("uiLanguage"),
+                                     selectInput("lang", label = "", choices = memapp:::get.languages(), size=1, selectize = FALSE, selected = "en-GB")
+                                   )
                                    # box(
                                    #   title=tr.item("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
                                    #   textInput("textMain", label = h6(tr.item("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr.item("Main title")),
@@ -317,6 +323,7 @@ shinyUI(dashboardPage(skin = "black",
                                    #   selectInput("lang", h6(tr.item("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = memapp:::get.languages(), size=1, selectize = FALSE, selected = language),
                                    #   bsPopover(id = "lang", title = tr.item("Language"), content = "Choose language of the app. A change in language will restart the app.", placement = "left", trigger = "hover", options = list(container = "body"))
                                    # )
+                                   
                             )
                           )
                         )

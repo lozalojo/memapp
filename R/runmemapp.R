@@ -14,7 +14,6 @@
 #' @name runmemapp
 #'
 #' @param launch.browser whether if you want to launch the app in an external browser.
-#' @param language language used for the app.
 #' @param ... other parameters passed to shiny::runApp.
 #' 
 #' @examples
@@ -45,12 +44,11 @@
 #'
 #' @export
 #' @importFrom shiny runApp
-runmemapp <- function(launch.browser = TRUE, language = "en-GB", ...) {
+runmemapp <- function(launch.browser = TRUE, ...) {
   appDir <- system.file("shinyapp", package = "memapp")
   if (appDir == "") {
     stop("Could not find app directory. Try re-installing `memapp`.", call. = FALSE)
   }
-  cat(language,"\n")
-  build.languages(language)
+  build.languages()
   shiny::runApp(appDir, launch.browser = launch.browser, ...)
 }

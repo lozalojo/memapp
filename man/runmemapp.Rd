@@ -4,12 +4,10 @@
 \alias{runmemapp}
 \title{The Moving Epidemics Method Shiny Web Application}
 \usage{
-runmemapp(launch.browser = TRUE, language = "en-GB", ...)
+runmemapp(launch.browser = TRUE, ...)
 }
 \arguments{
 \item{launch.browser}{whether if you want to launch the app in an external browser.}
-
-\item{language}{language used for the app.}
 
 \item{...}{other parameters passed to shiny::runApp.}
 }

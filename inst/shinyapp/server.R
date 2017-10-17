@@ -4,7 +4,8 @@ if (!interactive()) sink(stderr(), type = "output")
 
 set.rzip()
 animationmethod<-animation.method()
-# load("lang/translation.bin")
+load("lang/translation.bin")
+
 # print(translation)
 
 shinyServer(function(input, output, session) {
@@ -22,7 +23,15 @@ shinyServer(function(input, output, session) {
   #   }
   # })
   
+  tr <- function(text){ # translates text into current language
+    sapply(text,function(s){
+      o.text<-tail(translation[translation$original==s,input$lang])
+      if (NROW(o.text)!=1) o.text<-s
+      o.text
+    }, USE.NAMES=FALSE)
+  }
   
+  tr.item<-tr
   
   values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, 
                            optimizegraphs = NULL)
@@ -3960,7 +3969,7 @@ shinyServer(function(input, output, session) {
   output$uifile = renderUI({
     fileInput('file', label=h4(tr.item("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
   })
-  addPopover(session, id = "uifile", title = tr.item("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
+  #addPopover(session, id = "uifile", title = tr.item("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uiDataset = renderUI({
     box(title=tr.item("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
@@ -3974,25 +3983,25 @@ shinyServer(function(input, output, session) {
   output$uidataset = renderUI({
     selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
   })
-  addPopover(session, id = "uidataset", title = tr.item("Dataset"), content = "If the format is able to store different datasets, select the one you want to open.", placement = "right", trigger = "hover", options = list(container = "body"))
+  # addPopover(session, id = "uidataset", title = tr.item("Dataset"), content = "If the format is able to store different datasets, select the one you want to open.", placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uifirstWeek = renderUI({
     selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("First Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = head(getWeeksOriginal(),1))
   })
   
-  addPopover(session, id = "uifirstWeek", title = tr.item("First Week"), content = "First week of the datasets` surveillance period.",                                    placement = "right", trigger = "hover", options = list(container = "body"))
+  # addPopover(session, id = "uifirstWeek", title = tr.item("First Week"), content = "First week of the datasets` surveillance period.",                                    placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uilastWeek = renderUI({
     selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Last Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = tail(getWeeksOriginal(),1))
   })
-  addPopover(session, id = "uilastWeek", title = tr.item("Last Week"), content = "Last week of the datasets surveillance period.",                                     placement = "right", trigger = "hover", options = list(container = "body"))
+  # addPopover(session, id = "uilastWeek", title = tr.item("Last Week"), content = "Last week of the datasets surveillance period.",                                     placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uitransformation = renderUI({
     transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
     names(transformation.list)<-tr(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
     selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
   })
-  addPopover(session, id = "uitransformation", title = tr.item("Transform"), content = "Select the transformation to apply to the original data.",                            placement = "right", trigger = "hover", options = list(container = "body"))
+  # addPopover(session, id = "uitransformation", title = tr.item("Transform"), content = "Select the transformation to apply to the original data.",                            placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uiModel = renderUI({
     box(title=tr.item("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
@@ -4236,12 +4245,15 @@ shinyServer(function(input, output, session) {
       h5(a(tr.item("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
       h5(a(tr.item("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
       checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr.item("Show advanced features")), value = FALSE),
-      bsPopover(id = "advancedfeatures", title = "Advanced features", content = "Show advanced features of memapp.", placement = "right", trigger = "hover", options = list(container = "body")),
-      selectInput("lang", h6(tr.item("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = memapp:::get.languages(), size=1, selectize = FALSE, selected = "en-GB"),
-      bsPopover(id = "lang", title = tr.item("Language"), content = "Choose language of the app. A change in language will restart the app.", placement = "left", trigger = "hover", options = list(container = "body"))
+      bsPopover(id = "advancedfeatures", title = "Advanced features", content = "Show advanced features of memapp.", placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
   
+  output$uiLanguage = renderUI({
+    h4(tr.item("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")
+    )
+  })
+  # addPopover(session, id = "lang", title = tr.item("Language"), content = "Choose language of the app. A change in language will restart the app.", placement = "left", trigger = "hover", options = list(container = "body"))
   
   session$onSessionEnded(function() {
     stopApp()

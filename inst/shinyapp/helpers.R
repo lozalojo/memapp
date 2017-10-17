@@ -1658,13 +1658,13 @@ extract.two<-function(i.data, i.order, i.column){
 
 # localization
 
-tr.item <- function(i.text){ # translates text into current language
-  # cat(language)
-  # o.text<-tail(translation[translation$original==i.text,input$lang])
-  o.text<-tail(translation[translation$original==i.text,"translated"])
-  if (NROW(o.text)!=1) o.text<-i.text
-  o.text
-}
-
-tr <- function(x) unlist(lapply(x,tr.item))
+# tr.item <- function(i.text){ # translates text into current language
+#   # cat(language)
+#   # o.text<-tail(translation[translation$original==i.text,input$lang])
+#   o.text<-tail(translation[translation$original==i.text,"translated"])
+#   if (NROW(o.text)!=1) o.text<-i.text
+#   o.text
+# }
+# 
+# tr <- function(x) unlist(lapply(x,tr.item))
 

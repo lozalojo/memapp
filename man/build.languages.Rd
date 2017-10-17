@@ -4,7 +4,7 @@
 \alias{build.languages}
 \title{creates the translation file to be used by the app}
 \usage{
-build.languages(i.lang)
+build.languages()
 }
 \description{
 creates the translation file to be used by the app
