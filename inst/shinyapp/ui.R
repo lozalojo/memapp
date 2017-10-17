@@ -37,7 +37,13 @@ source("helpers.R")
 # type.list<-list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6)
 # names(type.list)<-tr(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and the KC Method to calculate its confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
 
-shinyUI(dashboardPage(skin = "black",
+languages<-memapp:::get.languages()
+languages.list<-as.list(languages$lcidstring)
+names(languages.list)<-languages$locale
+# print(languages.list)
+
+shinyUI(
+  dashboardPage(skin = "black",
                       ###################################
                       ### HEADER SECTION              ###
                       ###################################
@@ -224,10 +230,10 @@ shinyUI(dashboardPage(skin = "black",
                                    uiOutput("uiMEMoptions"),
                                    uiOutput("uiSupport"),
                                    box(
-                                     #title="", width = 12,  background = "orange",
-                                     title="", status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
+                                     #title="", status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
+                                     title="", solidHeader = TRUE, status = "warning", width = 12,
                                      uiOutput("uiLanguage"),
-                                     selectInput("lang", label = "", choices = memapp:::get.languages(), size=1, selectize = FALSE, selected = "en-GB")
+                                     selectInput("lang", label = "", choices = languages.list, size=1, selectize = FALSE, selected = "en-gb")
                                    )
                                    # box(
                                    #   title=tr.item("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
