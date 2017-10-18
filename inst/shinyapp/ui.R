@@ -17,8 +17,6 @@ library("ggplot2")
 library("plotly")
 library("mem")
 
-source("helpers.R")
-
 languages<-memapp:::get.languages()
 languages.list<-as.list(languages$lcidstring)
 names(languages.list)<-languages$locale

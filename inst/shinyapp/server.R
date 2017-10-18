@@ -6,32 +6,18 @@ set.rzip()
 animationmethod<-animation.method()
 load("lang/translation.bin")
 
-# print(translation)
+source("helpers.R")
 
 shinyServer(function(input, output, session) {
   
-  # tr.item <- function(i.text){
-  #   cat("<>",input$lang)
-  #   o.text<-tail(translation[translation$original==i.text,input$lang])
-  #   if (NROW(o.text)!=1) o.text<-i.text
-  #   o.text
-  # }
-  # observe({  
-  #   tr <- function(x){
-  #     
-  #     unlist(lapply(x, tr.item))
-  #   }
-  # })
-  
   tr <- function(text){ # translates text into current language
-    sapply(text,function(s){
+    as.character(sapply(text,function(s){
       o.text<-tail(translation[translation$original==s,input$lang])
       if (NROW(o.text)!=1) o.text<-s
+      if (is.na(o.text)) o.text<-s
       o.text
-    }, USE.NAMES=FALSE)
+    }, USE.NAMES=FALSE))
   }
-  
-  # tr.item<-tr
   
   values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, 
                            optimizegraphs = NULL)
@@ -39,13 +25,6 @@ shinyServer(function(input, output, session) {
   #####################################
   ### REACTIVE FUNCTIONS
   #####################################
-  
-  # observeEvent(input$lang, {
-  #   cat("observe/lang> begin\n")
-  #   language<<-input$lang
-  #   cat("observe/file> updating language to",language,"\n")
-  #   cat("observe/lang> end\n")
-  # })
   
   data_model <- reactive({
     readdata <- read_data()
@@ -156,10 +135,8 @@ shinyServer(function(input, output, session) {
       if (length(selectedcolumns)<3){
         good<-NULL
       }else{
-        #tfile<-tempfile(tmpdir="C:/Users/lozalojo/Desktop/Rtemp")
         tfile<-tempfile()
         tfile.div<-extract.pfe(tfile)
-        # cat(tfile.div$name,"-",tfile.div$path,"\n")
         good<-memgoodness(datfile[selectedcolumns],
                           i.graph=as.logical(input$advancedfeatures), i.prefix=tfile.div$name, i.output = tfile.div$path,
                           i.min.seasons = 3,
@@ -305,20 +282,17 @@ shinyServer(function(input, output, session) {
     if(is.null(infile)){
       datasets=NULL
       datasetread=NULL
-      # dataweeks=NULL
       cat("read_data> Warning: No file\n")
     }else if(is.null(indataset)){
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
-      # dataweeks=temp1$dataweeks
       rm("temp1")
       cat("read_data> Warning: No dataset\n")
     }else if (indataset==""){
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
-      # dataweeks=temp1$dataweeks
       rm("temp1")
       cat("read_data> Warning: No dataset\n")
     }else{
@@ -326,7 +300,6 @@ shinyServer(function(input, output, session) {
       temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
-      # dataweeks=temp1$dataweeks
       rm("temp1")
     }
     if(!is.null(datasetread)){
@@ -346,20 +319,6 @@ shinyServer(function(input, output, session) {
     readdata
   })
   
-  # observeEvent(input$file, {
-  #   cat("observe/file> begin\n")
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   datsheets <- readdata$datasets
-  #   datweeks <- readdata$dataweeks
-  #   if (!is.null(datsheets)){
-  #     cat("observe/file> updating dataset list\n")
-  #     cat(paste0(datsheets,collapse=";"),"\n")
-  #     updateSelectInput(session, "dataset", choices = datsheets, selected=head(datsheets,1))
-  #   }
-  #   cat("observe/file> end\n")
-  # })
-  
   getDatasets <- eventReactive(input$file, {
     cat("reactive/getDatasets> begin\n")
     readdata <- read_data()
@@ -371,25 +330,9 @@ shinyServer(function(input, output, session) {
     return(datsheets)
   })
   
-  # observeEvent(input$dataset, {
-  #   cat("observe/dataset> begin\n")
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   datsheets <- readdata$datasets
-  #   datweeks <- readdata$dataweeks
-  #   if (!is.null(datweeks)){
-  #     cat("observe/dataset> updating first/last week list\n")
-  #     updateSelectInput(session, "firstWeek", choices = datweeks, selected=head(datweeks,1))
-  #     updateSelectInput(session, "lastWeek", choices = datweeks, selected=tail(datweeks,1))
-  #   }
-  #   cat("observe/dataset> end\n")
-  # })
-  
   getWeeksOriginal <- eventReactive(input$dataset, {
     cat("reactive/getWeeksOriginal> begin\n")
     readdata <- read_data()
-    # datfile <- readdata$datasetread
-    # datsheets <- readdata$datasets
     dataweeksoriginal <- readdata$dataweeksoriginal
     if (!is.null(dataweeksoriginal)) cat("reactive/getWeeksOriginal> updating first/last week list\n")
     cat("reactive/getWeeksOriginal> end\n")
@@ -399,8 +342,6 @@ shinyServer(function(input, output, session) {
   getWeeksFiltered <- eventReactive(c(input$dataset,input$firstWeek,input$lastWeek), {
     cat("reactive/getWeeksFiltered> begin\n")
     readdata <- read_data()
-    # datfile <- readdata$datasetread
-    # datsheets <- readdata$datasets
     dataweeksfiltered <- readdata$dataweeksfiltered
     if (!is.null(dataweeksfiltered)) cat("reactive/getWeeksFiltered> updating first/last week list\n")
     cat("reactive/getWeeksFiltered> end\n")
@@ -412,8 +353,6 @@ shinyServer(function(input, output, session) {
     readdata <- read_data()
     datfile <- readdata$datasetread
     seasons<-names(datfile)
-    # datsheets <- readdata$datasets
-    # datweeks <- readdata$dataweeks
     if (!is.null(seasons)) cat("reactive/getSeasons> updating from/to/exclude\n")
     cat("reactive/getSeasons> end\n")
     return(seasons)
@@ -424,20 +363,8 @@ shinyServer(function(input, output, session) {
     readdata <- read_data()
     datfile <- readdata$datasetread
     datsheets <- readdata$datasets
-    # datweeks <- readdata$dataweeks
-    # cat(paste(datweeks,collapse=","),"\n")
     if (!is.null(datfile)){
       seasons<-names(datfile)
-      # cat("observe/read_data> updating from/to, exclude\n")
-      # updateSelectInput(session, "SelectFrom", choices = seasons, selected=seasons[1])
-      # updateSelectInput(session, "SelectTo", choices = seasons, selected=rev(seasons)[min(2,length(seasons))])
-      # updateSelectInput(session, "SelectExclude", choices = seasons, selected=NULL)
-      # cat("observe/read_data> updating surveillance season, week and force epidemic\n")
-      # updateSelectInput(session, "SelectSurveillance", choices = seasons, selected=tail(seasons,1))
-      # updateSelectInput(session, "SelectSurveillanceWeek", choices =datweeks, selected=tail(datweeks,1))
-      # updateSelectInput(session, "SelectSurveillanceForceEpidemic", choices =c("",datweeks), selected="")
-      # cat("observe/read_data> updating visualize seasons list\n")
-      # updateSelectInput(session, "SelectSeasons", choices = seasons, selected=NULL)
       cat("observe/read_data> updating timing plots\n")
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
         if(is.null(datfile)){
@@ -622,7 +549,6 @@ shinyServer(function(input, output, session) {
         values$plotdata <- plotdata
         values$clickdata <- data.frame()
         values$optimizegraphs <- data.frame()
-        # values$idscreated = character()
         rm("origdata", "plotdata", "epidata")
         lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
           imgfileok<-F
@@ -740,7 +666,6 @@ shinyServer(function(input, output, session) {
           nameid<-paste0("tbmOptimizeM_",as.character(s),"_click")
           if (!(nameid %in% values$idscreated)){
             values$idscreated<-c(values$idscreated,nameid)
-            #cat("1",paste(values$idscreated,collapse=","),"\n")
             observeEvent(input[[nameid]], {
               np <- nearPoints(values$origdata, input[[nameid]], maxpoints=1 , threshold = 10000)
               values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
@@ -776,7 +701,6 @@ shinyServer(function(input, output, session) {
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
-    # print(query)
     if (!is.null(query[['advancedfeatures']])) {
       updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
     }
@@ -884,26 +808,7 @@ shinyServer(function(input, output, session) {
     }
     datatoshow
   },
-  #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
-  
-  # observeEvent(input$tbdData_x, {
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   if(!is.null(datfile)){
-  #     selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
-  #     if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.sheet=input$dataset, i.rownames=tr("Week no"), i.format="xlsx")
-  #   }
-  # })
-  
-  # observeEvent(input$tbdData_c, {
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   if(!is.null(datfile)){
-  #     selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
-  #     if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.sheet=input$dataset, i.rownames=tr("Week no"), i.format="csv")
-  #   }
-  # })
   
   output$tbdData_x <- downloadHandler(
     filename = function() { paste(input$dataset, '.xlsx', sep='') },
@@ -1043,8 +948,6 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           z <- ggplotly(p$plot, width = 800, height = 600)
-          # print(z)
-          # cat(p$labels,"\n")
           zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
         }
       }
@@ -1118,7 +1021,6 @@ shinyServer(function(input, output, session) {
       datfile.plot<-dataevolution[indicators]
       names(datfile.plot)<-c(tr("Lower limit"),tr("Duration"),tr("Upper limit"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-      #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -1168,7 +1070,6 @@ shinyServer(function(input, output, session) {
       datfile.plot<-dataevolution[indicators]
       names(datfile.plot)<-c(tr("Lower limit"),tr("Start"),tr("Upper limit"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-      #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -1219,7 +1120,6 @@ shinyServer(function(input, output, session) {
       datfile.plot<-dataevolution[indicators]
       names(datfile.plot)<-c(tr("Lower limit"),tr("Epidemic percentage"),tr("Upper limit"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-      #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -1275,7 +1175,6 @@ shinyServer(function(input, output, session) {
                                        i.colSeasons=input$colSeasons,
                                        i.colEpidemic=input$colEpidemic)
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
-      #rownames(datfile.plot)<-gsub("/","\n",rownames(datfile.plot))
       p<-plotGeneric(datfile.plot,
                      i.range.y=NA,
                      i.range.y.labels=NA,
@@ -1313,10 +1212,6 @@ shinyServer(function(input, output, session) {
     }else{
       temp1<-dataevolution$evolution.seasons
       if (row.names(temp1)[NROW(temp1)]=="next") row.names(temp1)[NROW(temp1)]<-tr("next")
-      
-      # print(temp1)
-      # cat(is.data.frame(temp1),"\n")
-      # cat(paste(names(temp1),collapse=";"),"\n")
       datashow<-formattable::formattable(temp1, apply(temp1, 2,
                                                       function(noxneeded) formattable::formatter("span",
                                                                                                  style = x ~ formattable::style(color = ifelse(x, "green", "red")),
@@ -1337,23 +1232,8 @@ shinyServer(function(input, output, session) {
     }
     datashow
   },
-  #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
-  
-  # observeEvent(input$tbdEdetailed_x, {
-  #   dataevolution <- data_evolution()
-  #   datashow<-dataevolution$evolution.data
-  #   names(datashow)<-c(tr("Seasons"),tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
-  #   if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet=tr("Evolution"), i.rownames=tr("Season"), i.format="xlsx")
-  # })
-  #
-  # observeEvent(input$tbdEdetailed_c, {
-  #   dataevolution <- data_evolution()
-  #   datashow<-dataevolution$evolution.data
-  #   names(datashow)<-c(tr("Seasons"),tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
-  #   if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.sheet=tr("Evolution"), i.rownames=tr("Season"), i.format="csv")
-  # })
-  
+
   output$tbdEdetailed_x <- downloadHandler(
     filename = function() { paste(input$dataset, '.xlsx', sep='') },
     content = function(file) {
@@ -1391,7 +1271,6 @@ shinyServer(function(input, output, session) {
                   tabPanel(tr("Start"),plotlyOutput("tbdSstart", width ="100%", height ="100%")),
                   tabPanel(tr("Epidemic %"), plotlyOutput("tbdSpercentage", width ="100%", height ="100%")),
                   tabPanel(tr("Thresholds"),plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
-                  #tabPanel(tr("Scheme"), DT::dataTableOutput("tbdSscheme")),
                   tabPanel(tr("Scheme"), formattable::formattableOutput("tbdSscheme")),
                   tabPanel(tr("Detailed"),
                            DT::dataTableOutput("tbdSdetailed"),
@@ -1595,16 +1474,6 @@ shinyServer(function(input, output, session) {
     zfix
   })
   
-  # output$tbdSscheme <- DT::renderDataTable({
-  #   datastability <- data_stability()
-  #   if(is.null(datastability)){
-  #     datashow<-NULL
-  #   }else{
-  #     datashow<-datastability$stability.seasons
-  #   }
-  #   datashow
-  # }, extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
-  
   output$tbdSscheme <- formattable::renderFormattable({
     datastability <- data_stability()
     if(is.null(datastability)){
@@ -1630,23 +1499,8 @@ shinyServer(function(input, output, session) {
     }
     datashow
   },
-  #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
-  
-  # observeEvent(input$tbdSdetailed_x, {
-  #   datastability <- data_stability()
-  #   datashow<-datastability$stability.data
-  #   names(datashow)<-c(tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
-  #   if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet=tr("Stability"), i.rownames=tr("Seasons"), i.format="xlsx")
-  # })
-  #
-  # observeEvent(input$tbdSdetailed_c, {
-  #   datastability <- data_stability()
-  #   datashow<-datastability$stability.data
-  #   names(datashow)<-c(tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
-  #   if(!is.null(datastability)) export.mydata(i.data=datashow, i.sheet=tr("Stability"), i.rownames=tr("Seasons"), i.format="csv")
-  # })
-  
+
   output$tbdSdetailed_x <- downloadHandler(
     filename = function() { paste(input$dataset, '.xlsx', sep='') },
     content = function(file) {
@@ -1738,10 +1592,7 @@ shinyServer(function(input, output, session) {
       temp1<-as.data.frame(good$validity.data)
       temp1$Total<-good$results
       temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index")]
-      # temp1[is.na(temp1)]<--1
       good.table<-formattable::formattable(temp1, list(
-        # area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
-        # area(col = names(temp1)[5:6]) ~ normalize_bar("#A5DBEB", 0.2)
         "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
@@ -1794,7 +1645,6 @@ shinyServer(function(input, output, session) {
   output$tbdGoodnessIntensity <- renderUI({
     good <- data_good_global()
     peaks <- good$peaks
-    # peaks$Description<-tr(peaks$Description)
     if(is.null(good)){
       return(NULL)
     }else{
@@ -1968,19 +1818,8 @@ shinyServer(function(input, output, session) {
     }
     datatoshow
   },
-  #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
-  
-  # observeEvent(input$tbmData_x, {
-  #   datamodel<-data_model()
-  #   if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.sheet=input$dataset, i.rownames=tr("Week no"), i.format="xlsx")
-  # })
-  #
-  # observeEvent(input$tbmData_c, {
-  #   datamodel<-data_model()
-  #   if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.sheet=input$dataset, i.rownames=tr("Week no"), i.format="csv")
-  # })
-  
+
   output$tbmData_x <- downloadHandler(
     filename = function() { paste(input$dataset, '.xlsx', sep='') },
     content = function(file) {
@@ -2417,10 +2256,7 @@ shinyServer(function(input, output, session) {
       temp1<-as.data.frame(good$validity.data)
       temp1$Total<-good$results
       temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
-      # temp1[is.na(temp1)]<--1
       good.table<-formattable::formattable(temp1, list(
-        # area(col = names(temp1)[1:4]) ~ normalize_bar("#FFBBFF", 0.2),
-        # area(col = names(temp1)[5:6]) ~ normalize_bar("#A5DBEB", 0.2)
         "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
@@ -2491,8 +2327,6 @@ shinyServer(function(input, output, session) {
   output$tbmGoodnessIntensity <- renderUI({
     good <- data_good_model()
     peaks <- good$peaks
-    # peaks$Description<-tr(peaks$Description)
-    # cat(paste(names(peaks),collapse=";"),"\n")
     if(is.null(good)){
       return(NULL)
     }else{
@@ -2645,9 +2479,7 @@ shinyServer(function(input, output, session) {
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
-      # cat(paste(selectedcolumns,collapse=","),"\n")
       clickd<-values$clickdata
-      # print(clickd)
       optr<-subset(clickd,clickd$season %in% names(datfile)[selectedcolumns])[c("season","weekno","weekna",paste0(names(datfile)[selectedcolumns],"_fixed"))]
       names(optr)[4:(length(selectedcolumns)+3)]<-names(datfile)[selectedcolumns]
     }else{
@@ -2659,9 +2491,6 @@ shinyServer(function(input, output, session) {
   output$tbmOptimizeMresults<-renderUI({
     readdata <- read_data()
     datfile <- readdata$datasetread
-    # cat("--------------------")
-    # cat(NROW(values$clickdata),"\n")
-    
     if (NROW(values$clickdata)>0){
       etwo<-extract.two(values$clickdata,"weekno","season")
       etwot<-reshape2::dcast(etwo, season ~  id.tail, value.var="weekno")
@@ -2669,17 +2498,12 @@ shinyServer(function(input, output, session) {
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
-      # cat(length(selectedcolumns),"\n")
       if (length(selectedcolumns)>2){
         if (all(names(datfile)[selectedcolumns] %in% etwo$season) & NCOL(etwot)==3 & sum(is.na(etwot))==0){
-          # cat(NCOL(etwot),"\n")
-          # cat(sum(is.na(etwot)),"\n")
-          # cat("--------------------")
           i.data<-values$plotdata[grepl("^.*_fixed$",names(values$plotdata))]
           names(i.data)<-sub("_fixed","",names(i.data),fixed=T)
           i.data<-i.data[names(i.data) %in% names(datfile)[selectedcolumns]]
           row.names(i.data)<-values$plotdata$weekna
-          #print(i.data)
           tfile<-tempfile()
           tfile.div<-extract.pfe(tfile)
           
@@ -2690,8 +2514,7 @@ shinyServer(function(input, output, session) {
           i.graph.title=""
           i.graph.subtitle=""
           i.output = tfile.div$path
-          # cat(tfile.div$name,"*",tfile.div$path,"\n")
-          
+
           semanas<-dim(i.data)[1]
           anios<-dim(i.data)[2]
           nombre.semana<-rownames(i.data)
@@ -2709,9 +2532,7 @@ shinyServer(function(input, output, session) {
             i.timing.1.1<-etwo$weekno[etwo$season==nombre.anios[i] & etwo$id.tail==1]
             i.timing.1.2<-etwo$weekno[etwo$season==nombre.anios[i] & etwo$id.tail==2]
             i.timing.1.i<-c(i.timing.1.1,i.timing.1.2)
-            # cat(i.timing.1.i)
             i.timing.1[i,]<-i.timing.1.i
-            # print(i.timing.1.i)
             curva.map<-mem:::calcular.map(as.vector(as.matrix(cur)))
             for (j in 1:n.values){
               i.param.deteccion<-i.param.values[j]
@@ -2725,7 +2546,6 @@ shinyServer(function(input, output, session) {
               resultados.i[i,,j]<-as.numeric(resultado.j)
             }
           }
-          # print(resultados.i)
           resultado<-data.frame(apply(resultados.i,c(3,2),sum,na.rm=T))
           # sensibilidad
           resultado[7]<-resultado[3]/(resultado[3]+resultado[6])
@@ -2863,7 +2683,6 @@ shinyServer(function(input, output, session) {
             }
             
             values$optimizegraphs<-all.graph.names
-            # print(all.graph.names)
           }
           
           lapply(nombre.anios, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_image")]] <- renderImage({
@@ -2885,7 +2704,7 @@ shinyServer(function(input, output, session) {
             gfile
           })})
           
-          print(optimum.by.inspection.output$optimum)
+          #print(optimum.by.inspection.output$optimum)
           
           optim<-memgoodness(datfile[selectedcolumns],
                              i.seasons=as.numeric(input$SelectMaximum),
@@ -3013,10 +2832,7 @@ shinyServer(function(input, output, session) {
       temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
       names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
       rownames(temp1)<-NULL
-      # temp1[is.na(temp1)]<--1
       roca.table<-formattable::formattable(temp1, list(
-        # area(col = names(roca.table)[2:5]) ~ normalize_bar("#FFBBFF", 0.2),
-        # area(col = names(roca.table)[6:7]) ~ normalize_bar("#A5DBEB", 0.2)
         "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
         "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
@@ -3145,7 +2961,6 @@ shinyServer(function(input, output, session) {
     }
     datatoshow
   },
-  #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
   
   output$tbsSurveillance <- renderUI({
@@ -3157,12 +2972,6 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       tabsetPanel(tabPanel(tr("Week"), plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
-                  # if (requireNamespace("magick", quietly = TRUE)){
-                  #   tabPanel(tr("Animated"), imageOutput("tbsSurveillanceAnimated"))
-                  # }else{
-                  #   cat('magick package needed for this function to work. Please install it.\n')
-                  #   tabPanel(tr("Animated"), tableOutput("tbsSurveillanceAnimated_nomagick"))
-                  # },
                   if (animationmethod<4){
                     tabPanel(tr("Animated"), imageOutput("tbsSurveillanceAnimated"))
                   }else{
@@ -3286,8 +3095,6 @@ shinyServer(function(input, output, session) {
         e.thr<-NA
         i.thr<-NA
       }
-      # cat(paste(row.names(datfile),collapse=","),"\n")
-      # cat(SurveillanceWeek,"\n")
       datfile.plot<-datfile[input$SelectSurveillance]
       max.y<-max(datfile.plot,na.rm=T)
       if (as.logical(input$preepidemicthr)) max.y<-max(max.y,e.thr[1],na.rm=T)
@@ -3446,150 +3253,6 @@ shinyServer(function(input, output, session) {
     }
     zfix
   })
-  
-  # observeEvent(input$tbsSurveillanceAverage_x, {
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   if(!is.null(datfile)){
-  #     if(input$SelectSurveillance %in% names(datfile)){
-  #       if(is.null(input$SelectSurveillanceWeek)){
-  #         SurveillanceWeek<-tail(row.names(datfile),1)
-  #       }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
-  #         SurveillanceWeek<-tail(row.names(datfile),1)
-  #       }else{
-  #         SurveillanceWeek<-input$SelectSurveillanceWeek
-  #       }
-  #       if (is.null(input$SelectSurveillanceForceEpidemic)){
-  #         force.start<-NA
-  #       }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
-  #         force.start<-NA
-  #       }else{
-  #         force.start<-input$SelectSurveillanceForceEpidemic
-  #       }
-  #       datamodel<-data_model()
-  #       if(!is.null(datamodel)){
-  #         e.thr<-datamodel$epidemic.thresholds
-  #         i.thr<-datamodel$intensity.thresholds
-  #         datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
-  #         survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
-  #         datfile.plot[-(1:survweek),1]<-NA
-  #         names(datfile.plot)<-c(input$SelectSurveillance,tr("Lower interval"),tr("Average curve"),tr("Upper interval"))
-  #         colors.palette<-generate_palette(i.number.series=3,
-  #                                          i.colObservedLines=input$colObservedLines,
-  #                                          i.colObservedPoints=input$colObservedPoints,
-  #                                          i.colEpidemicStart=input$colEpidemicStart,
-  #                                          i.colEpidemicStop=input$colEpidemicStop,
-  #                                          i.colThresholds=input$colThresholds,
-  #                                          i.colSeasons=input$colSeasons,
-  #                                          i.colEpidemic=input$colEpidemic)
-  #         p <- plotSeasons(datfile.plot,
-  #                          i.epidemic.thr=e.thr,
-  #                          i.intensity.thr=i.thr,
-  #                          i.pre.epidemic = as.logical(input$preepidemicthr),
-  #                          i.post.epidemic = as.logical(input$postepidemicthr),
-  #                          i.intensity = as.logical(input$intensitythr),
-  #                          i.textMain=input$textMain,
-  #                          i.textX=input$textX,
-  #                          i.textY=input$textY,
-  #                          i.type.threshold=as.numeric(input$typethreshold),
-  #                          i.tails.threshold=as.numeric(input$ntails),
-  #                          i.type.intensity=as.numeric(input$typeintensity),
-  #                          i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
-  #                          i.tails.intensity=as.numeric(input$ntails),
-  #                          i.type.curve=as.numeric(input$typecurve),
-  #                          i.level.curve=as.numeric(input$levelaveragecurve)/100,
-  #                          i.type.other=as.numeric(input$typeother),
-  #                          i.level.other=as.numeric(input$levelaveragecurve)/100,
-  #                          i.method=as.numeric(input$method),
-  #                          i.param=as.numeric(input$param),
-  #                          i.n.max=as.numeric(input$nvalues),
-  #                          i.colObservedPoints=colors.palette$colObservedPoints,
-  #                          i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-  #                          i.colThresholds=colors.palette$colThresholds)
-  #         if (!is.null(p)){
-  #           temp1<-p$gdata
-  #           temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
-  #           temp2<-temp2[order(temp2$week),p$labels]
-  #           row.names(temp2)<-p$weeklabels
-  #           temp2$week<-NULL
-  #           export.mydata(i.data=temp2, i.sheet=tr("Average"), i.rownames=tr("Week no"), i.format="xlsx")
-  #         }
-  #       }
-  #     }
-  #   }
-  # })
-  #
-  # observeEvent(input$tbsSurveillanceAverage_c, {
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   if(!is.null(datfile)){
-  #     if(input$SelectSurveillance %in% names(datfile)){
-  #       if(is.null(input$SelectSurveillanceWeek)){
-  #         SurveillanceWeek<-tail(row.names(datfile),1)
-  #       }else if(!(input$SelectSurveillanceWeek %in% row.names(datfile))){
-  #         SurveillanceWeek<-tail(row.names(datfile),1)
-  #       }else{
-  #         SurveillanceWeek<-input$SelectSurveillanceWeek
-  #       }
-  #       if (is.null(input$SelectSurveillanceForceEpidemic)){
-  #         force.start<-NA
-  #       }else if(!(input$SelectSurveillanceForceEpidemic %in% row.names(datfile))){
-  #         force.start<-NA
-  #       }else{
-  #         force.start<-input$SelectSurveillanceForceEpidemic
-  #       }
-  #       datamodel<-data_model()
-  #       if(!is.null(datamodel)){
-  #         e.thr<-datamodel$epidemic.thresholds
-  #         i.thr<-datamodel$intensity.thresholds
-  #         datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
-  #         survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
-  #         datfile.plot[-(1:survweek),1]<-NA
-  #         names(datfile.plot)<-c(input$SelectSurveillance,tr("Lower interval"),tr("Average curve"),tr("Upper interval"))
-  #         colors.palette<-generate_palette(i.number.series=3,
-  #                                          i.colObservedLines=input$colObservedLines,
-  #                                          i.colObservedPoints=input$colObservedPoints,
-  #                                          i.colEpidemicStart=input$colEpidemicStart,
-  #                                          i.colEpidemicStop=input$colEpidemicStop,
-  #                                          i.colThresholds=input$colThresholds,
-  #                                          i.colSeasons=input$colSeasons,
-  #                                          i.colEpidemic=input$colEpidemic)
-  #         p <- plotSeasons(datfile.plot,
-  #                          i.epidemic.thr=e.thr,
-  #                          i.intensity.thr=i.thr,
-  #                          i.pre.epidemic = as.logical(input$preepidemicthr),
-  #                          i.post.epidemic = as.logical(input$postepidemicthr),
-  #                          i.intensity = as.logical(input$intensitythr),
-  #                          i.textMain=input$textMain,
-  #                          i.textX=input$textX,
-  #                          i.textY=input$textY,
-  #                          i.type.threshold=as.numeric(input$typethreshold),
-  #                          i.tails.threshold=as.numeric(input$ntails),
-  #                          i.type.intensity=as.numeric(input$typeintensity),
-  #                          i.level.intensity=as.numeric(c(input$levelintensitym,input$levelintensityh,input$levelintensityv))/100,
-  #                          i.tails.intensity=as.numeric(input$ntails),
-  #                          i.type.curve=as.numeric(input$typecurve),
-  #                          i.level.curve=as.numeric(input$levelaveragecurve)/100,
-  #                          i.type.other=as.numeric(input$typeother),
-  #                          i.level.other=as.numeric(input$levelaveragecurve)/100,
-  #                          i.method=as.numeric(input$method),
-  #                          i.param=as.numeric(input$param),
-  #                          i.n.max=as.numeric(input$nvalues),
-  #                          i.colObservedPoints=colors.palette$colObservedPoints,
-  #                          i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-  #                          i.colThresholds=colors.palette$colThresholds)
-  #         if (!is.null(p)){
-  #           temp1<-p$gdata
-  #           temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
-  #           temp2<-temp2[order(temp2$week),p$labels]
-  #           row.names(temp2)<-p$weeklabels
-  #           temp2$week<-NULL
-  #           export.mydata(i.data=temp2, i.sheet=tr("Average"), i.rownames=tr("Week no"), i.format="csv")
-  #         }
-  #       }
-  #     }
-  #   }
-  # })
   
   output$tbsSurveillanceAverage_x <- downloadHandler(
     filename = function() { paste(input$dataset, '.xlsx', sep='') },
@@ -3804,7 +3467,6 @@ shinyServer(function(input, output, session) {
     }
     datatoshow
   },
-  #extensions = 'Buttons', options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', buttons = c('csv', 'excel'), columnDefs=list(list(targets="_all", class="dt-right"))))
   options = list(scrollX = TRUE, scrollY = '600px', paging = FALSE, dom = 'Bfrtip', columnDefs=list(list(targets="_all", class="dt-right"))))
   
   output$tbvSeasons <- renderPlotly({
@@ -3969,11 +3631,8 @@ shinyServer(function(input, output, session) {
   output$uifile = renderUI({
     popify(
       fileInput('file', label=h4(tr("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
-      , title = tr("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
+      , title = tr("Load file"), content = tr("memapp is able to read text, excel, access and R"), placement = "right", trigger = "hover", options = list(container = "body"))
   })
-  
-  # popify(el = "uifile", title = "Load file",      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover")
-  # addPopover(session, id = "uifile", title = tr("Load file"),      content = "memapp is able to read text, excel, access and R.", placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uiDataset = renderUI({
     box(title=tr("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
@@ -3985,127 +3644,84 @@ shinyServer(function(input, output, session) {
   })
   
   output$uidataset = renderUI({
-    selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
+    popify(
+      selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
+      , title = tr("Dataset"), content = tr("If the format is able to store different datasets, select the one you want to open"), placement = "right", trigger = "hover", options = list(container = "body"))
   })
-  # addPopover(session, id = "uidataset", title = tr("Dataset"), content = "If the format is able to store different datasets, select the one you want to open.", placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uifirstWeek = renderUI({
-    selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("First Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = head(getWeeksOriginal(),1))
+    popify(
+      selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("First Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = head(getWeeksOriginal(),1))
+      , title = tr("First Week"), content = tr("First week of the datasets surveillance period"),                                    placement = "right", trigger = "hover", options = list(container = "body"))
   })
-  
-  # addPopover(session, id = "uifirstWeek", title = tr("First Week"), content = "First week of the datasets` surveillance period.",                                    placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uilastWeek = renderUI({
-    selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Last Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = tail(getWeeksOriginal(),1))
+    popify(
+      selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Last Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = tail(getWeeksOriginal(),1))
+      , title = tr("Last Week"), content = tr("Last week of the datasets surveillance period"),                                     placement = "right", trigger = "hover", options = list(container = "body"))
   })
-  # addPopover(session, id = "uilastWeek", title = tr("Last Week"), content = "Last week of the datasets surveillance period.",                                     placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uitransformation = renderUI({
     transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
     names(transformation.list)<-tr(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
-    selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
+    popify(
+      selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
+      , title = tr("Transform"), content = tr("Select the transformation to apply to the original data"),                            placement = "right", trigger = "hover", options = list(container = "body"))
   })
-  # addPopover(session, id = "uitransformation", title = tr("Transform"), content = "Select the transformation to apply to the original data.",                            placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uiModel = renderUI({
     box(title=tr("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-        selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1)),
-        bsPopover(id = "SelectFrom", title = tr("From"), content = "First column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body")),
-        selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1]),
-        bsPopover(id = "SelectTo", title = tr("To"), content = "Last column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body")),
-        selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL),
-        bsPopover(id = "SelectExclude", title = tr("Exclude"), content = "Select any number of seasons to be excluded from the model.", placement = "right", trigger = "hover", options = list(container = "body")),
-        numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Maximum seasons")), 10, step=1),
-        bsPopover(id = "SelectMaximum", title = tr("Maximum seasons"), content = "Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons to avoid cyclical trends.", placement = "right", trigger = "hover", options = list(container = "body"))
+        popify(
+          selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
+          , title = tr("From"), content = tr("First season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1])
+          , title = tr("To"), content = tr("Last season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
+          , title = tr("Exclude"), content = tr("Select any number of seasons to be excluded from the model"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Maximum seasons")), 10, step=1)
+          , title = tr("Maximum seasons"), content = tr("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
-  
-  # output$uiSelectFrom = renderUI({
-  #   selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
-  # })
-  # addPopover(session, id = "uiSelectFrom", title = tr("From"), content = "First column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uiSelectTo = renderUI({
-  #   selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2))
-  # })
-  # addPopover(session, id = "uiSelectTo", title = tr("To"), content = "Last column to include in the model selection.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uiSelectExclude = renderUI({
-  #   selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
-  # })
-  # addPopover(session, id = "uiSelectExclude", title = tr("Exclude"), content = "Select any number of seasons to be excluded from the model.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uiSelectMaximum = renderUI({
-  #   numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Maximum seasons")), 10, step=1)
-  # })
-  # addPopover(session, id = "uiSelectMaximum", title = tr("Maximum seasons"), content = "Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons to avoid cyclical trends.", placement = "right", trigger = "hover", options = list(container = "body"))
   
   output$uiSurveillance = renderUI({
     box(title=tr("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
-        selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1)),
-        bsPopover(id = "SelectSurveillance", title = tr("Season"), content = "Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection.", placement = "right", trigger = "hover", options = list(container = "body")),
-        selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1)),
-        bsPopover(id = "SelectSurveillanceWeek", title = tr("Week"), content = "Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data", placement = "right", trigger = "hover", options = list(container = "body")),
-        selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = ""),
-        bsPopover(id = "SelectSurveillanceForceEpidemic", title = tr("Force epidemic start"), content = "Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
+        popify(
+          selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
+          , title = tr("Season"), content = tr("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
+          , title = tr("Week"), content = tr("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
+          , title = tr("Force epidemic start"), content = tr("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
   
-  
-  # output$uiSelectSurveillance = renderUI({
-  #   selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
-  # })
-  # addPopover(session, id = "SelectSurveillance", title = tr("Season"), content = "Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uiSelectSurveillanceWeek = renderUI({
-  #   selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Week")), size=1, selectize = FALSE, choices = getWeeks(), selected = tail(getWeeks(),1))
-  # })
-  # addPopover(session, id = "SelectSurveillanceWeek", title = tr("Week"), content = "Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uiSelectSurveillanceForceEpidemic = renderUI({
-  #   selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeks()), select = "")
-  # })
-  # addPopover(session, id = "SelectSurveillanceForceEpidemic", title = tr("Force epidemic start"), content = "Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
   output$uiVisualize = renderUI({
     box(title=tr("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-        selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL),
-        bsPopover(id = "SelectSeasons", title = tr("Seasons"), content = "Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard.", placement = "right", trigger = "hover", options = list(container = "body"))
+        popify(
+          selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
+          , title = tr("Seasons"), content = tr("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
-  # output$uiSelectSeasons = renderUI({
-  #   selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
-  # })
-  # addPopover(session, id = "SelectSeasons", title = tr("Seasons"), content = "Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
   
   output$uiThresholds = renderUI({
     box(title=tr("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-        checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Pre-epidemic threshold")), value = TRUE),
-        bsPopover(id = "preepidemicthr", title = tr("Pre-epidemic threshold"), content = "Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body")),
-        checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Post-epidemic threshold")), value = FALSE),
-        bsPopover(id = "postepidemicthr", title = tr("Post-epidemic threshold"), content = "Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body")),
-        checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Intensity thresholds/levels")), value = TRUE),
-        bsPopover(id = "intensitythr", title = tr("Intensity thresholds/levels"), content = "Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
+        popify(
+          checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Pre-epidemic threshold")), value = TRUE)
+        , title = tr("Pre-epidemic threshold"), content = tr("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Post-epidemic threshold")), value = FALSE)
+        , title = tr("Post-epidemic threshold"), content = tr("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
+        popify(
+          checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Intensity thresholds/levels")), value = TRUE)
+        , title = tr("Intensity thresholds/levels"), content = tr("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
-  
-  # output$uipreepidemicthr = renderUI({
-  #   checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Pre-epidemic threshold")), value = TRUE)
-  # })
-  # addPopover(session, id = "uipreepidemicthr", title = tr("Pre-epidemic threshold"), content = "Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uipostepidemicthr = renderUI({
-  #   checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Post-epidemic threshold")), value = FALSE)
-  # })
-  # addPopover(session, id = "uipostepidemicthr", title = tr("Post-epidemic threshold"), content = "Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  # output$uiintensitythr = renderUI({
-  #   checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Intensity thresholds/levels")), value = TRUE)
-  # })
-  # addPopover(session, id = "uiintensitythr", title = tr("Intensity thresholds/levels"), content = "Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs.", placement = "right", trigger = "hover", options = list(container = "body"))
-  # 
-  
+
   output$uiTitle = renderUI({
     fluidPage(
       tagList(
@@ -4124,7 +3740,7 @@ shinyServer(function(input, output, session) {
           } else {
           $('div.shinysky-busy-indicator').hide()
           }
-  },100)
+          },100)
           ",500)
         )
       ),
@@ -4141,36 +3757,49 @@ shinyServer(function(input, output, session) {
       tabPanel(h4(tr("Visualize"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
     )
   })
+  
   output$uiTextoptions = renderUI({
     box(
       title=tr("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-      textInput("textMain", label = h6(tr("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("Main title")),
-      bsPopover(id = "textMain", title = tr("Main title"), content = "Change the main title in most graphs.", placement = "left", trigger = "hover", options = list(container = "body")),
-      textInput("textY", label = h6(tr("Y-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("Y-axis")),
-      bsPopover(id = "textY", title = tr("Y-axis"), content = "Change the y-axis label in most graphs.", placement = "left", trigger = "hover", options = list(container = "body")),
-      textInput("textX", label = h6(tr("X-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("X-axis")),
-      bsPopover(id = "textX", title = tr("X-axis"), content = "Change the x-axis label in most graphs.", placement = "left", trigger = "hover", options = list(container = "body"))
+      popify(
+        textInput("textMain", label = h6(tr("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("Main title"))
+        , title = tr("Main title"), content = tr("Change the main title in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        textInput("textY", label = h6(tr("Y-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("Y-axis"))
+        , title = tr("Y-axis"), content = tr("Change the y-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        textInput("textX", label = h6(tr("X-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("X-axis"))
+        , title = tr("X-axis"), content = tr("Change the x-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
+  
   output$uiGraphoptions = renderUI({
     box(
       title=tr("Graph options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-      selectInput("colObservedLines", h6(tr("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colObservedLines", title = tr("Observed (line)"), content = "Color of the line of observed data.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("colObservedPoints", h6(tr("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colObservedPoints", title = tr("Observed (points)"), content = "Color of the points of observed data.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("colEpidemicStart", h6(tr("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colEpidemicStart", title = tr("Epidemic start"), content = "Color of the point of the epidemic start marker.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("colEpidemicStop", h6(tr("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colEpidemicStop", title = tr("Epidemic end"), content = "Color of the point of the epidemic end marker.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("colThresholds", h6(tr("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colThresholds", title = tr("Thresholds palette"), content = "Palette used to generate color for epidemic and intensity thresholds.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("colSeasons", h6(tr("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colSeasons", title = tr("Seasons palette"), content = "Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("colEpidemic", h6(tr("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default"),
-      bsPopover(id = "colEpidemic", title = tr("Timing palette"), content = "Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs.", placement = "left", trigger = "hover", options = list(container = "body"))
+      popify(
+        selectInput("colObservedLines", h6(tr("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Observed (line)"), content = tr("Color of the line of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colObservedPoints", h6(tr("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Observed (points)"), content = tr("Color of the points of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colEpidemicStart", h6(tr("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Epidemic start"), content = tr("Color of the point of the epidemic start marker"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colEpidemicStop", h6(tr("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Epidemic end"), content = tr("Color of the point of the epidemic end marker"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colThresholds", h6(tr("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Thresholds palette"), content = tr("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colSeasons", h6(tr("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Seasons palette"), content = tr("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colEpidemic", h6(tr("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = tr("Timing palette"), content = tr("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
+  
   output$uiMEMoptions = renderUI({
     method.list<-list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4)
     names(method.list)<-tr(c("Original method", "Fixed criterium method", "Slope method", "Second derivative method"))
@@ -4186,79 +3815,98 @@ shinyServer(function(input, output, session) {
     box(
       title=tr("MEM options"), status = "danger", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=TRUE,
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Timing")),
-      selectInput("method", h6(tr("Method for timing"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = method.list, size=1, selectize = FALSE, selected = 2),
-      bsPopover(id = "method", title = "Method for epidemic timing", content = "Original: uses the process shown in the original paper.<br>Fixed criterium: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br>Slope: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br>Second derivative: calculates the second derivative and equals to zero to search an inflexion point in the original curve.", placement = "left", trigger = "hover", options = list(container = "body")),
-      conditionalPanel(condition = "input.method == 2", 
-                       numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Slope parameter")), 2.8, step=0.1),
-                       bsPopover(id = "param", title = "Window parameter", content = "Window parameter used in fixed criterium method.", placement = "left", trigger = "hover", options = list(container = "body"))),
+      popify(
+        selectInput("method", h6(tr("Method for timing"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = method.list, size=1, selectize = FALSE, selected = 2)
+        , title = tr("Method for timing"), content = tr("<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve"), placement = "left", trigger = "hover", options = list(container = "body")
+      ),
+      conditionalPanel(condition = "input.method == 2",
+                       popify(
+                         numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Slope parameter")), 2.8, step=0.1)
+                         , title = tr("Slope parameter"), content = tr("Slope parameter used in fixed criterium method"), placement = "left", trigger = "hover", options = list(container = "body"))
+      ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
       fluidRow(
         column(6,
-               selectInput("nvalues", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Values per season")), choices = nvalues.list, size=1, selectize = FALSE, selected = -1),
-               bsPopover(id = "nvalues", title = "Number of values per seasons", content = "Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 selectInput("nvalues", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Values per season")), choices = nvalues.list, size=1, selectize = FALSE, selected = -1)
+                 , title = tr("Values per season"), content = tr("Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(6,
-               numericInput("ntails", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Tails")), 1, step=1, min = 1, max = 2),
-               bsPopover(id = "ntails", title = "Confidence intervals tails", content = "Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 numericInput("ntails", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Tails")), 1, step=1, min = 1, max = 2)
+                 , title = tr("Tails"), content = tr("Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds"), placement = "left", trigger = "hover", options = list(container = "body"))
         )
       ),
-      selectInput("typethreshold", h6(tr("Epidemic threshold"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 5),
-      bsPopover(id = "typethreshold", title = tr("Epidemic threshold"), content = "Method for calculating the epidemic threshold.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("typeintensity", h6("Intensity thresholds", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 6),
-      bsPopover(id = "typeintensity", title = "Intensity thresholds", content = "Method for calculating the intensity threshold.", placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("typethreshold", h6(tr("Epidemic threshold"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 5)
+        , title = tr("Epidemic threshold"), content = tr("Method for calculating the epidemic threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("typeintensity", h6("Intensity thresholds", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 6)
+        , title = tr("Intensity thresholds"), content = tr("Method for calculating the intensity threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
       fluidRow(
         column(4,
-               numericInput("levelintensitym", h6(tr("Medium lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 40, step=0.5, min = 0.5, max = 99.5),
-               bsPopover(id = "levelintensitym", title = "Medium intensity threshold", content = "Level of the confidence interval used to calculate the medium threshold.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 numericInput("levelintensitym", h6(tr("Medium lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 40, step=0.5, min = 0.5, max = 99.5)
+                 , title = tr("Medium lvl"), content = tr("Level of the confidence interval used to calculate the medium threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(4,
-               numericInput("levelintensityh", h6(tr("High lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 90, step=0.5, min = 0.5, max = 99.5),
-               bsPopover(id = "levelintensityh", title = "High intensity threshold", content = "Level of the confidence interval used to calculate the high threshold.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 numericInput("levelintensityh", h6(tr("High lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 90, step=0.5, min = 0.5, max = 99.5)
+                 , title = tr("High lvl"), content = tr("Level of the confidence interval used to calculate the high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(4,
-               numericInput("levelintensityv", h6(tr("Very high lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 97.5, step=0.5, min = 0.5, max = 99.5),
-               bsPopover(id = "levelintensityv", title = "Very high intensity threshold", content = "Level of the confidence interval used to calculate the very high threshold.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 numericInput("levelintensityv", h6(tr("Very high lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 97.5, step=0.5, min = 0.5, max = 99.5)
+                 , title = tr("Very high lvl"), content = tr("Level of the confidence interval used to calculate the very high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
         )
       ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Goodness & optimize")),
       fluidRow(
         column(6,
-               selectInput("validation", h6(tr("Validation"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size=1, selectize = FALSE, selected = "cross"),
-               bsPopover(id = "validation", title = "Method for validation", content = "Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 selectInput("validation", h6(tr("Validation"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size=1, selectize = FALSE, selected = "cross")
+                 , title = tr("Validation"), content = tr("Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(6,
-               selectInput("optimmethod", h6(tr("Optimization method"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = optimmethod.list, size=1, selectize = FALSE, selected = "matthews"),
-               bsPopover(id = "optimmethod", title = tr("Optimization method"), content = "Method to choose the optimum parameter.", placement = "left", trigger = "hover", options = list(container = "body"))
+               popify(
+                 selectInput("optimmethod", h6(tr("Optimization method"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = optimmethod.list, size=1, selectize = FALSE, selected = "matthews")
+                 , title = tr("Optimization method"), content = tr("Method to choose the optimum parameter"), placement = "left", trigger = "hover", options = list(container = "body"))
         )
       ),
-      sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Parameter range")), min = 0.1, max = 10, value = c(2, 4), step=0.1),
-      bsPopover(id = "paramrange", title = "Window parameter range", content = "Range of possible of values of the window parameter used by goodness and optimize functions.", placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Parameter range")), min = 0.1, max = 10, value = c(2, 4), step=0.1)
+        , title = tr("Parameter range"), content = tr("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = "hover", options = list(container = "body")
+      ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Other")),
-      selectInput("typecurve", h6(tr("Average curve CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 2),
-      bsPopover(id = "typecurve", title = "Average curve intervals", content = "Method for calculating the average curve confidence intervals.", placement = "left", trigger = "hover", options = list(container = "body")),
-      selectInput("typeother", h6(tr("Other CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 3),
-      bsPopover(id = "typeother", title = "Other confidence intervals", content = "Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.", placement = "left", trigger = "hover", options = list(container = "body")),
-      numericInput("levelaveragecurve", h6(tr("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5),
-      bsPopover(id = "levelaveragecurve", title = tr("Average curve/Other CI. level"), content = "Level of the confidence interval used to calculate the average curve and other intervals.", placement = "left", trigger = "hover", options = list(container = "body"))
+      popify(
+        selectInput("typecurve", h6(tr("Average curve CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 2)
+        , title = tr("Average curve CI."), content = tr("Method for calculating the average curve confidence intervals"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("typeother", h6(tr("Other CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 3)
+        , title = tr("Other CI."), content = tr("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        numericInput("levelaveragecurve", h6(tr("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
+        , title = tr("Average curve/Other CI. level"), content = tr("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
+  
   output$uiSupport = renderUI({
     box(
       title=tr("Support"), status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-      #h5(a("Surveillance guidelines", href="NULL", target="_blank")),
       h5(a(tr("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
       h5(a(tr("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
-      checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Show advanced features")), value = FALSE),
-      bsPopover(id = "advancedfeatures", title = "Advanced features", content = "Show advanced features of memapp.", placement = "right", trigger = "hover", options = list(container = "body"))
+      popify(
+      checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Show advanced features")), value = FALSE)
+      , title = tr("Show advanced features"), content = tr("Show advanced features of memapp"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiLanguage = renderUI({
-    h4(tr("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")
-    )
+    popify(
+    h4(tr("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"))
+    , title = tr("Language"), content = tr("Change the language of the application"), placement = "left", trigger = "hover", options = list(container = "body"))
   })
-  # addPopover(session, id = "lang", title = tr("Language"), content = "Choose language of the app. A change in language will restart the app.", placement = "left", trigger = "hover", options = list(container = "body"))
-  
+
   session$onSessionEnded(function() {
     stopApp()
   })

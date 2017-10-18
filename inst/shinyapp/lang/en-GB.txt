@@ -188,3 +188,46 @@ Zip not found;Zip not found
 Number of columns must be greater than 2;Number of columns must be greater than 2
 Language;Language
 Calculation in progress. This may take a while...;Calculation in progress. This may take a while...
+memapp is able to read text, excel, access and R;memapp is able to read text, excel, access and R
+If the format is able to store different datasets, select the one you want to open;If the format is able to store different datasets, select the one you want to open
+First week of the datasets surveillance period;First week of the datasets surveillance period
+Last week of the datasets surveillance period;Last week of the datasets surveillance period
+Select the transformation to apply to the original data;Select the transformation to apply to the original data
+First season to include in the model selection;First season to include in the model selection
+Last season to include in the model selection;Last season to include in the model selection
+Select any number of seasons to be excluded from the model;Select any number of seasons to be excluded from the model
+Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons;Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons
+Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection
+Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data;Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data
+Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold;Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold
+Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard;Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard
+Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs;Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs
+Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs;Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs
+Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs;Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs
+Change the main title in most graphs;Change the main title in most graphs
+Change the y-axis label in most graphs;Change the y-axis label in most graphs
+Change the x-axis label in most graphs;Change the x-axis label in most graphs
+Color of the line of observed data;Color of the line of observed data
+Color of the points of observed data;Color of the points of observed data
+Color of the point of the epidemic start marker;Color of the point of the epidemic start marker
+Color of the point of the epidemic end marker;Color of the point of the epidemic end marker
+Palette used to generate color for epidemic and intensity thresholds;Palette used to generate color for epidemic and intensity thresholds
+Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines;Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines
+Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs;Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs
+<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve;<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve
+Slope parameter used in fixed criterium method;Slope parameter used in fixed criterium method
+Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used;Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used
+Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds;Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds
+Method for calculating the epidemic threshold;Method for calculating the epidemic threshold
+Method for calculating the intensity threshold;Method for calculating the intensity threshold
+Level of the confidence interval used to calculate the medium threshold;Level of the confidence interval used to calculate the medium threshold
+Level of the confidence interval used to calculate the high threshold;Level of the confidence interval used to calculate the high threshold
+Level of the confidence interval used to calculate the very high threshold;Level of the confidence interval used to calculate the very high threshold
+Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only;Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only
+Method to choose the optimum parameter;Method to choose the optimum parameter
+Range of possible of values of the slope parameter used by goodness and optimize functions;Range of possible of values of the slope parameter used by goodness and optimize functions
+Method for calculating the average curve confidence intervals;Method for calculating the average curve confidence intervals
+Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.
+Level of the confidence interval used to calculate the average curve and other intervals;Level of the confidence interval used to calculate the average curve and other intervals
+Show advanced features of memapp;Show advanced features of memapp
+Change the language of the application;Change the language of the application

@@ -188,3 +188,46 @@ Zip not found;No se ha encontrado zip
 Number of columns must be greater than 2;El número de columnas debe ser mayor que 2
 Language;Idioma
 Calculation in progress. This may take a while...;Realizando cálculos. Espere, por favor, tardará un rato...
+memapp is able to read text, excel, access and R;memapp es capaz de leer ficheros de texto, excel, access y R
+If the format is able to store different datasets, select the one you want to open;Si el formato de fichero que está tratando de abrir admite varias tablas de datos, seleccione la que quiere cargar
+First week of the datasets surveillance period;Primera semana del periodo de vigilancia
+Last week of the datasets surveillance period;Última semana del periodo de vigilancia
+Select the transformation to apply to the original data;Seleccione qué transformación quiere realizar a los datos
+First season to include in the model selection;Primera temporada para incluir en el modelo
+Last season to include in the model selection;Última temporada para incluir en el modelo
+Select any number of seasons to be excluded from the model;Temporadas a excluir del modelo
+Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons;Número máximo de temporadas que se incluirán en el modelo.<br>Tenga en cuenta que el limitar el número de semanas probablemente afecte al resto de opciones ya que se toman las últimas temporadas del periodo determinado por Desde/A/Excluir.<br>Para la gripe no se recomienda usar menos de 10 temporadas
+Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Temporada que quiere usar para la vigilancia, aplicando los umbrales calculados por el MEM.<br>La temporada no tiene por qué estar completa.<br>Se recomienda no incluir la temporada de vigilancia en la creación del modelo
+Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data;Semana para que se quiere crear el gráfico de vigilancia. Puede ser cualquier semana desde la primera semana a la última en la que se tienen datos
+Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold;Seleccione la semana en la que quiere forzar el inicio de la epidemia en el gráfico.<br>La epidemia se iniciará en esa semana y no en la primera que cruce el umbral epidémico
+Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard;Seleccione cualquier número de temporadas para mostrar los gráficos de series, temporadas y localización y para aplicar los umbrales del modelo actualmente seleccionado.<br>Para borrar una temporada de la selección, haga clic en ella y presione la tecla BORRAR
+Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs;Marque esta casilla si quiere incluir los umbrales epidémicos (y los inicios de epidemia) en los gráficos.<br>Esta opción es global y se aplicará a la mayoría de los gráficos
+Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs;Marque esta casilla si quiere incluir los umbrales posepidémicos (y los finales de epidemia) en los gráficos.<br>Esta opción es global y se aplicará a la mayoría de los gráficos
+Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs;Marque esta casilla si quiere incluir los umbrales de intensidad en los gráficos.<br>Esta opción es global y se aplicará a la mayoría de los gráficos
+Change the main title in most graphs;Cambia el título principal de los gráficos
+Change the y-axis label in most graphs;Cambia la etiqueta del ejeY
+Change the x-axis label in most graphs;Cambia la etiqueta del eje X
+Color of the line of observed data;Color de la línea de datos observados
+Color of the points of observed data;Color de los puntos de datos observados
+Color of the point of the epidemic start marker;Color del punto que marca el inicio de la epidemia
+Color of the point of the epidemic end marker;Color del punto que marca el fin de la epidemia
+Palette used to generate color for epidemic and intensity thresholds;Paleta que se usa para generar los colores de los umbrales epidémicos y de intensidad
+Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines;Paleta usada para generar los colores de las líneas del gráfico de series y de otros gráficos en los que intervienen varias líneas
+Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs;Paleta usada para generar los colores de los puntos pre, pos y epidémicos en los gráficos de localización
+<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve;<b>Original</b>: usa el proceso que se muestra en el artículo original.<br><b>Criterio fijo</b>: usa la pendiente de la curva MAP para buscar el óptimo, que es el punto donde la pendiente es menor que un valor predefinido.<br><b>Slope</b>: calcula la pendiente de la curva MAP, el óptimo es el punto donde la pendiente es igual a la pendiente media global.<br><b>Second derivative</b>: calcula la segunda derivada e iguala a cero para buscar el punto de inflexión de la curva original
+Slope parameter used in fixed criterium method;Parámetro pendiente que se usa en el criterio fijo
+Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used;Número de valores que se toman cada temporada para calcular los umbrales. Si es -1, se toman un total de 30 puntos (por temporada=30/número de temporadas). Si es 0, se toman todos los puntos
+Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds;Seleccione si quiere usar intervalos de una o de dos colas para los umbrales
+Method for calculating the epidemic threshold;Método de cálculo de los umbrales epidémicos
+Method for calculating the intensity threshold;Método de cálculo de los umbrales de intensidad
+Level of the confidence interval used to calculate the medium threshold;Nivel del intervalo de confianza usado para calcular el umbral medio
+Level of the confidence interval used to calculate the high threshold;Nivel del intervalo de confianza usado para calcular el umbral alto
+Level of the confidence interval used to calculate the very high threshold;Nivel del intervalo de confianza usado para calcular el umbral muy alto
+Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only;Cross: Extrae una temporada y el modelo se calcula con el resto.<br>Sequential: Extrae una temporada y el modelo se calcula con las precedentes únicamente
+Method to choose the optimum parameter;Método para elegir el parámetro óptimo
+Range of possible of values of the slope parameter used by goodness and optimize functions;Rango de valores que puede tomar el parámetro pendiente y que se usa en las funciones de bondad y optimización
+Method for calculating the average curve confidence intervals;Método de calculo de los IC de la curva media
+Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Método de cálculo de otros intervalos de confianza: duración, porcentaje epidémico, inicio medio, etc.
+Level of the confidence interval used to calculate the average curve and other intervals;Niveles de los intervales de confianza que se usan para calcular la curva media y otros intervalos
+Show advanced features of memapp;Muestra las opciones avanzadas de la aplicación
+Change the language of the application;Cambia el idioma de la aplicación

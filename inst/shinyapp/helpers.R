@@ -56,10 +56,6 @@ generate_palette <- function(i.number.series=NA,
     i.colEpidemic<-params.default$colEpidemic
   }
   # Last one is a number between 0 and 1
-  # colTransparency<-input$colTransparency
-  # if (is.null(colTransparency)) colTransparency<-1 else if (is.na(colTransparency)) colTransparency<-1
-  # i.colEpidemicStart<-mem:::add.alpha(i.colEpidemicStart,alpha=0.4)
-  # i.colEpidemicStop<-mem:::add.alpha(i.colEpidemicStop,alpha=0.4)
   colors.final<-list(colObservedLines=i.colObservedLines, colObservedPoints=i.colObservedPoints,
                      colEpidemicStart=i.colEpidemicStart, colEpidemicStop=i.colEpidemicStop,
                      colThresholds=i.colThresholds, colSeasons=i.colSeasons,colEpidemic=i.colEpidemic
@@ -177,10 +173,9 @@ plotSeasons <- function(i.data,
         intensity<-NA
       }
     }
-    
     labels<-c(names(data.full),
-              paste(names(data.full)," (",tr.item("missing"),")",sep=""),
-              tr.item("Epidemic thr."),tr.item("Medium thr."),tr.item("High thr."),tr.item("Very high thr."),tr.item("Post thr."))
+              paste(names(data.full)," (",tr("missing"),")",sep=""),
+              tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."))
     haspoints<-c(rep(F,NCOL(data.full)),rep(T,NCOL(data.full)),F,F,F,F,F)
     haslines<-c(rep(T,NCOL(data.full)),rep(F,NCOL(data.full)),T,T,T,T,T)
     shapes<-c(rep(NA,NCOL(data.full)),rep(24,NCOL(data.full)),NA,NA,NA,NA,NA)
@@ -242,11 +237,11 @@ plotSeasons <- function(i.data,
     gplot<-ggplot(dgrafgg.s) +
       geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
       geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=shapes.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_color_manual(values=colors.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_fill_manual(values=fills.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_size_manual(values=sizes.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_linetype_manual(values=linetypes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
+      scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
+      scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
+      scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
+      scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -394,7 +389,7 @@ plotSeries<-function(i.data,
       }
     }
     
-    labels<-c(tr.item("Weekly data"),tr.item("Pre-epidemic"),tr.item("Pre-epidemic (missing)"),tr.item("Epidemic"),tr.item("Epidemic (missing)"),tr.item("Post-epidemic"),tr.item("Post-epidemic (missing)"),tr.item("Epidemic thr."),tr.item("Medium thr."),tr.item("High thr."),tr.item("Very high thr."),tr.item("Post thr."))
+    labels<-c(tr("Weekly data"),tr("Pre-epidemic"),tr("Pre-epidemic (missing)"),tr("Epidemic"),tr("Epidemic (missing)"),tr("Post-epidemic"),tr("Post-epidemic (missing)"),tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."))
     haspoints<-c(F,T,T,T,T,T,T,F,F,F,F,F)
     haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
     shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
@@ -478,11 +473,11 @@ plotSeries<-function(i.data,
     gplot<-ggplot(dgrafgg.s) +
       geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
       geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=shapes.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_color_manual(values=colors.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_fill_manual(values=fills.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_size_manual(values=sizes.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_linetype_manual(values=linetypes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
+      scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
+      scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
+      scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
+      scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -525,10 +520,8 @@ plotSurveillance<-function(i.data,
     p<-NULL
   }else if (is.null(dim(i.data))){
     p<-NULL
-    #cat("Incorrect number of dimensions, input must be a data.frame.\n")
   }else if (!(ncol(i.data)==1)){
     p<-NULL
-    #cat("Incorrect number of dimensions, only one season required.\n")
   }else{
     if (i.force.week.53) last.week<-53 else last.week<-52
     
@@ -629,7 +622,6 @@ plotSurveillance<-function(i.data,
       semana.fin<-NA
     }
     limites.niveles<-as.vector(i.intensity.thr)
-    #nombres.niveles<-as.character(i.flu$epi.intervals[,1])
     limites.niveles[limites.niveles<0]<-0
     
     # Datos para el grafico
@@ -682,7 +674,7 @@ plotSurveillance<-function(i.data,
     intensidades.3<-array(dim=c(semanas,3))
     intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
     
-    labels<-c(tr.item("Weekly data"),tr.item("Epidemic thr."),tr.item("Medium thr."),tr.item("High thr."),tr.item("Very high thr."),tr.item("Post thr."),tr.item("Start"),tr.item("End"))
+    labels<-c(tr("Weekly data"),tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."),tr("Start"),tr("End"))
     haspoints<-c(T,F,F,F,F,F,T,T)
     haslines<-c(T,T,T,T,T,T,F,F)
     shapes<-c(21,NA,NA,NA,NA,NA,21,21)
@@ -745,11 +737,11 @@ plotSurveillance<-function(i.data,
     gplot<-ggplot(dgrafgg.s) +
       geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=1.2) +
       geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=shapes.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_color_manual(values=colors.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_fill_manual(values=fills.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_size_manual(values=sizes.s, name=tr.item("Legend"), labels=labels.s) +
-      scale_linetype_manual(values=linetypes.s, name=tr.item("Legend"), labels=labels.s) +
+      scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
+      scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
+      scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
+      scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
+      scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -811,11 +803,11 @@ plotGeneric <- function(i.data,
     gplot<-ggplot(dgrafgg) +
       geom_line(aes(x=num,y=value,group=variable, color=variable, linetype=variable),size=i.linesize) +
       geom_point(aes(x=num,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-      scale_shape_manual(values=i.shapes, name=tr.item("Legend"), labels=labels) +
-      scale_color_manual(values=i.colors, name=tr.item("Legend"), labels=labels) +
-      scale_fill_manual(values=i.fills, name=tr.item("Legend"), labels=labels) +
-      scale_size_manual(values=i.sizes, name=tr.item("Legend"), labels=labels) +
-      scale_linetype_manual(values=i.linetypes, name=tr.item("Legend"), labels=labels) +
+      scale_shape_manual(values=i.shapes, name=tr("Legend"), labels=labels) +
+      scale_color_manual(values=i.colors, name=tr("Legend"), labels=labels) +
+      scale_fill_manual(values=i.fills, name=tr("Legend"), labels=labels) +
+      scale_size_manual(values=i.sizes, name=tr("Legend"), labels=labels) +
+      scale_linetype_manual(values=i.linetypes, name=tr("Legend"), labels=labels) +
       scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
       scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
       labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -1014,9 +1006,6 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
     }
     filenameextension<-paste(filename, fileextension, sep=".")
     cat("read_data> Excel 97-2003 file detected: ",filenameextension,"\n",sep="")
-    #wb <- XLConnect::loadWorkbook(i.file)
-    #datasets<-XLConnect::getSheets(wb)
-    # readxl needs the extension to be xls, sigh!
     i.file.xls<-tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".xls")
     file.copy(i.file,i.file.xls)
     datasets<-readxl::excel_sheets(i.file.xls)
@@ -1031,9 +1020,6 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
       cat("read_data> Warning: Table ",i.dataset," not found\n")
     }else{
       cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
-      #temp1<-as.character(XLConnect::readWorksheet(wb, sheet = i.dataset, header=F, colTypes=XLC$DATA_TYPE.STRING, endRow=1))
-      #datasetread<-XLConnect::readWorksheet(wb, sheet = i.dataset, rownames=NA, colTypes=XLC$DATA_TYPE.NUMERIC)
-      #names(datasetread)<-temp1
       datasetread<-as.data.frame(readxl::read_xls(i.file, sheet = i.dataset, col_types= "numeric"), stringsAsFactors = F)
       # First column is the week name      
       if (all(datasetread[,1] %in% 1:53)){
@@ -1122,9 +1108,6 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
           filecsv <- tempfile()
           system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.dataset), '>', filecsv))
           # detect encoding
-          # encodings<-readr::guess_encoding(filecsv, n_max = -1)
-          # encodings<-encodings[order(encodings$confidence,decreasing = T),]
-          # myencoding<-as.character(encodings$encoding[1])
           lines <- paste(readLines(filecsv, n = -1),collapse="")
           if (stringi::stri_enc_isascii(lines)) {
             myencoding<-"ASCII"
@@ -1181,9 +1164,6 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
     n.datasets<-length(datasets)
     # text files
     # detect encoding
-    # temp1<-readr::guess_encoding(i.file, n_max = -1)
-    # temp1<-temp1[order(temp1$confidence,decreasing = T),]
-    # myencoding<-as.character(temp1$encoding[1])
     lines <- paste(readLines(i.file, n = -1),collapse="")
     if (stringi::stri_enc_isascii(lines)) {
       myencoding<-"ASCII"
@@ -1257,7 +1237,6 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
       # detect separator and decimal separator
       datasetread<-readRDS(i.file)
       dataweeks<-as.numeric(row.names(datasetread))
-      #if (is.null(rownames(datasetread))) rownames(datasetread)<-1:NROW(datasetread)
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
     }
   }
@@ -1390,7 +1369,6 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
 # Fix plotly graphs
 
 fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklabels){
-  
   nlabels<-length(i.labels)
   nlists<-length(i.plotly$x$data)
   if (nlists!=2*nlabels) return(i.plotly)
@@ -1409,7 +1387,6 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   # Fix text to showup
   for (i in 1:nlists){
     if (length(grep(i.yname,i.plotly$x$data[[i]]$text))>0){
-      #i.plotly$x$data[[i]]$text
       dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>|<br />")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
       i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br />",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
     }
@@ -1456,24 +1433,6 @@ add.alpha.to.color <- function(col, alpha=1){
 
 # export functions
 
-# export.mydata<-function(i.data, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
-#   if (is.na(i.sheet)) i.sheet<-"data"
-#   if (!is.na(i.rownames)){
-#     i.data$dummy<-row.names(i.data)
-#     i.data<-i.data[c(NCOL(i.data), 1:(NCOL(i.data)-1))]
-#     names(i.data)[1]<-i.rownames
-#   }
-#   if (i.format=="xlsx"){
-#     o.file <- file.selector("xlsx")
-#     if (o.file!="") openxlsx::write.xlsx(i.data, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, 
-#                          asTable = TRUE, file=o.file)
-#   }else if (i.format=="csv"){
-#     o.file <- file.selector("csv")
-#     if (o.file!="") write.table(i.data, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "", 
-#                 file=o.file)
-#   } 
-# }
-
 export.mydata<-function(i.data, i.file, i.sheet=NA, i.rownames=NA, i.format="xlsx"){
   if (is.na(i.sheet)) i.sheet<-"data"
   if (!is.na(i.rownames)){
@@ -1492,31 +1451,6 @@ export.mydata<-function(i.data, i.file, i.sheet=NA, i.rownames=NA, i.format="xls
 # choose.file only works for windows
 # file.choose does not force the extension to be of a given type
 # tkgetSaveFile goes to the background and stays hidden until you focus it with the mouse
-
-# file.selector<-function(i.format){
-#   if (i.format=="xlsx"){
-#     if (.Platform$OS.type=="windows"){
-#       o.file <- choose.files(caption="Save As...",  filters = c("Excel 2007+ files (.xlsx)","*.xlsx"))
-#     }else if (capabilities()["tcltk"]){
-#       o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
-#                                                      defaultextension=paste(".", i.format, sep="")))
-#     }else{
-#       o.file <- file.choose()
-#     }
-#   }else if (i.format=="csv"){
-#     if (.Platform$OS.type=="windows"){
-#       o.file<-choose.files(caption="Save As...",  filters = c("Comma Delimited Files (.csv)","*.csv"))
-#     }else if (capabilities()["tcltk"]){
-#       o.file <- tcltk::tclvalue(tcltk::tkgetSaveFile(initialfile="", title="Save as...", 
-#                                                      defaultextension=paste(".", i.format, sep="")))
-#     }else{
-#       o.file <- file.choose()
-#     }
-#   }else{
-#     o.file<-""
-#   }
-#   o.file
-# }
 
 # Configure a zip extractor in the system, required for openxlsx saving, it is installed with Rtools
 
@@ -1636,7 +1570,6 @@ animation.method<-function(){
     cat("No windows or *nix system detected\n")
     animation.method<-4
   }
-  # animation.method<-3
   return(animation.method)
 }
 
@@ -1650,21 +1583,8 @@ tail.order<-function(i.data, i.n, i.order){
 }
 
 extract.two<-function(i.data, i.order, i.column){
-  # data<-unique(i.data, fromLast=T)
   data<-i.data
   results <- do.call("rbind", by(data, data[i.column], tail.order, i.n=2, i.order=i.order))
   return(results)
 }
-
-# localization
-
-# tr.item <- function(i.text){ # translates text into current language
-#   # cat(language)
-#   # o.text<-tail(translation[translation$original==i.text,input$lang])
-#   o.text<-tail(translation[translation$original==i.text,"translated"])
-#   if (NROW(o.text)!=1) o.text<-i.text
-#   o.text
-# }
-# 
-# tr <- function(x) unlist(lapply(x,tr.item))
 
