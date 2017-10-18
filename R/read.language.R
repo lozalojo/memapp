@@ -4,6 +4,7 @@
 read.language <- function(i.lang){
   libs<-paste0(.libPaths(),"/memapp/shinyapp/lang")
   libs.ok<-utils::head(libs[dir.exists(libs)])
+  langs<-get.languages()
   lfile<-paste0(libs.ok,"/",i.lang,".txt")
   if (file.exists(lfile)){
     lines <- paste(readLines(lfile, n = -1, warn=F),collapse="")
@@ -14,7 +15,7 @@ read.language <- function(i.lang){
     }
     translation<-utils::read.delim(lfile,header=F,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T, encoding = myencoding)
     names(translation)<-c("original","translated")
-    translation$lang<-i.lang
+    translation$lang<-langs$lcidstring[langs$filename==i.lang]
   }else{
     translation<-data.frame()
   }
