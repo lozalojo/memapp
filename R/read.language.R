@@ -2,10 +2,10 @@
 #'
 #' @keywords internal
 read.language <- function(i.lang){
-  libs<-paste0(.libPaths(),"/memapp/shinyapp/lang")
-  libs.ok<-utils::head(libs[dir.exists(libs)])
+  translation.loc<-c("lang","inst/shinyapp/lang",paste0(.libPaths(),"/memapp/shinyapp/lang"))
+  translation.dir<-utils::head(translation.loc[dir.exists(translation.loc)],1)
   langs<-get.languages()
-  lfile<-paste0(libs.ok,"/",i.lang,".txt")
+  lfile<-paste0(translation.dir,"/",i.lang,".txt")
   if (file.exists(lfile)){
     lines <- paste(readLines(lfile, n = -1, warn=F),collapse="")
     if (stringi::stri_enc_isascii(lines)) {

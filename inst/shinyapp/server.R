@@ -2,11 +2,17 @@ options(warn =-1)
 # route messages to output in the server
 if (!interactive()) sink(stderr(), type = "output")
 
+source("helpers.R")
+
 set.rzip()
 animationmethod<-animation.method()
-load("lang/translation.bin")
 
-source("helpers.R")
+translation.loc<-c("lang","inst/shinyapp/lang",paste0(.libPaths(),"/memapp/shinyapp/lang"))
+translation.dir<-utils::head(translation.loc[dir.exists(translation.loc)],1)
+translation.fil<-paste0(translation.dir,"/translation.bin")
+
+load(translation.fil)
+cat(paste0("Translation file loaded from: ",tools::file_path_as_absolute(translation.fil)," (",NROW(translation)," items)"),"\n")
 
 shinyServer(function(input, output, session) {
   
