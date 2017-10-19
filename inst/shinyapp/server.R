@@ -16,6 +16,17 @@ cat(paste0("Translation file loaded from: ",tools::file_path_as_absolute(transla
 
 shinyServer(function(input, output, session) {
   
+  #####################################
+  ### GLOBAL VARIABLES TO BE USED IN THE SERVER
+  #####################################
+  
+  values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, 
+                           optimizegraphs = NULL)
+  
+  #####################################
+  ### SERVER-SIDE FUNCTIONS
+  #####################################
+  
   tr <- function(text){ # translates text into current language
     as.character(sapply(text,function(s){
       o.text<-tail(translation[translation$original==s,input$lang])
@@ -25,8 +36,760 @@ shinyServer(function(input, output, session) {
     }, USE.NAMES=FALSE))
   }
   
-  values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, 
-                           optimizegraphs = NULL)
+  plotSeasons <- function(i.data,
+                          i.pre.epidemic=TRUE,
+                          i.post.epidemic=TRUE,
+                          i.epidemic.thr=NA,
+                          i.intensity=TRUE,
+                          i.intensity.thr=NA,
+                          i.range.x=NA,
+                          i.range.y=NA,
+                          i.tickmarks=30,
+                          i.textMain="",
+                          i.textX="",
+                          i.textY="",
+                          i.colObservedPoints="#000000",
+                          i.colSeasons=NA,
+                          i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                          ...){
+    
+    if(is.null(i.data)){
+      p<-NULL
+    }else{
+      if (any(is.na(i.colSeasons))) i.colSeasons <- colorRampPalette(RColorBrewer::brewer.pal(max(3,min(8,NCOL(i.data))),"Accent"))(NCOL(i.data))
+      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(max(1,NROW(i.data)-2)):NROW(i.data)])))
+      if (i.range.x[1] < 1) i.range.x[1] <- 1
+      if (i.range.x[1] > 52) i.range.x[1] <- 52
+      if (i.range.x[2] < 1) i.range.x[2] <- 1
+      if (i.range.x[2] > 52) i.range.x[2] <- 52
+      if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
+      if (i.range.x[2]==0) i.range.x[2]<-52
+      # Input scheme numbering
+      week.f<-i.range.x[1]
+      week.l<-i.range.x[2]
+      last.week<-52
+      if (week.f>week.l){
+        i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+      }else{
+        i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+      }
+      
+      if (NCOL(i.data)>1){
+        epi<-memmodel(i.data,
+                      i.seasons = NA,
+                      ...)
+        epidata<-epi$data
+        epiindex<-as.data.frame(epi$season.indexes[,,1])
+        rownames(epiindex)<-rownames(i.data)
+        colnames(epiindex)<-colnames(i.data)
+        epithresholds<-epi$epidemic.thresholds
+        intthresholds<-epi$intensity.thresholds
+        i.data<-i.data[names(i.data) %in% names(epi$data)]
+      }else{
+        # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
+        # the timing (which would be extracted with memtiming also)
+        epi<-memmodel(cbind(i.data,i.data),
+                      i.seasons = NA,
+                      ...)
+        epidata<-epi$data[1]
+        epiindex<-as.data.frame(epi$season.indexes[,1,1])
+        rownames(epiindex)<-rownames(i.data)
+        colnames(epiindex)<-colnames(i.data)
+        epithresholds<-NA
+        intthresholds<-NA
+        i.data<-i.data[names(i.data) %in% names(epi$data)]
+      }
+      rm("epi")
+      
+      # To have continuity between seasons I have to inflate original data to the global squeme. That's it: If
+      # original data format is from 40 to 20, the inflated data would be 30 to 29, so that when a season ends
+      # at 29, next one will start at 30 and there would be continuity between both
+      
+      data.full<-i.data
+      data.full$week.lab<-rownames(data.full)
+      data.full<-merge(data.full,i.range.x.values,by="week.lab",all.y=T)
+      data.full<-data.full[order(data.full$week.no),]
+      row.names(data.full)<-data.full$week.lab
+      data.full$week.lab<-NULL
+      data.full$week.no<-NULL
+      
+      data.full.epi<-epidata
+      data.full.epi$week.lab<-rownames(data.full.epi)
+      data.full.epi<-merge(data.full.epi,i.range.x.values,by="week.lab",all.y=T)
+      data.full.epi<-data.full.epi[order(data.full.epi$week.no),]
+      row.names(data.full.epi)<-data.full.epi$week.lab
+      data.full.epi$week.lab<-NULL
+      data.full.epi$week.no<-NULL
+      
+      data.full.missing<-data.full.epi
+      data.full.missing[!(is.na(data.full) & !is.na(data.full.epi))]<-NA
+      
+      if (length(i.epidemic.thr)==2){
+        epidemic<-i.epidemic.thr
+      }else{
+        if (NCOL(i.data)>1){
+          epidemic<-as.numeric(epithresholds)
+        }else{
+          i.pre.epidemic<-F
+          i.post.epidemic<-F
+          epidemic<-NA
+        }
+      }
+      
+      if (length(i.intensity.thr)==3){
+        intensity<-i.intensity.thr
+      }else{
+        if (NCOL(i.data)>1){
+          intensity<-as.numeric(intthresholds)
+        }else{
+          i.intensity<-F
+          intensity<-NA
+        }
+      }
+      labels<-c(names(data.full),
+                paste(names(data.full)," (",tr("missing"),")",sep=""),
+                tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."))
+      haspoints<-c(rep(F,NCOL(data.full)),rep(T,NCOL(data.full)),F,F,F,F,F)
+      haslines<-c(rep(T,NCOL(data.full)),rep(F,NCOL(data.full)),T,T,T,T,T)
+      shapes<-c(rep(NA,NCOL(data.full)),rep(24,NCOL(data.full)),NA,NA,NA,NA,NA)
+      colors<-c(rep(i.colSeasons,2),i.colThresholds)
+      fills<-c(rep(i.colSeasons,2),rep(i.colObservedPoints,5))
+      sizes<-c(rep(2,NCOL(data.full)),rep(2,NCOL(data.full)),1,1,1,1,1)
+      linetypes<-c(rep("solid",NCOL(data.full)),rep("solid",NCOL(data.full)), "dashed", "dashed", "dashed", "dashed","dashed")
+      
+      # Data to plot
+      
+      dgraf<-cbind(data.full.epi,data.full.missing,
+                   epit=epidemic[1],
+                   medt=intensity[1],
+                   higt=intensity[2],
+                   vert=intensity[3],
+                   post=epidemic[2]
+      )
+      names(dgraf)<-labels
+      dgraf$week<-1:NROW(dgraf)
+      
+      dgrafgg<-melt(dgraf,id="week")
+      
+      selected.indicators<-(1:(2*NCOL(data.full)))[apply(dgraf[1:(2*NCOL(data.full))],2,function(x) !all(is.na(x)))]
+      if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+1)
+      if (i.post.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+5)
+      if (i.intensity) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+2:4)
+      selected.indicators<-unique(selected.indicators)
+      selected.indicators<-selected.indicators[order(selected.indicators)]
+      
+      labels.s<-labels[selected.indicators]
+      haspoints.s<-haspoints[selected.indicators]
+      haslines.s<-haslines[selected.indicators]
+      dgrafgg.s<-subset(dgrafgg,variable %in% labels.s)
+      shapes.s<-shapes[selected.indicators]
+      colors.s<-colors[selected.indicators]
+      fills.s<-fills[selected.indicators]
+      sizes.s<-sizes[selected.indicators]
+      linetypes.s<-linetypes[selected.indicators]
+      
+      # Calculate ticks for x
+      axis.x.range.original <- range(i.range.x.values$week.no)
+      axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], i.tickmarks, 1:axis.x.range.original[2],T,F)
+      axis.x.range <- axis.x.otick$range
+      axis.x.ticks<- axis.x.otick$tickmarks
+      axis.x.labels<-i.range.x.values$week.lab[axis.x.otick$tickmarks]
+      
+      # Range y fix
+      if (length(i.range.y)!=2){
+        i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+      }else{
+        i.range.y <- 1.05*i.range.y
+      }
+      axis.y.range.original <- i.range.y
+      axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+      axis.y.range <- axis.y.otick$range
+      axis.y.ticks <- axis.y.otick$tickmarks
+      axis.y.labels <- axis.y.otick$tickmarks
+      
+      gplot<-ggplot(dgrafgg.s) +
+        geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
+        geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+        scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
+        scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
+        scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
+        scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
+        scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+        labs(title = i.textMain, x = i.textX, y = i.textY) +
+        ggthemes::theme_few() +
+        theme(plot.title = element_text(hjust = 0.5))
+      p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
+              weeklabels=i.range.x.values$week.lab, gdata=dgrafgg.s)
+    }
+    p
+  }
+  
+  plotSeries<-function(i.data,
+                       i.plot.timing = T,
+                       i.pre.epidemic=T,
+                       i.post.epidemic=T,
+                       i.epidemic.thr=NA,
+                       i.intensity= T,
+                       i.intensity.thr=NA,
+                       i.range.x=NA,
+                       i.range.y=NA,
+                       i.tickmarks=30,
+                       i.replace.x.cr=F,
+                       i.textMain="",
+                       i.textX="",
+                       i.textY="",
+                       i.colObservedLines="#808080",
+                       i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                       i.colObservedPoints="#000000",
+                       i.colEpidemic=c("#00C000","#800080","#FFB401"),
+                       ...){
+    
+    if(is.null(i.data)){
+      p<-NULL
+    }else{
+      # Range x fix
+      i.cutoff.original<-min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))]))
+      if (i.cutoff.original < 1) i.cutoff.original <- 1
+      if (i.cutoff.original > 52) i.cutoff.original <- 52
+      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(min(as.numeric(rownames(i.data)[1:(min(3,NROW(i.data)))])),max(as.numeric(rownames(i.data)[(max(1,NROW(i.data)-2)):NROW(i.data)])))
+      if (i.range.x[1] < 1) i.range.x[1] <- 1
+      if (i.range.x[1] > 52) i.range.x[1] <- 52
+      if (i.range.x[2] < 1) i.range.x[2] <- 1
+      if (i.range.x[2] > 52) i.range.x[2] <- 52
+      if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
+      if (i.range.x[2]==0) i.range.x[2]<-52
+      week.f<-i.range.x[1]
+      week.l<-i.range.x[2]
+      last.week<-52
+      if (week.f>week.l){
+        i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+      }else{
+        i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+      }
+      
+      if (NCOL(i.data)>1){
+        epi<-memmodel(i.data,
+                      i.seasons = NA,
+                      ...)
+        epidata<-epi$data
+        epiindex<-as.data.frame(epi$season.indexes[,,1])
+        rownames(epiindex)<-rownames(i.data)
+        colnames(epiindex)<-colnames(i.data)
+        epithresholds<-epi$epidemic.thresholds
+        intthresholds<-epi$intensity.thresholds
+        i.data<-i.data[names(i.data) %in% names(epi$data)]
+      }else{
+        # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
+        # the timing (which would be extracted with memtiming also)
+        epi<-memmodel(cbind(i.data,i.data),
+                      i.seasons = NA,
+                      ...)
+        epidata<-epi$data[1]
+        epiindex<-as.data.frame(epi$season.indexes[,1,1])
+        rownames(epiindex)<-rownames(i.data)
+        colnames(epiindex)<-colnames(i.data)
+        epithresholds<-NA
+        intthresholds<-NA
+        i.data<-i.data[names(i.data) %in% names(epi$data)]
+      }
+      rm("epi")
+      
+      # To have continuity between seasons I have to inflate original data to the global squeme. That's it: If
+      # original data format is from 40 to 20, the inflated data would be 30 to 29, so that when a season ends
+      # at 29, next one will start at 30 and there would be continuity between both
+      
+      data.full<-i.data
+      data.full$week.lab<-rownames(data.full)
+      data.full<-merge(data.full,i.range.x.values,by="week.lab",all.y=T)
+      data.full<-data.full[order(data.full$week.no),]
+      row.names(data.full)<-data.full$week.lab
+      data.full$week.lab<-NULL
+      data.full$week.no<-NULL
+      
+      data.full.epi<-epidata
+      data.full.epi$week.lab<-rownames(data.full.epi)
+      data.full.epi<-merge(data.full.epi,i.range.x.values,by="week.lab",all.y=T)
+      data.full.epi<-data.full.epi[order(data.full.epi$week.no),]
+      row.names(data.full.epi)<-data.full.epi$week.lab
+      data.full.epi$week.lab<-NULL
+      data.full.epi$week.no<-NULL
+      
+      data.full.index<-epiindex
+      data.full.index[is.na(epidata)]<-NA
+      data.full.index$week.lab<-rownames(data.full.index)
+      data.full.index<-merge(data.full.index,i.range.x.values,by="week.lab",all.y=T)
+      data.full.index<-data.full.index[order(data.full.index$week.no),]
+      row.names(data.full.index)<-data.full.index$week.lab
+      data.full.index$week.lab<-NULL
+      data.full.index$week.no<-NULL
+      
+      # Data to plot
+      data.orig<-transformdata.back(data.full,i.name="rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x, i.fun=sum)$data
+      data.y<-as.numeric(data.orig[,"rates"])
+      # Data to plot, filling in missing with data imputed by mem (using loess)
+      data.fixed<-transformdata.back(data.full.epi,i.name="rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x, i.fun=sum)$data
+      data.y.fixed<-as.numeric(data.fixed[,"rates"])
+      # Data that have been imputed, to mark them as a circle with a cross
+      data.missing<-data.fixed
+      data.missing[!(is.na(data.orig) & !is.na(data.fixed))]<-NA
+      data.y.missing<-as.numeric(data.missing[,"rates"])
+      # Indexes for pre, epi and post epidemic
+      data.indexes<-transformdata.back(data.full.index,i.name="rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x, i.fun=function(x,...) if (all(is.na(x))) return(NA) else if (any(x==2,...)) return(2) else if (any(x==1,...)) return(1) else return(3))$data
+      data.y.indexes<-as.numeric(data.indexes[,names(data.indexes)=="rates"])
+      
+      if (length(i.epidemic.thr)==2){
+        epidemic<-i.epidemic.thr
+      }else{
+        if (NCOL(i.data)>1){
+          epidemic<-as.numeric(epithresholds)
+        }else{
+          i.pre.epidemic<-F
+          i.post.epidemic<-F
+          epidemic<-NA
+        }
+      }
+      
+      if (length(i.intensity.thr)==3){
+        intensity<-i.intensity.thr
+      }else{
+        if (NCOL(i.data)>1){
+          intensity<-as.numeric(intthresholds)
+        }else{
+          i.intensity<-F
+          intensity<-NA
+        }
+      }
+      
+      labels<-c(tr("Weekly data"),tr("Pre-epidemic"),tr("Pre-epidemic (missing)"),tr("Epidemic"),tr("Epidemic (missing)"),tr("Post-epidemic"),tr("Post-epidemic (missing)"),tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."))
+      haspoints<-c(F,T,T,T,T,T,T,F,F,F,F,F)
+      haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
+      shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
+      colors<-c(rep(i.colObservedLines,7),i.colThresholds)
+      fills<-c(i.colObservedPoints,rep(i.colEpidemic,each=2),rep(i.colObservedPoints,5))
+      sizes<-c(2,2,2,2,2,2,2,1,1,1,1,1)
+      linetypes<-c("solid","blank","blank","blank","blank","blank","blank", "dashed", "dashed", "dashed", "dashed","dashed")
+      
+      dgraf<-data.frame(rates=data.y.fixed,
+                        prer=data.y,
+                        prem=data.y.missing,
+                        epir=data.y,
+                        epim=data.y.missing,
+                        posr=data.y,
+                        posm=data.y.missing,
+                        epit=epidemic[1],
+                        medt=intensity[1],
+                        higt=intensity[2],
+                        vert=intensity[3],
+                        post=epidemic[2]
+      )
+      dgraf$prer[data.y.indexes!=1]<-NA
+      dgraf$prem[data.y.indexes!=1]<-NA
+      dgraf$epir[data.y.indexes!=2]<-NA
+      dgraf$epim[data.y.indexes!=2]<-NA
+      dgraf$posr[data.y.indexes!=3]<-NA
+      dgraf$posm[data.y.indexes!=3]<-NA
+      names(dgraf)<-labels
+      dgraf$week<-1:NROW(dgraf)
+      
+      dgrafgg<-melt(dgraf,id="week")
+      
+      selected.indicators<-1
+      if (i.plot.timing){
+        selected.indicators<-c(selected.indicators,c(2,4,6))
+        if (!all(is.na(dgraf[,3]))) selected.indicators<-c(selected.indicators,3)
+        if (!all(is.na(dgraf[,5]))) selected.indicators<-c(selected.indicators,5)
+        if (!all(is.na(dgraf[,7]))) selected.indicators<-c(selected.indicators,7)
+      }
+      if (i.pre.epidemic) selected.indicators<-c(selected.indicators,8)
+      if (i.post.epidemic) selected.indicators<-c(selected.indicators,12)
+      if (i.intensity) selected.indicators<-c(selected.indicators,9:11)
+      selected.indicators<-unique(selected.indicators)
+      selected.indicators<-selected.indicators[order(selected.indicators)]
+      
+      labels.s<-labels[selected.indicators]
+      haspoints.s<-haspoints[selected.indicators]
+      haslines.s<-haslines[selected.indicators]
+      dgrafgg.s<-subset(dgrafgg,variable %in% labels.s)
+      shapes.s<-shapes[selected.indicators]
+      colors.s<-colors[selected.indicators]
+      fills.s<-fills[selected.indicators]
+      sizes.s<-sizes[selected.indicators]
+      linetypes.s<-linetypes[selected.indicators]
+      
+      # Calculate ticks for x
+      data.x <- 1:NROW(data.orig)
+      axis.x.range <- range(data.x)
+      temp1 <- range(i.range.x.values$week.no)
+      temp2 <- optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2],T,F)
+      axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+      axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+      axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+      axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
+      axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
+      if (i.replace.x.cr) axis.x.labels<-gsub("/","\n",axis.x.labels)
+      rm("temp1","temp2")
+      
+      # Range y fix
+      if (length(i.range.y)!=2){
+        i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+      }else{
+        i.range.y <- 1.05*i.range.y
+      }
+      axis.y.range.original <- i.range.y
+      axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+      axis.y.range <- axis.y.otick$range
+      axis.y.ticks <- axis.y.otick$tickmarks
+      axis.y.labels <- axis.y.otick$tickmarks
+      
+      gplot<-ggplot(dgrafgg.s) +
+        geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
+        geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+        scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
+        scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
+        scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
+        scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
+        scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+        labs(title = i.textMain, x = i.textX, y = i.textY) +
+        ggthemes::theme_few() +
+        theme(plot.title = element_text(hjust = 0.5))
+      p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
+              weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""), gdata=dgrafgg.s)
+    }
+    p
+  }
+  
+  plotSurveillance<-function(i.data,
+                             i.week.report=NA,
+                             i.range.x=NA,
+                             i.range.y=NA,
+                             i.pre.epidemic=T,
+                             i.post.epidemic=T,
+                             i.epidemic=T,
+                             i.start=T,
+                             i.end=T,
+                             i.epidemic.thr = NA,
+                             i.intensity= T,
+                             i.intensity.thr=NA,
+                             i.mean.length=10,
+                             i.force.length=F,
+                             i.force.equal=F,
+                             i.force.start=NA,
+                             i.force.week.53=F,
+                             i.textMain="",
+                             i.textX="",
+                             i.textY="",
+                             i.colObservedLines="#808080",
+                             i.colObservedPoints="#000000",
+                             i.colEpidemicStart="#FF0000",
+                             i.colEpidemicStop="#40FF40",
+                             i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff")){
+    
+    # check parameters
+    if (is.null(i.data)) {
+      p<-NULL
+    }else if (is.null(dim(i.data))){
+      p<-NULL
+    }else if (!(ncol(i.data)==1)){
+      p<-NULL
+    }else{
+      if (i.force.week.53) last.week<-53 else last.week<-52
+      
+      if (!is.numeric(i.range.x) | length(i.range.x)!=2) i.range.x<-c(max(1,as.numeric(rownames(i.data)[1])),min(52,as.numeric(rownames(i.data)[NROW(i.data)])))
+      week.f<-i.range.x[1]
+      week.l<-i.range.x[2]
+      if (week.f < 1) week.f <- 1
+      if (week.f > 52) week.f <- 52
+      if (week.l < 1) week.l <- 1
+      if (week.l > 52) week.l <- 52
+      if (week.f == week.l) week.l <- week.l - 1
+      last.week<-52
+      if (week.f>week.l){
+        i.range.x.values<-data.frame(week.lab=c(week.f:last.week,1:week.l),week.no=1:(last.week-week.f+1+week.l))
+      }else{
+        i.range.x.values<-data.frame(week.lab=week.f:week.l,week.no=1:(week.l-week.f+1))
+      }
+      
+      if (length(i.epidemic.thr)!=2){
+        i.pre.epidemic<-F
+        i.post.epidemic<-F
+      }
+      
+      if (length(i.intensity.thr)!=3) i.intensity<-F
+      
+      if (!is.numeric(i.epidemic.thr) | length(i.epidemic.thr)==1) i.epidemic.thr<-rep(NA,2)
+      if (!is.numeric(i.intensity.thr) | length(i.intensity.thr)==1) i.intensity.thr<-rep(NA,3)
+      
+      # Esquema de las semanas
+      
+      esquema.temporadas.1<-last.week
+      if (i.range.x[1]==i.range.x[2]) i.range.x[2]<-i.range.x[1]-1
+      if (i.range.x[1]<i.range.x[2]){
+        esquema.temporadas.2<-max(1,i.range.x[1])
+        esquema.temporadas.3<-min(esquema.temporadas.1,i.range.x[2])
+        esquema.temporadas.4<-c(esquema.temporadas.2:esquema.temporadas.3)
+      }else{
+        esquema.temporadas.2<-min(esquema.temporadas.1,i.range.x[1])
+        esquema.temporadas.3<-max(1,i.range.x[2])
+        esquema.temporadas.4<-c(esquema.temporadas.2:esquema.temporadas.1,1:esquema.temporadas.3)
+      }
+      semanas<-length(esquema.temporadas.4)
+      esquema.semanas<-data.frame(numero.semana=1:semanas,nombre.semana=esquema.temporadas.4)
+      
+      # Acomodamos i.data al esquema
+      current.season<-i.data
+      names(current.season)<-"rates"
+      current.season$nombre.semana<-rownames(i.data)
+      rownames(current.season)<-NULL
+      current.season<-merge(esquema.semanas,current.season,by="nombre.semana",all.x=T)
+      current.season<-current.season[order(current.season$numero.semana),]
+      rownames(current.season)<-NULL
+      
+      # limitamos a la semana del informe (i.week.report)
+      if (!is.na(i.week.report) & any(i.week.report==as.numeric(esquema.semanas$nombre.semana))){
+        semana.report<-((1:semanas)[i.week.report==as.numeric(esquema.semanas$nombre.semana)])[1]
+        if (!is.na(semana.report) & semana.report<semanas) current.season$rates[(semana.report+1):semanas]<-NA
+      }else{
+        if (all(is.na(current.season$rates))) semana.report<-semanas else semana.report<-max((1:semanas)[!is.na(current.season$rates)],na.rm=T)
+      }
+      
+      # Preparacion de datos necesarios
+      umbral.pre<-as.numeric(i.epidemic.thr[1])
+      if (i.force.equal) umbral.pos<-as.numeric(i.epidemic.thr[1]) else umbral.pos<-as.numeric(i.epidemic.thr[2])
+      duracion.media<-i.mean.length
+      
+      # Si el inicio forzado de la epidemia es posterior a la semana del informe, quitamos
+      if (!is.na(i.force.start)) semana.inicio.forzado<-((1:semanas)[i.force.start==as.numeric(esquema.semanas$nombre.semana)])[1] else semana.inicio.forzado<-NA
+      if (any(current.season$rates>umbral.pre,na.rm=T)) semana.inicio.real<-min((1:semanas)[current.season$rates>umbral.pre],na.rm=T) else semana.inicio.real<-NA
+      if (!is.na(semana.inicio.forzado)){
+        if (semana.inicio.forzado>semana.report) semana.inicio.forzado<-NA
+      }
+      if (!is.na(semana.inicio.forzado) & !is.na(semana.inicio.real)){
+        if (semana.inicio.forzado==semana.inicio.real) semana.inicio.forzado<-NA
+      }
+      if (!is.na(semana.inicio.forzado)){
+        semana.inicio<-semana.inicio.forzado
+      }else{
+        semana.inicio<-semana.inicio.real
+      }
+      
+      week.peak<-which.max(current.season$rates)
+      
+      if (!is.na(semana.inicio)){
+        if (i.force.length){
+          semana.fin<-semana.inicio+i.mean.length
+          if (semana.fin>semanas) semana.fin<-NA
+        }else{
+          punto.de.busqueda<-max(semana.inicio,semana.inicio.real,week.peak,na.rm=T)
+          semana.fin.1<-(1:semanas)[current.season$rates<umbral.pos & punto.de.busqueda<(1:semanas)]
+          if (any(semana.fin.1,na.rm=T)) semana.fin<-min(semana.fin.1,na.rm=T) else semana.fin<-NA
+        }
+      }else{
+        semana.fin<-NA
+      }
+      if (!i.epidemic){
+        semana.inicio<-NA
+        semana.fin<-NA
+      }
+      limites.niveles<-as.vector(i.intensity.thr)
+      limites.niveles[limites.niveles<0]<-0
+      
+      # Datos para el grafico
+      if (is.na(semana.inicio)){
+        # No iniciada
+        pre.umbrales.1<-rep(umbral.pre,semana.report+1)
+        pre.umbrales.2<-rep(NA,semanas)
+        post.umbrales.1<-rep(NA,semana.report+1)
+        post.umbrales.2<-rep(NA,semanas)
+        intensidades.1<-array(dim=c(semanas,3))
+        intensidades.2<-array(dim=c(semanas,3))
+      }else{
+        if (is.na(semana.fin)){
+          # Iniciada y no finalizada
+          pre.umbrales.1<-rep(umbral.pre,semana.inicio-1)
+          pre.umbrales.2<-rep(NA,max(duracion.media,semana.report-semana.inicio+1))
+          post.umbrales.1<-rep(NA,semana.inicio-1)
+          post.umbrales.2<-rep(NA,max(duracion.media,semana.report-semana.inicio+1))
+          if (i.intensity){
+            intensidades.1<-array(dim=c(semana.inicio-1,3))
+            intensidades.2<-matrix(rep(limites.niveles,max(duracion.media,semana.report-semana.inicio+1)),ncol=3,byrow=T)
+          }else{
+            intensidades.1<-array(dim=c(semana.inicio-1,3))
+            intensidades.2<-array(dim=c(max(duracion.media,semana.report-semana.inicio+1),3))
+          }
+        }else{
+          # Iniciada y finalizada
+          pre.umbrales.1<-rep(umbral.pre,semana.inicio-1)
+          pre.umbrales.2<-rep(NA,semana.fin-semana.inicio)
+          post.umbrales.1<-rep(NA,semana.inicio-1)
+          post.umbrales.2<-rep(NA,semana.fin-semana.inicio)
+          if (i.intensity){
+            intensidades.1<-array(dim=c(semana.inicio-1,3))
+            intensidades.2<-matrix(rep(limites.niveles,semana.fin-semana.inicio),ncol=3,byrow=T)
+          }else{
+            intensidades.1<-array(dim=c(semana.inicio-1,3))
+            intensidades.2<-array(dim=c(semana.fin-semana.inicio,3))
+          }
+        }
+      }
+      if (i.post.epidemic){
+        pre.umbrales.3<-rep(NA,semanas)
+        post.umbrales.3<-rep(umbral.pos,semanas)
+      }else{
+        pre.umbrales.3<-rep(NA,semanas)
+        post.umbrales.3<-rep(NA,semanas)
+      }
+      pre.umbrales<-c(pre.umbrales.1,pre.umbrales.2,pre.umbrales.3)[1:semanas]
+      post.umbrales<-c(post.umbrales.1,post.umbrales.2,post.umbrales.3)[1:semanas]
+      intensidades.3<-array(dim=c(semanas,3))
+      intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
+      
+      labels<-c(tr("Weekly data"),tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."),tr("Start"),tr("End"))
+      haspoints<-c(T,F,F,F,F,F,T,T)
+      haslines<-c(T,T,T,T,T,T,F,F)
+      shapes<-c(21,NA,NA,NA,NA,NA,21,21)
+      colors<-c(i.colObservedLines,i.colThresholds,rep(i.colObservedLines,2))
+      fills<-c(rep(i.colObservedPoints,6),i.colEpidemicStart,i.colEpidemicStop)
+      sizes<-c(3,1,1,1,1,1,4,4)
+      linetypes<-c("solid", "dashed", "dashed", "dashed", "dashed","dashed","blank","blank")
+      
+      dgraf<-as.data.frame(cbind(current.season$rates,pre.umbrales,intensidades,post.umbrales))
+      dgraf$start<-NA
+      dgraf$end<-NA
+      if (!is.na(semana.inicio)) dgraf$start[semana.inicio]<-current.season$rates[semana.inicio]
+      if (!is.na(semana.fin)) dgraf$end[semana.fin]<-current.season$rates[semana.fin]
+      names(dgraf)<-labels
+      dgraf$week<-1:semanas
+      
+      dgrafgg<-melt(dgraf,id="week")
+      
+      selected.indicators<-1
+      if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2)
+      if (i.post.epidemic) selected.indicators<-c(selected.indicators,6)
+      if (i.intensity) selected.indicators<-c(selected.indicators,3:5)
+      if (i.start) selected.indicators<-c(selected.indicators,7)
+      if (i.end) selected.indicators<-c(selected.indicators,8)
+      selected.indicators<-unique(selected.indicators)
+      selected.indicators<-selected.indicators[order(selected.indicators)]
+      
+      labels.s<-labels[selected.indicators]
+      haspoints.s<-haspoints[selected.indicators]
+      haslines.s<-haslines[selected.indicators]
+      dgrafgg.s<-subset(dgrafgg,variable %in% labels.s)
+      shapes.s<-shapes[selected.indicators]
+      colors.s<-colors[selected.indicators]
+      fills.s<-fills[selected.indicators]
+      sizes.s<-sizes[selected.indicators]
+      linetypes.s<-linetypes[selected.indicators]
+      
+      # Axis format for all the graphs
+      # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
+      
+      axis.x.range.original <- c(1,semanas)
+      axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2],T,T)
+      axis.x.range <- axis.x.otick$range
+      axis.x.values <- as.numeric(current.season$numero.semana)
+      axis.x.ticks <- axis.x.otick$tickmarks
+      axis.x.labels <- (current.season$nombre.semana)[axis.x.otick$tickmarks]
+      # Same, for 10 tickmarks in the y-axis
+      # Range y fix
+      if (length(i.range.y)!=2){
+        i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+      }else{
+        i.range.y <- 1.05*i.range.y
+      }
+      axis.y.range.original <- i.range.y
+      axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+      axis.y.range <- axis.y.otick$range
+      axis.y.ticks <- axis.y.otick$tickmarks
+      axis.y.labels <- axis.y.otick$tickmarks
+      
+      gplot<-ggplot(dgrafgg.s) +
+        geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=1.2) +
+        geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+        scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
+        scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
+        scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
+        scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
+        scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+        labs(title = i.textMain, x = i.textX, y = i.textY) +
+        ggthemes::theme_few() +
+        theme(plot.title = element_text(hjust = 0.5))
+      p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
+              weeklabels=current.season$nombre.semana, gdata=dgrafgg.s)
+    }
+    p
+  }
+  
+  plotGeneric <- function(i.data,
+                          i.range.y,
+                          i.range.y.labels=NA,
+                          i.shapes,
+                          i.colors,
+                          i.fills,
+                          i.sizes,
+                          i.linetypes,
+                          i.linesize,
+                          i.replace.x.cr=F,
+                          i.textMain="",
+                          i.textX="",
+                          i.textY=""){
+    if(is.null(i.data)){
+      p<-NULL
+    }else{
+      dgraf<-i.data
+      labels<-names(dgraf)
+      dgraf$num<-1:NROW(dgraf)
+      dgrafgg<-melt(dgraf,id="num")
+      
+      # Calculate ticks for x
+      axis.x.range <- c(1,NROW(dgraf))
+      axis.x.ticks<- 1:NROW(dgraf)
+      axis.x.labels<-rownames(dgraf)
+      if (i.replace.x.cr) axis.x.labels<-gsub("/","\n", axis.x.labels)
+      # Range y fix
+      if (length(i.range.y.labels)<2){
+        if (length(i.range.y)!=2){
+          i.range.y <- c(0,1.05*max(dgrafgg$value,na.rm=T))
+        }else{
+          i.range.y <- 1.05*i.range.y
+        }
+        axis.y.range.original <- i.range.y
+        axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
+        axis.y.range <- axis.y.otick$range
+        axis.y.ticks <- axis.y.otick$tickmarks
+        axis.y.labels <- axis.y.otick$tickmarks
+      }else{
+        axis.y.range.original <- c(1,length(i.range.y.labels))
+        axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10,
+                                          i.valid.ticks=1:(length(i.range.y.labels)),  i.include.min=T, i.include.max=T)
+        axis.y.range <- axis.y.otick$range
+        axis.y.ticks <- axis.y.otick$tickmarks
+        axis.y.labels <- i.range.y.labels[axis.y.otick$tickmarks]
+      }
+      
+      gplot<-ggplot(dgrafgg) +
+        geom_line(aes(x=num,y=value,group=variable, color=variable, linetype=variable),size=i.linesize) +
+        geom_point(aes(x=num,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
+        scale_shape_manual(values=i.shapes, name=tr("Legend"), labels=labels) +
+        scale_color_manual(values=i.colors, name=tr("Legend"), labels=labels) +
+        scale_fill_manual(values=i.fills, name=tr("Legend"), labels=labels) +
+        scale_size_manual(values=i.sizes, name=tr("Legend"), labels=labels) +
+        scale_linetype_manual(values=i.linetypes, name=tr("Legend"), labels=labels) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+        labs(title = i.textMain, x = i.textX, y = i.textY) +
+        ggthemes::theme_few() +
+        theme(plot.title = element_text(hjust = 0.5))
+      p<-list(plot=gplot, gdata=dgrafgg)
+    }
+    p
+  }
   
   #####################################
   ### REACTIVE FUNCTIONS
@@ -364,6 +1127,10 @@ shinyServer(function(input, output, session) {
     return(seasons)
   })
   
+  #####################################
+  ### OBSERVERS
+  #####################################
+
   observeEvent(read_data(), {
     cat("observe/read_data> begin\n")
     readdata <- read_data()
@@ -3632,7 +4399,9 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # UI structure
+  #####################################
+  ### UI STRUCTURE
+  #####################################
   
   output$uifile = renderUI({
     popify(
@@ -3913,6 +4682,10 @@ shinyServer(function(input, output, session) {
     , title = tr("Language"), content = tr("Change the language of the application"), placement = "left", trigger = "hover", options = list(container = "body"))
   })
 
+  #####################################
+  ### ENDING
+  #####################################
+  
   session$onSessionEnded(function() {
     stopApp()
   })
