@@ -36,9 +36,10 @@ Epidemic;Epidemia
 Epidemic %;Porc. epidémico
 Epidemic (missing);Epidemia (ausentes)
 Epidemic end;Fin epidemia
-Epidemic percentage;Porc. epidemico
-Epidemic percentage (lower limit);Porc. epidemico (límite inf.)
-Epidemic percentage (upper limit);Porc. epidemico (límite sup.)
+Epidemic percentage;Porcentaje epidémico
+Epidemic perc.;Porc. epidemico
+Epidemic perc. (lower limit);Porc. epidemico (límite inf.)
+Epidemic perc. (upper limit);Porc. epidemico (límite sup.)
 Epidemic start;Inicio epidemia
 Epidemic thr.;Umb. epidémico
 Epidemic threshold;Umbral epidémico
@@ -53,7 +54,8 @@ Force epidemic start;Forzar inicio epidemia
 From;Desde
 Geometric mean and mean confidence interval;Media geométrica e IC de la media
 Geometric mean and point confidence interval;Media geométrica e IC de los datos
-Global goodness indicators;Indicadores de bondad globales
+Global goodness summary;Resumen bondad global
+Global goodness indicators;Indicadores bondad globales
 Global goodness intensity;Intensidad bondad global
 Goodness;Bondad
 Goodness & optimize;Bondad y optimización
@@ -65,6 +67,7 @@ High level;Nivel alto
 High lvl;Nvl alto
 High thr.;Umb. alto
 High threshold;Umbral alto
+Indicator;Indicador
 Indicators;Indicadores
 Intensity;Intensidad
 Intensity thresholds/levels;Umbrales/niveles de intensidad
@@ -98,8 +101,9 @@ missing;ausentes
 Mixed;Mixto
 Model;Modelizar
 Model data;Modelo
-Model goodness indicators;Indicadores de bondad del modelo
-Model goodness intensity;Intensidad bondad del modelo
+Model goodness summary;Resumen bondad modelo
+Model goodness indicators;Indicadores bondad modelo
+Model goodness intensity;Intensidad bondad modelo
 Moving epidemics;Epidemias móviles
 Multiplicative;Multiplicativo
 Negative likehood;Verosimilitud -
@@ -117,6 +121,7 @@ Optimum parameter;Parámetro óptimo
 Original method;Original
 Other;Otros
 Other CI.;Otros IC
+Parameter;Parámetro
 Parameter range;Rango parámetro
 Percent agreement;Porcentaje de acuerdo
 Positive likehood;Verosimilitud +
@@ -235,3 +240,15 @@ Check data series, timing and describe the data;Comprobar y describir los datos,
 Summary, graphs, goodness and optimization of the MEM model;Resumen, gráficos, bondad y optimización del modelo MEM
 Surveillance tools;Herramientas para la vigilancia
 Visualize different sets of data with a MEM model;Visualice diferentes conjuntos de datos con distintos modelos
+Peak;Máximo
+Peak week;Semana del máximo
+Description;Descripción
+Levels palette;Paleta niveles
+Palette used to generate color for intensity levels;Paleta que se usa para generar los colores de los niveles de intensidad
+MEM needs at least two seasons;MEM necesita al menos dos temporadas
+Manual;Manual
+Automatic;Automática
+Start & end;Inicio y fin
+Clicks;Clics
+Results;Resultados
+Value;Valor

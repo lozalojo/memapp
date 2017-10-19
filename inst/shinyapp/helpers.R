@@ -8,6 +8,7 @@ generate_palette <- function(i.number.series=NA,
                              i.colEpidemicStart=NULL,
                              i.colEpidemicStop=NULL,
                              i.colThresholds=NULL,
+                             i.colLevels=NULL,
                              i.colSeasons=NULL,
                              i.colEpidemic=NULL){
   params.default<-list(colObservedLines="#808080",
@@ -15,6 +16,7 @@ generate_palette <- function(i.number.series=NA,
                        colEpidemicStart="#FF0000",
                        colEpidemicStop="#40FF40",
                        colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                       colLevels=c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c"),
                        colSeasons="Accent",
                        colEpidemic=c("#00C000","#800080","#FFB401")
   )
@@ -24,6 +26,7 @@ generate_palette <- function(i.number.series=NA,
   if (is.null(i.colEpidemicStart)) i.colEpidemicStart<-"default" else if (is.na(i.colEpidemicStart)) i.colEpidemicStart<-"default"
   if (is.null(i.colEpidemicStop)) i.colEpidemicStop<-"default" else if (is.na(i.colEpidemicStop)) i.colEpidemicStop<-"default"
   if (is.null(i.colThresholds)) i.colThresholds<-"default" else if (is.na(i.colThresholds)) i.colThresholds<-"default"
+  if (is.null(i.colLevels)) i.colLevels<-"default" else if (is.na(i.colLevels)) i.colLevels<-"default"
   if (is.null(i.colSeasons)) i.colSeasons<-"default" else if (is.na(i.colSeasons)) i.colSeasons<-"default"
   if (is.null(i.colEpidemic)) i.colEpidemic<-"default" else if (is.na(i.colEpidemic)) i.colEpidemic<-"default"
   # First four are simple colors
@@ -38,6 +41,13 @@ generate_palette <- function(i.number.series=NA,
     i.colThresholds<-RColorBrewer::brewer.pal(7,i.colThresholds)[2:6]
   }else{
     i.colThresholds<-params.default$colThresholds
+  }
+  if(i.colLevels %in% colors()){
+    i.colLevels<-rep(rgb(t(col2rgb(i.colLevels))/255),5)
+  }else if(i.colLevels %in% rownames(brewer.pal.info)){
+    i.colLevels<-RColorBrewer::brewer.pal(7,i.colLevels)[2:6]
+  }else{
+    i.colLevels<-params.default$colLevels
   }
   if(i.colSeasons %in% colors()){
     i.colSeasons<-rep(rgb(t(col2rgb(i.colSeasons))/255),i.number.series)
@@ -56,7 +66,7 @@ generate_palette <- function(i.number.series=NA,
   # Last one is a number between 0 and 1
   colors.final<-list(colObservedLines=i.colObservedLines, colObservedPoints=i.colObservedPoints,
                      colEpidemicStart=i.colEpidemicStart, colEpidemicStop=i.colEpidemicStop,
-                     colThresholds=i.colThresholds, colSeasons=i.colSeasons,colEpidemic=i.colEpidemic
+                     colThresholds=i.colThresholds, colLevels=i.colLevels, colSeasons=i.colSeasons,colEpidemic=i.colEpidemic
   )
   colors.final
 }
@@ -683,11 +693,15 @@ export.mydata<-function(i.data, i.file, i.sheet=NA, i.rownames=NA, i.format="xls
     i.data<-i.data[c(NCOL(i.data), 1:(NCOL(i.data)-1))]
     names(i.data)[1]<-i.rownames
   }
-  if (i.format=="xlsx"){
-    if (i.file!="") openxlsx::write.xlsx(i.data, file=i.file, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, asTable = TRUE)
-  }else if (i.format=="csv"){
-    if (i.file!="") write.table(i.data, file=i.file, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "")
-  } 
+  if (i.file!=""){
+    if (i.format=="xlsx"){
+      openxlsx::write.xlsx(i.data, file=i.file, rowNames = FALSE, colNames = TRUE, keepNA=FALSE, sheetName=i.sheet, asTable = TRUE)
+      cat("export> Exported to ",tools::file_path_as_absolute(i.file)," (",i.sheet,")\n")
+    }else if (i.format=="csv"){
+      write.table(i.data, file=i.file, row.names = FALSE, col.names = TRUE, sep=",", dec=".", na = "")
+      cat("export> Exported to ",tools::file_path_as_absolute(i.file),"\n")
+    }     
+  }
 }
 
 # impossible to find a solution to the input file problem for all the OS at the same time

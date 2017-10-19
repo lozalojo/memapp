@@ -647,7 +647,7 @@ shinyServer(function(input, output, session) {
       intensidades.3<-array(dim=c(semanas,3))
       intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
       
-      labels<-trloc(c("Weekly data","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End"))
+      labels<-trloc(c(names(i.data),"Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End"))
       haspoints<-c(T,F,F,F,F,F,T,T)
       haslines<-c(T,T,T,T,T,T,F,F)
       shapes<-c(21,NA,NA,NA,NA,NA,21,21)
@@ -2001,7 +2001,7 @@ shinyServer(function(input, output, session) {
     }else{
       datashow<-format(round(dataevolution$evolution.data, 2), nsmall=2)
       if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
-      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic percentage (lower limit)", "Epidemic percentage", "Epidemic percentage (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
     }
     datashow
   },
@@ -2013,7 +2013,7 @@ shinyServer(function(input, output, session) {
       dataevolution <- data_evolution()
       datashow<-dataevolution$evolution.data
       if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
-      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic percentage (lower limit)", "Epidemic percentage", "Epidemic percentage (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
       if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
                                                 i.sheet=trloc("Evolution"), i.rownames=trloc("Season"), i.format="xlsx")
       
@@ -2027,7 +2027,7 @@ shinyServer(function(input, output, session) {
       dataevolution <- data_evolution()
       datashow<-dataevolution$evolution.data
       if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
-      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic percentage (lower limit)", "Epidemic percentage", "Epidemic percentage (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
       if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
                                                 i.sheet=trloc("Evolution"), i.rownames=trloc("Season"), i.format="csv")
     },
@@ -2268,7 +2268,7 @@ shinyServer(function(input, output, session) {
       datashow<-NULL
     }else{
       datashow<-format(round(datastability$stability.data, 2), nsmall=2)
-      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
+      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic perc. (lower limit)","Epidemic perc.","Epidemic perc. (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
     }
     datashow
   },
@@ -2279,7 +2279,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datastability <- data_stability()
       datashow<-datastability$stability.data
-      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
+      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic perc. (lower limit)","Epidemic perc.","Epidemic perc. (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
       if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file,
                                                 i.sheet=trloc("Stability"), i.rownames=trloc("Seasons"), i.format="xlsx")
     },
@@ -2291,7 +2291,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datastability <- data_stability()
       datashow<-datastability$stability.data
-      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
+      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic perc. (lower limit)","Epidemic perc.","Epidemic perc. (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
       if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file,
                                                 i.sheet=trloc("Stability"), i.rownames=trloc("Seasons"), i.format="csv")
     },
@@ -2393,7 +2393,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Global goodness indicators"), i.rownames=trloc("Season"), i.format="xlsx")
+                      i.sheet=trloc("Global goodness summary"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2409,7 +2409,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Global goodness indicators"), i.rownames=trloc("Season"), i.format="csv")
+                      i.sheet=trloc("Global goodness summary"), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -2449,26 +2449,24 @@ shinyServer(function(input, output, session) {
     if(!is.null(good)){
       temp1 <- good$peaks.data
       temp1$Level<-as.character(temp1$Level)
-      thr.c<-generate_palette(i.colThresholds=input$colThresholds)$colThresholds
+      temp1$Description<-trloc(temp1$Description)
+      currentpalette<-generate_palette(i.colThresholds=input$colThresholds, i.colLevels=input$colLevels)
+      thr.c<-currentpalette$colThresholds
       lvl.n<-as.character(c(1:5))
-      lvl.t<-c("Baseline","Low","Medium","High","Very high")
-      lvl.c<-c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c")
+      lvl.t<-trloc(c("Baseline","Low","Medium","High","Very high"))
+      lvl.c<-currentpalette$colLevels
       peaks.data<-formattable::formattable(temp1, list(
-        Level = formattable::formatter("span",
-                                       style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
-        Description = formattable::formatter("span",
-                                             style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
-        "Epidemic threshold"=formattable::formatter("span",
-                                                    style = formattable::style(color = thr.c[1], font.weight = "bold")),
-        "Medium threshold"=formattable::formatter("span",
-                                                  style = formattable::style(color = thr.c[2], font.weight = "bold")),
-        "High threshold"=formattable::formatter("span",
-                                                style = formattable::style(color = thr.c[3], font.weight = "bold")),
-        "Very high threshold"=formattable::formatter("span",
-                                                     style = formattable::style(color = thr.c[4], font.weight = "bold"))
+        "Epidemic threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[1], font.weight = "bold")),
+        "Medium threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[2], font.weight = "bold")),
+        "High threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[3], font.weight = "bold")),
+        "Very high threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[4], font.weight = "bold")),
+        "Level" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+        "Description" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold"))
       ), digits = 2, format = "f")
+      names(peaks.data)<-trloc(c("Peak","Peak week","Epidemic threshold","Medium threshold","High threshold","Very high threshold","Level","Description"))
+      names(attr(peaks.data, "formattable")$format[[1]])<-trloc(c("Epidemic threshold","Medium threshold","High threshold","Very high threshold","Level","Description"))
     }else{
-      temp1<-data.frame(Error="Number of columns must be greater than 2")
+      temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"))
       peaks.data<-formattable::formattable(temp1)
     }
     peaks.data
@@ -2481,6 +2479,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
+        temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet=trloc("Global goodness intensity"), i.rownames=trloc("Season"), i.format="xlsx")
@@ -2496,6 +2495,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
+        temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet=trloc("Global goodness intensity"), i.rownames=trloc("Season"), i.format="csv")
@@ -2771,24 +2771,9 @@ shinyServer(function(input, output, session) {
   output$tbmMemOutput <- renderPrint({
     datamodel<-data_model()
     if(!is.null(datamodel)){
-      nam.t<-datamodel
-      nam.ttt <- rbind(c("Epidemic threshold:","           Pre Post"),
-                       c("",paste0("Threshold ",
-                                   format(round(nam.t$"pre.post.intervals"[1,3], 2), nsmall=2)," ",
-                                   format(round(nam.t$"pre.post.intervals"[2,3], 2), nsmall=2))),
-                       c("", ""),
-                       c("Intensity thresholds:",""),
-                       c("                  Threshold", ""),
-                       c(paste0("Medium (40%)          ", format(round(nam.t$"epi.intervals"[1,4], 2), nsmall=2)), ""),
-                       c(paste0("High (90%)            ", format(round(nam.t$"epi.intervals"[2,4], 2), nsmall=2)), ""),
-                       c(paste0("Very high (97.5%)     ", format(round(nam.t$"epi.intervals"[3,4], 2), nsmall=2)), ""))
-      
-      nam.ttt <- format(nam.ttt, justify = "left")
-      nam.ttt <- as.data.frame(nam.ttt)
-      names(nam.ttt) <- NULL
       summary(datamodel)
     }else{
-      war.text <- as.data.frame("MEM needs at least two seasons.")
+      war.text <- as.data.frame(error=trloc("MEM needs at least two seasons"))
       names(war.text) <- NULL
       print(noquote(war.text), row.names = FALSE)}
   })
@@ -2815,7 +2800,7 @@ shinyServer(function(input, output, session) {
       datfile.plot<-data.frame(datamodel$moving.epidemics,row.names = rownames(datamodel$param.data))
       names(datfile.plot)<-names(datamodel$param.data)
       datfile.plot$dummy<-datamodel$typ.curve[,2]
-      names(datfile.plot)[names(datfile.plot)=="dummy"]<-trloc("Average")
+      names(datfile.plot)[names(datfile.plot)=="dummy"]<-trloc("Average curve")
       colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -2884,7 +2869,8 @@ shinyServer(function(input, output, session) {
     if(is.null(datamodel)){
       zfix<-NULL
     }else{
-      datfile.plot<-data.frame(average=datamodel$typ.curve[,2],row.names = rownames(datamodel$param.data))
+      datfile.plot<-data.frame(Average=datamodel$typ.curve[,2],row.names = rownames(datamodel$param.data))
+      names(datfile.plot)<-"Average curve"
       e.thr<-datamodel$epidemic.thresholds
       i.thr<-datamodel$intensity.thresholds
       colors.palette<-generate_palette(i.number.series=NA,
@@ -3058,7 +3044,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Model goodness indicators"), i.rownames=trloc("Season"), i.format="xlsx")
+                      i.sheet=trloc("Model goodness summary"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3074,7 +3060,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Model goodness indicators"), i.rownames=trloc("Season"), i.format="csv")
+                      i.sheet=trloc("Model goodness summary"), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -3131,26 +3117,24 @@ shinyServer(function(input, output, session) {
     if(!is.null(good)){
       temp1 <- good$peaks.data
       temp1$Level<-as.character(temp1$Level)
-      thr.c<-generate_palette(i.colThresholds=input$colThresholds)$colThresholds
+      temp1$Description<-trloc(temp1$Description)
+      currentpalette<-generate_palette(i.colThresholds=input$colThresholds, i.colLevels=input$colLevels)
+      thr.c<-currentpalette$colThresholds
       lvl.n<-as.character(c(1:5))
-      lvl.t<-c("Baseline","Low","Medium","High","Very high")
-      lvl.c<-c("#c6dbef","#9ecae1","#6baed6","#3182bd","#08519c")
+      lvl.t<-trloc(c("Baseline","Low","Medium","High","Very high"))
+      lvl.c<-currentpalette$colLevels
       peaks.data<-formattable::formattable(temp1, list(
-        Level = formattable::formatter("span",
-                                       style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
-        Description = formattable::formatter("span",
-                                             style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
-        "Epidemic threshold"=formattable::formatter("span",
-                                                    style = formattable::style(color = thr.c[1], font.weight = "bold")),
-        "Medium threshold"=formattable::formatter("span",
-                                                  style = formattable::style(color = thr.c[2], font.weight = "bold")),
-        "High threshold"=formattable::formatter("span",
-                                                style = formattable::style(color = thr.c[3], font.weight = "bold")),
-        "Very high threshold"=formattable::formatter("span",
-                                                     style = formattable::style(color = thr.c[4], font.weight = "bold"))
+        "Epidemic threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[1], font.weight = "bold")),
+        "Medium threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[2], font.weight = "bold")),
+        "High threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[3], font.weight = "bold")),
+        "Very high threshold"=formattable::formatter("span", style = formattable::style(color = thr.c[4], font.weight = "bold")),
+        "Level" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.n[1], lvl.c[1] , ifelse(x==lvl.n[2], lvl.c[2], ifelse(x==lvl.n[3], lvl.c[3], ifelse(x==lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
+        "Description" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x),"grey",ifelse(x==lvl.t[1], lvl.c[1] , ifelse(x==lvl.t[2], lvl.c[2], ifelse(x==lvl.t[3], lvl.c[3], ifelse(x==lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold"))
       ), digits = 2, format = "f")
+      names(peaks.data)<-trloc(c("Peak","Peak week","Epidemic threshold","Medium threshold","High threshold","Very high threshold","Level","Description"))
+      names(attr(peaks.data, "formattable")$format[[1]])<-trloc(c("Epidemic threshold","Medium threshold","High threshold","Very high threshold","Level","Description"))
     }else{
-      temp1<-data.frame(Error="Number of columns must be greater than 2")
+      temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"))
       peaks.data<-formattable::formattable(temp1)
     }
     peaks.data
@@ -3163,14 +3147,14 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
+        temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet=trloc("Model goodness intensity"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  )
-  
+  )  
   output$tbmGoodnessDetailed_c <- downloadHandler(
     filename = function() { paste(input$dataset, '.csv', sep='') },
     content = function(file) {
@@ -3178,6 +3162,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
+        temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
                       i.sheet=trloc("Model goodness intensity"), i.rownames=trloc("Season"), i.format="csv")
@@ -3192,8 +3177,8 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel("Manual", uiOutput("tbmOptimizeM")),
-                  tabPanel("Automatic", uiOutput("tbmOptimizeA")))
+      tabsetPanel(tabPanel(trloc("Manual"), uiOutput("tbmOptimizeM")),
+                  tabPanel(trloc("Automatic"), uiOutput("tbmOptimizeA")))
     }
   })
   
@@ -3217,9 +3202,9 @@ shinyServer(function(input, output, session) {
                     call("tabPanel",s,call("uiOutput", outputId=paste0("tbmOptimizeM_",as.character(s))))
                   }),
                   list(
-                    tabPanel("Start & end",tableOutput("tbmOptimizeMstartend")),
-                    tabPanel("Clicks",tableOutput("tbmOptimizeMclicks")),
-                    tabPanel("Results",uiOutput("tbmOptimizeMresults"))
+                    tabPanel(trloc("Start & end"),tableOutput("tbmOptimizeMstartend")),
+                    tabPanel(trloc("Clicks"),tableOutput("tbmOptimizeMclicks")),
+                    tabPanel(trloc("Results"),uiOutput("tbmOptimizeMresults"))
                   )
                 )
         )
@@ -3614,8 +3599,10 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
         "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
+      names(roca.table)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      names(attr(roca.table, "formattable")$format[[1]])<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
     }else{
-      temp1<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
+      temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"),row.names = NULL)
       roca.table<-formattable::formattable(temp1)
     }
     roca.table
@@ -3657,8 +3644,10 @@ shinyServer(function(input, output, session) {
       z<-NULL
     }else{
       dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index"))
-      names(dgraf)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      names(dgraf)<-c("Parameter", trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")))
+      print(dgraf)
       dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
+      print(dgrafgg)
       colors.palette<-generate_palette(i.number.series=NCOL(dgraf)-1,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -3684,7 +3673,7 @@ shinyServer(function(input, output, session) {
         geom_point() +
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-        scale_color_manual(values=colors.palette$colSeasons) +
+        scale_color_manual(values=colors.palette$colSeasons, name=trloc("Indicator")) +
         labs(title = input$textMain, x = input$textX, y = input$textY) +
         ggthemes::theme_few() +
         theme(plot.title = element_text(hjust = 0.5))
@@ -4566,6 +4555,9 @@ shinyServer(function(input, output, session) {
       popify(
         selectInput("colThresholds", h6(trloc("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
         , title = trloc("Thresholds palette"), content = trloc("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        selectInput("colLevels", h6(trloc("Levels palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Levels palette"), content = trloc("Palette used to generate color for intensity levels"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
         selectInput("colSeasons", h6(trloc("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
         , title = trloc("Seasons palette"), content = trloc("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = "hover", options = list(container = "body")),
