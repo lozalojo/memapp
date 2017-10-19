@@ -1476,13 +1476,13 @@ shinyServer(function(input, output, session) {
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(query[['advancedfeatures']])) {
-      cat("query> advancedfeatures ", query[['advancedfeatures']],"\n")
-      updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
-    }
     if (!is.null(query[['language']])) {
       cat("query> language ", query[['language']],"\n")
       updateSelectInput(session, "lang", selected = as.character(query[['language']]))
+    }
+    if (!is.null(query[['advancedfeatures']])) {
+      cat("query> advancedfeatures ", query[['advancedfeatures']],"\n")
+      updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
     }
   })
   
