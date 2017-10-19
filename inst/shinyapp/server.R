@@ -1480,7 +1480,6 @@ shinyServer(function(input, output, session) {
       cat("query> language ", query[['language']],"\n")
       updateSelectInput(session, "lang", selected = as.character(query[['language']]))
     }
-    Sys.sleep(3)
     if (!is.null(query[['advancedfeatures']])) {
       cat("query> advancedfeatures ", query[['advancedfeatures']],"\n")
       updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
