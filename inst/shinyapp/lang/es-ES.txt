@@ -231,3 +231,7 @@ Method for calculating other confidence intervals: duration, epidemic percentage
 Level of the confidence interval used to calculate the average curve and other intervals;Niveles de los intervales de confianza que se usan para calcular la curva media y otros intervalos
 Show advanced features of memapp;Muestra las opciones avanzadas de la aplicación
 Change the language of the application;Cambia el idioma de la aplicación
+Check data series, timing and describe the data;Comprobar y describir los datos, gráficos de temporadas y series
+Summary, graphs, goodness and optimization of the MEM model;Resumen, gráficos, bondad y optimización del modelo MEM
+Surveillance tools;Herramientas para la vigilancia
+Visualize different sets of data with a MEM model;Visualice diferentes conjuntos de datos con distintos modelos

@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
   ### SERVER-SIDE FUNCTIONS
   #####################################
   
-  tr <- function(text){ # translates text into current language
+  trloc <- function(text){ # translates text into current language
     as.character(sapply(text,function(s){
       o.text<-tail(translation[translation$original==s,input$lang])
       if (NROW(o.text)!=1) o.text<-s
@@ -147,8 +147,8 @@ shinyServer(function(input, output, session) {
         }
       }
       labels<-c(names(data.full),
-                paste(names(data.full)," (",tr("missing"),")",sep=""),
-                tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."))
+                paste(names(data.full)," (",trloc("missing"),")",sep=""),
+                trloc(c("Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.")))
       haspoints<-c(rep(F,NCOL(data.full)),rep(T,NCOL(data.full)),F,F,F,F,F)
       haslines<-c(rep(T,NCOL(data.full)),rep(F,NCOL(data.full)),T,T,T,T,T)
       shapes<-c(rep(NA,NCOL(data.full)),rep(24,NCOL(data.full)),NA,NA,NA,NA,NA)
@@ -210,11 +210,11 @@ shinyServer(function(input, output, session) {
       gplot<-ggplot(dgrafgg.s) +
         geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
         geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-        scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
-        scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
-        scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
-        scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
-        scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
+        scale_shape_manual(values=shapes.s, name=trloc("Legend"), labels=labels.s) +
+        scale_color_manual(values=colors.s, name=trloc("Legend"), labels=labels.s) +
+        scale_fill_manual(values=fills.s, name=trloc("Legend"), labels=labels.s) +
+        scale_size_manual(values=sizes.s, name=trloc("Legend"), labels=labels.s) +
+        scale_linetype_manual(values=linetypes.s, name=trloc("Legend"), labels=labels.s) +
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -362,7 +362,7 @@ shinyServer(function(input, output, session) {
         }
       }
       
-      labels<-c(tr("Weekly data"),tr("Pre-epidemic"),tr("Pre-epidemic (missing)"),tr("Epidemic"),tr("Epidemic (missing)"),tr("Post-epidemic"),tr("Post-epidemic (missing)"),tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."))
+      labels<-trloc(c("Weekly data", "Pre-epidemic", "Pre-epidemic (missing)", "Epidemic", "Epidemic (missing)", "Post-epidemic", "Post-epidemic (missing)", "Epidemic thr.", "Medium thr.", "High thr.", "Very high thr.", "Post thr."))
       haspoints<-c(F,T,T,T,T,T,T,F,F,F,F,F)
       haslines<-c(T,F,F,F,F,F,F,T,T,T,T,T)
       shapes<-c(21,21,24,21,24,21,24,NA,NA,NA,NA,NA)
@@ -446,11 +446,11 @@ shinyServer(function(input, output, session) {
       gplot<-ggplot(dgrafgg.s) +
         geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
         geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-        scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
-        scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
-        scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
-        scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
-        scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
+        scale_shape_manual(values=shapes.s, name=trloc("Legend"), labels=labels.s) +
+        scale_color_manual(values=colors.s, name=trloc("Legend"), labels=labels.s) +
+        scale_fill_manual(values=fills.s, name=trloc("Legend"), labels=labels.s) +
+        scale_size_manual(values=sizes.s, name=trloc("Legend"), labels=labels.s) +
+        scale_linetype_manual(values=linetypes.s, name=trloc("Legend"), labels=labels.s) +
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -647,7 +647,7 @@ shinyServer(function(input, output, session) {
       intensidades.3<-array(dim=c(semanas,3))
       intensidades<-rbind(intensidades.1,intensidades.2,intensidades.3)[1:semanas,]
       
-      labels<-c(tr("Weekly data"),tr("Epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."),tr("Post thr."),tr("Start"),tr("End"))
+      labels<-trloc(c("Weekly data","Epidemic thr.","Medium thr.","High thr.","Very high thr.","Post thr.","Start","End"))
       haspoints<-c(T,F,F,F,F,F,T,T)
       haslines<-c(T,T,T,T,T,T,F,F)
       shapes<-c(21,NA,NA,NA,NA,NA,21,21)
@@ -710,11 +710,11 @@ shinyServer(function(input, output, session) {
       gplot<-ggplot(dgrafgg.s) +
         geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=1.2) +
         geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-        scale_shape_manual(values=shapes.s, name=tr("Legend"), labels=labels.s) +
-        scale_color_manual(values=colors.s, name=tr("Legend"), labels=labels.s) +
-        scale_fill_manual(values=fills.s, name=tr("Legend"), labels=labels.s) +
-        scale_size_manual(values=sizes.s, name=tr("Legend"), labels=labels.s) +
-        scale_linetype_manual(values=linetypes.s, name=tr("Legend"), labels=labels.s) +
+        scale_shape_manual(values=shapes.s, name=trloc("Legend"), labels=labels.s) +
+        scale_color_manual(values=colors.s, name=trloc("Legend"), labels=labels.s) +
+        scale_fill_manual(values=fills.s, name=trloc("Legend"), labels=labels.s) +
+        scale_size_manual(values=sizes.s, name=trloc("Legend"), labels=labels.s) +
+        scale_linetype_manual(values=linetypes.s, name=trloc("Legend"), labels=labels.s) +
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -776,11 +776,11 @@ shinyServer(function(input, output, session) {
       gplot<-ggplot(dgrafgg) +
         geom_line(aes(x=num,y=value,group=variable, color=variable, linetype=variable),size=i.linesize) +
         geom_point(aes(x=num,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
-        scale_shape_manual(values=i.shapes, name=tr("Legend"), labels=labels) +
-        scale_color_manual(values=i.colors, name=tr("Legend"), labels=labels) +
-        scale_fill_manual(values=i.fills, name=tr("Legend"), labels=labels) +
-        scale_size_manual(values=i.sizes, name=tr("Legend"), labels=labels) +
-        scale_linetype_manual(values=i.linetypes, name=tr("Legend"), labels=labels) +
+        scale_shape_manual(values=i.shapes, name=trloc("Legend"), labels=labels) +
+        scale_color_manual(values=i.colors, name=trloc("Legend"), labels=labels) +
+        scale_fill_manual(values=i.fills, name=trloc("Legend"), labels=labels) +
+        scale_size_manual(values=i.sizes, name=trloc("Legend"), labels=labels) +
+        scale_linetype_manual(values=i.linetypes, name=trloc("Legend"), labels=labels) +
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -1494,8 +1494,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       if (as.logical(input$advancedfeatures)){
-        tabsetPanel(tabPanel(tr("File"), tableOutput("tbdFile")),
-                    tabPanel(tr("Data"),
+        tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
+                    tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
                              fluidRow(
                                column(8),
@@ -1503,23 +1503,23 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbdData_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbdData_c","csv"))
                              )
                     ),
-                    tabPanel(tr("Seasons"), plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
-                    tabPanel(tr("Series"),plotlyOutput("tbdSeries", width ="100%", height ="100%")),
-                    tabPanel(tr("Timing"),uiOutput("tbdTiming")),
-                    tabPanel(tr("Evolution"),uiOutput("tbdEvolution")),
-                    tabPanel(tr("Stability"),uiOutput("tbdStability")),
-                    tabPanel(tr("Goodness"),uiOutput("tbdGoodness"))
+                    tabPanel(trloc("Seasons"), plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
+                    tabPanel(trloc("Series"),plotlyOutput("tbdSeries", width ="100%", height ="100%")),
+                    tabPanel(trloc("Timing"),uiOutput("tbdTiming")),
+                    tabPanel(trloc("Evolution"),uiOutput("tbdEvolution")),
+                    tabPanel(trloc("Stability"),uiOutput("tbdStability")),
+                    tabPanel(trloc("Goodness"),uiOutput("tbdGoodness"))
         )
       }else{
-        tabsetPanel(tabPanel(tr("File"), tableOutput("tbdFile")),
-                    tabPanel(tr("Data"),
+        tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
+                    tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
                              fluidRow(
                                column(8),
@@ -1527,18 +1527,18 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbdData_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbdData_c","csv"))
                              )
                     ),
-                    tabPanel(tr("Seasons"), plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
-                    tabPanel(tr("Series"),plotlyOutput("tbdSeries", width ="100%", height ="100%")),
-                    tabPanel(tr("Timing"),uiOutput("tbdTiming")),
-                    tabPanel(tr("Evolution"),uiOutput("tbdEvolution")),
-                    tabPanel(tr("Stability"),uiOutput("tbdStability"))
+                    tabPanel(trloc("Seasons"), plotlyOutput("tbdSeasons", width ="100%", height ="100%")),
+                    tabPanel(trloc("Series"),plotlyOutput("tbdSeries", width ="100%", height ="100%")),
+                    tabPanel(trloc("Timing"),uiOutput("tbdTiming")),
+                    tabPanel(trloc("Evolution"),uiOutput("tbdEvolution")),
+                    tabPanel(trloc("Stability"),uiOutput("tbdStability"))
         )
       }
     }
@@ -1553,7 +1553,7 @@ shinyServer(function(input, output, session) {
       data.show<-data.frame(var="No file or dataset selected")
       names(data.show)=""
     }else{
-      data.show<-data.frame(var1=c(tr("File"),tr("Dataset")),var2=c(infile$name,indataset))
+      data.show<-data.frame(var1=trloc(c("File","Dataset")),var2=c(infile$name,indataset))
       names(data.show)=c("","")
     }
     data.show
@@ -1591,7 +1591,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(datfile)){
         selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
         if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file,
-                                                     i.sheet=tr("Data"), i.rownames=tr("Week no"), i.format="xlsx")
+                                                     i.sheet=trloc("Data"), i.rownames=trloc("Week no"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -1605,7 +1605,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(datfile)){
         selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
         if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file,
-                                                     i.sheet=tr("Data"), i.rownames=tr("Week no"), i.format="csv")
+                                                     i.sheet=trloc("Data"), i.rownames=trloc("Week no"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -1760,12 +1760,12 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Duration"), plotlyOutput("tbdEduration", width ="100%", height ="100%")),
-                  tabPanel(tr("Start"),plotlyOutput("tbdEstart", width ="100%", height ="100%")),
-                  tabPanel(tr("Epidemic %"), plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
-                  tabPanel(tr("Thresholds"),plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
-                  tabPanel(tr("Scheme"), formattable::formattableOutput("tbdEscheme")),
-                  tabPanel(tr("Detailed"),
+      tabsetPanel(tabPanel(trloc("Duration"), plotlyOutput("tbdEduration", width ="100%", height ="100%")),
+                  tabPanel(trloc("Start"),plotlyOutput("tbdEstart", width ="100%", height ="100%")),
+                  tabPanel(trloc("Epidemic %"), plotlyOutput("tbdEpercentage", width ="100%", height ="100%")),
+                  tabPanel(trloc("Thresholds"),plotlyOutput("tbdEthresholds", width ="100%", height ="100%")),
+                  tabPanel(trloc("Scheme"), formattable::formattableOutput("tbdEscheme")),
+                  tabPanel(trloc("Detailed"),
                            DT::dataTableOutput("tbdEdetailed"),
                            fluidRow(
                              column(8),
@@ -1773,9 +1773,9 @@ shinyServer(function(input, output, session) {
                                     if (zip.present()){
                                       downloadButton("tbdEdetailed_x","xlsx")
                                     }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                     }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                     }),
                              column(2,downloadButton("tbdEdetailed_c","csv"))
                            )
@@ -1792,7 +1792,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("durationll","duration","durationul")
       datfile.plot<-dataevolution[indicators]
-      names(datfile.plot)<-c(tr("Lower limit"),tr("Duration"),tr("Upper limit"))
+      names(datfile.plot)<-trloc(c("Lower limit","Duration","Upper limit"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
@@ -1841,7 +1841,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("startll","start","startul")
       datfile.plot<-dataevolution[indicators]
-      names(datfile.plot)<-c(tr("Lower limit"),tr("Start"),tr("Upper limit"))
+      names(datfile.plot)<-trloc(c("Lower limit","Start","Upper limit"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
@@ -1891,7 +1891,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("percentagell","percentage","percentageul")
       datfile.plot<-dataevolution[indicators]
-      names(datfile.plot)<-c(tr("Lower limit"),tr("Epidemic percentage"),tr("Upper limit"))
+      names(datfile.plot)<-trloc(c("Lower limit","Epidemic percentage","Upper limit"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
@@ -1938,7 +1938,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("epidemic","medium","high","veryhigh","postepidemic")
       datfile.plot<-dataevolution[indicators]
-      names(datfile.plot)<-tr(c("Pre-epidemic thr.","Medium int. thr.","High int. thr.","Very high int. thr.","Post-epidemic thr."))
+      names(datfile.plot)<-trloc(c("Pre-epidemic thr.","Medium int. thr.","High int. thr.","Very high int. thr.","Post-epidemic thr."))
       colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -1984,7 +1984,7 @@ shinyServer(function(input, output, session) {
       datashow<-NULL
     }else{
       temp1<-dataevolution$evolution.seasons
-      if (row.names(temp1)[NROW(temp1)]=="next") row.names(temp1)[NROW(temp1)]<-tr("next")
+      if (row.names(temp1)[NROW(temp1)]=="next") row.names(temp1)[NROW(temp1)]<-trloc("next")
       datashow<-formattable::formattable(temp1, apply(temp1, 2,
                                                       function(noxneeded) formattable::formatter("span",
                                                                                                  style = x ~ formattable::style(color = ifelse(x, "green", "red")),
@@ -2000,8 +2000,8 @@ shinyServer(function(input, output, session) {
       datashow<-NULL
     }else{
       datashow<-format(round(dataevolution$evolution.data, 2), nsmall=2)
-      if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-tr("next")
-      names(datashow)<-c(tr("Seasons"),tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
+      if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
+      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic percentage (lower limit)", "Epidemic percentage", "Epidemic percentage (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
     }
     datashow
   },
@@ -2012,10 +2012,10 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dataevolution <- data_evolution()
       datashow<-dataevolution$evolution.data
-      if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-tr("next")
-      names(datashow)<-c(tr("Seasons"),tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
+      if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
+      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic percentage (lower limit)", "Epidemic percentage", "Epidemic percentage (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
       if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
-                                                i.sheet=tr("Evolution"), i.rownames=tr("Season"), i.format="xlsx")
+                                                i.sheet=trloc("Evolution"), i.rownames=trloc("Season"), i.format="xlsx")
       
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2026,10 +2026,10 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dataevolution <- data_evolution()
       datashow<-dataevolution$evolution.data
-      if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-tr("next")
-      names(datashow)<-c(tr("Seasons"),tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
+      if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
+      names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic percentage (lower limit)", "Epidemic percentage", "Epidemic percentage (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
       if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
-                                                i.sheet=tr("Evolution"), i.rownames=tr("Season"), i.format="csv")
+                                                i.sheet=trloc("Evolution"), i.rownames=trloc("Season"), i.format="csv")
     },
     contentType="text/csv"
   )
@@ -2040,12 +2040,12 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Duration"), plotlyOutput("tbdSduration", width ="100%", height ="100%")),
-                  tabPanel(tr("Start"),plotlyOutput("tbdSstart", width ="100%", height ="100%")),
-                  tabPanel(tr("Epidemic %"), plotlyOutput("tbdSpercentage", width ="100%", height ="100%")),
-                  tabPanel(tr("Thresholds"),plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
-                  tabPanel(tr("Scheme"), formattable::formattableOutput("tbdSscheme")),
-                  tabPanel(tr("Detailed"),
+      tabsetPanel(tabPanel(trloc("Duration"), plotlyOutput("tbdSduration", width ="100%", height ="100%")),
+                  tabPanel(trloc("Start"),plotlyOutput("tbdSstart", width ="100%", height ="100%")),
+                  tabPanel(trloc("Epidemic %"), plotlyOutput("tbdSpercentage", width ="100%", height ="100%")),
+                  tabPanel(trloc("Thresholds"),plotlyOutput("tbdSthresholds", width ="100%", height ="100%")),
+                  tabPanel(trloc("Scheme"), formattable::formattableOutput("tbdSscheme")),
+                  tabPanel(trloc("Detailed"),
                            DT::dataTableOutput("tbdSdetailed"),
                            fluidRow(
                              column(8),
@@ -2053,9 +2053,9 @@ shinyServer(function(input, output, session) {
                                     if (zip.present()){
                                       downloadButton("tbdSdetailed_x","xlsx")
                                     }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                     }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                     }),
                              column(2,downloadButton("tbdSdetailed_c","csv"))
                            ))
@@ -2070,7 +2070,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("durationll","duration","durationul")
       datfile.plot<-datastability[indicators]
-      names(datfile.plot)<-c(tr("Lower limit"),tr("Duration"),tr("Upper limit"))
+      names(datfile.plot)<-trloc(c("Lower limit","Duration","Upper limit"))
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -2117,7 +2117,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("startll","start","startul")
       datfile.plot<-datastability[indicators]
-      names(datfile.plot)<-c(tr("Lower limit"),tr("Start"),tr("Upper limit"))
+      names(datfile.plot)<-trloc(c("Lower limit","Start","Upper limit"))
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -2164,7 +2164,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("percentagell","percentage","percentageul")
       datfile.plot<-datastability[indicators]
-      names(datfile.plot)<-c(tr("Lower limit"),tr("Epidemic percentage"),tr("Upper limit"))
+      names(datfile.plot)<-trloc(c("Lower limit","Epidemic percentage","Upper limit"))
       colors.palette<-generate_palette(i.number.series=3,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -2209,7 +2209,7 @@ shinyServer(function(input, output, session) {
     }else{
       indicators<-c("epidemic","medium","high","veryhigh","postepidemic")
       datfile.plot<-datastability[indicators]
-      names(datfile.plot)<-tr(c("Pre-epidemic thr.","Medium int. thr.","High int. thr.","Very high int. thr.","Post-epidemic thr."))
+      names(datfile.plot)<-trloc(c("Pre-epidemic thr.","Medium int. thr.","High int. thr.","Very high int. thr.","Post-epidemic thr."))
       colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -2268,7 +2268,7 @@ shinyServer(function(input, output, session) {
       datashow<-NULL
     }else{
       datashow<-format(round(datastability$stability.data, 2), nsmall=2)
-      names(datashow)<-c(tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
+      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
     }
     datashow
   },
@@ -2279,9 +2279,9 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datastability <- data_stability()
       datashow<-datastability$stability.data
-      names(datashow)<-c(tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
+      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
       if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file,
-                                                i.sheet=tr("Stability"), i.rownames=tr("Seasons"), i.format="xlsx")
+                                                i.sheet=trloc("Stability"), i.rownames=trloc("Seasons"), i.format="xlsx")
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
@@ -2291,9 +2291,9 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datastability <- data_stability()
       datashow<-datastability$stability.data
-      names(datashow)<-c(tr("Duration (lower limit)"),tr("Duration"),tr("Duration (upper limit)"),tr("Start (lower limit)"),tr("Start"),tr("Start (upper limit)"),tr("Epidemic percentage (lower limit)"),tr("Epidemic percentage"),tr("Epidemic percentage (upper limit)"),tr("Epidemic thr."),tr("Post-epidemic thr."),tr("Medium thr."),tr("High thr."),tr("Very high thr."))
+      names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic percentage (lower limit)","Epidemic percentage","Epidemic percentage (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
       if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file,
-                                                i.sheet=tr("Stability"), i.rownames=tr("Seasons"), i.format="csv")
+                                                i.sheet=trloc("Stability"), i.rownames=trloc("Seasons"), i.format="csv")
     },
     contentType="text/csv"
   )
@@ -2305,8 +2305,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }
     else
-      tabsetPanel(tabPanel(tr("Indicators"), uiOutput("tbdGoodnessIndicators")),
-                  tabPanel(tr("Summary"),
+      tabsetPanel(tabPanel(trloc("Indicators"), uiOutput("tbdGoodnessIndicators")),
+                  tabPanel(trloc("Summary"),
                            formattable::formattableOutput("tbdGoodnessSummary"),
                            fluidRow(
                              column(8),
@@ -2314,16 +2314,16 @@ shinyServer(function(input, output, session) {
                                     if (zip.present()){
                                       downloadButton("tbdGoodnessSummary_x","xlsx")
                                     }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                     }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                     }),
                              column(2,downloadButton("tbdGoodnessSummary_c","csv"))
                            )
                   ),
-                  tabPanel(tr("Graphs"), uiOutput("tbdGoodnessGraphs")),
-                  tabPanel(tr("Intensity"), uiOutput("tbdGoodnessIntensity")),
-                  tabPanel(tr("Detailed"),
+                  tabPanel(trloc("Graphs"), uiOutput("tbdGoodnessGraphs")),
+                  tabPanel(trloc("Intensity"), uiOutput("tbdGoodnessIntensity")),
+                  tabPanel(trloc("Detailed"),
                            formattable::formattableOutput("tbdGoodnessDetailed"),
                            fluidRow(
                              column(8),
@@ -2331,9 +2331,9 @@ shinyServer(function(input, output, session) {
                                     if (zip.present()){
                                       downloadButton("tbdGoodnessDetailed_x","xlsx")
                                     }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                     }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                     }),
                              column(2,downloadButton("tbdGoodnessDetailed_c","csv"))
                            )
@@ -2348,13 +2348,13 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       fluidRow(
-        valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), tr("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Specificity"], 2), nsmall=2), tr("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), tr("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), tr("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), tr("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), tr("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), tr("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua")
+        valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua")
       )
     }
   })
@@ -2374,10 +2374,10 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
         "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
-      names(good.table)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index"))
-      names(attr(good.table, "formattable")$format[[1]])<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index"))
+      names(good.table)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index"))
+      names(attr(good.table, "formattable")$format[[1]])<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient", "Youdens Index"))
     }else{
-      temp1<-data.frame(Error=tr("Number of columns must be greater than 2"))
+      temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"))
       good.table<-formattable::formattable(temp1)
     }
     good.table
@@ -2391,9 +2391,9 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
-        names(temp1)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+        names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Global goodness indicators"), i.rownames=tr("Season"), i.format="xlsx")
+                      i.sheet=trloc("Global goodness indicators"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2407,9 +2407,9 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
-        names(temp1)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+        names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Global goodness indicators"), i.rownames=tr("Season"), i.format="csv")
+                      i.sheet=trloc("Global goodness indicators"), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -2423,22 +2423,22 @@ shinyServer(function(input, output, session) {
     }else{
       if (as.logical(input$advancedfeatures)){
         fluidRow(
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-          valueBox(peaks$Count[peaks[,1]==-1], tr(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal"),
-          valueBox(peaks$Count[peaks[,1]==0], tr(peaks$Description[peaks[,1]==0]), icon = icon("heartbeat"), width=3, color="teal")
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
+          valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal"),
+          valueBox(peaks$Count[peaks[,1]==0], trloc(peaks$Description[peaks[,1]==0]), icon = icon("heartbeat"), width=3, color="teal")
         )
       }else{
         fluidRow(
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-          valueBox(peaks$Count[peaks[,1]==-1], tr(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal")
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
+          valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal")
         )
       }
     }
@@ -2481,9 +2481,9 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
-        names(temp1)<-tr(names(temp1))
+        names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Global goodness intensity"), i.rownames=tr("Season"), i.format="xlsx")
+                      i.sheet=trloc("Global goodness intensity"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2496,9 +2496,9 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
-        names(temp1)<-tr(names(temp1))
+        names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Global goodness intensity"), i.rownames=tr("Season"), i.format="csv")
+                      i.sheet=trloc("Global goodness intensity"), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -2532,7 +2532,7 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       if (as.logical(input$advancedfeatures)){
-        tabsetPanel(tabPanel(tr("Data"),
+        tabsetPanel(tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbmData"),
                              fluidRow(
                                column(8),
@@ -2540,22 +2540,22 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbmData_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbmData_c","csv"))
                              )
         ),
-        tabPanel(tr("Seasons"), plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
-        tabPanel(tr("Series"),plotlyOutput("tbmSeries", width ="100%", height ="100%")),
-        tabPanel(tr("Timing"),uiOutput("tbmTiming")),
+        tabPanel(trloc("Seasons"), plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
+        tabPanel(trloc("Series"),plotlyOutput("tbmSeries", width ="100%", height ="100%")),
+        tabPanel(trloc("Timing"),uiOutput("tbmTiming")),
         tabPanel("MEM", uiOutput("tbmMem")),
-        tabPanel(tr("Goodness"),uiOutput("tbmGoodness")),
-        tabPanel(tr("Optimize"),uiOutput("tbmOptimize"))
+        tabPanel(trloc("Goodness"),uiOutput("tbmGoodness")),
+        tabPanel(trloc("Optimize"),uiOutput("tbmOptimize"))
         )        
       }else{
-        tabsetPanel(tabPanel(tr("Data"),
+        tabsetPanel(tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbmData"),
                              fluidRow(
                                column(8),
@@ -2563,19 +2563,19 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbmData_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbmData_c","csv"))
                              )
         ),
-        tabPanel(tr("Seasons"), plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
-        tabPanel(tr("Series"),plotlyOutput("tbmSeries", width ="100%", height ="100%")),
-        tabPanel(tr("Timing"),uiOutput("tbmTiming")),
+        tabPanel(trloc("Seasons"), plotlyOutput("tbmSeasons", width ="100%", height ="100%")),
+        tabPanel(trloc("Series"),plotlyOutput("tbmSeries", width ="100%", height ="100%")),
+        tabPanel(trloc("Timing"),uiOutput("tbmTiming")),
         tabPanel("MEM", uiOutput("tbmMem")),
-        tabPanel(tr("Goodness"),uiOutput("tbmGoodness")),
-        tabPanel(tr("Optimize"),uiOutput("tbmOptimizeA"))
+        tabPanel(trloc("Goodness"),uiOutput("tbmGoodness")),
+        tabPanel(trloc("Optimize"),uiOutput("tbmOptimizeA"))
         )        
       }
       
@@ -2598,7 +2598,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datamodel<-data_model()
       if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file,
-                                            i.sheet=tr("Model data"), i.rownames=tr("Week no"), i.format="xlsx")
+                                            i.sheet=trloc("Model data"), i.rownames=trloc("Week no"), i.format="xlsx")
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
@@ -2608,7 +2608,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datamodel<-data_model()
       if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file,
-                                            i.sheet=tr("Model data"), i.rownames=tr("Week no"), i.format="csv")
+                                            i.sheet=trloc("Model data"), i.rownames=trloc("Week no"), i.format="csv")
     },
     contentType="text/csv"
   )
@@ -2743,9 +2743,9 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Estimators"), uiOutput("tbmMemSummary")),
-                  tabPanel(tr("Detailed"), verbatimTextOutput("tbmMemOutput")),
-                  tabPanel(tr("Graphs"),uiOutput("tbmMemGraph"))
+      tabsetPanel(tabPanel(trloc("Estimators"), uiOutput("tbmMemSummary")),
+                  tabPanel(trloc("Detailed"), verbatimTextOutput("tbmMemOutput")),
+                  tabPanel(trloc("Graphs"),uiOutput("tbmMemGraph"))
       )
     }
   })
@@ -2756,14 +2756,14 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       fluidRow(
-        valueBox(datamodel$n.seasons, tr("Seasons in the model"), icon = icon("heartbeat"), width=3, color="light-blue"),
-        valueBox(datamodel$ci.start[2,2], tr("Average epidemic start week"), icon = icon("heartbeat"), width=3, color="light-blue"),
-        valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), tr("Average epidemic length"), icon = icon("heartbeat"), width=3, color="light-blue"),
-        valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), tr("Epidemic percentage"), icon = icon("heartbeat"), width=3, color="light-blue"),
-        valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), tr("Epidemic threshold"), icon = icon("thermometer-1"), width=3, color="green"),
-        valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), tr("Medium threshold"), icon = icon("thermometer-2"), width=3, color="yellow"),
-        valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), tr("High threshold"), icon = icon("thermometer-3"), width=3, color="orange"),
-        valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), tr("Very high threshold"), icon = icon("thermometer-4"), width=3, color="red")
+        valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("heartbeat"), width=3, color="light-blue"),
+        valueBox(datamodel$ci.start[2,2], trloc("Average epidemic start week"), icon = icon("heartbeat"), width=3, color="light-blue"),
+        valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), trloc("Average epidemic length"), icon = icon("heartbeat"), width=3, color="light-blue"),
+        valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), trloc("Epidemic percentage"), icon = icon("heartbeat"), width=3, color="light-blue"),
+        valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), trloc("Epidemic threshold"), icon = icon("thermometer-1"), width=3, color="green"),
+        valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), trloc("Medium threshold"), icon = icon("thermometer-2"), width=3, color="yellow"),
+        valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), trloc("High threshold"), icon = icon("thermometer-3"), width=3, color="orange"),
+        valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), trloc("Very high threshold"), icon = icon("thermometer-4"), width=3, color="red")
       )
     }
   })
@@ -2799,8 +2799,8 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Moving epidemics"), plotlyOutput("tbmMemGraphMoving", width ="100%", height ="100%")),
-                  tabPanel(tr("Average curve"), plotlyOutput("tbmMemGraphAverage", width ="100%", height ="100%"))
+      tabsetPanel(tabPanel(trloc("Moving epidemics"), plotlyOutput("tbmMemGraphMoving", width ="100%", height ="100%")),
+                  tabPanel(trloc("Average curve"), plotlyOutput("tbmMemGraphAverage", width ="100%", height ="100%"))
       )
     }
   })
@@ -2815,7 +2815,7 @@ shinyServer(function(input, output, session) {
       datfile.plot<-data.frame(datamodel$moving.epidemics,row.names = rownames(datamodel$param.data))
       names(datfile.plot)<-names(datamodel$param.data)
       datfile.plot$dummy<-datamodel$typ.curve[,2]
-      names(datfile.plot)[names(datfile.plot)=="dummy"]<-tr("Average")
+      names(datfile.plot)[names(datfile.plot)=="dummy"]<-trloc("Average")
       colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -2861,16 +2861,16 @@ shinyServer(function(input, output, session) {
         z$x$data[[NCOL(datfile.plot)]]$line$width<-2*z$x$data[[NCOL(datfile.plot)]]$line$width
         z$x$data[[NCOL(datfile.plot)]]$line$dash<-"dot"
         # Rename name and text for vertical lines I've just added
-        z$x$data[[2*length(p$labels)+1]]$name<-tr("Mean start")
-        z$x$data[[2*length(p$labels)+2]]$name<-tr("Mean end")
-        z$x$data[[2*length(p$labels)+1]]$text<-paste(tr("Mean start"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]],sep="")
-        z$x$data[[2*length(p$labels)+2]]$text<-paste(tr("Mean end"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]+datamodel$mean.length-1],sep="")
+        z$x$data[[2*length(p$labels)+1]]$name<-trloc("Mean start")
+        z$x$data[[2*length(p$labels)+2]]$name<-trloc("Mean end")
+        z$x$data[[2*length(p$labels)+1]]$text<-paste(trloc("Mean start"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]],sep="")
+        z$x$data[[2*length(p$labels)+2]]$text<-paste(trloc("Mean end"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]+datamodel$mean.length-1],sep="")
         # And I need to rearrange the order of the z list for fixplotly to work
         names(z$x$data)<-as.character(1:(2*length(p$labels)+2))
         z$x$data<-z$x$data[as.character(c(1:length(p$labels),2*length(p$labels)+1,2*length(p$labels)+2,(length(p$labels)+1):(2*length(p$labels)),2*length(p$labels)+1,2*length(p$labels)+2))]
         names(z$x$data)<-NULL
         zfix<-fixplotly(z,
-                        c(p$labels,tr("Mean start"),tr("Mean end")),
+                        c(p$labels,trloc(c("Mean start","Mean end"))),
                         c(p$haslines,T,T),
                         c(p$haspoints,F,F),
                         "week","value",p$weeklabels)
@@ -2934,8 +2934,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       if (as.logical(input$advancedfeatures)){
-        tabsetPanel(tabPanel(tr("Indicators"), uiOutput("tbmGoodnessIndicators")),
-                    tabPanel(tr("Summary"),
+        tabsetPanel(tabPanel(trloc("Indicators"), uiOutput("tbmGoodnessIndicators")),
+                    tabPanel(trloc("Summary"),
                              formattable::formattableOutput("tbmGoodnessSummary"),
                              fluidRow(
                                column(8),
@@ -2943,16 +2943,16 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbmGoodnessSummary_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbmGoodnessSummary_c","csv"))
                              )
                     ),
-                    tabPanel(tr("Graphs"), uiOutput("tbmGoodnessGraphs")),
-                    tabPanel(tr("Intensity"), uiOutput("tbmGoodnessIntensity")),
-                    tabPanel(tr("Detailed"),
+                    tabPanel(trloc("Graphs"), uiOutput("tbmGoodnessGraphs")),
+                    tabPanel(trloc("Intensity"), uiOutput("tbmGoodnessIntensity")),
+                    tabPanel(trloc("Detailed"),
                              formattable::formattableOutput("tbmGoodnessDetailed"),
                              fluidRow(
                                column(8),
@@ -2960,17 +2960,17 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbmGoodnessDetailed_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbmGoodnessDetailed_c","csv"))
                              )
                     )
         )
       }else{
-        tabsetPanel(tabPanel(tr("Indicators"), uiOutput("tbmGoodnessIndicators")),
-                    tabPanel(tr("Summary"),
+        tabsetPanel(tabPanel(trloc("Indicators"), uiOutput("tbmGoodnessIndicators")),
+                    tabPanel(trloc("Summary"),
                              formattable::formattableOutput("tbmGoodnessSummary"),
                              fluidRow(
                                column(8),
@@ -2978,15 +2978,15 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbmGoodnessSummary_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbmGoodnessSummary_c","csv"))
                              )
                     ),
-                    tabPanel(tr("Intensity"), uiOutput("tbmGoodnessIntensity")),
-                    tabPanel(tr("Detailed"),
+                    tabPanel(trloc("Intensity"), uiOutput("tbmGoodnessIntensity")),
+                    tabPanel(trloc("Detailed"),
                              formattable::formattableOutput("tbmGoodnessDetailed"),
                              fluidRow(
                                column(8),
@@ -2994,9 +2994,9 @@ shinyServer(function(input, output, session) {
                                       if (zip.present()){
                                         downloadButton("tbmGoodnessDetailed_x","xlsx")
                                       }else if (.Platform$OS.type=="windows"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                       }else if (.Platform$OS.type=="unix"){
-                                        shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                        shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                       }),
                                column(2,downloadButton("tbmGoodnessDetailed_c","csv"))
                              )
@@ -3012,13 +3012,13 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       fluidRow(
-        valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), tr("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Specificity"], 2), nsmall=2), tr("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), tr("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), tr("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), tr("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), tr("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), tr("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua")
+        valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua")
       )
     }
   })
@@ -3038,11 +3038,11 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
         "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
       ), digits = 2, format = "f")
-      names(good.table)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
-      names(attr(good.table, "formattable")$format[[1]])<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      names(good.table)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      names(attr(good.table, "formattable")$format[[1]])<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
       
     }else{
-      temp1<-data.frame(Error=tr("Number of columns must be greater than 2"))
+      temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"))
       good.table<-formattable::formattable(temp1)
     }
     good.table
@@ -3056,9 +3056,9 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
-        names(temp1)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+        names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Model goodness indicators"), i.rownames=tr("Season"), i.format="xlsx")
+                      i.sheet=trloc("Model goodness indicators"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3072,9 +3072,9 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(good$validity.data)
         temp1$Total<-good$results
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
-        names(temp1)<-tr(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+        names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Model goodness indicators"), i.rownames=tr("Season"), i.format="csv")
+                      i.sheet=trloc("Model goodness indicators"), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -3105,22 +3105,22 @@ shinyServer(function(input, output, session) {
     }else{
       if (as.logical(input$advancedfeatures)){
         fluidRow(
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-          valueBox(peaks$Count[peaks[,1]==-1], tr(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal"),
-          valueBox(peaks$Count[peaks[,1]==0], tr(peaks$Description[peaks[,1]==0]), icon = icon("heartbeat"), width=3, color="teal")
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
+          valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal"),
+          valueBox(peaks$Count[peaks[,1]==0], trloc(peaks$Description[peaks[,1]==0]), icon = icon("heartbeat"), width=3, color="teal")
         )
       }else{
         fluidRow(
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), tr(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-          valueBox(peaks$Count[peaks[,1]==-1], tr(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal")
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
+          valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
+          valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal")
         )
       }
     }
@@ -3163,9 +3163,9 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
-        names(temp1)<-tr(names(temp1))
+        names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Model goodness intensity"), i.rownames=tr("Season"), i.format="xlsx")
+                      i.sheet=trloc("Model goodness intensity"), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3178,9 +3178,9 @@ shinyServer(function(input, output, session) {
       if(!is.null(good)){
         temp1 <- good$peaks.data
         temp1$Level<-as.character(temp1$Level)
-        names(temp1)<-tr(names(temp1))
+        names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Model goodness intensity"), i.rownames=tr("Season"), i.format="csv")
+                      i.sheet=trloc("Model goodness intensity"), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -3502,17 +3502,17 @@ shinyServer(function(input, output, session) {
           
           fluidRow(
             fluidRow(              
-              valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), tr("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-              valueBox(format(round(optim["Specificity"], 2), nsmall=2), tr("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-              valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), tr("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-              valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), tr("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow")
+              valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
+              valueBox(format(round(optim["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
+              valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+              valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow")
             ),
             fluidRow(
-              valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), tr("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-              valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), tr("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-              valueBox(format(round(optim["Youdens Index"], 2), nsmall=2), tr("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua"),
-              valueBox(format(round(input$param, 2), nsmall=1), tr("Current parameter"), icon = icon("heartbeat"), width=3, color="red"),
-              valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall=1), tr("Optimum parameter"), icon = icon("heartbeat"), width=3, color="olive")
+              valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
+              valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
+              valueBox(format(round(optim["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua"),
+              valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("heartbeat"), width=3, color="red"),
+              valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("heartbeat"), width=3, color="olive")
               
             ),
             fluidRow(
@@ -3557,8 +3557,8 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Indicators"), uiOutput("tbmOptimizeASummary")),
-                  tabPanel(tr("Detailed"),
+      tabsetPanel(tabPanel(trloc("Indicators"), uiOutput("tbmOptimizeASummary")),
+                  tabPanel(trloc("Detailed"),
                            formattable::formattableOutput("tbmOptimizeADetail"),
                            fluidRow(
                              column(8),
@@ -3566,14 +3566,14 @@ shinyServer(function(input, output, session) {
                                     if (zip.present()){
                                       downloadButton("tbmOptimizeADetail_x","xlsx")
                                     }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                     }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                     }),
                              column(2,downloadButton("tbmOptimizeADetail_c","csv"))
                            )
                   ),
-                  tabPanel(tr("Graphs"),plotlyOutput("tbmOptimizeAGraph"))
+                  tabPanel(trloc("Graphs"),plotlyOutput("tbmOptimizeAGraph"))
       )
     }
   })
@@ -3586,15 +3586,15 @@ shinyServer(function(input, output, session) {
       doptim<-dataoptim$roc.data
       optim<-doptim[doptim$value==as.numeric(dataoptim$optimum[as.character(input$optimmethod)]),]
       fluidRow(
-        valueBox(format(round(optim["sensitivity"], 2), nsmall=2), tr("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(optim["specificity"], 2), nsmall=2), tr("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), tr("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), tr("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-        valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), tr("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), tr("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(optim["youdens.index"], 2), nsmall=2), tr("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua"),
-        valueBox(format(round(input$param, 2), nsmall=1), tr("Current parameter"), icon = icon("heartbeat"), width=3, color="red"),
-        valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), tr("Optimum parameter"), icon = icon("heartbeat"), width=3, color="olive")
+        valueBox(format(round(optim["sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(optim["specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
+        valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(optim["youdens.index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua"),
+        valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("heartbeat"), width=3, color="red"),
+        valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("heartbeat"), width=3, color="olive")
       )
     }
   })
@@ -3627,10 +3627,10 @@ shinyServer(function(input, output, session) {
       dataoptim <- data_optim()
       if(!is.null(dataoptim)){
         temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
-        names(temp1)<-tr(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+        names(temp1)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         rownames(temp1)<-NULL
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Optimization"), i.rownames=NA, i.format="xlsx")
+                      i.sheet=trloc("Optimization"), i.rownames=NA, i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3642,10 +3642,10 @@ shinyServer(function(input, output, session) {
       dataoptim <- data_optim()
       if(!is.null(dataoptim)){
         temp1<-dataoptim$roc.data[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
-        names(temp1)<-tr(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+        names(temp1)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         rownames(temp1)<-NULL
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=tr("Optimization"), i.rownames=NA, i.format="csv")
+                      i.sheet=trloc("Optimization"), i.rownames=NA, i.format="csv")
       }
     },
     contentType="text/csv"
@@ -3657,7 +3657,7 @@ shinyServer(function(input, output, session) {
       z<-NULL
     }else{
       dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index"))
-      names(dgraf)<-tr(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+      names(dgraf)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
       dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
       colors.palette<-generate_palette(i.number.series=NCOL(dgraf)-1,
                                        i.colObservedLines=input$colObservedLines,
@@ -3704,8 +3704,8 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Data"), DT::dataTableOutput("tbsData")),
-                  tabPanel(tr("Surveillance"),uiOutput("tbsSurveillance"))
+      tabsetPanel(tabPanel(trloc("Data"), DT::dataTableOutput("tbsData")),
+                  tabPanel(trloc("Surveillance"),uiOutput("tbsSurveillance"))
       )
     }
   })
@@ -3744,14 +3744,14 @@ shinyServer(function(input, output, session) {
     }else if(!(input$SelectSurveillance %in% names(datfile))){
       return(NULL)
     }else{
-      tabsetPanel(tabPanel(tr("Week"), plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
+      tabsetPanel(tabPanel(trloc("Week"), plotlyOutput("tbsSurveillanceWeek", width ="100%", height ="100%")),
                   if (animationmethod<4){
-                    tabPanel(tr("Animated"), imageOutput("tbsSurveillanceAnimated"))
+                    tabPanel(trloc("Animated"), imageOutput("tbsSurveillanceAnimated"))
                   }else{
                     cat('animation package + GraphicsMagick or ImageMagic or magick package needed for this function to work. Please install it.\n')
-                    tabPanel(tr("Animated"), tableOutput("tbsSurveillanceAnimated_nomagick"))
+                    tabPanel(trloc("Animated"), tableOutput("tbsSurveillanceAnimated_nomagick"))
                   },
-                  tabPanel(tr("Average"),
+                  tabPanel(trloc("Average"),
                            plotlyOutput("tbsSurveillanceAverage", width ="100%", height ="100%")
                            ,
                            fluidRow(
@@ -3760,9 +3760,9 @@ shinyServer(function(input, output, session) {
                                     if (zip.present()){
                                       downloadButton("tbsSurveillanceAverage_x","xlsx")
                                     }else if (.Platform$OS.type=="windows"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Rtools not found"), icon = icon("file-excel-o"), onclick ="window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                                     }else if (.Platform$OS.type=="unix"){
-                                      shiny::actionButton(inputId='noziplink', label=tr("Zip not found"), icon = icon("file-excel-o"))
+                                      shiny::actionButton(inputId='noziplink', label=trloc("Zip not found"), icon = icon("file-excel-o"))
                                     }),
                              column(2,downloadButton("tbsSurveillanceAverage_c","csv"))
                            )
@@ -3983,7 +3983,7 @@ shinyServer(function(input, output, session) {
         datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
         survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
         datfile.plot[-(1:survweek),1]<-NA
-        names(datfile.plot)<-c(input$SelectSurveillance,tr("Lower interval"),tr("Average curve"),tr("Upper interval"))
+        names(datfile.plot)<-c(input$SelectSurveillance,trloc(c("Lower interval","Average curve","Upper interval")))
         colors.palette<-generate_palette(i.number.series=3,
                                          i.colObservedLines=input$colObservedLines,
                                          i.colObservedPoints=input$colObservedPoints,
@@ -4055,7 +4055,7 @@ shinyServer(function(input, output, session) {
             datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
             survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
             datfile.plot[-(1:survweek),1]<-NA
-            names(datfile.plot)<-c(input$SelectSurveillance,tr("Lower interval"),tr("Average curve"),tr("Upper interval"))
+            names(datfile.plot)<-c(input$SelectSurveillance,trloc(c("Lower interval","Average curve","Upper interval")))
             colors.palette<-generate_palette(i.number.series=3,
                                              i.colObservedLines=input$colObservedLines,
                                              i.colObservedPoints=input$colObservedPoints,
@@ -4094,9 +4094,9 @@ shinyServer(function(input, output, session) {
               temp2<-temp2[order(temp2$week),p$labels]
               row.names(temp2)<-p$weeklabels
               temp2$week<-NULL
-              names(temp2)<-tr(names(temp2))
+              names(temp2)<-trloc(names(temp2))
               export.mydata(i.data=temp2, i.file = file,
-                            i.sheet=tr("Average curve"), i.rownames=tr("Week no"), i.format="xlsx")
+                            i.sheet=trloc("Average curve"), i.rownames=trloc("Week no"), i.format="xlsx")
             }
           }
         }
@@ -4133,7 +4133,7 @@ shinyServer(function(input, output, session) {
             datfile.plot<-data.frame(datfile[input$SelectSurveillance],datamodel$typ.curve)
             survweek<-(1:(NROW(datfile)))[SurveillanceWeek==rownames(datfile)]
             datfile.plot[-(1:survweek),1]<-NA
-            names(datfile.plot)<-c(input$SelectSurveillance,tr("Lower interval"),tr("Average curve"),tr("Upper interval"))
+            names(datfile.plot)<-c(input$SelectSurveillance,trloc(c("Lower interval","Average curve","Upper interval")))
             colors.palette<-generate_palette(i.number.series=3,
                                              i.colObservedLines=input$colObservedLines,
                                              i.colObservedPoints=input$colObservedPoints,
@@ -4172,9 +4172,9 @@ shinyServer(function(input, output, session) {
               temp2<-temp2[order(temp2$week),p$labels]
               row.names(temp2)<-p$weeklabels
               temp2$week<-NULL
-              names(temp2)<-tr(names(temp2))
+              names(temp2)<-trloc(names(temp2))
               export.mydata(i.data=temp2, i.file = file,
-                            i.sheet=tr("Average curve"), i.rownames=tr("Week no"), i.format="csv")
+                            i.sheet=trloc("Average curve"), i.rownames=trloc("Week no"), i.format="csv")
             }
           }
         }
@@ -4204,10 +4204,10 @@ shinyServer(function(input, output, session) {
                                       i.pandemic=as.logical("TRUE"),
                                       i.seasons=NA)
       if (length(selectedcolumns)>0){
-        tabsetPanel(tabPanel(tr("Data"), DT::dataTableOutput("tbvData")),
-                    tabPanel(tr("Seasons"), plotlyOutput("tbvSeasons", width ="100%", height ="100%")),
-                    tabPanel(tr("Series"),plotlyOutput("tbvSeries", width ="100%", height ="100%")),
-                    tabPanel(tr("Timing"),uiOutput("tbvTiming"))
+        tabsetPanel(tabPanel(trloc("Data"), DT::dataTableOutput("tbvData")),
+                    tabPanel(trloc("Seasons"), plotlyOutput("tbvSeasons", width ="100%", height ="100%")),
+                    tabPanel(trloc("Series"),plotlyOutput("tbvSeries", width ="100%", height ="100%")),
+                    tabPanel(trloc("Timing"),uiOutput("tbvTiming"))
         )
       }else{
         return(NULL)
@@ -4405,12 +4405,12 @@ shinyServer(function(input, output, session) {
   
   output$uifile = renderUI({
     popify(
-      fileInput('file', label=h4(tr("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
-      , title = tr("Load file"), content = tr("memapp is able to read text, excel, access and R"), placement = "right", trigger = "hover", options = list(container = "body"))
+      fileInput('file', label=h4(trloc("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
+      , title = trloc("Load file"), content = trloc("memapp is able to read text, excel, access and R"), placement = "right", trigger = "hover", options = list(container = "body"))
   })
   
   output$uiDataset = renderUI({
-    box(title=tr("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
+    box(title=trloc("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
         uiOutput("uidataset"),
         uiOutput("uifirstWeek"),
         uiOutput("uilastWeek"),
@@ -4420,80 +4420,80 @@ shinyServer(function(input, output, session) {
   
   output$uidataset = renderUI({
     popify(
-      selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
-      , title = tr("Dataset"), content = tr("If the format is able to store different datasets, select the one you want to open"), placement = "right", trigger = "hover", options = list(container = "body"))
+      selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
+      , title = trloc("Dataset"), content = trloc("If the format is able to store different datasets, select the one you want to open"), placement = "right", trigger = "hover", options = list(container = "body"))
   })
   
   output$uifirstWeek = renderUI({
     popify(
-      selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("First Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = head(getWeeksOriginal(),1))
-      , title = tr("First Week"), content = tr("First week of the datasets surveillance period"),                                    placement = "right", trigger = "hover", options = list(container = "body"))
+      selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("First Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = head(getWeeksOriginal(),1))
+      , title = trloc("First Week"), content = trloc("First week of the datasets surveillance period"),                                    placement = "right", trigger = "hover", options = list(container = "body"))
   })
   
   output$uilastWeek = renderUI({
     popify(
-      selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Last Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = tail(getWeeksOriginal(),1))
-      , title = tr("Last Week"), content = tr("Last week of the datasets surveillance period"),                                     placement = "right", trigger = "hover", options = list(container = "body"))
+      selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Last Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = tail(getWeeksOriginal(),1))
+      , title = trloc("Last Week"), content = trloc("Last week of the datasets surveillance period"),                                     placement = "right", trigger = "hover", options = list(container = "body"))
   })
   
   output$uitransformation = renderUI({
     transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
-    names(transformation.list)<-tr(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
+    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
     popify(
-      selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
-      , title = tr("Transform"), content = tr("Select the transformation to apply to the original data"),                            placement = "right", trigger = "hover", options = list(container = "body"))
+      selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
+      , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = "hover", options = list(container = "body"))
   })
   
   output$uiModel = renderUI({
-    box(title=tr("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+    box(title=trloc("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
-          selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
-          , title = tr("From"), content = tr("First season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+          selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
+          , title = trloc("From"), content = trloc("First season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1])
-          , title = tr("To"), content = tr("Last season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+          selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1])
+          , title = trloc("To"), content = trloc("Last season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
-          , title = tr("Exclude"), content = tr("Select any number of seasons to be excluded from the model"), placement = "right", trigger = "hover", options = list(container = "body")),
+          selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
+          , title = trloc("Exclude"), content = trloc("Select any number of seasons to be excluded from the model"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Maximum seasons")), 10, step=1)
-          , title = tr("Maximum seasons"), content = tr("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = "hover", options = list(container = "body"))
+          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Maximum seasons")), 10, step=1)
+          , title = trloc("Maximum seasons"), content = trloc("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiSurveillance = renderUI({
-    box(title=tr("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
+    box(title=trloc("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
-          selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
-          , title = tr("Season"), content = tr("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+          selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
+          , title = trloc("Season"), content = trloc("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
-          , title = tr("Week"), content = tr("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = "hover", options = list(container = "body")),
+          selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
+          , title = trloc("Week"), content = trloc("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
-          , title = tr("Force epidemic start"), content = tr("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = "hover", options = list(container = "body"))
+          selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
+          , title = trloc("Force epidemic start"), content = trloc("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiVisualize = renderUI({
-    box(title=tr("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+    box(title=trloc("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
-          selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
-          , title = tr("Seasons"), content = tr("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = "hover", options = list(container = "body"))
+          selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
+          , title = trloc("Seasons"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiThresholds = renderUI({
-    box(title=tr("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+    box(title=trloc("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
-          checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Pre-epidemic threshold")), value = TRUE)
-        , title = tr("Pre-epidemic threshold"), content = tr("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
+          checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Pre-epidemic threshold")), value = TRUE)
+        , title = trloc("Pre-epidemic threshold"), content = trloc("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Post-epidemic threshold")), value = FALSE)
-        , title = tr("Post-epidemic threshold"), content = tr("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
+          checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Post-epidemic threshold")), value = FALSE)
+        , title = trloc("Post-epidemic threshold"), content = trloc("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
         popify(
-          checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Intensity thresholds/levels")), value = TRUE)
-        , title = tr("Intensity thresholds/levels"), content = tr("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body"))
+          checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Intensity thresholds/levels")), value = TRUE)
+        , title = trloc("Intensity thresholds/levels"), content = trloc("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body"))
     )
   })
 
@@ -4503,7 +4503,7 @@ shinyServer(function(input, output, session) {
         singleton(tags$head(
           tags$link(rel="stylesheet", type="text/css",href="busyIndicator.css")
         ))
-        ,div(class="shinysky-busy-indicator",p(tr("Calculation in progress. This may take a while...")),img(src="ajaxloaderq.gif"))
+        ,div(class="shinysky-busy-indicator",p(trloc("Calculation in progress. This may take a while...")),img(src="ajaxloaderq.gif"))
         ,tags$script(sprintf(
           "	setInterval(function(){
           if ($('html').hasClass('shiny-busy')) {
@@ -4519,167 +4519,167 @@ shinyServer(function(input, output, session) {
           ",500)
         )
       ),
-      titlePanel(h1(tr("The Moving Epidemic Method Web Application")))
+      titlePanel(h1(trloc("The Moving Epidemic Method Web Application")))
     )
   })
   
   output$uiProcedures = renderUI({
     tabBox(
-      title = h3(tr("Procedures"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "800px",
-      tabPanel(h4(tr("Check & describe"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Check data series, timing and describe the data", uiOutput("tbData")),
-      tabPanel(h4(tr("Model"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Summary, graphs, goodness and optimization of the MEM model", uiOutput("tbModel")),
-      tabPanel(h4(tr("Surveillance"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Surveillance tools", uiOutput("tbSurveillance")),
-      tabPanel(h4(tr("Visualize"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), "Visualize different sets of data with a MEM model", uiOutput("tbVisualize"))
+      title = h3(trloc("Procedures"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "800px",
+      tabPanel(h4(trloc("Check & describe"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Check data series, timing and describe the data"), uiOutput("tbData")),
+      tabPanel(h4(trloc("Model"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Summary, graphs, goodness and optimization of the MEM model"), uiOutput("tbModel")),
+      tabPanel(h4(trloc("Surveillance"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Surveillance tools"), uiOutput("tbSurveillance")),
+      tabPanel(h4(trloc("Visualize"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Visualize different sets of data with a MEM model"), uiOutput("tbVisualize"))
     )
   })
   
   output$uiTextoptions = renderUI({
     box(
-      title=tr("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+      title=trloc("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
-        textInput("textMain", label = h6(tr("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("Main title"))
-        , title = tr("Main title"), content = tr("Change the main title in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+        textInput("textMain", label = h6(trloc("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("Main title"))
+        , title = trloc("Main title"), content = trloc("Change the main title in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        textInput("textY", label = h6(tr("Y-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("Y-axis"))
-        , title = tr("Y-axis"), content = tr("Change the y-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+        textInput("textY", label = h6(trloc("Y-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("Y-axis"))
+        , title = trloc("Y-axis"), content = trloc("Change the y-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        textInput("textX", label = h6(tr("X-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = tr("X-axis"))
-        , title = tr("X-axis"), content = tr("Change the x-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
+        textInput("textX", label = h6(trloc("X-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("X-axis"))
+        , title = trloc("X-axis"), content = trloc("Change the x-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiGraphoptions = renderUI({
     box(
-      title=tr("Graph options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+      title=trloc("Graph options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
-        selectInput("colObservedLines", h6(tr("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Observed (line)"), content = tr("Color of the line of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("colObservedLines", h6(trloc("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Observed (line)"), content = trloc("Color of the line of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("colObservedPoints", h6(tr("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Observed (points)"), content = tr("Color of the points of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("colObservedPoints", h6(trloc("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Observed (points)"), content = trloc("Color of the points of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("colEpidemicStart", h6(tr("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Epidemic start"), content = tr("Color of the point of the epidemic start marker"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("colEpidemicStart", h6(trloc("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Epidemic start"), content = trloc("Color of the point of the epidemic start marker"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("colEpidemicStop", h6(tr("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Epidemic end"), content = tr("Color of the point of the epidemic end marker"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("colEpidemicStop", h6(trloc("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Epidemic end"), content = trloc("Color of the point of the epidemic end marker"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("colThresholds", h6(tr("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Thresholds palette"), content = tr("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("colThresholds", h6(trloc("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Thresholds palette"), content = trloc("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("colSeasons", h6(tr("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Seasons palette"), content = tr("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("colSeasons", h6(trloc("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Seasons palette"), content = trloc("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("colEpidemic", h6(tr("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = tr("Timing palette"), content = tr("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
+        selectInput("colEpidemic", h6(trloc("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        , title = trloc("Timing palette"), content = trloc("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiMEMoptions = renderUI({
     method.list<-list("Original method"=1, "Fixed criterium method"=2, "Slope method"=3, "Second derivative method"=4)
-    names(method.list)<-tr(c("Original method", "Fixed criterium method", "Slope method", "Second derivative method"))
+    names(method.list)<-trloc(c("Original method", "Fixed criterium method", "Slope method", "Second derivative method"))
     nvalues.list<-list("30 in total"=-1,"All"=0,"1/season"=1,"2/season"=2,"3/season"=3,"4/season"=4,"5/season"=5,"6/season"=6,"7/season"=7,"8/season"=8,"9/season"=9,"10/season"=10)
-    names(nvalues.list)<-tr(c("30 in total","All","1/season","2/season","3/season","4/season","5/season","6/season","7/season","8/season","9/season","10/season"))
+    names(nvalues.list)<-trloc(c("30 in total","All","1/season","2/season","3/season","4/season","5/season","6/season","7/season","8/season","9/season","10/season"))
     validation.list<-list("Cross"="cross", "Sequential"="sequential")
-    names(validation.list)<-tr(c("Cross", "Sequential"))
+    names(validation.list)<-trloc(c("Cross", "Sequential"))
     optimmethod.list<-list("Positive likehood"="pos.likehood", "Negative likehood"="neg.likehood", "Aditive"="aditive", "Multiplicative"="multiplicative", "Mixed"="mixed", "Percent agreement"="percent","Matthews Correlation Coefficient"="matthews","Youden's Index"="youden")
-    names(optimmethod.list)<-tr(c("Positive likehood", "Negative likehood", "Aditive", "Multiplicative", "Mixed", "Percent agreement","Matthews Correlation Coefficient","Youden's Index"))
+    names(optimmethod.list)<-trloc(c("Positive likehood", "Negative likehood", "Aditive", "Multiplicative", "Mixed", "Percent agreement","Matthews Correlation Coefficient","Youden's Index"))
     type.list<-list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6)
-    names(type.list)<-tr(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and the KC Method to calculate its confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
+    names(type.list)<-trloc(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and the KC Method to calculate its confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
     
     box(
-      title=tr("MEM options"), status = "danger", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=TRUE,
-      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Timing")),
+      title=trloc("MEM options"), status = "danger", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=TRUE,
+      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Timing")),
       popify(
-        selectInput("method", h6(tr("Method for timing"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = method.list, size=1, selectize = FALSE, selected = 2)
-        , title = tr("Method for timing"), content = tr("<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve"), placement = "left", trigger = "hover", options = list(container = "body")
+        selectInput("method", h6(trloc("Method for timing"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = method.list, size=1, selectize = FALSE, selected = 2)
+        , title = trloc("Method for timing"), content = trloc("<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve"), placement = "left", trigger = "hover", options = list(container = "body")
       ),
       conditionalPanel(condition = "input.method == 2",
                        popify(
-                         numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Slope parameter")), 2.8, step=0.1)
-                         , title = tr("Slope parameter"), content = tr("Slope parameter used in fixed criterium method"), placement = "left", trigger = "hover", options = list(container = "body"))
+                         numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Slope parameter")), 2.8, step=0.1)
+                         , title = trloc("Slope parameter"), content = trloc("Slope parameter used in fixed criterium method"), placement = "left", trigger = "hover", options = list(container = "body"))
       ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
       fluidRow(
         column(6,
                popify(
-                 selectInput("nvalues", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Values per season")), choices = nvalues.list, size=1, selectize = FALSE, selected = -1)
-                 , title = tr("Values per season"), content = tr("Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 selectInput("nvalues", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Values per season")), choices = nvalues.list, size=1, selectize = FALSE, selected = -1)
+                 , title = trloc("Values per season"), content = trloc("Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(6,
                popify(
-                 numericInput("ntails", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Tails")), 1, step=1, min = 1, max = 2)
-                 , title = tr("Tails"), content = tr("Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 numericInput("ntails", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Tails")), 1, step=1, min = 1, max = 2)
+                 , title = trloc("Tails"), content = trloc("Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds"), placement = "left", trigger = "hover", options = list(container = "body"))
         )
       ),
       popify(
-        selectInput("typethreshold", h6(tr("Epidemic threshold"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 5)
-        , title = tr("Epidemic threshold"), content = tr("Method for calculating the epidemic threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("typethreshold", h6(trloc("Epidemic threshold"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 5)
+        , title = trloc("Epidemic threshold"), content = trloc("Method for calculating the epidemic threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
         selectInput("typeintensity", h6("Intensity thresholds", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 6)
-        , title = tr("Intensity thresholds"), content = tr("Method for calculating the intensity threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Intensity thresholds"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
       fluidRow(
         column(4,
                popify(
-                 numericInput("levelintensitym", h6(tr("Medium lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 40, step=0.5, min = 0.5, max = 99.5)
-                 , title = tr("Medium lvl"), content = tr("Level of the confidence interval used to calculate the medium threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 numericInput("levelintensitym", h6(trloc("Medium lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 40, step=0.5, min = 0.5, max = 99.5)
+                 , title = trloc("Medium lvl"), content = trloc("Level of the confidence interval used to calculate the medium threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(4,
                popify(
-                 numericInput("levelintensityh", h6(tr("High lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 90, step=0.5, min = 0.5, max = 99.5)
-                 , title = tr("High lvl"), content = tr("Level of the confidence interval used to calculate the high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 numericInput("levelintensityh", h6(trloc("High lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 90, step=0.5, min = 0.5, max = 99.5)
+                 , title = trloc("High lvl"), content = trloc("Level of the confidence interval used to calculate the high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(4,
                popify(
-                 numericInput("levelintensityv", h6(tr("Very high lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 97.5, step=0.5, min = 0.5, max = 99.5)
-                 , title = tr("Very high lvl"), content = tr("Level of the confidence interval used to calculate the very high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 numericInput("levelintensityv", h6(trloc("Very high lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 97.5, step=0.5, min = 0.5, max = 99.5)
+                 , title = trloc("Very high lvl"), content = trloc("Level of the confidence interval used to calculate the very high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
         )
       ),
-      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Goodness & optimize")),
+      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Goodness & optimize")),
       fluidRow(
         column(6,
                popify(
-                 selectInput("validation", h6(tr("Validation"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size=1, selectize = FALSE, selected = "cross")
-                 , title = tr("Validation"), content = tr("Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 selectInput("validation", h6(trloc("Validation"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size=1, selectize = FALSE, selected = "cross")
+                 , title = trloc("Validation"), content = trloc("Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only"), placement = "left", trigger = "hover", options = list(container = "body"))
         ),
         column(6,
                popify(
-                 selectInput("optimmethod", h6(tr("Optimization method"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = optimmethod.list, size=1, selectize = FALSE, selected = "matthews")
-                 , title = tr("Optimization method"), content = tr("Method to choose the optimum parameter"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 selectInput("optimmethod", h6(trloc("Optimization method"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = optimmethod.list, size=1, selectize = FALSE, selected = "matthews")
+                 , title = trloc("Optimization method"), content = trloc("Method to choose the optimum parameter"), placement = "left", trigger = "hover", options = list(container = "body"))
         )
       ),
       popify(
-        sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Parameter range")), min = 0.1, max = 10, value = c(2, 4), step=0.1)
-        , title = tr("Parameter range"), content = tr("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = "hover", options = list(container = "body")
+        sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Parameter range")), min = 0.1, max = 10, value = c(2, 4), step=0.1)
+        , title = trloc("Parameter range"), content = trloc("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = "hover", options = list(container = "body")
       ),
-      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Other")),
+      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Other")),
       popify(
-        selectInput("typecurve", h6(tr("Average curve CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 2)
-        , title = tr("Average curve CI."), content = tr("Method for calculating the average curve confidence intervals"), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("typecurve", h6(trloc("Average curve CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 2)
+        , title = trloc("Average curve CI."), content = trloc("Method for calculating the average curve confidence intervals"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        selectInput("typeother", h6(tr("Other CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 3)
-        , title = tr("Other CI."), content = tr("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = "hover", options = list(container = "body")),
+        selectInput("typeother", h6(trloc("Other CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 3)
+        , title = trloc("Other CI."), content = trloc("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
-        numericInput("levelaveragecurve", h6(tr("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
-        , title = tr("Average curve/Other CI. level"), content = tr("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = "hover", options = list(container = "body"))
+        numericInput("levelaveragecurve", h6(trloc("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
+        , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiSupport = renderUI({
     box(
-      title=tr("Support"), status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-      h5(a(tr("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
-      h5(a(tr("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
+      title=trloc("Support"), status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+      h5(a(trloc("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
+      h5(a(trloc("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
       popify(
-      checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), tr("Show advanced features")), value = FALSE)
-      , title = tr("Show advanced features"), content = tr("Show advanced features of memapp"), placement = "left", trigger = "hover", options = list(container = "body"))
+      checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = FALSE)
+      , title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
   
   output$uiLanguage = renderUI({
     popify(
-    h4(tr("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"))
-    , title = tr("Language"), content = tr("Change the language of the application"), placement = "left", trigger = "hover", options = list(container = "body"))
+    h4(trloc("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"))
+    , title = trloc("Language"), content = trloc("Change the language of the application"), placement = "left", trigger = "hover", options = list(container = "body"))
   })
 
   #####################################
