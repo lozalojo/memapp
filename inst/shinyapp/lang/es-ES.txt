@@ -183,7 +183,9 @@ Very high thr.;Umb. muy alto
 Very high threshold;Umbral muy alto
 Visualize;Visualizar
 Week;Semana
-Week no;Semana no
+Week no;Semana nu
+Week na;Semana no
+Point;Punto
 Weekly data;Datos semanales
 X-axis;Eje X
 Y-axis;Eje Y

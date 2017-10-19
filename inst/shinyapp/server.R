@@ -1355,8 +1355,10 @@ shinyServer(function(input, output, session) {
         lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s),"_table")]] <- renderTable({
           if (NROW(values$clickdata)>0){
             etwo<-extract.two(values$clickdata,"weekno","season")
-            etwo2<-subset(etwo,etwo$season==as.character(s))[c("season","weekno","weekna","id.tail",paste0(as.character(s),"_fixed"))]
-            names(etwo2)[5]<-as.character(s)
+            etwo<-merge(etwo,data.frame(id.tail=c(1,2),point=trloc(c("Start","End")), stringsAsFactors = F),by="id.tail")
+            etwo2<-subset(etwo,etwo$season==as.character(s))[c("season","weekno","point",paste0(as.character(s),"_fixed"))]
+            names(etwo2)[1:3]<-trloc(c("Season","Week","Point"))
+            names(etwo2)[4]<-as.character(s)
           }else{
             etwo2<-data.frame(message="No data")
           }
@@ -1477,6 +1479,9 @@ shinyServer(function(input, output, session) {
     if (!is.null(query[['advancedfeatures']])) {
       updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
     }
+    if (!is.null(query[['language']])) {
+      updateSelectInput(session, "lang", value = as.character(query[['language']]))
+    }
   })
   
   #####################################
@@ -1591,7 +1596,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(datfile)){
         selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
         if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file,
-                                                     i.sheet=trloc("Data"), i.rownames=trloc("Week no"), i.format="xlsx")
+                                                     i.sheet=substring(trloc("Data"),1,32), i.rownames=trloc("Week no"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -1605,7 +1610,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(datfile)){
         selectedcolumns<-select.columns(i.names=names(datfile), i.from="", i.to="", i.exclude="", i.include="", i.pandemic=T, i.seasons=NA)
         if (length(selectedcolumns)>0) export.mydata(i.data=datfile[selectedcolumns], i.file=file,
-                                                     i.sheet=trloc("Data"), i.rownames=trloc("Week no"), i.format="csv")
+                                                     i.sheet=substring(trloc("Data"),1,32), i.rownames=trloc("Week no"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -2015,7 +2020,7 @@ shinyServer(function(input, output, session) {
       if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
       names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
       if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
-                                                i.sheet=trloc("Evolution"), i.rownames=trloc("Season"), i.format="xlsx")
+                                                i.sheet=substring(trloc("Evolution"),1,32), i.rownames=trloc("Season"), i.format="xlsx")
       
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2029,7 +2034,7 @@ shinyServer(function(input, output, session) {
       if (row.names(datashow)[NROW(datashow)]=="next") row.names(datashow)[NROW(datashow)]<-trloc("next")
       names(datashow)<-trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
       if(!is.null(dataevolution)) export.mydata(i.data=datashow, i.file=file,
-                                                i.sheet=trloc("Evolution"), i.rownames=trloc("Season"), i.format="csv")
+                                                i.sheet=substring(trloc("Evolution"),1,32), i.rownames=trloc("Season"), i.format="csv")
     },
     contentType="text/csv"
   )
@@ -2281,7 +2286,7 @@ shinyServer(function(input, output, session) {
       datashow<-datastability$stability.data
       names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic perc. (lower limit)","Epidemic perc.","Epidemic perc. (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
       if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file,
-                                                i.sheet=trloc("Stability"), i.rownames=trloc("Seasons"), i.format="xlsx")
+                                                i.sheet=substring(trloc("Stability"),1,32), i.rownames=trloc("Seasons"), i.format="xlsx")
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
@@ -2293,7 +2298,7 @@ shinyServer(function(input, output, session) {
       datashow<-datastability$stability.data
       names(datashow)<-trloc(c("Duration (lower limit)","Duration","Duration (upper limit)","Start (lower limit)","Start","Start (upper limit)","Epidemic perc. (lower limit)","Epidemic perc.","Epidemic perc. (upper limit)","Epidemic thr.","Post-epidemic thr.","Medium thr.","High thr.","Very high thr."))
       if(!is.null(datastability)) export.mydata(i.data=datashow, i.file = file,
-                                                i.sheet=trloc("Stability"), i.rownames=trloc("Seasons"), i.format="csv")
+                                                i.sheet=substring(trloc("Stability"),1,32), i.rownames=trloc("Seasons"), i.format="csv")
     },
     contentType="text/csv"
   )
@@ -2393,7 +2398,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Global goodness summary"), i.rownames=trloc("Season"), i.format="xlsx")
+                      i.sheet=substring(trloc("Global goodness summary"),1,32), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2409,7 +2414,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Global goodness summary"), i.rownames=trloc("Season"), i.format="csv")
+                      i.sheet=substring(trloc("Global goodness summary"),1,32), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -2482,7 +2487,7 @@ shinyServer(function(input, output, session) {
         temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Global goodness intensity"), i.rownames=trloc("Season"), i.format="xlsx")
+                      i.sheet=substring(trloc("Global goodness intensity"),1,32), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2498,7 +2503,7 @@ shinyServer(function(input, output, session) {
         temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Global goodness intensity"), i.rownames=trloc("Season"), i.format="csv")
+                      i.sheet=substring(trloc("Global goodness intensity"),1,32), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -2598,7 +2603,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datamodel<-data_model()
       if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file,
-                                            i.sheet=trloc("Model data"), i.rownames=trloc("Week no"), i.format="xlsx")
+                                            i.sheet=substring(trloc("Model data"),1,32), i.rownames=trloc("Week no"), i.format="xlsx")
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   )
@@ -2608,7 +2613,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datamodel<-data_model()
       if(!is.null(datamodel)) export.mydata(i.data=datamodel$param.data, i.file = file,
-                                            i.sheet=trloc("Model data"), i.rownames=trloc("Week no"), i.format="csv")
+                                            i.sheet=substring(trloc("Model data"),1,32), i.rownames=trloc("Week no"), i.format="csv")
     },
     contentType="text/csv"
   )
@@ -3044,7 +3049,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Model goodness summary"), i.rownames=trloc("Season"), i.format="xlsx")
+                      i.sheet=substring(trloc("Model goodness summary"),1,32), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3060,7 +3065,7 @@ shinyServer(function(input, output, session) {
         temp1<-as.data.frame(t(temp1))[c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")]
         names(temp1)<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Model goodness summary"), i.rownames=trloc("Season"), i.format="csv")
+                      i.sheet=substring(trloc("Model goodness summary"),1,32), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -3150,7 +3155,7 @@ shinyServer(function(input, output, session) {
         temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Model goodness intensity"), i.rownames=trloc("Season"), i.format="xlsx")
+                      i.sheet=substring(trloc("Model goodness intensity"),1,32), i.rownames=trloc("Season"), i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3165,7 +3170,7 @@ shinyServer(function(input, output, session) {
         temp1$Description<-trloc(temp1$Description)
         names(temp1)<-trloc(names(temp1))
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Model goodness intensity"), i.rownames=trloc("Season"), i.format="csv")
+                      i.sheet=substring(trloc("Model goodness intensity"),1,32), i.rownames=trloc("Season"), i.format="csv")
       }
     },
     contentType="text/csv"
@@ -3221,8 +3226,10 @@ shinyServer(function(input, output, session) {
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
       etwo<-extract.two(values$clickdata,"weekno","season")
-      optr<-subset(etwo,etwo$season %in% names(datfile)[selectedcolumns])[c("season","weekno","weekna","id.tail",paste0(names(datfile)[selectedcolumns],"_fixed"))]
-      names(optr)[5:(length(selectedcolumns)+4)]<-names(datfile)[selectedcolumns]
+      etwo<-merge(etwo,data.frame(id.tail=c(1,2),point=trloc(c("Start","End")), stringsAsFactors = F),by="id.tail")
+      optr<-subset(etwo,etwo$season %in% names(datfile)[selectedcolumns])[c("season","weekna","point",paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      names(optr)[1:3]<-trloc(c("Season","Week","Point"))
+      names(optr)[4:(length(selectedcolumns)+3)]<-names(datfile)[selectedcolumns]
     }else{
       optr<-NULL
     }
@@ -3238,8 +3245,9 @@ shinyServer(function(input, output, session) {
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
       clickd<-values$clickdata
-      optr<-subset(clickd,clickd$season %in% names(datfile)[selectedcolumns])[c("season","weekno","weekna",paste0(names(datfile)[selectedcolumns],"_fixed"))]
-      names(optr)[4:(length(selectedcolumns)+3)]<-names(datfile)[selectedcolumns]
+      optr<-subset(clickd,clickd$season %in% names(datfile)[selectedcolumns])[c("season","weekna",paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      names(optr)[1:2]<-trloc(c("Season","Week"))
+      names(optr)[3:(length(selectedcolumns)+2)]<-names(datfile)[selectedcolumns]
     }else{
       optr<-NULL
     }
@@ -3462,8 +3470,6 @@ shinyServer(function(input, output, session) {
             gfile
           })})
           
-          #print(optimum.by.inspection.output$optimum)
-          
           optim<-memgoodness(datfile[selectedcolumns],
                              i.seasons=as.numeric(input$SelectMaximum),
                              i.type.threshold=as.numeric(input$typethreshold),
@@ -3517,9 +3523,11 @@ shinyServer(function(input, output, session) {
                     "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
                     "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
                   ), digits = 2, format = "f")
+                  names(opt.table)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
+                  names(attr(opt.table, "formattable")$format[[1]])<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
                 }else{
-                  temp1<-data.frame(Error="Number of columns must be greater than 2",row.names = NULL)
-                  opt.table<-formattable::formattable(data.frame(Error="Number of columns must be greater than 2",row.names = NULL))
+                  temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"),row.names = NULL)
+                  opt.table<-formattable::formattable(temp1)
                 }
                 opt.table
               })
@@ -3617,7 +3625,7 @@ shinyServer(function(input, output, session) {
         names(temp1)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         rownames(temp1)<-NULL
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Optimization"), i.rownames=NA, i.format="xlsx")
+                      i.sheet=substring(trloc("Optimization"),1,32), i.rownames=NA, i.format="xlsx")
       }
     },
     contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -3632,7 +3640,7 @@ shinyServer(function(input, output, session) {
         names(temp1)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
         rownames(temp1)<-NULL
         export.mydata(i.data=temp1, i.file = file,
-                      i.sheet=trloc("Optimization"), i.rownames=NA, i.format="csv")
+                      i.sheet=substring(trloc("Optimization"),1,32), i.rownames=NA, i.format="csv")
       }
     },
     contentType="text/csv"
@@ -4085,7 +4093,7 @@ shinyServer(function(input, output, session) {
               temp2$week<-NULL
               names(temp2)<-trloc(names(temp2))
               export.mydata(i.data=temp2, i.file = file,
-                            i.sheet=trloc("Average curve"), i.rownames=trloc("Week no"), i.format="xlsx")
+                            i.sheet=substring(trloc("Average curve"),1,32), i.rownames=trloc("Week no"), i.format="xlsx")
             }
           }
         }
@@ -4163,7 +4171,7 @@ shinyServer(function(input, output, session) {
               temp2$week<-NULL
               names(temp2)<-trloc(names(temp2))
               export.mydata(i.data=temp2, i.file = file,
-                            i.sheet=trloc("Average curve"), i.rownames=trloc("Week no"), i.format="csv")
+                            i.sheet=substring(trloc("Average curve"),1,32), i.rownames=trloc("Week no"), i.format="csv")
             }
           }
         }
