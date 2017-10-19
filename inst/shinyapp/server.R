@@ -1482,7 +1482,7 @@ shinyServer(function(input, output, session) {
     }
     if (!is.null(query[['language']])) {
       cat("query> language ", query[['language']],"\n")
-      updateSelectInput(session, "lang", value = as.character(query[['language']]))
+      updateSelectInput(session, "lang", selected = as.character(query[['language']]))
     }
   })
   
