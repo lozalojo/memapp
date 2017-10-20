@@ -3655,9 +3655,7 @@ shinyServer(function(input, output, session) {
     }else{
       dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index"))
       names(dgraf)<-c("Parameter", trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")))
-      print(dgraf)
       dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
-      print(dgrafgg)
       colors.palette<-generate_palette(i.number.series=NCOL(dgraf)-1,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
