@@ -73,6 +73,16 @@ install.GraphicsMagick()
 install.ImageMagick()
 ```
 
+## Localization
+
+Starting with version 2.7, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at
+
+```
+inst/shinyapp/lang/en-GB.txt
+```
+
+With a text editor, translate the second column to your language and send it to the maintainer.
+
 ## References
 
 Vega T, Lozano JE, Ortiz de Lejarazu R, Gutierrez Perez M. Modelling influenza epidemic—can we detect the beginning and predict the intensity and duration? Int Congr Ser. 2004 Jun;1263:281–3. 
