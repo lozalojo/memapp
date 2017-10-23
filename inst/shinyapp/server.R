@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
   ### SERVER-SIDE FUNCTIONS
   #####################################
   
-  trloc <- function(text){ # translates text into current language
+  trloc <- function(text){
     as.character(sapply(text,function(s){
       o.text<-tail(translation[translation$original==s,input$lang])
       if (NROW(o.text)!=1) o.text<-s
@@ -1091,9 +1091,7 @@ shinyServer(function(input, output, session) {
   getDatasets <- eventReactive(input$file, {
     cat("reactive/getDatasets> begin\n")
     readdata <- read_data()
-    # datfile <- readdata$datasetread
     datsheets <- readdata$datasets
-    # datweeks <- readdata$dataweeks
     if (!is.null(datsheets)) cat("reactive/getDatasets> updating dataset list\n")    
     cat("reactive/getDatasets> end\n")
     return(datsheets)
@@ -4407,7 +4405,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiDataset = renderUI({
-    box(title=trloc("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed=FALSE,
+    box(title=trloc("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = FALSE, collapsed=FALSE,
         uiOutput("uidataset"),
         uiOutput("uifirstWeek"),
         uiOutput("uilastWeek"),
