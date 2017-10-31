@@ -1885,7 +1885,7 @@ shinyServer(function(input, output, session) {
                         "value",
                         rownames(datfile.plot))
         # fix to replace relative to absolute weeks
-        for (i in 1:3) zfix$x$data[[i]]$text<-paste(trloc("Season"),": ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
+        for (i in 1:3) zfix$x$data[[i]]$text<-paste(trloc("Season"),": ",rownames(datfile.plot),"<br />",names(datfile.plot)[i],": ", rownames(datfile)[datfile.plot[,i]],sep="")
       }
     }
     zfix
@@ -2158,7 +2158,7 @@ shinyServer(function(input, output, session) {
                         "value",
                         rownames(datfile.plot))
         # fix to replace relative to absolute weeks
-        for (i in 1:3) zfix$x$data[[i]]$text<-paste(trloc("Seasons"),": ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
+        for (i in 1:3) zfix$x$data[[i]]$text<-paste(trloc("Seasons"),": ",rownames(datfile.plot),"<br />",names(datfile.plot)[i],": ", rownames(datfile)[datfile.plot[,i]],sep="")
       }
     }
     zfix
