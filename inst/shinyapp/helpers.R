@@ -662,7 +662,16 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   toremove<-toremove[order(toremove, decreasing = T)]
   # in reverse order, since removing changes order
   for (i in 1:length(toremove)) i.plotly$x$data[[toremove[i]]]<-NULL
+  i.plotly<-fixlatin(i.plotly)
   return(i.plotly)
+}
+
+fixlatin<-function(i.plotly){
+  o.plotly<-i.plotly
+  for (i in 1:length(i.plotly$x$data)){
+    o.plotly$x$data[[i]]$text<-iconv(i.plotly$x$data[[i]]$text, from="UTF-8", to="LATIN1")
+  }
+  o.plotly
 }
 
 fixed_color_bar <- function (color = "lightgray", fixedWidth=150, alpha=0.5,...){
