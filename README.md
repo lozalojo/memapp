@@ -75,7 +75,7 @@ install.ImageMagick()
 
 ## Localization
 
-Starting with version 2.7, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at github:
+Starting with version 2.6, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at github:
 
 ```
 https://github.com/lozalojo/memapp/blob/master/inst/shinyapp/lang/en-GB.txt

@@ -29,7 +29,6 @@ Suggests:
     magick,
     animation
 Remotes:
-  github::ropensci/plotly,
   github::hadley/ggplot2,
   github::lozalojo/mem
 Description: Web application created in the Shiny framework for the 'mem' R package.
