@@ -641,7 +641,7 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   for (i in 1:nlists){
     if (length(grep(i.yname,i.plotly$x$data[[i]]$text))>0){
       dividetext<-matrix(unlist(strsplit(i.plotly$x$data[[i]]$text,"<br>|<br />")),nrow=length(i.plotly$x$data[[i]]$text), byrow=T)
-      i.plotly$x$data[[i]]$text<-paste("Week: ",i.weeklabels,"<br />",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
+      i.plotly$x$data[[i]]$text<-paste(i.xname, ": ",i.weeklabels,"<br />",sub(i.yname,i.labels[sequ[i]],dividetext[,2]),sep="")
     }
   }
   # For those with points and labels, i modify the mode and add the marker

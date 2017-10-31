@@ -27,13 +27,15 @@ shinyServer(function(input, output, session) {
   ### SERVER-SIDE FUNCTIONS
   #####################################
   
-  trloc <- function(text){
-    as.character(sapply(text,function(s){
+  trloc <- function(i.text, i.trans=F){
+    txtres<-as.character(sapply(i.text, function(s){
       o.text<-tail(translation[translation$original==s,input$lang])
       if (NROW(o.text)!=1) o.text<-s
       if (is.na(o.text)) o.text<-s
       o.text
     }, USE.NAMES=FALSE))
+    if (i.trans) txtres<-stringi::stri_trans_general(txtres, "Latin-ASCII")
+    txtres
   }
   
   plotSeasons <- function(i.data,
@@ -457,7 +459,7 @@ shinyServer(function(input, output, session) {
         ggthemes::theme_few() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
-              weeklabels=paste(data.orig$week,"<br />Season: ",data.orig$season,sep=""), gdata=dgrafgg.s)
+              weeklabels=paste(data.orig$week,paste0("<br />",trloc("Season"),": "),data.orig$season,sep=""), gdata=dgrafgg.s)
     }
     p
   }
@@ -1182,7 +1184,7 @@ shinyServer(function(input, output, session) {
             zfix<-NULL
           }else{
             z <- ggplotly(p$plot, width = 800, height = 600)
-            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
           }
         }
         zfix
@@ -1234,7 +1236,7 @@ shinyServer(function(input, output, session) {
             zfix<-NULL
           }else{
             z <- ggplotly(p$plot, width = 800, height = 600)
-            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
           }
         }
         zfix
@@ -1286,7 +1288,7 @@ shinyServer(function(input, output, session) {
             zfix<-NULL
           }else{
             z <- ggplotly(p$plot, width = 800, height = 600)
-            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
           }
         }
         zfix
@@ -1665,7 +1667,7 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           z <- ggplotly(p$plot, width = 800, height = 600)
-          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
         }
       }
     }
@@ -1726,7 +1728,7 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           z <- ggplotly(p$plot, width = 800, height = 600)
-          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
         }
       }
     }
@@ -1829,7 +1831,7 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Season"),
                         "value",
                         rownames(datfile.plot))
       }
@@ -1879,11 +1881,11 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Season"),
                         "value",
                         rownames(datfile.plot))
         # fix to replace relative to absolute weeks
-        for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
+        for (i in 1:3) zfix$x$data[[i]]$text<-paste(trloc("Season"),": ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
       }
     }
     zfix
@@ -1928,7 +1930,7 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Season"),
                         "value",
                         rownames(datfile.plot))
       }
@@ -1975,7 +1977,7 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Season"),
                         "value",
                         rownames(datfile.plot))
       }
@@ -2105,7 +2107,7 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Seasons"),
                         "value",
                         rownames(datfile.plot))
       }
@@ -2152,11 +2154,11 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Seasons"),
                         "value",
                         rownames(datfile.plot))
         # fix to replace relative to absolute weeks
-        for (i in 1:3) zfix$x$data[[i]]$text<-paste("Week: ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
+        for (i in 1:3) zfix$x$data[[i]]$text<-paste(trloc("Seasons"),": ",rownames(datfile.plot),"<br />",names(datfile.plot),": ", rownames(datfile)[datfile.plot[,i]],sep="")
       }
     }
     zfix
@@ -2199,7 +2201,7 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Seasons"),
                         "value",
                         rownames(datfile.plot))
       }
@@ -2244,7 +2246,7 @@ shinyServer(function(input, output, session) {
                         names(datfile.plot),
                         rep(T,NCOL(datfile.plot)),
                         rep(T,NCOL(datfile.plot)),
-                        "num",
+                        trloc("Seasons"),
                         "value",
                         rownames(datfile.plot))
       }
@@ -2662,7 +2664,7 @@ shinyServer(function(input, output, session) {
         zfix<-NULL
       }else{
         z <- ggplotly(p$plot, width = 800, height = 600)
-        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
       }
     }
     zfix
@@ -2718,7 +2720,7 @@ shinyServer(function(input, output, session) {
         zfix<-NULL
       }else{
         z <- ggplotly(p$plot, width = 800, height = 600)
-        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
       }
     }
     zfix
@@ -2863,7 +2865,7 @@ shinyServer(function(input, output, session) {
                         c(p$labels,trloc(c("Mean start","Mean end"))),
                         c(p$haslines,T,T),
                         c(p$haspoints,F,F),
-                        "week","value",p$weeklabels)
+                        trloc("Week"),"value",p$weeklabels)
       }
     }
     zfix
@@ -2912,7 +2914,7 @@ shinyServer(function(input, output, session) {
         zfix<-NULL
       }else{
         z <- ggplotly(p$plot, width = 800, height = 600)
-        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
       }
     }
     zfix
@@ -3685,6 +3687,12 @@ shinyServer(function(input, output, session) {
         theme(plot.title = element_text(hjust = 0.5))
       
       z<-ggplotly(p, width = 800, height = 600)
+      # fix popup values
+      for (i in 1:length(z$x$data)){
+        z$x$data[[i]]$text<-gsub("Parameter",trloc("Parameter"),z$x$data[[i]]$text, fixed=T)
+        z$x$data[[i]]$text<-gsub("Value",trloc("Value"),z$x$data[[i]]$text, fixed=T)
+        z$x$data[[i]]$text<-gsub("Indicator",trloc("Indicator"),z$x$data[[i]]$text, fixed=T)
+      }
     }
     z
   })
@@ -3827,7 +3835,7 @@ shinyServer(function(input, output, session) {
         zfix<-NULL
       }else{
         z <- ggplotly(p$plot, width = 800, height = 600)
-        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+        zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
       }
     }
     zfix
@@ -4015,7 +4023,7 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           z <- ggplotly(p$plot, width = 800, height = 600)
-          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
         }
       }
     }
@@ -4298,7 +4306,7 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           z <- ggplotly(p$plot, width = 800, height = 600)
-          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
         }
       }
     }
@@ -4371,7 +4379,7 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           z <- ggplotly(p$plot, width = 800, height = 600)
-          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,"week","value",p$weeklabels)
+          zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
         }
       }
     }
