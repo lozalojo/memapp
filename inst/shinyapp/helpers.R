@@ -662,7 +662,7 @@ fixplotly<-function(i.plotly,i.labels,i.lines,i.points,i.xname,i.yname,i.weeklab
   toremove<-toremove[order(toremove, decreasing = T)]
   # in reverse order, since removing changes order
   for (i in 1:length(toremove)) i.plotly$x$data[[toremove[i]]]<-NULL
-  i.plotly<-fixlatin(i.plotly)
+  if (.Platform$OS.type=="windows") i.plotly<-fixlatin(i.plotly)
   return(i.plotly)
 }
 
