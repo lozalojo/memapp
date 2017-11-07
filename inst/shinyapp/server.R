@@ -171,7 +171,9 @@ shinyServer(function(input, output, session) {
       names(dgraf)<-labels
       dgraf$week<-1:NROW(dgraf)
       
-      dgrafgg<-melt(dgraf,id="week")
+      #dgrafgg<-reshape2::melt(dgraf,id="week")
+      dgrafgg <- dgraf %>% tidyr::gather(variable, value, -week)
+      dgrafgg$variable<-factor(dgrafgg$variable, levels=labels, labels=labels)
       
       selected.indicators<-(1:(2*NCOL(data.full)))[apply(dgraf[1:(2*NCOL(data.full))],2,function(x) !all(is.na(x)))]
       if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2*NCOL(data.full)+1)
@@ -208,6 +210,10 @@ shinyServer(function(input, output, session) {
       axis.y.range <- axis.y.otick$range
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
+      
+      # save(list = ls(envir = environment(), all.names = TRUE),
+      #      file = "C:/Users/lozalojo/Documents/R/plotseasons.Rdata", 
+      #      envir=environment())
       
       gplot<-ggplot(dgrafgg.s) +
         geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
@@ -395,7 +401,9 @@ shinyServer(function(input, output, session) {
       names(dgraf)<-labels
       dgraf$week<-1:NROW(dgraf)
       
-      dgrafgg<-melt(dgraf,id="week")
+      #dgrafgg<-reshape2::melt(dgraf,id="week")
+      dgrafgg <- dgraf %>% tidyr::gather(variable, value, -week)
+      dgrafgg$variable<-factor(dgrafgg$variable, levels=labels, labels=labels)
       
       selected.indicators<-1
       if (i.plot.timing){
@@ -666,7 +674,9 @@ shinyServer(function(input, output, session) {
       names(dgraf)<-labels
       dgraf$week<-1:semanas
       
-      dgrafgg<-melt(dgraf,id="week")
+      # dgrafgg<-reshape2::melt(dgraf,id="week")
+      dgrafgg <- dgraf %>% tidyr::gather(variable, value, -week)
+      dgrafgg$variable<-factor(dgrafgg$variable, levels=labels, labels=labels)
       
       selected.indicators<-1
       if (i.pre.epidemic) selected.indicators<-c(selected.indicators,2)
@@ -747,7 +757,10 @@ shinyServer(function(input, output, session) {
       dgraf<-i.data
       labels<-names(dgraf)
       dgraf$num<-1:NROW(dgraf)
-      dgrafgg<-melt(dgraf,id="num")
+      
+      #dgrafgg<-reshape2::melt(dgraf,id="num")
+      dgrafgg <- dgraf %>% tidyr::gather(variable, value, -num)
+      dgrafgg$variable<-factor(dgrafgg$variable, levels=labels, labels=labels)
       
       # Calculate ticks for x
       axis.x.range <- c(1,NROW(dgraf))
@@ -3261,7 +3274,10 @@ shinyServer(function(input, output, session) {
     datfile <- readdata$datasetread
     if (NROW(values$clickdata)>0){
       etwo<-extract.two(values$clickdata,"weekno","season")
-      etwot<-reshape2::dcast(etwo, season ~  id.tail, value.var="weekno")
+      #save(etwo, file = "C:/Users/lozalojo/Documents/R/etwo.bin")
+      #etwot<-reshape2::dcast(etwo, season ~  id.tail, value.var="weekno")
+      etwot <- etwo %>% select(id.tail, season, weekno) %>% tidyr::spread(id.tail, weekno, drop = FALSE, fill = NA)
+      
       selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
@@ -3655,7 +3671,10 @@ shinyServer(function(input, output, session) {
     }else{
       dgraf<-subset(dataoptim$roc.data,select=c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index"))
       names(dgraf)<-c("Parameter", trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")))
-      dgrafgg<-melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
+      # dgrafgg<-reshape2::melt(dgraf,id="Parameter", value.name = "Value", variable.name = "Indicator")
+      dgrafgg <- dgraf %>% tidyr::gather(Indicator, Value, -Parameter)
+      dgrafgg$Indicator<-factor(dgrafgg$Indicator, levels=names(dgraf)[-1], labels=names(dgraf)[-1])
+      
       colors.palette<-generate_palette(i.number.series=NCOL(dgraf)-1,
                                        i.colObservedLines=input$colObservedLines,
                                        i.colObservedPoints=input$colObservedPoints,
@@ -4093,7 +4112,10 @@ shinyServer(function(input, output, session) {
                              i.colThresholds=colors.palette$colThresholds)
             if (!is.null(p)){
               temp1<-p$gdata
-              temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+              # save(temp1, file = "C:/Users/lozalojo/Documents/R/temp1.bin")
+              #temp2<-reshape2::dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+              temp2 <- temp1 %>% select(variable, week, value) %>% tidyr::spread(variable, value, drop = FALSE, fill = NA)
+              
               temp2<-temp2[order(temp2$week),p$labels]
               row.names(temp2)<-p$weeklabels
               temp2$week<-NULL
@@ -4171,7 +4193,8 @@ shinyServer(function(input, output, session) {
                              i.colThresholds=colors.palette$colThresholds)
             if (!is.null(p)){
               temp1<-p$gdata
-              temp2<-dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+              #temp2<-reshape2::dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
+              temp2 <- temp1 %>% select(variable, week, value) %>% tidyr::spread(variable, value, drop = FALSE, fill = NA)
               temp2<-temp2[order(temp2$week),p$labels]
               row.names(temp2)<-p$weeklabels
               temp2$week<-NULL
