@@ -1,0 +1,12 @@
+﻿Original;Translated
+Load file;Загрузить файл
+Dataset;Набор данных
+Model;модель
+Visualize;Визуализируйте
+Thresholds;Пороги
+Text options;Параметры текста
+Graph options;Параметры графика
+MEM options;Параметры MEM
+Support;поддержка
+Language;язык
+Season;сезон

@@ -7,6 +7,7 @@ get.languages<-function(){
   langfiles<-data.frame(filename=tools::file_path_sans_ext(list.files(translation.dir, ".*\\.txt")), stringsAsFactors = F)
   langfiles$lcidstring<-tolower(langfiles$filename)
   locales<-utils::read.delim(paste0(translation.dir,"/locales.txt"),header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T)
+  locales$lcidstring<-gsub("-","_",locales$lcidstring, fixed=T)
   languages<-merge(locales,langfiles,by="lcidstring")
   languages
 }

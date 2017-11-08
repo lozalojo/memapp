@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
   #####################################
   
   values <- reactiveValues(origdata = NULL, plotdata = NULL, clickdata=NULL, idscreated = NULL, 
-                           optimizegraphs = NULL)
+                           optimizegraphs = NULL, locale=Sys.getlocale())
   
   #####################################
   ### SERVER-SIDE FUNCTIONS
@@ -812,6 +812,7 @@ shinyServer(function(input, output, session) {
   
   data_model <- reactive({
     readdata <- read_data()
+    cat("reactive/data_model> begin\n")
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       epi<-NULL
@@ -843,11 +844,13 @@ shinyServer(function(input, output, session) {
                         i.n.max=as.numeric(input$nvalues))
       }
     }
+    cat("reactive/data_model> end\n")
     epi
   })
   
   data_good_model <- reactive({
     readdata <- read_data()
+    cat("reactive/data_good_model> begin\n")
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       good<-NULL
@@ -899,11 +902,13 @@ shinyServer(function(input, output, session) {
       }
       gfile
     })})
+    cat("reactive/data_good_model> end\n")
     good
   })
   
   data_good_global <- reactive({
     readdata <- read_data()
+    cat("reactive/data_good_global> begin\n")
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       good<-NULL
@@ -960,11 +965,13 @@ shinyServer(function(input, output, session) {
       }
       gfile
     })})
+    cat("reactive/data_good_global> end\n")
     good
   })
   
   data_optim <- reactive({
     readdata <- read_data()
+    cat("reactive/data_optim> begin\n")
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       roca<-NULL
@@ -997,11 +1004,13 @@ shinyServer(function(input, output, session) {
                            i.goodness.method=as.character(input$validation))
       }
     }
+    cat("reactive/data_optim> end\n")
     roca
   })
   
   data_evolution <- reactive({
     readdata <- read_data()
+    cat("reactive/data_evolution> begin\n")
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       evo<-NULL
@@ -1024,11 +1033,13 @@ shinyServer(function(input, output, session) {
                           i.param=as.numeric(input$param),
                           i.n.max=as.numeric(input$nvalues))
     }
+    cat("reactive/data_evolution> end\n")
     evo
   })
   
   data_stability <- reactive({
     readdata <- read_data()
+    cat("reactive/data_stability> begin\n")
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       sta<-NULL
@@ -1049,6 +1060,7 @@ shinyServer(function(input, output, session) {
                           i.param=as.numeric(input$param),
                           i.n.max=as.numeric(input$nvalues))
     }
+    cat("reactive/data_stability> end\n")
     sta
   })
   
@@ -1056,29 +1068,29 @@ shinyServer(function(input, output, session) {
     infile <- input$file
     indataset <- input$dataset
     inname <- infile$name
+    cat("reactive/read_data> begin\n")
     i.range.x<-rep(NA,2)
     if (!is.null(input$firstWeek)) i.range.x[1]<-as.numeric(input$firstWeek)
     if (!is.null(input$lastWeek)) i.range.x[2]<-as.numeric(input$lastWeek)
-    cat("read_data> ------------------------------------------\n")
-    cat("read_data> Name: ",inname,"\n")
-    cat("read_data> Dataset: ",indataset,"\n")
-    cat("read_data> Range: ",i.range.x[1],"-",i.range.x[2],"\n")
+    cat("reactive/read_data> Name: ",inname,"\n")
+    cat("reactive/read_data> Dataset: ",indataset,"\n")
+    cat("reactive/read_data> Range: ",i.range.x[1],"-",i.range.x[2],"\n")
     if(is.null(infile)){
       datasets=NULL
       datasetread=NULL
-      cat("read_data> Warning: No file\n")
+      cat("reactive/read_data> Warning: No file\n")
     }else if(is.null(indataset)){
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
-      cat("read_data> Warning: No dataset\n")
+      cat("reactive/read_data> Warning: No dataset\n")
     }else if (indataset==""){
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
-      cat("read_data> Warning: No dataset\n")
+      cat("reactive/read_data> Warning: No dataset\n")
     }else{
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x)
       temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)
@@ -1094,41 +1106,14 @@ shinyServer(function(input, output, session) {
       dataweeksoriginal=NULL
       dataweeksfiltered=NULL
     }
-    cat("read_data> datasets returning NULL?: ",is.null(datasets),"\n")
-    cat("read_data> dataweeksoriginal returning NULL?: ",is.null(dataweeksoriginal),"\n")
-    cat("read_data> dataweeksfiltered returning NULL?: ",is.null(dataweeksfiltered),"\n")
-    cat("read_data> datasetread NULL?: ",is.null(datasetread),"\n")
-    cat("read_data> ------------------------------------------\n")
+    cat("reactive/read_data> datasets returning NULL?: ",is.null(datasets),"\n")
+    cat("reactive/read_data> dataweeksoriginal returning NULL?: ",is.null(dataweeksoriginal),"\n")
+    cat("reactive/read_data> dataweeksfiltered returning NULL?: ",is.null(dataweeksfiltered),"\n")
+    cat("reactive/read_data> datasetread NULL?: ",is.null(datasetread),"\n")
+    cat("reactive/read_data> end\n")
     readdata<-list(datasets=datasets, datasetread=datasetread, dataweeksoriginal=dataweeksoriginal, dataweeksfiltered=dataweeksfiltered)
     readdata
   })
-  
-  getDatasets <- eventReactive(input$file, {
-    cat("reactive/getDatasets> begin\n")
-    readdata <- read_data()
-    datsheets <- readdata$datasets
-    if (!is.null(datsheets)) cat("reactive/getDatasets> updating dataset list\n")    
-    cat("reactive/getDatasets> end\n")
-    return(datsheets)
-  })
-  
-  getWeeksOriginal <- eventReactive(input$dataset, {
-    cat("reactive/getWeeksOriginal> begin\n")
-    readdata <- read_data()
-    dataweeksoriginal <- readdata$dataweeksoriginal
-    if (!is.null(dataweeksoriginal)) cat("reactive/getWeeksOriginal> updating first/last week list\n")
-    cat("reactive/getWeeksOriginal> end\n")
-    return(dataweeksoriginal)
-  })
-  
-  getWeeksFiltered <- eventReactive(c(input$dataset,input$firstWeek,input$lastWeek), {
-    cat("reactive/getWeeksFiltered> begin\n")
-    readdata <- read_data()
-    dataweeksfiltered <- readdata$dataweeksfiltered
-    if (!is.null(dataweeksfiltered)) cat("reactive/getWeeksFiltered> updating first/last week list\n")
-    cat("reactive/getWeeksFiltered> end\n")
-    return(dataweeksfiltered)
-  })  
   
   getSeasons <- reactive({
     cat("reactive/getSeasons> begin\n")
@@ -1139,19 +1124,81 @@ shinyServer(function(input, output, session) {
     cat("reactive/getSeasons> end\n")
     return(seasons)
   })
+
+  getDatasets <- eventReactive(input$file, {
+    cat("eventReactive/getDatasets> begin\n")
+    readdata <- read_data()
+    datsheets <- readdata$datasets
+    if (!is.null(datsheets)) cat("eventReactive/getDatasets> updating dataset list\n")    
+    cat("eventReactive/getDatasets> end\n")
+    return(datsheets)
+  })
+  
+  getWeeksOriginal <- eventReactive(input$dataset, {
+    cat("eventReactive/getWeeksOriginal> begin\n")
+    readdata <- read_data()
+    dataweeksoriginal <- readdata$dataweeksoriginal
+    if (!is.null(dataweeksoriginal)) cat("reactive/getWeeksOriginal> updating first/last week list\n")
+    cat("eventReactive/getWeeksOriginal> end\n")
+    return(dataweeksoriginal)
+  })
+  
+  getWeeksFiltered <- eventReactive(c(input$dataset,input$firstWeek,input$lastWeek), {
+    cat("eventReactive/getWeeksFiltered> begin\n")
+    readdata <- read_data()
+    dataweeksfiltered <- readdata$dataweeksfiltered
+    if (!is.null(dataweeksfiltered)) cat("reactive/getWeeksFiltered> updating first/last week list\n")
+    cat("eventReactive/getWeeksFiltered> end\n")
+    return(dataweeksfiltered)
+  })  
   
   #####################################
   ### OBSERVERS
   #####################################
-
+  # Pass url parameters to the app, in this case to advanced features, once the server is run, you can
+  # use http://127.0.0.1:7910/?advancedfeatures=TRUE to enable/disable advanced features
+  
+  observe({
+    cat("observe/urlquery> begin\n")
+    query <- parseQueryString(session$clientData$url_search)
+    cat("observe/urlquery> searching for language URL parameter\n")
+    if (!is.null(query[['language']])) {
+      cat("query> language ", query[['language']],"\n")
+      updateSelectInput(session, "lang", selected = as.character(query[['language']]))
+    }
+    cat("observe/urlquery> searching for advanced features URL parameter\n")
+    if (!is.null(query[['advancedfeatures']])) {
+      cat("query> advancedfeatures ", query[['advancedfeatures']],"\n")
+      updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
+    }
+    cat("observe/urlquery> begin\n")
+  })
+  
+  observeEvent(input$lang, {
+    lang<-input$lang
+    cat("observeEvent/language> begin\n")
+    cat("observeEvent/language> original locale:",values$locale,"\n")
+    langs<-stringi::stri_locale_list()
+    if (lang %in% tolower(langs)){
+      langok<-langs[lang==tolower(langs)]
+      cat("observeEvent/language> changing to:",langok,"\n")
+      #Sys.setlocale(locale = langok)
+    }else{
+      cat("observeEvent/language> language not in the locales list\n")      
+      #stringi::stri_locale_info("ru_RU")
+    }
+    cat("observeEvent/language> current locale:",Sys.getlocale(),"\n")
+    cat("observeEvent/language> end\n")
+  })
+  
   observeEvent(read_data(), {
-    cat("observe/read_data> begin\n")
+    cat("observeEvent/read_data> begin\n")
     readdata <- read_data()
     datfile <- readdata$datasetread
     datsheets <- readdata$datasets
     if (!is.null(datfile)){
       seasons<-names(datfile)
-      cat("observe/read_data> updating timing plots\n")
+      cat("observeEvent/read_data> updating timing plots\n")
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
         if(is.null(datfile)){
           zfix<-NULL
@@ -1306,7 +1353,7 @@ shinyServer(function(input, output, session) {
         }
         zfix
       })})
-      cat("observe/read_data> updating manual optimization plots\n")
+      cat("observeEvent/read_data> updating manual optimization plots\n")
       selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
                                       i.exclude=input$SelectExclude, i.include="",
                                       i.pandemic=T,
@@ -1481,22 +1528,7 @@ shinyServer(function(input, output, session) {
         })
       }
     }
-    cat("observe/read_data> end\n")
-  })
-  
-  # Pass url parameters to the app, in this case to advanced features, once the server is run, you can
-  # use http://127.0.0.1:7910/?advancedfeatures=TRUE to enable/disable advanced features
-  
-  observe({
-    query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(query[['language']])) {
-      cat("query> language ", query[['language']],"\n")
-      updateSelectInput(session, "lang", selected = as.character(query[['language']]))
-    }
-    if (!is.null(query[['advancedfeatures']])) {
-      cat("query> advancedfeatures ", query[['advancedfeatures']],"\n")
-      updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
-    }
+    cat("observeEvent/read_data> end\n")
   })
   
   #####################################

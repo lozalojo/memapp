@@ -13,7 +13,7 @@ read.language <- function(i.lang){
     }else{
       myencoding <- stringi::stri_enc_detect(lines)[[1]]$`Encoding`[1]
     }
-    translation<-utils::read.delim(lfile,header=F,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T, encoding = myencoding)
+    translation<-utils::read.delim(lfile,header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T, encoding = myencoding)
     names(translation)<-c("original","translated")
     translation$lang<-langs$lcidstring[langs$filename==i.lang]
   }else{
