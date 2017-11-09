@@ -2,17 +2,12 @@ options(warn =-1)
 # route messages to output in the server
 if (!interactive()) sink(stderr(), type = "output")
 
-source("helpers.R")
-
 set.rzip()
 animationmethod<-animation.method()
-
-translation.loc<-c("lang","inst/shinyapp/lang",paste0(.libPaths(),"/memapp/shinyapp/lang"))
-translation.dir<-utils::head(translation.loc[dir.exists(translation.loc)],1)
-translation.fil<-paste0(translation.dir,"/translation.bin")
-
+translation.fil<-paste0(translation.dir(),"/translation.bin")
 load(translation.fil)
-cat(paste0("Translation file loaded from: ",tools::file_path_as_absolute(translation.fil)," (",NROW(translation)," items)"),"\n")
+cat(paste0("preparation> Translation file loaded from: ",tools::file_path_as_absolute(translation.fil)," (",NROW(translation)," items)"),"\n")
+cat("preparation> end\n")
 
 shinyServer(function(input, output, session) {
   
@@ -1178,14 +1173,22 @@ shinyServer(function(input, output, session) {
     lang<-input$lang
     cat("observeEvent/language> begin\n")
     cat("observeEvent/language> original locale:",values$locale,"\n")
-    langs<-stringi::stri_locale_list()
-    if (lang %in% tolower(langs)){
-      langok<-langs[lang==tolower(langs)]
-      cat("observeEvent/language> changing to:",langok,"\n")
-      #Sys.setlocale(locale = langok)
+    langs<-get.languages()
+    if (lang %in% langs$filename){
+      if (.Platform$OS.type=="windows"){
+        cat("observeEvent/language> Windows system detected\n")
+        localestring<-langs$localewin[langs$filename==lang]
+      }else if (.Platform$OS.type=="unix"){
+        cat("observeEvent/language> *nix system detected\n")
+        localestring<-langs$localelinux[langs$filename==lang]
+      }else{
+        cat("observeEvent/language> No windows or *nix system detected\n")
+        localestring<-""
+      }
+      cat("observeEvent/language> changing to:",dplyr::if_else(localestring=="","system default",localestring),"\n")
+      Sys.setlocale(locale = localestring)
     }else{
       cat("observeEvent/language> language not in the locales list\n")      
-      #stringi::stri_locale_info("ru_RU")
     }
     cat("observeEvent/language> current locale:",Sys.getlocale(),"\n")
     cat("observeEvent/language> end\n")

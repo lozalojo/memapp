@@ -721,11 +721,12 @@ export.mydata<-function(i.data, i.file, i.sheet=NA, i.rownames=NA, i.format="xls
 # Configure a zip extractor in the system, required for openxlsx saving, it is installed with Rtools
 
 set.rzip<-function(){
+  cat("function/setupzip> begin\n")
   if (.Platform$OS.type=="windows"){
-    cat("Windows system detected\n")
+    cat("function/setupzip> Windows system detected\n")
     if (file.exists("c:\\Rtools\\bin\\zip.exe")){
       ziploc<-"c:\\Rtools\\bin\\zip.exe"
-      cat("zip found at default dir ",ziploc,"\n")
+      cat("function/setupzip> zip found at default dir ",ziploc,"\n")
     }else{
       temp1<-Sys.getenv("PATH")
       if (grepl("rtools", tolower(temp1))){
@@ -740,30 +741,31 @@ set.rzip<-function(){
         }))
         if (any(temp7)){
           ziploc<-paste(temp6[temp7][1],"\\zip.exe",sep="")
-          cat("zip found at path ",ziploc,"\n")
+          cat("function/setupzip> zip found at path ",ziploc,"\n")
         }else{
           ziploc<-""
-          cat("no zip found\n")
+          cat("function/setupzip> no zip found\n")
         }
       }else{
         ziploc<-""
-        cat("no zip found\n")
+        cat("function/setupzip> no zip found\n")
       }
     }
   }else if (.Platform$OS.type=="unix"){
-    cat("*nix system detected\n")
+    cat("function/setupzip> *nix system detected\n")
     if (file.exists("/usr/bin/zip")){
       ziploc<-"/usr/bin/zip"
-      cat("zip found at ",ziploc,"\n")
+      cat("function/setupzip> zip found at ",ziploc,"\n")
     }else{
       ziploc<-""
-      cat("no zip found\n")
+      cat("function/setupzip> no zip found\n")
     }
   }else{
-    cat("No windows or *nix system detected\n")
+    cat("function/setupzip> No windows or *nix system detected\n")
     ziploc<-""
-    cat("no zip found\n")
+    cat("function/setupzip> no zip found\n")
   }
+  cat("function/setupzip> end\n")  
   Sys.setenv(R_ZIPCMD = ziploc)
 }
 
@@ -795,47 +797,49 @@ mdbtools.present<-function() file.exists("/usr/bin/mdb-tables") | file.exists("/
 # check what animation method has to be used
 
 animation.method<-function(){
+  cat("function/animation.method> begin\n")  
   if (.Platform$OS.type=="windows"){
-    cat("Windows system detected\n")
+    cat("function/animation.method> Windows system detected\n")
     path.env<-tolower(Sys.getenv("PATH"))
     if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, ignore.case = T, fixed=T)){
       # GraphicsMagick program + animation package
-      cat("GraphicsMagick+animation detected. Using animation package\n")
+      cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
       animation.method<-1
     }else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, ignore.case = T, fixed=T)){
       # ImageMagick program + animation package
-      cat("ImageMagick+animation detected. Using animation package\n")
+      cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
       animation.method<-2
     }else if ("magick" %in% rownames(installed.packages())){
       # magick package
-      cat("magick detected. Using magick package\n")
+      cat("function/animation.method> magick detected. Using magick package\n")
       animation.method<-3
     }else{
-      cat("No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      cat("function/animation.method> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
       animation.method<-4      
     }
   }else if (.Platform$OS.type=="unix"){
-    cat("*nix system detected\n")
+    cat("function/animation.method> *nix system detected\n")
     if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/gm")){
       # GraphicsMagick program + animation package
-      cat("GraphicsMagick+animation detected. Using animation package\n")
+      cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
       animation.method<-1
     }else if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/convert")){
       # ImageMagick program + animation package
-      cat("ImageMagick+animation detected. Using animation package\n")
+      cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
       animation.method<-2
     }else if("magick" %in% rownames(installed.packages())){
       # magick package
-      cat("magick detected. Using magick package\n")
+      cat("function/animation.method> magick detected. Using magick package\n")
       animation.method<-3
     }else{
-      cat("No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      cat("function/animation.method> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
       animation.method<-4      
     }
   }else{
-    cat("No windows or *nix system detected\n")
+    cat("function/animation.method> No windows or *nix system detected\n")
     animation.method<-4
   }
+  cat("function/animation.method> end\n")  
   return(animation.method)
 }
 
@@ -854,3 +858,61 @@ extract.two<-function(i.data, i.order, i.column){
   return(results)
 }
 
+# locale funcions
+
+translation.dir<-function(){
+  translation.loc<-c("lang","inst/shinyapp/lang",paste0(.libPaths(),"/memapp/shinyapp/lang"))
+  utils::head(translation.loc[dir.exists(translation.loc)],1)
+}
+
+get.languages<-function(){
+  langfiles<-data.frame(filename=tools::file_path_sans_ext(list.files(translation.dir(), ".*\\.txt")), stringsAsFactors = F)
+  locales<-utils::read.delim(paste0(translation.dir(),"/localestable.txt"),header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T)
+  languages<-dplyr::inner_join(locales,langfiles,by="filename")
+  languages
+}
+
+read.language <- function(i.filename){
+  langs<-get.languages()
+  lfile<-paste0(translation.dir(),"/",i.filename,".txt")
+  if (file.exists(lfile)){
+    lines <- paste(readLines(lfile, n = -1, warn=F),collapse="")
+    if (stringi::stri_enc_isascii(lines)) {
+      myencoding<-"ASCII"
+    }else{
+      myencoding <- stringi::stri_enc_detect(lines)[[1]]$`Encoding`[1]
+    }
+    translation<-utils::read.delim(lfile,header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T, encoding = myencoding)
+    names(translation)<-c("original","translated")
+    translation$filename<-i.filename
+  }else{
+    translation<-data.frame()
+  }
+  translation
+}
+
+build.languages <- function(){
+  cat("function/build.languages> begin\n")
+  translation.fil<-paste0(translation.dir(),"/translation.bin")
+  langs<-get.languages()
+  cat("function/build.languages> List of available languages:\n",paste0(paste0(langs$filename,"\t",langs$lang_name),collapse="\n"),"\n")
+  translationContent<-do.call(rbind,lapply(langs$filename,function(x) read.language(x)))
+  # To avoid R cmd check as for original, lang, translated as dplyr:select accept verbatim variable as input (not character)
+  original=filename=translated=NULL
+  translation <- translationContent %>% 
+    dplyr::select(original, filename, translated) %>% 
+    tidyr::spread(filename, translated, drop = FALSE, fill = NA)
+  save(translation, file = translation.fil)
+  cat(paste0("function/build.languages> Translation file saved to: ",tools::file_path_as_absolute(translation.fil)," (",NROW(translation)," items)"),"\n")
+  cat("function/build.languages> Language file built\n")
+  cat("function/build.languages> end\n")
+}
+
+get.r.versions <- function(){
+  list(
+    r=as.character(R.version$version.string),
+    platform=as.character(R.version$platform),
+    mem=if("mem" %in% rownames(installed.packages())) as.character(packageVersion("mem")) else "not installed",
+    memapp=if("memapp" %in% rownames(installed.packages())) as.character(packageVersion("memapp")) else "not installed"
+  )
+}

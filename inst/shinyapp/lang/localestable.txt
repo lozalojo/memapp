@@ -1,0 +1,69 @@
+lang_name;filename;localelinux;localewin;localewincharset
+Afrikaans;af_ZA;af_ZA.UTF-8;Afrikaans_South Africa.1252;WINDOWS-1252
+Albanian;sq_AL;sq_AL.UTF-8;Albanian_Albania.1250;WINDOWS-1250
+Arabic;ar_SA;ar_SA.UTF-8;Arabic_Saudi Arabia.1256;WINDOWS-1256
+Basque;eu_ES;eu_ES.UTF-8;Basque_Spain.1252;WINDOWS-1252
+Belarusian;be_BY;be_BY.UTF-8;Belarusian_Belarus.1251;WINDOWS-1251
+Bosnian;bs_BA;bs_BA.UTF-8;Bosnian (Latin);WINDOWS-1250
+Bulgarian;bg_BG;bg_BG.UTF-8;Bulgarian_Bulgaria.1251;WINDOWS-1251
+Catalan;ca_ES;ca_ES.UTF-8;Catalan_Spain.1252;WINDOWS-1252
+Chinese (Simplified);zh_CN;zh_CN.UTF-8;Chinese_China.936;CP936
+Chinese (Traditional);zh_TW;zh_TW.UTF-8;Chinese_Taiwan.950;CP950
+Croatian;hr_HR;hr_HR.UTF-8;Croatian_Croatia.1250;WINDOWS-1250
+Czech;cs_CZ;cs_CZ.UTF-8;Czech_Czech Republic.1250;WINDOWS-1250
+Danish;da_DK;da_DK.UTF-8;Danish_Denmark.1252;WINDOWS-1252
+Dutch;nl_NL;nl_NL.UTF-8;Dutch_Netherlands.1252;WINDOWS-1252
+English (Australia);en_AU;en.UTF-8;English_Australia.1252;WINDOWS-1252
+English (UK);en_GB;en.UTF-8;English_United Kingdom.1252;WINDOWS-1252
+English (US);en_US;en.UTF-8;English_United States.1252;WINDOWS-1252
+Estonian;et_EE;et_EE.UTF-8;Estonian_Estonia.1257;WINDOWS-1257
+Farsi;fa_IR;fa_IR.UTF-8;Farsi_Iran.1256;WINDOWS-1256
+Filipino;ph_PH;ph_PH.UTF-8;Filipino_Philippines.1252;WINDOWS-1252
+Finnish;fi_FI;fi_FI.UTF-8;Finnish_Finland.1252;WINDOWS-1252
+French;fr_FR;fr_FR.UTF-8;French_France.1252;WINDOWS-1252
+French (Belgium);fr_BE;fr_BE.UTF-8;French_France.1252;WINDOWS-1252
+French (Canada);fr_CA;fr_CA.UTF-8;French_Canada.1252;-parent fr_utf8 used-
+French (Switzerland);fr_CH;fr_CH.UTF-8;French_France.1252;WINDOWS-1252
+Gaelic;ga.UT;ga.UTF-8;"Gaelic; Scottish Gaelic";WINDOWS-1252
+Gallego;gl_ES;gl_ES.UTF-8;Galician_Spain.1252;WINDOWS-1252
+Georgian;ka_GE;ka_GE.UTF-8;Georgian_Georgia.65001;-empty string-
+German;de_DE;de_DE.UTF-8;German_Germany.1252;WINDOWS-1252
+Greek;el_GR;el_GR.UTF-8;Greek_Greece.1253;WINDOWS-1253
+Gujarati;gu.UT;gu.UTF-8;Gujarati_India.0;
+Hebrew;he_IL;he_IL.utf8;Hebrew_Israel.1255;WINDOWS-1255
+Hindi;hi_IN;hi_IN.UTF-8;Hindi.65001;
+Hungarian;hu.UT;hu.UTF-8;Hungarian_Hungary.1250;WINDOWS-1250
+Icelandic;is_IS;is_IS.UTF-8;Icelandic_Iceland.1252;WINDOWS-1252
+Indonesian;id_ID;id_ID.UTF-8;Indonesian_indonesia.1252;WINDOWS-1252
+Italian;it_IT;it_IT.UTF-8;Italian_Italy.1252;WINDOWS-1252
+Japanese;ja_JP;ja_JP.UTF-8;Japanese_Japan.932;CP932
+Kannada;kn_IN;kn_IN.UTF-8;Kannada.65001;
+Khmer;km_KH;km_KH.UTF-8;Khmer.65001;
+Korean;ko_KR;ko_KR.UTF-8;Korean_Korea.949;EUC-KR
+Lao;lo_LA;lo_LA.UTF-8;Lao_Laos.UTF-8;WINDOWS-1257
+Latvian;lv_LV;lat.UTF-8;Latvian_Latvia.1257;WINDOWS-1257
+Lithuanian;lt_LT;lt_LT.UTF-8;Lithuanian_Lithuania.1257;WINDOWS-1257
+Malayalam;ml_IN;ml_IN.UTF-8;Malayalam_India.x-iscii-ma;x-iscii-ma
+Malaysian;ms_MY;ms_MY.UTF-8;Malay_malaysia.1252;WINDOWS-1252
+Maori (Ngai Tahu);mi_NZ;mi_NZ.UTF-8;Maori.1252;WINDOWS-1252
+Maori (Waikoto Uni);mi_NZ;mi_NZ.UTF-8;Maori.1252;WINDOWS-1252
+Mongolian;mn_Cyrl_MN;mn.UTF-8;Cyrillic_Mongolian.1251;
+Norwegian;no_NO;no_NO.UTF-8;Norwegian_Norway.1252;WINDOWS-1252
+Nynorsk;nn_NO;nn_NO.UTF-8;Norwegian-Nynorsk_Norway.1252;WINDOWS-1252
+Polish;pl_PL;pl.UTF-8;Polish_Poland.1250;WINDOWS-1250
+Portuguese;pt_PT;pt_PT.UTF-8;Portuguese_Portugal.1252;WINDOWS-1252
+Portuguese (Brazil);pt_BR;pt_BR.UTF-8;Portuguese_Brazil.1252;WINDOWS-1252
+Romanian;ro_RO;ro_RO.UTF-8;Romanian_Romania.1250;WINDOWS-1250
+Russian;ru_RU;ru_RU.UTF-8;Russian_Russia.1251;WINDOWS-1251
+Samoan;mi_NZ;mi_NZ.UTF-8;Maori.1252;WINDOWS-1252
+Serbian;sr_CS;sr_CS.UTF-8;Bosnian(Cyrillic);WINDOWS-1251
+Slovak;sk_SK;sk_SK.UTF-8;Slovak_Slovakia.1250;WINDOWS-1250
+Slovenian;sl_SI;sl_SI.UTF-8;Slovenian_Slovenia.1250;WINDOWS-1250
+Spanish (International);es_ES;es_ES.UTF-8;Spanish_Spain.1252;WINDOWS-1252
+Swedish;sv_SE;sv_SE.UTF-8;Swedish_Sweden.1252;WINDOWS-1252
+Tamil;ta_IN;ta_IN.UTF-8;English_Australia.1252;
+Thai;th_TH;th_TH.UTF-8;Thai_Thailand.874;WINDOWS-874
+Tongan;mi_NZ;mi_NZ.UTF-8;Maori.1252;WINDOWS-1252
+Turkish;tr_TR;tr_TR.UTF-8;Turkish_Turkey.1254;WINDOWS-1254
+Ukrainian;uk_UA;uk_UA.UTF-8;Ukrainian_Ukraine.1251;WINDOWS-1251
+Vietnamese;vi_VN;vi_VN.UTF-8;Vietnamese_Viet Nam.1258;WINDOWS-1258
