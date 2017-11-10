@@ -14,8 +14,8 @@ Czech;cs_CZ;cs_CZ.UTF-8;Czech_Czech Republic.1250;WINDOWS-1250
 Danish;da_DK;da_DK.UTF-8;Danish_Denmark.1252;WINDOWS-1252
 Dutch;nl_NL;nl_NL.UTF-8;Dutch_Netherlands.1252;WINDOWS-1252
 English (Australia);en_AU;en.UTF-8;English_Australia.1252;WINDOWS-1252
-English (UK);en_GB;en.UTF-8;English_United Kingdom.1252;WINDOWS-1252
-English (US);en_US;en.UTF-8;English_United States.1252;WINDOWS-1252
+English (UK);en_GB;en_GB.UTF-8;English_United Kingdom.1252;WINDOWS-1252
+English (US);en_US;en_US.UTF-8;English_United States.1252;WINDOWS-1252
 Estonian;et_EE;et_EE.UTF-8;Estonian_Estonia.1257;WINDOWS-1257
 Farsi;fa_IR;fa_IR.UTF-8;Farsi_Iran.1256;WINDOWS-1256
 Filipino;ph_PH;ph_PH.UTF-8;Filipino_Philippines.1252;WINDOWS-1252
