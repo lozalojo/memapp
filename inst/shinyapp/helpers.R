@@ -871,8 +871,7 @@ get.languages<-function(){
   languages<-dplyr::inner_join(locales,langfiles,by="filename")
   # fix for linux locales
   if (.Platform$OS.type=="unix"){
-    localesinstalled=
-    languages %>%
+    languages<-languages %>%
       select(-localelinux) %>%
       left_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166'))
   }
