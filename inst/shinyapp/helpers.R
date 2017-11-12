@@ -874,7 +874,7 @@ get.languages<-function(){
     languages<-languages %>%
       select(-localelinux) %>%
       left_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166')) %>%
-      encoding=if_else(is.na(localelinux),"",localelinux)
+      mutate(localelinux=if_else(is.na(localelinux),"",localelinux))
   }
   languages
 }
@@ -899,6 +899,7 @@ get.linux.locales<-function(){
     mutate(encoding=if_else(is.na(encoding),"",tolower(encoding)),
            language.iso_639_1=if_else(is.na(language.iso_639_1),"",tolower(language.iso_639_1)),
            country.iso_3166=if_else(is.na(country.iso_3166),"",toupper(country.iso_3166)))
+  locales
 }
 
 
