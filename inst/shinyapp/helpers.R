@@ -867,10 +867,40 @@ translation.dir<-function(){
 
 get.languages<-function(){
   langfiles<-data.frame(filename=tools::file_path_sans_ext(list.files(translation.dir(), ".*\\.txt")), stringsAsFactors = F)
-  locales<-utils::read.delim(paste0(translation.dir(),"/localestable.txt"),header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T)
+  locales<-read.locales.table()
   languages<-dplyr::inner_join(locales,langfiles,by="filename")
+  # fix for linux locales
+  if (.Platform$OS.type=="unix"){
+    localesinstalled=
+    languages %>%
+      select(-localelinux) %>%
+      leftt_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166'))
+  }
   languages
 }
+
+read.locales.table<-function(){
+  locales<-utils::read.delim(paste0(translation.dir(),"/localestable.txt"),header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T) %>%
+    extract(filename, into=c('language.iso_639_1', 'v1', 'country.iso_3166','v2','v3','encoding'), 
+            '^([:alpha:]{2})(_([:alpha:]{2}))?(([\\.]+)([^\\.]+))?$', remove=F) %>%
+    select(-v1,-v2,-v3) %>%
+    filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
+    mutate(encoding=if_else(is.na(encoding),"",tolower(encoding)),
+           language.iso_639_1=if_else(is.na(language.iso_639_1),"",tolower(language.iso_639_1)),
+           country.iso_3166=if_else(is.na(country.iso_3166),"",toupper(country.iso_3166)))
+}
+
+get.linux.locales<-function(){
+  locales<-data.frame(localelinux=system("locale -a ", intern = TRUE), stringsAsFactors = F) %>%
+    extract(localelinux, into=c('language.iso_639_1', 'v1', 'country.iso_3166','v2','v3','encoding'), 
+            '^([:alpha:]{2})(_([:alpha:]{2}))?(([\\.]+)([^\\.]+))?$', remove=F) %>%
+    select(-v1,-v2,-v3) %>%
+    filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
+    mutate(encoding=if_else(is.na(encoding),"",tolower(encoding)),
+           language.iso_639_1=if_else(is.na(language.iso_639_1),"",tolower(language.iso_639_1)),
+           country.iso_3166=if_else(is.na(country.iso_3166),"",toupper(country.iso_3166)))
+}
+
 
 read.language <- function(i.filename){
   langs<-get.languages()

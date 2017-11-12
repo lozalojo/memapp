@@ -24,15 +24,15 @@ French;fr_FR;fr_FR.UTF-8;French_France.1252;WINDOWS-1252
 French (Belgium);fr_BE;fr_BE.UTF-8;French_France.1252;WINDOWS-1252
 French (Canada);fr_CA;fr_CA.UTF-8;French_Canada.1252;-parent fr_utf8 used-
 French (Switzerland);fr_CH;fr_CH.UTF-8;French_France.1252;WINDOWS-1252
-Gaelic;ga.UT;ga.UTF-8;"Gaelic; Scottish Gaelic";WINDOWS-1252
+Gaelic;ga;ga.UTF-8;"Gaelic; Scottish Gaelic";WINDOWS-1252
 Gallego;gl_ES;gl_ES.UTF-8;Galician_Spain.1252;WINDOWS-1252
 Georgian;ka_GE;ka_GE.UTF-8;Georgian_Georgia.65001;-empty string-
 German;de_DE;de_DE.UTF-8;German_Germany.1252;WINDOWS-1252
 Greek;el_GR;el_GR.UTF-8;Greek_Greece.1253;WINDOWS-1253
-Gujarati;gu.UT;gu.UTF-8;Gujarati_India.0;
+Gujarati;gu;gu.UTF-8;Gujarati_India.0;
 Hebrew;he_IL;he_IL.utf8;Hebrew_Israel.1255;WINDOWS-1255
 Hindi;hi_IN;hi_IN.UTF-8;Hindi.65001;
-Hungarian;hu.UT;hu.UTF-8;Hungarian_Hungary.1250;WINDOWS-1250
+Hungarian;hu;hu.UTF-8;Hungarian_Hungary.1250;WINDOWS-1250
 Icelandic;is_IS;is_IS.UTF-8;Icelandic_Iceland.1252;WINDOWS-1252
 Indonesian;id_ID;id_ID.UTF-8;Indonesian_indonesia.1252;WINDOWS-1252
 Italian;it_IT;it_IT.UTF-8;Italian_Italy.1252;WINDOWS-1252
