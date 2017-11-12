@@ -899,6 +899,12 @@ get.linux.locales<-function(){
     mutate(encoding=if_else(is.na(encoding),"",tolower(encoding)),
            language.iso_639_1=if_else(is.na(language.iso_639_1),"",tolower(language.iso_639_1)),
            country.iso_3166=if_else(is.na(country.iso_3166),"",toupper(country.iso_3166)))
+  # when there are more than one encoding i get the first one, ordering first
+  locales<-locales %>%
+    arrange(language.iso_639_1, country.iso_3166, factor(encoding, levels=unique(c("utf8","utf-8","",locales$encoding)))) %>%
+    group_by(language.iso_639_1, country.iso_3166) %>%
+    filter(row_number()==1) %>%
+    ungroup()
   locales
 }
 
