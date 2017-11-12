@@ -1180,8 +1180,8 @@ shinyServer(function(input, output, session) {
         localestring<-langs$localewin[langs$filename==lang]
       }else if (.Platform$OS.type=="unix"){
         cat("observeEvent/language> *nix system detected\n")
-        if (langs$localelinux=="") cat("observeEvent/language> Locale not installed in your system\n")
         localestring<-langs$localelinux[langs$filename==lang]
+        if (localestring=="") cat("observeEvent/language> Locale not installed in your system\n")
       }else{
         cat("observeEvent/language> No windows or *nix system detected\n")
         localestring<-""
