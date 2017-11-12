@@ -874,7 +874,7 @@ get.languages<-function(){
     localesinstalled=
     languages %>%
       select(-localelinux) %>%
-      leftt_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166'))
+      left_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166'))
   }
   languages
 }
