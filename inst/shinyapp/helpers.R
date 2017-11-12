@@ -873,7 +873,8 @@ get.languages<-function(){
   if (.Platform$OS.type=="unix"){
     languages<-languages %>%
       select(-localelinux) %>%
-      left_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166'))
+      left_join(select(get.linux.locales(), -encoding), by=c('language.iso_639_1','country.iso_3166')) %>%
+      encoding=if_else(is.na(localelinux),"",localelinux)
   }
   languages
 }
