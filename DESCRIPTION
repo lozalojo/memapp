@@ -1,8 +1,8 @@
 Package: memapp
 Type: Package
 Title: The Moving Epidemic Method Web Application
-Version: 2.7.20171109
-Date: 2017-11-09
+Version: 2.7.20171113
+Date: 2017-11-13
 Authors@R: person(given = "Jose E.", family = "Lozano", email = "lozalojo@gmail.com", role = c("aut", "cre"))
 Depends:
     R (>= 3.4.0)
