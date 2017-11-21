@@ -255,3 +255,5 @@ Y-axis;Y-axis
 Youdens Index;Youdens Index
 Youden's Index;Youden's Index
 Zip not found;Zip not found
+y-axis starts at 0;y-axis starts at 0
+Force y-axis to start at 0 for all plots;Force y-axis to start at 0 for all plots

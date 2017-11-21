@@ -48,6 +48,7 @@ shinyServer(function(input, output, session) {
                           i.colObservedPoints="#000000",
                           i.colSeasons=NA,
                           i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                          i.yaxis.starts.at.0=F,
                           ...){
     
     if(is.null(i.data)){
@@ -196,20 +197,18 @@ shinyServer(function(input, output, session) {
       
       # Range y fix
       if (length(i.range.y)!=2){
-        i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
-      }else{
-        i.range.y <- 1.05*i.range.y
+        if (i.yaxis.starts.at.0){
+          i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))  
+        }else{
+          i.range.y <- c(0.95*min(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T),1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+        }
       }
       axis.y.range.original <- i.range.y
       axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
       axis.y.range <- axis.y.otick$range
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
-      
-      # save(list = ls(envir = environment(), all.names = TRUE),
-      #      file = "C:/Users/lozalojo/Documents/R/plotseasons.Rdata", 
-      #      envir=environment())
-      
+
       gplot<-ggplot(dgrafgg.s) +
         geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
         geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
@@ -247,6 +246,7 @@ shinyServer(function(input, output, session) {
                        i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
                        i.colObservedPoints="#000000",
                        i.colEpidemic=c("#00C000","#800080","#FFB401"),
+                       i.yaxis.starts.at.0=F,
                        ...){
     
     if(is.null(i.data)){
@@ -438,9 +438,11 @@ shinyServer(function(input, output, session) {
       
       # Range y fix
       if (length(i.range.y)!=2){
-        i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
-      }else{
-        i.range.y <- 1.05*i.range.y
+        if (i.yaxis.starts.at.0){
+          i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))  
+        }else{
+          i.range.y <- c(0.95*min(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T),1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+        }
       }
       axis.y.range.original <- i.range.y
       axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
@@ -491,7 +493,9 @@ shinyServer(function(input, output, session) {
                              i.colObservedPoints="#000000",
                              i.colEpidemicStart="#FF0000",
                              i.colEpidemicStop="#40FF40",
-                             i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff")){
+                             i.colThresholds=c("#8c6bb1","#88419d","#810f7c","#4d004b","#c0c0ff"),
+                             i.yaxis.starts.at.0=F
+                             ){
     
     # check parameters
     if (is.null(i.data)) {
@@ -704,9 +708,11 @@ shinyServer(function(input, output, session) {
       # Same, for 10 tickmarks in the y-axis
       # Range y fix
       if (length(i.range.y)!=2){
-        i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
-      }else{
-        i.range.y <- 1.05*i.range.y
+        if(i.yaxis.starts.at.0){
+          i.range.y <- c(0,1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))  
+        }else{
+          i.range.y <- c(0.95*min(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T),1.05*max(subset(dgrafgg.s,variable!="week",select="value"),na.rm=T))
+        }
       }
       axis.y.range.original <- i.range.y
       axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
@@ -745,7 +751,9 @@ shinyServer(function(input, output, session) {
                           i.replace.x.cr=F,
                           i.textMain="",
                           i.textX="",
-                          i.textY=""){
+                          i.textY="",
+                          i.yaxis.starts.at.0=F
+                          ){
     if(is.null(i.data)){
       p<-NULL
     }else{
@@ -765,9 +773,11 @@ shinyServer(function(input, output, session) {
       # Range y fix
       if (length(i.range.y.labels)<2){
         if (length(i.range.y)!=2){
-          i.range.y <- c(0,1.05*max(dgrafgg$value,na.rm=T))
-        }else{
-          i.range.y <- 1.05*i.range.y
+          if(i.yaxis.starts.at.0){
+            i.range.y <- c(0,1.05*max(dgrafgg$value,na.rm=T))
+          }else{
+            i.range.y <- c(0.95*min(dgrafgg$value,na.rm=T),1.05*max(dgrafgg$value,na.rm=T)) 
+          }
         }
         axis.y.range.original <- i.range.y
         axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
@@ -1243,7 +1253,9 @@ shinyServer(function(input, output, session) {
                           i.colObservedLines=colors.palette$colObservedLines,
                           i.colThresholds=colors.palette$colThresholds,
                           i.colObservedPoints=colors.palette$colObservedPoints,
-                          i.colEpidemic=colors.palette$colEpidemic)
+                          i.colEpidemic=colors.palette$colEpidemic,
+                          i.yaxis.starts.at.0=as.logical(input$yaxis0)
+          )
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1295,7 +1307,9 @@ shinyServer(function(input, output, session) {
                           i.colObservedLines=colors.palette$colObservedLines,
                           i.colThresholds=colors.palette$colThresholds,
                           i.colObservedPoints=colors.palette$colObservedPoints,
-                          i.colEpidemic=colors.palette$colEpidemic)
+                          i.colEpidemic=colors.palette$colEpidemic,
+                          i.yaxis.starts.at.0=as.logical(input$yaxis0)
+          )
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1347,7 +1361,9 @@ shinyServer(function(input, output, session) {
                           i.colObservedLines=colors.palette$colObservedLines,
                           i.colThresholds=colors.palette$colThresholds,
                           i.colObservedPoints=colors.palette$colObservedPoints,
-                          i.colEpidemic=colors.palette$colEpidemic)
+                          i.colEpidemic=colors.palette$colEpidemic,
+                          i.yaxis.starts.at.0=as.logical(input$yaxis0)
+          )
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1711,7 +1727,9 @@ shinyServer(function(input, output, session) {
                          i.n.max=as.numeric(input$nvalues),
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colSeasons=colors.palette$colSeasons,
-                         i.colThresholds=colors.palette$colThresholds)
+                         i.colThresholds=colors.palette$colThresholds,
+                         i.yaxis.starts.at.0=as.logical(input$yaxis0)
+        )
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -1772,7 +1790,9 @@ shinyServer(function(input, output, session) {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic)
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.yaxis.starts.at.0=as.logical(input$yaxis0)
+        )
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -1870,7 +1890,8 @@ shinyServer(function(input, output, session) {
                      i.replace.x.cr=T,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -1919,7 +1940,8 @@ shinyServer(function(input, output, session) {
                      i.replace.x.cr=T,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       
       if (is.null(p)){
@@ -1969,7 +1991,8 @@ shinyServer(function(input, output, session) {
                      i.replace.x.cr=T,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -2016,7 +2039,8 @@ shinyServer(function(input, output, session) {
                      i.replace.x.cr=T,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -2146,7 +2170,8 @@ shinyServer(function(input, output, session) {
                      i.linesize=1,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -2193,7 +2218,8 @@ shinyServer(function(input, output, session) {
                      i.linesize=1,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -2240,7 +2266,8 @@ shinyServer(function(input, output, session) {
                      i.linesize=1,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -2285,7 +2312,8 @@ shinyServer(function(input, output, session) {
                      i.linesize=1,
                      i.textMain=input$textMain,
                      i.textX=input$textX,
-                     i.textY=input$textY
+                     i.textY=input$textY,
+                     i.yaxis.starts.at.0=as.logical(input$yaxis0)
       )
       if (is.null(p)){
         zfix<-NULL
@@ -2708,7 +2736,9 @@ shinyServer(function(input, output, session) {
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=colors.palette$colSeasons,
-                       i.colThresholds=colors.palette$colThresholds)
+                       i.colThresholds=colors.palette$colThresholds,
+                       i.yaxis.starts.at.0=as.logical(input$yaxis0)
+      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -2764,7 +2794,9 @@ shinyServer(function(input, output, session) {
                       i.colObservedLines=colors.palette$colObservedLines,
                       i.colThresholds=colors.palette$colThresholds,
                       i.colObservedPoints=colors.palette$colObservedPoints,
-                      i.colEpidemic=colors.palette$colEpidemic)
+                      i.colEpidemic=colors.palette$colEpidemic,
+                      i.yaxis.starts.at.0=as.logical(input$yaxis0)
+      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -2888,7 +2920,9 @@ shinyServer(function(input, output, session) {
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=colors.palette$colSeasons,
-                       i.colThresholds=colors.palette$colThresholds)
+                       i.colThresholds=colors.palette$colThresholds,
+                       i.yaxis.starts.at.0=as.logical(input$yaxis0)
+      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -2958,7 +2992,9 @@ shinyServer(function(input, output, session) {
                             i.colObservedPoints=colors.palette$colObservedPoints,
                             i.colEpidemicStart=colors.palette$colEpidemicStart,
                             i.colEpidemicStop=colors.palette$colEpidemicStop,
-                            i.colThresholds=colors.palette$colThresholds)
+                            i.colThresholds=colors.palette$colThresholds,
+                            i.yaxis.starts.at.0=as.logical(input$yaxis0)
+      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -3310,8 +3346,6 @@ shinyServer(function(input, output, session) {
     datfile <- readdata$datasetread
     if (NROW(values$clickdata)>0){
       etwo<-extract.two(values$clickdata,"weekno","season")
-      #save(etwo, file = "C:/Users/lozalojo/Documents/R/etwo.bin")
-      #etwot<-reshape2::dcast(etwo, season ~  id.tail, value.var="weekno")
       etwot <- etwo %>% select(id.tail, season, weekno) %>% tidyr::spread(id.tail, weekno, drop = FALSE, fill = NA)
       
       selectedcolumns<-select.columns(i.names=names(datfile), i.from=input$SelectFrom, i.to=input$SelectTo,
@@ -3885,7 +3919,9 @@ shinyServer(function(input, output, session) {
                             i.colObservedPoints=colors.palette$colObservedPoints,
                             i.colEpidemicStart=colors.palette$colEpidemicStart,
                             i.colEpidemicStop=colors.palette$colEpidemicStop,
-                            i.colThresholds=colors.palette$colThresholds)
+                            i.colThresholds=colors.palette$colThresholds,
+                            i.yaxis.starts.at.0=as.logical(input$yaxis0)
+      )
       if (is.null(p)){
         zfix<-NULL
       }else{
@@ -3927,7 +3963,8 @@ shinyServer(function(input, output, session) {
         i.thr<-NA
       }
       datfile.plot<-datfile[input$SelectSurveillance]
-      max.y<-max(datfile.plot,na.rm=T)
+      if (as.logical(input$yaxis0)) min.y<-0 else min.y<-0.95*min(datfile.plot, na.rm=T)
+      max.y<-1.05*max(datfile.plot, na.rm=T)
       if (as.logical(input$preepidemicthr)) max.y<-max(max.y,e.thr[1],na.rm=T)
       if (as.logical(input$postepidemicthr)) max.y<-max(max.y,e.thr[2],na.rm=T)
       if (as.logical(input$intensitythr)) max.y<-max(max.y,i.thr,na.rm=T)
@@ -3951,7 +3988,7 @@ shinyServer(function(input, output, session) {
                             i.epidemic.thr = e.thr,
                             i.intensity = as.logical(input$intensitythr),
                             i.intensity.thr = i.thr,
-                            i.range.y=c(0,max.y),
+                            i.range.y=c(min.y,max.y),
                             i.start=as.logical(input$preepidemicthr),
                             i.end=as.logical(input$postepidemicthr),
                             i.force.start = force.start,
@@ -3962,7 +3999,9 @@ shinyServer(function(input, output, session) {
                             i.colObservedPoints=colors.palette$colObservedPoints,
                             i.colEpidemicStart=colors.palette$colEpidemicStart,
                             i.colEpidemicStop=colors.palette$colEpidemicStop,
-                            i.colThresholds=colors.palette$colThresholds)
+                            i.colThresholds=colors.palette$colThresholds,
+                            i.yaxis.starts.at.0=as.logical(input$yaxis0)
+        )
         plot.list[[i]]<-p$plot
       }
       imgfilegif<-paste0(tempdir(),"/animated.gif")
@@ -4073,7 +4112,9 @@ shinyServer(function(input, output, session) {
                          i.n.max=as.numeric(input$nvalues),
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-                         i.colThresholds=colors.palette$colThresholds)
+                         i.colThresholds=colors.palette$colThresholds,
+                         i.yaxis.starts.at.0=as.logical(input$yaxis0)
+        )
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -4145,11 +4186,11 @@ shinyServer(function(input, output, session) {
                              i.n.max=as.numeric(input$nvalues),
                              i.colObservedPoints=colors.palette$colObservedPoints,
                              i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-                             i.colThresholds=colors.palette$colThresholds)
+                             i.colThresholds=colors.palette$colThresholds,
+                             i.yaxis.starts.at.0=as.logical(input$yaxis0)
+            )
             if (!is.null(p)){
               temp1<-p$gdata
-              # save(temp1, file = "C:/Users/lozalojo/Documents/R/temp1.bin")
-              #temp2<-reshape2::dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
               temp2 <- temp1 %>% select(variable, week, value) %>% tidyr::spread(variable, value, drop = FALSE, fill = NA)
               
               temp2<-temp2[order(temp2$week),p$labels]
@@ -4226,7 +4267,9 @@ shinyServer(function(input, output, session) {
                              i.n.max=as.numeric(input$nvalues),
                              i.colObservedPoints=colors.palette$colObservedPoints,
                              i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
-                             i.colThresholds=colors.palette$colThresholds)
+                             i.colThresholds=colors.palette$colThresholds,
+                             i.yaxis.starts.at.0=as.logical(input$yaxis0)
+            )
             if (!is.null(p)){
               temp1<-p$gdata
               #temp2<-reshape2::dcast(temp1, week ~ variable, value.var = "value", drop = FALSE, fill = NA)
@@ -4360,7 +4403,9 @@ shinyServer(function(input, output, session) {
                          i.n.max=as.numeric(input$nvalues),
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colSeasons=colors.palette$colSeasons,
-                         i.colThresholds=colors.palette$colThresholds)
+                         i.colThresholds=colors.palette$colThresholds,
+                         i.yaxis.starts.at.0=as.logical(input$yaxis0)
+        )
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -4433,7 +4478,9 @@ shinyServer(function(input, output, session) {
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
                         i.colObservedPoints=colors.palette$colObservedPoints,
-                        i.colEpidemic=colors.palette$colEpidemic)
+                        i.colEpidemic=colors.palette$colEpidemic,
+                        i.yaxis.starts.at.0=as.logical(input$yaxis0)
+        )
         if (is.null(p)){
           zfix<-NULL
         }else{
@@ -4636,7 +4683,10 @@ shinyServer(function(input, output, session) {
         , title = trloc("Seasons palette"), content = trloc("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = "hover", options = list(container = "body")),
       popify(
         selectInput("colEpidemic", h6(trloc("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Timing palette"), content = trloc("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
+        , title = trloc("Timing palette"), content = trloc("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+      popify(
+        checkboxInput("yaxis0", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("y-axis starts at 0")), value = TRUE)
+        , title = trloc("y-axis starts at 0"), content = trloc("Force y-axis to start at 0 for all plots"), placement = "left", trigger = "hover", options = list(container = "body"))
     )
   })
   

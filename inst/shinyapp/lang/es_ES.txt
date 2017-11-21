@@ -255,3 +255,5 @@ Y-axis;Eje Y
 Youdens Index;Índice de Youden
 Youden's Index;Índice de Youden
 Zip not found;No se ha encontrado zip
+y-axis starts at 0;Eje-Y comienza en 0
+Force y-axis to start at 0 for all plots;Fuerza que el eje-y comience en el valor 0 en todos los gráficos
