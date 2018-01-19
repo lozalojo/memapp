@@ -257,3 +257,5 @@ Youden's Index;Índice de Youden
 Zip not found;No se ha encontrado zip
 y-axis starts at 0;Eje-Y comienza en 0
 Force y-axis to start at 0 for all plots;Fuerza que el eje-y comience en el valor 0 en todos los gráficos
+Process data;Procesar datos
+Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset;Marca esta casilla si quieres comprobar la numeración de las semanas y temporadas, permitiendo generar un esquema de semanas válido y unir temporadas divididas en dos. No marcar si se quieren usar los datos originales tal y como vienen

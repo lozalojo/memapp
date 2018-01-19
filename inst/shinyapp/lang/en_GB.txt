@@ -257,3 +257,5 @@ Youden's Index;Youden's Index
 Zip not found;Zip not found
 y-axis starts at 0;y-axis starts at 0
 Force y-axis to start at 0 for all plots;Force y-axis to start at 0 for all plots
+Process data;Process data
+Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset;Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset

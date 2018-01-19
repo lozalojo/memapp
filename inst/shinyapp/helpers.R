@@ -74,7 +74,8 @@ generate_palette <- function(i.number.series=NA,
 read.data<-function(i.file,
                     i.file.name=NA,
                     i.dataset=NA,
-                    i.range.x=NA){
+                    i.range.x=NA,
+                    i.process.data=T){
   if (!file.exists(i.file)){
     datasets=NULL
     datasetread=NULL
@@ -152,18 +153,21 @@ read.data<-function(i.file,
     }
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
-    if (NCOL(datasetread)>1){
-      seasons<-data.frame(names(datasetread),matrix(stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=NCOL(datasetread),byrow=F)[,-1],stringsAsFactors = F)
-    }else{
-      seasons<-data.frame(t(c(names(datasetread),stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
-    }
-    names(seasons)<-c("column","anioi","aniof","aniow")
+    # if (NCOL(datasetread)>1){
+    #   seasons<-data.frame(names(datasetread),matrix(stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=NCOL(datasetread),byrow=F)[,-1],stringsAsFactors = F)
+    # }else{
+    #   seasons<-data.frame(t(c(names(datasetread),stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
+    # }
+    # names(seasons)<-c("column","anioi","aniof","aniow")
+    seasons <- data.frame(column=names(datasetread), stringsAsFactors = F)  %>%
+      extract(column, into=c("anioi","aniof","aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove=F)
     seasons[is.na(seasons)]<-""
     seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
     seasonsname<-seasons$anioi
     seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
     seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
     seasons$season<-seasonsname
+    print(seasons)
     rm("seasonsname")
     names(datasetread)<-seasons$season
     # Remove columns not detected as seasons
@@ -175,7 +179,7 @@ read.data<-function(i.file,
     rm("noseasondetected")
     if (NCOL(datasetread)==0){
       datasetread<-NULL
-    }else{
+    }else if (i.process.data){
       # Fix when reading access files, sometimes it changes the order of the weeks
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
@@ -187,6 +191,8 @@ read.data<-function(i.file,
       if (i.range.x[2] > 52) i.range.x[2] <- 52
       if (i.range.x[1] == i.range.x[2]) i.range.x[2] <- i.range.x[2] - 1
       if (i.range.x[2]==0) i.range.x[2]<-52
+      # If I use the transform functions I will join seasons formed by several parts, for example 2001/1, 2001/2 will
+      # be joined in a single 2001 season.
       datasetread<-transformdata.back(datasetread, i.name = "rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x)$data
       datasetread<-transformdata(datasetread, i.name = "rates", i.range.x = i.range.x)$data
     }
@@ -575,7 +581,7 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
 #' Find tickmarks for a given range of the y-axis that best fit an optimal number of tickmarks
 #' you decide. f.i: what if i want to have a graph with 8 tickmarks in a range of 34 to 345
 
-optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
+optimal.tickmarks.old<-function(i.min,i.max,i.number.ticks=10,
                             i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
                             i.include.min=F,i.include.max=F){
   # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
@@ -618,6 +624,35 @@ optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
   return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
 }
 
+optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
+                            i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
+                            i.include.min=F,i.include.max=F){
+  # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
+  # Option 1: free, I can put tickmarks outside c(i.min,i.max)
+  if (i.include.min) dif0<-i.min else dif0<-0
+  i.min=i.min-dif0
+  i.max=i.max-dif0
+  ticks.min<-floor(i.min/i.valid.ticks)
+  ticks.max<-ceiling(i.max/i.valid.ticks)
+  ticks.maxmin<-ticks.max-ticks.min+1
+  n.valid.ticks<-length(i.valid.ticks)
+  posicion.ticks<-(1:n.valid.ticks)[min(abs(ticks.maxmin-i.number.ticks))==abs(ticks.maxmin-i.number.ticks)][1]
+  ini<-(ticks.min*i.valid.ticks)[posicion.ticks]+dif0
+  fin<-(ticks.max*i.valid.ticks)[posicion.ticks]+dif0
+  salto<-i.valid.ticks[posicion.ticks]
+  # Tickmarks
+  tickmarks<-seq(ini,fin,salto)
+  # Number of ticks
+  numero.ticks<-length(tickmarks)
+  if (i.include.max) {
+    fin<-i.max
+    tickmarks[numero.ticks]<-i.max
+  }
+  # Rank
+  range.y<-c(ini,fin)
+  # Returning
+  return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
+}
 
 # Fix plotly graphs
 

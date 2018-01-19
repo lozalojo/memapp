@@ -1085,20 +1085,20 @@ shinyServer(function(input, output, session) {
       datasetread=NULL
       cat("reactive/read_data> Warning: No file\n")
     }else if(is.null(indataset)){
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname)
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=input$processdata)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
       cat("reactive/read_data> Warning: No dataset\n")
     }else if (indataset==""){
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname)
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=input$processdata)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
       cat("reactive/read_data> Warning: No dataset\n")
     }else{
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x)
-      temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset)
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=input$processdata)
+      temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=input$processdata)
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
@@ -4523,7 +4523,8 @@ shinyServer(function(input, output, session) {
         uiOutput("uidataset"),
         uiOutput("uifirstWeek"),
         uiOutput("uilastWeek"),
-        uiOutput("uitransformation")
+        uiOutput("uitransformation"),
+        uiOutput("uiprocess")
     )
   })
   
@@ -4553,6 +4554,12 @@ shinyServer(function(input, output, session) {
       , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = "hover", options = list(container = "body"))
   })
   
+  output$uiprocess = renderUI({
+    popify(
+      checkboxInput("processdata", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Process data")), value = TRUE)
+      , title = trloc("Process data"), content = trloc("Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset"), placement = "right", trigger = "hover", options = list(container = "body"))
+  })
+
   output$uiModel = renderUI({
     box(title=trloc("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
