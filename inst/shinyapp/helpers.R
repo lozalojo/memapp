@@ -167,7 +167,7 @@ read.data<-function(i.file,
     seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
     seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
     seasons$season<-seasonsname
-    print(seasons)
+    #print(seasons)
     rm("seasonsname")
     names(datasetread)<-seasons$season
     # Remove columns not detected as seasons
