@@ -76,26 +76,43 @@ shinyServer(function(input, output, session) {
         epi<-memmodel(i.data,
                       i.seasons = NA,
                       ...)
-        epidata<-epi$data
-        epiindex<-as.data.frame(epi$season.indexes[,,1])
-        rownames(epiindex)<-rownames(i.data)
-        colnames(epiindex)<-colnames(i.data)
-        epithresholds<-epi$epidemic.thresholds
-        intthresholds<-epi$intensity.thresholds
-        i.data<-i.data[names(i.data) %in% names(epi$data)]
+        if (!is.null(epi)){        
+          epidata<-epi$data
+          epiindex<-as.data.frame(epi$season.indexes[,,1])
+          rownames(epiindex)<-rownames(epidata)
+          colnames(epiindex)<-colnames(epidata)
+          epithresholds<-epi$epidemic.thresholds
+          intthresholds<-epi$intensity.thresholds
+          i.data<-i.data[names(i.data) %in% names(epidata)]
+        }else{
+          epidata<-i.data
+          epiindex<-i.data
+          epiindex[!is.na(i.data)]<-1
+          epithresholds<-NA
+          intthresholds<-NA
+        }
       }else{
         # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
         # the timing (which would be extracted with memtiming also)
         epi<-memmodel(cbind(i.data,i.data),
                       i.seasons = NA,
                       ...)
-        epidata<-epi$data[1]
-        epiindex<-as.data.frame(epi$season.indexes[,1,1])
-        rownames(epiindex)<-rownames(i.data)
-        colnames(epiindex)<-colnames(i.data)
-        epithresholds<-NA
-        intthresholds<-NA
-        i.data<-i.data[names(i.data) %in% names(epi$data)]
+        if (!is.null(epi)){
+          epidata<-epi$data[1]
+          epiindex<-as.data.frame(epi$season.indexes[,1,1])
+          rownames(epiindex)<-rownames(epidata)
+          colnames(epiindex)<-colnames(epidata)
+          epithresholds<-NA
+          intthresholds<-NA
+          i.data<-i.data[names(i.data) %in% names(epidata)]          
+        }else{
+          epidata<-i.data
+          epiindex<-i.data
+          epiindex[!is.na(i.data)]<-1
+          epithresholds<-NA
+          intthresholds<-NA
+        }
+
       }
       rm("epi")
       
@@ -276,26 +293,43 @@ shinyServer(function(input, output, session) {
         epi<-memmodel(i.data,
                       i.seasons = NA,
                       ...)
-        epidata<-epi$data
-        epiindex<-as.data.frame(epi$season.indexes[,,1])
-        rownames(epiindex)<-rownames(i.data)
-        colnames(epiindex)<-colnames(i.data)
-        epithresholds<-epi$epidemic.thresholds
-        intthresholds<-epi$intensity.thresholds
-        i.data<-i.data[names(i.data) %in% names(epi$data)]
+        if (!is.null(epi)){        
+          epidata<-epi$data
+          epiindex<-as.data.frame(epi$season.indexes[,,1])
+          rownames(epiindex)<-rownames(epidata)
+          colnames(epiindex)<-colnames(epidata)
+          epithresholds<-epi$epidemic.thresholds
+          intthresholds<-epi$intensity.thresholds
+          i.data<-i.data[names(i.data) %in% names(epidata)]
+        }else{
+          epidata<-i.data
+          epiindex<-i.data
+          epiindex[!is.na(i.data)]<-1
+          epithresholds<-NA
+          intthresholds<-NA
+        }
       }else{
         # I need the epi object to extract the data dataframe, which includes the original data + filled missing data and
         # the timing (which would be extracted with memtiming also)
         epi<-memmodel(cbind(i.data,i.data),
                       i.seasons = NA,
                       ...)
-        epidata<-epi$data[1]
-        epiindex<-as.data.frame(epi$season.indexes[,1,1])
-        rownames(epiindex)<-rownames(i.data)
-        colnames(epiindex)<-colnames(i.data)
-        epithresholds<-NA
-        intthresholds<-NA
-        i.data<-i.data[names(i.data) %in% names(epi$data)]
+        if (!is.null(epi)){        
+          epidata<-epi$data[1]
+          epiindex<-as.data.frame(epi$season.indexes[,1,1])
+          rownames(epiindex)<-rownames(epidata)
+          colnames(epiindex)<-colnames(epidata)
+          epithresholds<-NA
+          intthresholds<-NA
+          i.data<-i.data[names(i.data) %in% names(epidata)]
+        }else{
+          epidata<-i.data
+          epiindex<-i.data
+          epiindex[!is.na(i.data)]<-1
+          epithresholds<-NA
+          intthresholds<-NA
+        }        
+        
       }
       rm("epi")
       

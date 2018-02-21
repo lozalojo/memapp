@@ -180,6 +180,9 @@ read.data<-function(i.file,
     if (NCOL(datasetread)==0){
       datasetread<-NULL
     }else if (i.process.data){
+      # Delete all columns with only 0s and NAs
+      datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
+      
       # Fix when reading access files, sometimes it changes the order of the weeks
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
