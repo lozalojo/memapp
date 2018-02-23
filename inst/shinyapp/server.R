@@ -1119,20 +1119,20 @@ shinyServer(function(input, output, session) {
       datasetread=NULL
       cat("reactive/read_data> Warning: No file\n")
     }else if(is.null(indataset)){
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=input$processdata)
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
       cat("reactive/read_data> Warning: No dataset\n")
     }else if (indataset==""){
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=input$processdata)
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
       cat("reactive/read_data> Warning: No dataset\n")
     }else{
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=input$processdata)
-      temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=input$processdata)
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
+      temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
@@ -1140,7 +1140,13 @@ shinyServer(function(input, output, session) {
     if(!is.null(datasetread)){
       dataweeksoriginal<-row.names(temp2$datasetread)
       dataweeksfiltered<-row.names(datasetread)
-      datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+      if (as.logical(input$processdata)){
+        datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
+        datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
+        # specially when splitting waves in two, in case there is only one epidemic instead of two
+        datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
+      }
     }else{
       dataweeksoriginal=NULL
       dataweeksfiltered=NULL
@@ -4548,8 +4554,9 @@ shinyServer(function(input, output, session) {
   
   output$uifile = renderUI({
     popify(
-      fileInput('file', label=h4(trloc("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
-      , title = trloc("Load file"), content = trloc("memapp is able to read text, excel, access and R"), placement = "right", trigger = "hover", options = list(container = "body"))
+      #fileInput('file', label=h4(trloc("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"), bsButton("file_b", label = "", icon = icon("question"), style = "info", size = "extra-small")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
+      fileInput('file', label=h4(trloc("Load file"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), accept = c("csv","dat","prn","txt","xls","xlsx","mdb","accdb", "rdata"))
+      , title = trloc("Load file"), content = trloc("memapp is able to read text, excel, access and R"), placement = "right", trigger = 'focus', options = list(container = "body"))
   })
   
   output$uiDataset = renderUI({
@@ -4565,19 +4572,19 @@ shinyServer(function(input, output, session) {
   output$uidataset = renderUI({
     popify(
       selectInput('dataset', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Dataset")), size=1, selectize = FALSE, choices = getDatasets(), selected = NULL)
-      , title = trloc("Dataset"), content = trloc("If the format is able to store different datasets, select the one you want to open"), placement = "right", trigger = "hover", options = list(container = "body"))
+      , title = trloc("Dataset"), content = trloc("If the format is able to store different datasets, select the one you want to open"), placement = "right", trigger = 'focus', options = list(container = "body"))
   })
   
   output$uifirstWeek = renderUI({
     popify(
       selectInput("firstWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("First Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = head(getWeeksOriginal(),1))
-      , title = trloc("First Week"), content = trloc("First week of the datasets surveillance period"),                                    placement = "right", trigger = "hover", options = list(container = "body"))
+      , title = trloc("First Week"), content = trloc("First week of the datasets surveillance period"),                                    placement = "right", trigger = 'focus', options = list(container = "body"))
   })
   
   output$uilastWeek = renderUI({
     popify(
       selectInput("lastWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Last Week")), size=1, selectize = FALSE, choices = getWeeksOriginal(), selected = tail(getWeeksOriginal(),1))
-      , title = trloc("Last Week"), content = trloc("Last week of the datasets surveillance period"),                                     placement = "right", trigger = "hover", options = list(container = "body"))
+      , title = trloc("Last Week"), content = trloc("Last week of the datasets surveillance period"),                                     placement = "right", trigger = 'focus', options = list(container = "body"))
   })
   
   output$uitransformation = renderUI({
@@ -4585,29 +4592,29 @@ shinyServer(function(input, output, session) {
     names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
     popify(
       selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
-      , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = "hover", options = list(container = "body"))
+      , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body"))
   })
   
   output$uiprocess = renderUI({
     popify(
       checkboxInput("processdata", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Process data")), value = TRUE)
-      , title = trloc("Process data"), content = trloc("Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset"), placement = "right", trigger = "hover", options = list(container = "body"))
+      , title = trloc("Process data"), content = trloc("Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset"), placement = "right", trigger = 'focus', options = list(container = "body"))
   })
 
   output$uiModel = renderUI({
     box(title=trloc("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
-          , title = trloc("From"), content = trloc("First season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+          , title = trloc("From"), content = trloc("First season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1])
-          , title = trloc("To"), content = trloc("Last season to include in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+          , title = trloc("To"), content = trloc("Last season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
-          , title = trloc("Exclude"), content = trloc("Select any number of seasons to be excluded from the model"), placement = "right", trigger = "hover", options = list(container = "body")),
+          , title = trloc("Exclude"), content = trloc("Select any number of seasons to be excluded from the model"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Maximum seasons")), 10, step=1)
-          , title = trloc("Maximum seasons"), content = trloc("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = "hover", options = list(container = "body"))
+          , title = trloc("Maximum seasons"), content = trloc("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -4615,13 +4622,13 @@ shinyServer(function(input, output, session) {
     box(title=trloc("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
-          , title = trloc("Season"), content = trloc("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = "hover", options = list(container = "body")),
+          , title = trloc("Season"), content = trloc("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
-          , title = trloc("Week"), content = trloc("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = "hover", options = list(container = "body")),
+          , title = trloc("Week"), content = trloc("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
-          , title = trloc("Force epidemic start"), content = trloc("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = "hover", options = list(container = "body"))
+          , title = trloc("Force epidemic start"), content = trloc("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -4629,7 +4636,7 @@ shinyServer(function(input, output, session) {
     box(title=trloc("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
-          , title = trloc("Seasons"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = "hover", options = list(container = "body"))
+          , title = trloc("Seasons"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -4637,13 +4644,13 @@ shinyServer(function(input, output, session) {
     box(title=trloc("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Pre-epidemic threshold")), value = TRUE)
-        , title = trloc("Pre-epidemic threshold"), content = trloc("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Pre-epidemic threshold"), content = trloc("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Post-epidemic threshold")), value = FALSE)
-        , title = trloc("Post-epidemic threshold"), content = trloc("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Post-epidemic threshold"), content = trloc("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
         popify(
           checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Intensity thresholds/levels")), value = TRUE)
-        , title = trloc("Intensity thresholds/levels"), content = trloc("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = "hover", options = list(container = "body"))
+        , title = trloc("Intensity thresholds/levels"), content = trloc("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
 
@@ -4688,13 +4695,13 @@ shinyServer(function(input, output, session) {
       title=trloc("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
         textInput("textMain", label = h6(trloc("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("Main title"))
-        , title = trloc("Main title"), content = trloc("Change the main title in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Main title"), content = trloc("Change the main title in most graphs"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         textInput("textY", label = h6(trloc("Y-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("Y-axis"))
-        , title = trloc("Y-axis"), content = trloc("Change the y-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Y-axis"), content = trloc("Change the y-axis label in most graphs"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         textInput("textX", label = h6(trloc("X-axis"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("X-axis"))
-        , title = trloc("X-axis"), content = trloc("Change the x-axis label in most graphs"), placement = "left", trigger = "hover", options = list(container = "body"))
+        , title = trloc("X-axis"), content = trloc("Change the x-axis label in most graphs"), placement = "left", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -4703,31 +4710,31 @@ shinyServer(function(input, output, session) {
       title=trloc("Graph options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
         selectInput("colObservedLines", h6(trloc("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Observed (line)"), content = trloc("Color of the line of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Observed (line)"), content = trloc("Color of the line of observed data"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colObservedPoints", h6(trloc("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Observed (points)"), content = trloc("Color of the points of observed data"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Observed (points)"), content = trloc("Color of the points of observed data"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colEpidemicStart", h6(trloc("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Epidemic start"), content = trloc("Color of the point of the epidemic start marker"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Epidemic start"), content = trloc("Color of the point of the epidemic start marker"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colEpidemicStop", h6(trloc("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Epidemic end"), content = trloc("Color of the point of the epidemic end marker"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Epidemic end"), content = trloc("Color of the point of the epidemic end marker"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colThresholds", h6(trloc("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Thresholds palette"), content = trloc("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Thresholds palette"), content = trloc("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colLevels", h6(trloc("Levels palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Levels palette"), content = trloc("Palette used to generate color for intensity levels"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Levels palette"), content = trloc("Palette used to generate color for intensity levels"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colSeasons", h6(trloc("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Seasons palette"), content = trloc("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Seasons palette"), content = trloc("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("colEpidemic", h6(trloc("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
-        , title = trloc("Timing palette"), content = trloc("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Timing palette"), content = trloc("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         checkboxInput("yaxis0", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("y-axis starts at 0")), value = TRUE)
-        , title = trloc("y-axis starts at 0"), content = trloc("Force y-axis to start at 0 for all plots"), placement = "left", trigger = "hover", options = list(container = "body"))
+        , title = trloc("y-axis starts at 0"), content = trloc("Force y-axis to start at 0 for all plots"), placement = "left", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -4748,47 +4755,47 @@ shinyServer(function(input, output, session) {
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Timing")),
       popify(
         selectInput("method", h6(trloc("Method for timing"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = method.list, size=1, selectize = FALSE, selected = 2)
-        , title = trloc("Method for timing"), content = trloc("<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve"), placement = "left", trigger = "hover", options = list(container = "body")
+        , title = trloc("Method for timing"), content = trloc("<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve"), placement = "left", trigger = 'focus', options = list(container = "body")
       ),
       conditionalPanel(condition = "input.method == 2",
                        popify(
                          numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Slope parameter")), 2.8, step=0.1)
-                         , title = trloc("Slope parameter"), content = trloc("Slope parameter used in fixed criterium method"), placement = "left", trigger = "hover", options = list(container = "body"))
+                         , title = trloc("Slope parameter"), content = trloc("Slope parameter used in fixed criterium method"), placement = "left", trigger = 'focus', options = list(container = "body"))
       ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
       fluidRow(
         column(6,
                popify(
                  selectInput("nvalues", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Values per season")), choices = nvalues.list, size=1, selectize = FALSE, selected = -1)
-                 , title = trloc("Values per season"), content = trloc("Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("Values per season"), content = trloc("Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used"), placement = "left", trigger = 'focus', options = list(container = "body"))
         ),
         column(6,
                popify(
                  numericInput("ntails", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Tails")), 1, step=1, min = 1, max = 2)
-                 , title = trloc("Tails"), content = trloc("Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("Tails"), content = trloc("Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds"), placement = "left", trigger = 'focus', options = list(container = "body"))
         )
       ),
       popify(
         selectInput("typethreshold", h6(trloc("Epidemic threshold"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 5)
-        , title = trloc("Epidemic threshold"), content = trloc("Method for calculating the epidemic threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Epidemic threshold"), content = trloc("Method for calculating the epidemic threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("typeintensity", h6("Intensity thresholds", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 6)
-        , title = trloc("Intensity thresholds"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Intensity thresholds"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
       fluidRow(
         column(4,
                popify(
                  numericInput("levelintensitym", h6(trloc("Medium lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 40, step=0.5, min = 0.5, max = 99.5)
-                 , title = trloc("Medium lvl"), content = trloc("Level of the confidence interval used to calculate the medium threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("Medium lvl"), content = trloc("Level of the confidence interval used to calculate the medium threshold"), placement = "left", trigger = 'focus', options = list(container = "body"))
         ),
         column(4,
                popify(
                  numericInput("levelintensityh", h6(trloc("High lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 90, step=0.5, min = 0.5, max = 99.5)
-                 , title = trloc("High lvl"), content = trloc("Level of the confidence interval used to calculate the high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("High lvl"), content = trloc("Level of the confidence interval used to calculate the high threshold"), placement = "left", trigger = 'focus', options = list(container = "body"))
         ),
         column(4,
                popify(
                  numericInput("levelintensityv", h6(trloc("Very high lvl"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 97.5, step=0.5, min = 0.5, max = 99.5)
-                 , title = trloc("Very high lvl"), content = trloc("Level of the confidence interval used to calculate the very high threshold"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("Very high lvl"), content = trloc("Level of the confidence interval used to calculate the very high threshold"), placement = "left", trigger = 'focus', options = list(container = "body"))
         )
       ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Goodness & optimize")),
@@ -4796,28 +4803,28 @@ shinyServer(function(input, output, session) {
         column(6,
                popify(
                  selectInput("validation", h6(trloc("Validation"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size=1, selectize = FALSE, selected = "cross")
-                 , title = trloc("Validation"), content = trloc("Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("Validation"), content = trloc("Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only"), placement = "left", trigger = 'focus', options = list(container = "body"))
         ),
         column(6,
                popify(
                  selectInput("optimmethod", h6(trloc("Optimization method"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = optimmethod.list, size=1, selectize = FALSE, selected = "matthews")
-                 , title = trloc("Optimization method"), content = trloc("Method to choose the optimum parameter"), placement = "left", trigger = "hover", options = list(container = "body"))
+                 , title = trloc("Optimization method"), content = trloc("Method to choose the optimum parameter"), placement = "left", trigger = 'focus', options = list(container = "body"))
         )
       ),
       popify(
         sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Parameter range")), min = 0.1, max = 10, value = c(2, 4), step=0.1)
-        , title = trloc("Parameter range"), content = trloc("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = "hover", options = list(container = "body")
+        , title = trloc("Parameter range"), content = trloc("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = 'focus', options = list(container = "body")
       ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Other")),
       popify(
         selectInput("typecurve", h6(trloc("Average curve CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 2)
-        , title = trloc("Average curve CI."), content = trloc("Method for calculating the average curve confidence intervals"), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Average curve CI."), content = trloc("Method for calculating the average curve confidence intervals"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         selectInput("typeother", h6(trloc("Other CI."), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 3)
-        , title = trloc("Other CI."), content = trloc("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = "hover", options = list(container = "body")),
+        , title = trloc("Other CI."), content = trloc("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         numericInput("levelaveragecurve", h6(trloc("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
-        , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = "hover", options = list(container = "body"))
+        , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -4828,14 +4835,14 @@ shinyServer(function(input, output, session) {
       h5(a(trloc("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
       popify(
       checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = FALSE)
-      , title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = "hover", options = list(container = "body"))
+      , title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body"))
     )
   })
   
   output$uiLanguage = renderUI({
     popify(
     h4(trloc("Language"), tags$style(type = "text/css", "#q1 {vertical-align: top;}"))
-    , title = trloc("Language"), content = trloc("Change the language of the application"), placement = "left", trigger = "hover", options = list(container = "body"))
+    , title = trloc("Language"), content = trloc("Change the language of the application"), placement = "left", trigger = 'focus', options = list(container = "body"))
   })
 
   #####################################

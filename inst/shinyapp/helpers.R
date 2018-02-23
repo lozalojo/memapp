@@ -140,8 +140,9 @@ read.data<-function(i.file,
   if (!(is.null(datasetread))){
     # Remove columns only with NA
     naonlycolumns<-apply(datasetread, 2, function(x) all(is.na(x)))
+    #naonlycolumns<-apply(datasetread, 2, function(x) sum(x, na.rm=T)>0)
     if (any(naonlycolumns)){
-      cat("read_data> Note: Columns ",paste(names(datasetread)[naonlycolumns], collapse=",")," contain only NAs, removing...\n")
+      cat("read_data> Note: Columns ",paste(names(datasetread)[naonlycolumns], collapse=",")," contain only NAs or 0s, removing...\n")
       datasetread<-datasetread[!naonlycolumns]
     }
     rm("naonlycolumns")
@@ -365,7 +366,7 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
           end   <- grep('^\\);$', tableschema) - 1
           tableschema <- tableschema[start:end]
           tableschema <- strsplit(tableschema, '\t')
-          vnames <- sapply(tableschema, function(x)x[2])
+          vnames <- sapply(tableschema, function(x) x[2])
           vnames <- substring(vnames, 2,nchar(vnames)-1)
           filecsv <- tempfile()
           system(paste('mdb-export -b strip', shQuote(i.file), shQuote(i.dataset), '>', filecsv))
@@ -774,7 +775,7 @@ set.rzip<-function(){
           temp4<-(1:length(temp3))[temp3[temp3>=x][1]==temp3]
           temp5<-substr(temp1,temp3[temp4-1]+1,temp3[temp4]-1)
         }))
-        temp7<-unlist(lapply(temp6,function(x){
+        temp7<-unlist(lapply(temp6,function(x) {
           file.exists(paste(x,"\\zip.exe",sep=""))
         }))
         if (any(temp7)){
