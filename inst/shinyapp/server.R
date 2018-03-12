@@ -1562,8 +1562,22 @@ shinyServer(function(input, output, session) {
           if (!(nameid %in% values$idscreated)){
             values$idscreated<-c(values$idscreated,nameid)
             observeEvent(input[[nameid]], {
-              np <- nearPoints(values$origdata, input[[nameid]], maxpoints=1 , threshold = 10000)
-              values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
+              np.x<-input[[nameid]]$mapping$x
+              # Note: input[[nameid]] returns the point clicked, but when the original column has a complex name
+              # it adds a ` at the begining and end, thus avoiding to detect the value from values$origdata, which
+              # have normal names (without ``), so I have to change the yvar value
+              np.y<-gsub("`","",input[[nameid]]$mapping$y)
+              np.max <- max(values$origdata[np.y], na.rm=T)/10
+              # cat("-----------\n",np.x, "-", np.y, "-", np.max, "\n")
+              # np.data <- values$origdata[c(np.x, np.y)]
+              # print(np.data)
+              np <- nearPoints(values$origdata, input[[nameid]], 
+                               xvar=np.x,
+                               yvar=np.y,
+                               maxpoints=1 , 
+                               threshold = np.max)
+              # cat("-----------\n",NROW(np), "\n")
+              if (NROW(np)>0) values$clickdata<-rbind(values$clickdata,cbind(data.frame(season=as.character(s), stringsAsFactors = F), np))
               if (NROW(values$clickdata)>0){
                 p0<-extract.two(values$clickdata,"weekno","season")
                 p1<-subset(p0, season==as.character(s) & id.tail==1)
@@ -3355,6 +3369,9 @@ shinyServer(function(input, output, session) {
       etwo<-extract.two(values$clickdata,"weekno","season")
       etwo<-merge(etwo,data.frame(id.tail=c(1,2),point=trloc(c("Start","End")), stringsAsFactors = F),by="id.tail")
       optr<-subset(etwo,etwo$season %in% names(datfile)[selectedcolumns])[c("season","weekna","point",paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      optr <- optr %>%
+        dplyr::arrange(season, desc(point)) %>%
+        as.data.frame
       names(optr)[1:3]<-trloc(c("Season","Week","Point"))
       names(optr)[4:(length(selectedcolumns)+3)]<-names(datfile)[selectedcolumns]
     }else{
@@ -3372,7 +3389,11 @@ shinyServer(function(input, output, session) {
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
       clickd<-values$clickdata
-      optr<-subset(clickd,clickd$season %in% names(datfile)[selectedcolumns])[c("season","weekna",paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      optr<-subset(clickd,clickd$season %in% names(datfile)[selectedcolumns])[c("season","weekna", "weekno", paste0(names(datfile)[selectedcolumns],"_fixed"))]
+      optr <- optr %>%
+        dplyr::arrange(season, weekno) %>%
+        select(-weekno)
+        as.data.frame
       names(optr)[1:2]<-trloc(c("Season","Week"))
       names(optr)[3:(length(selectedcolumns)+2)]<-names(datfile)[selectedcolumns]
     }else{
