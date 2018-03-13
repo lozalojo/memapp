@@ -840,11 +840,11 @@ animation.method<-function(){
   if (.Platform$OS.type=="windows"){
     cat("function/animation.method> Windows system detected\n")
     path.env<-tolower(Sys.getenv("PATH"))
-    if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, ignore.case = T, fixed=T)){
+    if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, fixed=T)){
       # GraphicsMagick program + animation package
       cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
       animation.method<-1
-    }else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, ignore.case = T, fixed=T)){
+    }else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, fixed=T)){
       # ImageMagick program + animation package
       cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
       animation.method<-2
