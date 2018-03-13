@@ -858,11 +858,11 @@ animation.method<-function(){
     }
   }else if (.Platform$OS.type=="unix"){
     cat("function/animation.method> *nix system detected\n")
-    if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/gm")){
+    if ("animation" %in% rownames(installed.packages()) & (file.exists("/usr/bin/gm") | file.exists("/usr/local/bin/gm"))){
       # GraphicsMagick program + animation package
       cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
       animation.method<-1
-    }else if ("animation" %in% rownames(installed.packages()) & file.exists("/usr/bin/convert")){
+    }else if ("animation" %in% rownames(installed.packages()) & (file.exists("/usr/bin/convert") | file.exists("/usr/local/bin/convert"))){
       # ImageMagick program + animation package
       cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
       animation.method<-2
