@@ -11,12 +11,12 @@ env:
   global:
   - _R_CHECK_FORCE_SUGGESTS_=false
 
+r_packages:
+  - devtools covr
+
 r_github_packages:
   - lozalojo/mem tidyverse/ggplot2 ropensci/plotly
   
-r_packages:
-  - covr
-
 after_success:
   - Rscript -e 'library(covr); codecov()'
 
