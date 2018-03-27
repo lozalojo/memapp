@@ -109,6 +109,7 @@ Level of the confidence interval used to calculate the very high threshold;Nivel
 Levels palette;Paleta niveles
 Load file;Abrir fichero
 Loess;Loess
+Log;Registro
 Low;Bajo
 Low level;Nivel bajo
 Lower interval;Intervalo inferior
