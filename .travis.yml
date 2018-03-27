@@ -12,7 +12,7 @@ env:
   - _R_CHECK_FORCE_SUGGESTS_=false
 
 r_github_packages:
-  - hadley/ggplot2 ropensci/plotly lozalojo/mem renkun-ken/formattable ropensci/magick yihui/animation
+  - lozalojo/mem tidyverse/ggplot2 ropensci/plotly
   
 r_packages:
   - covr
