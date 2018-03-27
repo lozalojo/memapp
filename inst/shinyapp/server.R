@@ -1107,6 +1107,7 @@ shinyServer(function(input, output, session) {
     infile <- input$file
     indataset <- input$dataset
     inname <- infile$name
+    datalog <- character()
     cat("reactive/read_data> begin\n")
     i.range.x<-rep(NA,2)
     if (!is.null(input$firstWeek)) i.range.x[1]<-as.numeric(input$firstWeek)
@@ -1117,30 +1118,36 @@ shinyServer(function(input, output, session) {
     if(is.null(infile)){
       datasets=NULL
       datasetread=NULL
+      datalog <- paste0(datalog, "No file\n")
       cat("reactive/read_data> Warning: No file\n")
     }else if(is.null(indataset)){
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
+      datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     }else if (indataset==""){
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
+      datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     }else{
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
       temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
+      datalog <- paste0(datalog, temp1$datalog)
       rm("temp1")
     }
     if(!is.null(datasetread)){
       dataweeksoriginal<-row.names(temp2$datasetread)
       dataweeksfiltered<-row.names(datasetread)
       if (as.logical(input$processdata)){
+        datalog <- paste0(datalog, "Preprocessing data\n")
+        cat("reactive/read_data> Preprocessing data\n")
         datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
         datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
         # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
@@ -1156,7 +1163,7 @@ shinyServer(function(input, output, session) {
     cat("reactive/read_data> dataweeksfiltered returning NULL?: ",is.null(dataweeksfiltered),"\n")
     cat("reactive/read_data> datasetread NULL?: ",is.null(datasetread),"\n")
     cat("reactive/read_data> end\n")
-    readdata<-list(datasets=datasets, datasetread=datasetread, dataweeksoriginal=dataweeksoriginal, dataweeksfiltered=dataweeksfiltered)
+    readdata<-list(datasets=datasets, datasetread=datasetread, dataweeksoriginal=dataweeksoriginal, dataweeksfiltered=dataweeksfiltered, datalog=datalog)
     readdata
   })
   
@@ -1620,7 +1627,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     }else{
       if (as.logical(input$advancedfeatures)){
-        tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
+        # tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
+        tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
                     tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
                              fluidRow(
@@ -1644,7 +1652,8 @@ shinyServer(function(input, output, session) {
                     tabPanel(trloc("Goodness"),uiOutput("tbdGoodness"))
         )
       }else{
-        tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
+        # tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
+        tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
                     tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
                              fluidRow(
@@ -1670,19 +1679,34 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$tbdFile <- renderTable({
+  # output$tbdFile <- renderTable({
+  #   infile <- input$file
+  #   indataset <- input$dataset
+  #   readdata <- read_data()
+  #   datfile <- readdata$datasetread
+  #   if(is.null(datfile)){
+  #     data.show<-data.frame(var="No file or dataset selected")
+  #     names(data.show)=""
+  #   }else{
+  #     data.show<-data.frame(var1=trloc(c("File", "Dataset", "Log")),var2=c(infile$name, indataset, readdata$datalog))
+  #     names(data.show)=c("", "")
+  #   }
+  #   data.show
+  # })
+  
+  output$tbdFile <- renderPrint({
     infile <- input$file
     indataset <- input$dataset
     readdata <- read_data()
     datfile <- readdata$datasetread
     if(is.null(datfile)){
-      data.show<-data.frame(var="No file or dataset selected")
-      names(data.show)=""
+      cat(trloc("No file or dataset selected"),"\n", sep="")
     }else{
-      data.show<-data.frame(var1=trloc(c("File","Dataset")),var2=c(infile$name,indataset))
-      names(data.show)=c("","")
+      cat(trloc("File"),":\n\t",infile$name,"\n", sep="")
+      cat(trloc("Dataset"),":\n\t",indataset,"\n", sep="")
+      cat(trloc("Log"),":\n\t", sep="")
+      cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
     }
-    data.show
   })
   
   output$tbdData <- DT::renderDataTable({
