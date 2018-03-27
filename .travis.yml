@@ -4,6 +4,7 @@ sudo: true
 dist: trusty
 
 r:
+  - oldrel
   - release
   - devel
 
@@ -12,10 +13,13 @@ env:
   - _R_CHECK_FORCE_SUGGESTS_=false
 
 r_packages:
-  - devtools covr
+  - devtools
+  - covr
 
 r_github_packages:
-  - lozalojo/mem tidyverse/ggplot2 ropensci/plotly
+  - lozalojo/mem
+  - tidyverse/ggplot2
+  - ropensci/plotly
   
 after_success:
   - Rscript -e 'library(covr); codecov()'
