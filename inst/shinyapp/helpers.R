@@ -254,13 +254,22 @@ read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-openxlsx::read.xlsx(wb,sheet=i.dataset,rowNames=F)
-      # First column is the week name
-      if (all(datasetread[,1] %in% 1:53)){
-        rownames(datasetread)<-as.character(datasetread[,1])
-        datasetread<-datasetread[-1]
-        datalog <- paste0(datalog, "Note: First column is the week name\n")
-        cat("read_data> Note: First column is the week name\n")
-      }else rownames(datasetread)<-1:NROW(datasetread)
+      # Detect format year, week, rate
+      columnsn<-tolower(names(datasetread))
+      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+        names(datasetread)<-tolower(names(datasetread))
+        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+      }else{      
+        # First column is the week name
+        if (all(datasetread[,1] %in% 1:53)){
+          rownames(datasetread)<-as.character(datasetread[,1])
+          datasetread<-datasetread[-1]
+          datalog <- paste0(datalog, "Note: First column is the week name\n")
+          cat("read_data> Note: First column is the week name\n")
+        }else rownames(datasetread)<-1:NROW(datasetread)
+      }
       dataweeks<-as.numeric(row.names(datasetread))
       datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
@@ -308,13 +317,22 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
       datasetread<-as.data.frame(readxl::read_xls(i.file, sheet = i.dataset, col_types= "numeric"), stringsAsFactors = F)
-      # First column is the week name      
-      if (all(datasetread[,1] %in% 1:53)){
-        rownames(datasetread)<-as.character(datasetread[,1])
-        datasetread<-datasetread[-1]
-        datalog <- paste0(datalog, "Note: First column is the week name\n")
-        cat("read_data> Note: First column is the week name\n")
-      }else rownames(datasetread)<-1:NROW(datasetread)
+      # Detect format year, week, rate
+      columnsn<-tolower(names(datasetread))
+      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+        names(datasetread)<-tolower(names(datasetread))
+        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+      }else{      
+        # First column is the week name      
+        if (all(datasetread[,1] %in% 1:53)){
+          rownames(datasetread)<-as.character(datasetread[,1])
+          datasetread<-datasetread[-1]
+          datalog <- paste0(datalog, "Note: First column is the week name\n")
+          cat("read_data> Note: First column is the week name\n")
+        }else rownames(datasetread)<-1:NROW(datasetread)
+      }
       dataweeks<-as.numeric(row.names(datasetread))
       datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
@@ -362,12 +380,21 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n")
         cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
         datasetread<-sqlFetch(channel,i.dataset,rownames=T)
-        if (all(datasetread[,1] %in% 1:53)){
-          rownames(datasetread)<-as.character(datasetread[,1])
-          datasetread<-datasetread[-1]
-          datalog <- paste0(datalog, "Note: First column is the week name\n")
-          cat("read_data> Note: First column is the week name\n")
-        }else rownames(datasetread)<-1:NROW(datasetread)
+        # Detect format year, week, rate
+        columnsn<-tolower(names(datasetread))
+        if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+          datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+          cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+          names(datasetread)<-tolower(names(datasetread))
+          datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        }else{        
+          if (all(datasetread[,1] %in% 1:53)){
+            rownames(datasetread)<-as.character(datasetread[,1])
+            datasetread<-datasetread[-1]
+            datalog <- paste0(datalog, "Note: First column is the week name\n")
+            cat("read_data> Note: First column is the week name\n")
+          }else rownames(datasetread)<-1:NROW(datasetread)
+        }
         dataweeks<-as.numeric(row.names(datasetread))
         datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
         cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
@@ -422,12 +449,21 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
           mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
           datasetread<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
           names(datasetread)<-vnames
-          if (all(datasetread[,1] %in% 1:53)){
-            rownames(datasetread)<-as.character(datasetread[,1])
-            datasetread<-datasetread[-1]
-            datalog <- paste0(datalog, "Note: First column is the week name\n")
-            cat("read_data> Note: First column is the week name\n")
-          }else rownames(datasetread)<-1:NROW(datasetread)
+          # Detect format year, week, rate
+          columnsn<-tolower(names(datasetread))
+          if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+            datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+            cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+            names(datasetread)<-tolower(names(datasetread))
+            datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+          }else{          
+            if (all(datasetread[,1] %in% 1:53)){
+              rownames(datasetread)<-as.character(datasetread[,1])
+              datasetread<-datasetread[-1]
+              datalog <- paste0(datalog, "Note: First column is the week name\n")
+              cat("read_data> Note: First column is the week name\n")
+            }else rownames(datasetread)<-1:NROW(datasetread)
+          }
           dataweeks<-as.numeric(row.names(datasetread))
           datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
           cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
@@ -499,12 +535,21 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
       temp1<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))
       datasetread<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
       names(datasetread)<-temp1
-      if (all(datasetread[,1] %in% 1:53)){
-        rownames(datasetread)<-as.character(datasetread[,1])
-        datasetread<-datasetread[-1]
-        datalog <- paste0(datalog, "Note: First column is the week name\n")
-        cat("read_data> Note: First column is the week name\n")
-      }else rownames(datasetread)<-1:NROW(datasetread)
+      # Detect format year, week, rate
+      columnsn<-tolower(names(datasetread))
+      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+        names(datasetread)<-tolower(names(datasetread))
+        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+      }else{      
+        if (all(datasetread[,1] %in% 1:53)){
+          rownames(datasetread)<-as.character(datasetread[,1])
+          datasetread<-datasetread[-1]
+          datalog <- paste0(datalog, "Note: First column is the week name\n")
+          cat("read_data> Note: First column is the week name\n")
+        }else rownames(datasetread)<-1:NROW(datasetread)
+      }
       dataweeks<-as.numeric(row.names(datasetread))
       datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
@@ -549,8 +594,24 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
     }else{
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
-      # detect separator and decimal separator
       datasetread<-readRDS(i.file)
+      # Detect format year, week, rate
+      columnsn<-tolower(names(datasetread))
+      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+        names(datasetread)<-tolower(names(datasetread))
+        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+      }else{
+        if (all(datasetread[,1] %in% 1:53)){
+          rownames(datasetread)<-as.character(datasetread[,1])
+          datasetread<-datasetread[-1]
+          datalog <- paste0(datalog, "Note: First column is the week name\n")
+          cat("read_data> Note: First column is the week name\n")
+        }else if(!(as.numeric(rownames(datasetread)) %in% 1:53)){
+          rownames(datasetread)<-1:NROW(datasetread)
+        } 
+      }
       dataweeks<-as.numeric(row.names(datasetread))
       datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
@@ -596,6 +657,23 @@ read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
       datasetread<-rdaenv[[i.dataset]]
+      # Detect format year, week, rate
+      columnsn<-tolower(names(datasetread))
+      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
+        names(datasetread)<-tolower(names(datasetread))
+        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+      }else{
+        if (all(datasetread[,1] %in% 1:53)){
+          rownames(datasetread)<-as.character(datasetread[,1])
+          datasetread<-datasetread[-1]
+          datalog <- paste0(datalog, "Note: First column is the week name\n")
+          cat("read_data> Note: First column is the week name\n")
+        }else if(!(as.numeric(rownames(datasetread)) %in% 1:53)){
+          rownames(datasetread)<-1:NROW(datasetread)
+        }
+      }
       dataweeks<-as.numeric(row.names(datasetread))
       datalog <- paste0(datalog, "Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n")
       cat("read_data> Read ",NROW(datasetread)," rows and ",NCOL(datasetread)," columns\n",sep="")
