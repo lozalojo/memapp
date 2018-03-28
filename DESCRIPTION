@@ -18,6 +18,8 @@ Imports:
     tidyr,
     dplyr,
     openxlsx,
+    foreign,
+    haven,
     readxl,
     stringr,
     stringi,

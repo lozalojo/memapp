@@ -1624,7 +1624,8 @@ shinyServer(function(input, output, session) {
     readdata <- read_data()
     datfile <- readdata$datasetread
     if(is.null(datfile)){
-      return(NULL)
+      #return(NULL)
+      tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")))
     }else{
       if (as.logical(input$advancedfeatures)){
         # tabsetPanel(tabPanel(trloc("File"), tableOutput("tbdFile")),
@@ -1701,6 +1702,8 @@ shinyServer(function(input, output, session) {
     datfile <- readdata$datasetread
     if(is.null(datfile)){
       cat(trloc("No file or dataset selected"),"\n", sep="")
+      cat(trloc("Log"),":\n\t", sep="")
+      cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
     }else{
       cat(trloc("File"),":\n\t",infile$name,"\n", sep="")
       cat(trloc("Dataset"),":\n\t",indataset,"\n", sep="")
