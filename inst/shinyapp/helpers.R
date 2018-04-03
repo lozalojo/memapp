@@ -177,7 +177,6 @@ read.data<-function(i.file,
   if (!(is.null(datasetread))){
     # Remove columns only with NA
     naonlycolumns<-apply(datasetread, 2, function(x) all(is.na(x)))
-    #naonlycolumns<-apply(datasetread, 2, function(x) sum(x, na.rm=T)>0)
     if (any(naonlycolumns)){
       datalog <- paste0(datalog, "Note: Columns ",paste(names(datasetread)[naonlycolumns], collapse=",")," contain only NAs or 0s, removing...\n")
       cat("read_data> Note: Columns ",paste(names(datasetread)[naonlycolumns], collapse=",")," contain only NAs or 0s, removing...\n")
@@ -193,12 +192,6 @@ read.data<-function(i.file,
     }
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
-    # if (NCOL(datasetread)>1){
-    #   seasons<-data.frame(names(datasetread),matrix(stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"),nrow=NCOL(datasetread),byrow=F)[,-1],stringsAsFactors = F)
-    # }else{
-    #   seasons<-data.frame(t(c(names(datasetread),stringr::str_match(names(datasetread),"(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])),stringsAsFactors = F)
-    # }
-    # names(seasons)<-c("column","anioi","aniof","aniow")
     seasons <- data.frame(column=names(datasetread), stringsAsFactors = F)  %>%
       extract(column, into=c("anioi","aniof","aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove=F)
     seasons[is.na(seasons)]<-""
@@ -207,7 +200,6 @@ read.data<-function(i.file,
     seasonsname[seasons$aniof!=""]<-paste(seasonsname[seasons$aniof!=""],seasons$aniof[seasons$aniof!=""],sep="/")
     seasonsname[seasons$aniow!=""]<-paste(seasonsname[seasons$aniow!=""],"(",seasons$aniow[seasons$aniow!=""],")",sep="")
     seasons$season<-seasonsname
-    #print(seasons)
     rm("seasonsname")
     names(datasetread)<-seasons$season
     # Remove columns not detected as seasons
@@ -223,7 +215,6 @@ read.data<-function(i.file,
     }else if (i.process.data){
       # Delete all columns with only 0s and NAs
       datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
-      
       # Fix when reading access files, sometimes it changes the order of the weeks
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
@@ -732,7 +723,7 @@ read.data.dbf<-function(i.file, i.file.name=NA, i.dataset=NA){
     filenameextension<-paste(filename, fileextension, sep=".")
     datasets<-filename
     n.datasets<-length(datasets)
-    # rds files
+    # dbf files
     datalog <- paste0(datalog, "dBase file detected: ",filenameextension,"\n")
     cat("read_data> dBase file detected: ",filenameextension,"\n",sep="")
     if (is.na(i.dataset)){
@@ -792,7 +783,7 @@ read.data.sav<-function(i.file, i.file.name=NA, i.dataset=NA){
     filenameextension<-paste(filename, fileextension, sep=".")
     datasets<-filename
     n.datasets<-length(datasets)
-    # rds files
+    # sav files
     datalog <- paste0(datalog, "SPSS file detected: ",filenameextension,"\n")
     cat("read_data> SPSS file detected: ",filenameextension,"\n",sep="")
     if (is.na(i.dataset)){
@@ -852,7 +843,7 @@ read.data.dta<-function(i.file, i.file.name=NA, i.dataset=NA){
     filenameextension<-paste(filename, fileextension, sep=".")
     datasets<-filename
     n.datasets<-length(datasets)
-    # rds files
+    # dta files
     datalog <- paste0(datalog, "Stata file detected: ",filenameextension,"\n")
     cat("read_data> Stata file detected: ",filenameextension,"\n",sep="")
     if (is.na(i.dataset)){
@@ -912,7 +903,7 @@ read.data.sas<-function(i.file, i.file.name=NA, i.dataset=NA){
     filenameextension<-paste(filename, fileextension, sep=".")
     datasets<-filename
     n.datasets<-length(datasets)
-    # rds files
+    # sds files
     datalog <- paste0(datalog, "SAS file detected: ",filenameextension,"\n")
     cat("read_data> SAS file detected: ",filenameextension,"\n",sep="")
     if (is.na(i.dataset)){
@@ -992,8 +983,8 @@ select.columns<-function(i.names, i.from, i.to, i.exclude="", i.include="", i.pa
 #' you decide. f.i: what if i want to have a graph with 8 tickmarks in a range of 34 to 345
 
 optimal.tickmarks.old<-function(i.min,i.max,i.number.ticks=10,
-                            i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
-                            i.include.min=F,i.include.max=F){
+                                i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
+                                i.include.min=F,i.include.max=F){
   # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
   # Option 1: free, I can put tickmarks outside c(i.min,i.max)
   if (!i.include.min){
