@@ -1146,13 +1146,23 @@ shinyServer(function(input, output, session) {
       dataweeksoriginal<-row.names(temp2$datasetread)
       dataweeksfiltered<-row.names(datasetread)
       if (as.logical(input$processdata)){
-        datalog <- paste0(datalog, "Preprocessing data\n")
-        cat("reactive/read_data> Preprocessing data\n")
-        datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
-        datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
         # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
         # specially when splitting waves in two, in case there is only one epidemic instead of two
-        datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
+        zerocols<-apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
+        if (sum(zerocols)>0){
+          datalog <- paste0(datalog, "Preprocessing data... removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+          cat("reactive/read_data> Preprocessing data... removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+          datasetread<-datasetread[!zerocols]
+        }
+        if (as.numeric(input$transformation)==1){
+          datalog <- paste0(datalog, "Preprocessing data... rearranging rows and columns\n")
+          cat("reactive/read_data> Preprocessing data... rearranging rows and columns\n")
+          
+        }else{
+          datalog <- paste0(datalog, "Preprocessing data... rearranging rows and columns and applying selected transformation\n")
+          cat("reactive/read_data> Preprocessing data... rearranging rows and columns and applying selected transformation\n")
+        }
+        datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
       }
     }else{
       dataweeksoriginal=NULL
