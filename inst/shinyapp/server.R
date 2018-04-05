@@ -1732,10 +1732,6 @@ shinyServer(function(input, output, session) {
                                       i.pandemic=T,
                                       i.seasons=NA)
       if (length(selectedcolumns)>0){
-        cat("****\n")
-        cat(paste0(names(datfile)[selectedcolumns], collapse=";"),"\n")
-        print(datfile[selectedcolumns])
-        cat("****\n")
         datatoshow<-format(round(datfile[selectedcolumns], 2), nsmall=2)
       }else{
         datatoshow<-data.frame(Message="No data selected",row.names = NULL)
