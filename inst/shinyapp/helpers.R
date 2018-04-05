@@ -178,22 +178,22 @@ read.data<-function(i.file,
     # Remove columns only with NA
     naonlycolumns<-apply(datasetread, 2, function(x) all(is.na(x)))
     if (any(naonlycolumns)){
-      datalog <- paste0(datalog, "Note: Columns ",paste(names(datasetread)[naonlycolumns], collapse=",")," contain only NAs or 0s, removing...\n")
-      cat("read_data> Note: Columns ",paste(names(datasetread)[naonlycolumns], collapse=",")," contain only NAs or 0s, removing...\n")
+      datalog <- paste0(datalog, "Note: removing NAs-only columns: ",paste(names(datasetread)[naonlycolumns], collapse="; "),"\n")
+      cat("read_data> Note: removing NAs-only columns: ",paste(names(datasetread)[naonlycolumns], collapse="; "),"\n")
       datasetread<-datasetread[!naonlycolumns]
     }
     rm("naonlycolumns")
     # Remove character only columns
     nonnumericcolumns<-sapply(datasetread, function(x) !is.numeric(x))
     if (any(nonnumericcolumns)){
-      datalog <- paste0(datalog, "Note: Columns ",paste(names(datasetread)[nonnumericcolumns], collapse=",")," are not numeric, removing...\n")
-      cat("read_data> Note: Columns ",paste(names(datasetread)[nonnumericcolumns], collapse=",")," are not numeric, removing...\n")
+      datalog <- paste0(datalog, "Note: removing non-numeric columns: ",paste(names(datasetread)[nonnumericcolumns], collapse="; "),"\n")
+      cat("read_data> Note: removing non-numeric columns: ",paste(names(datasetread)[nonnumericcolumns], collapse="; "),"\n")
       datasetread<-datasetread[!nonnumericcolumns]
     }
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
     seasons <- data.frame(column=names(datasetread), stringsAsFactors = F)  %>%
-      extract(column, into=c("anioi","aniof","aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove=F)
+      tidyr::extract(column, into=c("anioi","aniof","aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove=F)
     seasons[is.na(seasons)]<-""
     seasons$aniof[seasons$aniof==""]<-seasons$anioi[seasons$aniof==""]
     seasonsname<-seasons$anioi
@@ -205,8 +205,8 @@ read.data<-function(i.file,
     # Remove columns not detected as seasons
     noseasondetected<-(names(datasetread)=="")
     if (any(noseasondetected)){
-      datalog <- paste0(datalog, "Note: Columns named ",paste((seasons$column)[noseasondetected], collapse=", ")," do not have a correct header, removing...\n      Correct column names are: 2001, 2001/2002, 2001/2001\n")
-      cat("read_data> Note: Columns ",paste((seasons$column)[noseasondetected], collapse=",")," do not have a correct header, removing...\n      Correct column names are: 2001, 2001/2002, 2001/2001\n")
+      datalog <- paste0(datalog, "Note: removing non-correct header columns: ",paste((seasons$column)[noseasondetected], collapse="; "),"\n")
+      cat("read_data> Note: removing non-correct header columns: ",paste((seasons$column)[noseasondetected], collapse="; "),"\n")
       datasetread<-datasetread[!noseasondetected]
     }
     rm("noseasondetected")
@@ -214,7 +214,10 @@ read.data<-function(i.file,
       datasetread<-NULL
     }else if (i.process.data){
       # Delete all columns with only 0s and NAs
-      datasetread<-datasetread[apply(datasetread, 2, function(x) sum(x,na.rm=T)>0)]
+      zerocols <- apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
+      datalog <- paste0(datalog, "Note: removing 0-only columns: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
+      cat("read_data> Note: removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+      datasetread<-datasetread[!zerocols]
       # Fix when reading access files, sometimes it changes the order of the weeks
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
@@ -228,6 +231,8 @@ read.data<-function(i.file,
       if (i.range.x[2]==0) i.range.x[2]<-52
       # If I use the transform functions I will join seasons formed by several parts, for example 2001/1, 2001/2 will
       # be joined in a single 2001 season.
+      cat("Note: rearranging rows and columns\n")
+      cat("read_data> Note: rearranging rows and columns\n")
       datasetread<-transformdata.back(datasetread, i.name = "rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x)$data
       datasetread<-transformdata(datasetread, i.name = "rates", i.range.x = i.range.x)$data
     }
@@ -1317,10 +1322,10 @@ get.languages<-function(){
 
 read.locales.table<-function(){
   locales<-utils::read.delim(paste0(translation.dir(),"/localestable.txt"),header=T,sep=";",row.names=NULL,fill=T,colClasses="character", as.is=T) %>%
-    extract(filename, into=c('language.iso_639_1', 'v1', 'country.iso_3166','v2','v3','encoding'), 
+    tidyr::extract(filename, into=c('language.iso_639_1', 'v1', 'country.iso_3166','v2','v3','encoding'), 
             '^([:alpha:]{2})(_([:alpha:]{2}))?(([\\.]+)([^\\.]+))?$', remove=F) %>%
     select(-v1,-v2,-v3) %>%
-    filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
+    dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
     mutate(encoding=if_else(is.na(encoding),"",tolower(encoding)),
            language.iso_639_1=if_else(is.na(language.iso_639_1),"",tolower(language.iso_639_1)),
            country.iso_3166=if_else(is.na(country.iso_3166),"",toupper(country.iso_3166)))
@@ -1328,10 +1333,10 @@ read.locales.table<-function(){
 
 get.linux.locales<-function(){
   locales<-data.frame(localelinux=system("locale -a ", intern = TRUE), stringsAsFactors = F) %>%
-    extract(localelinux, into=c('language.iso_639_1', 'v1', 'country.iso_3166','v2','v3','encoding'), 
+    tidyr::extract(localelinux, into=c('language.iso_639_1', 'v1', 'country.iso_3166','v2','v3','encoding'), 
             '^([:alpha:]{2})(_([:alpha:]{2}))?(([\\.]+)([^\\.]+))?$', remove=F) %>%
     select(-v1,-v2,-v3) %>%
-    filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
+    dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
     mutate(encoding=if_else(is.na(encoding),"",tolower(encoding)),
            language.iso_639_1=if_else(is.na(language.iso_639_1),"",tolower(language.iso_639_1)),
            country.iso_3166=if_else(is.na(country.iso_3166),"",toupper(country.iso_3166)))
@@ -1339,7 +1344,7 @@ get.linux.locales<-function(){
   locales<-locales %>%
     arrange(language.iso_639_1, country.iso_3166, factor(encoding, levels=unique(c("utf8","utf-8","",locales$encoding)))) %>%
     group_by(language.iso_639_1, country.iso_3166) %>%
-    filter(row_number()==1) %>%
+    dplyr::filter(row_number()==1) %>%
     ungroup()
   locales
 }

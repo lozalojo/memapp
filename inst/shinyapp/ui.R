@@ -117,7 +117,7 @@ shinyUI(
                              uiOutput("uiGraphoptions"),
                              uiOutput("uiMEMoptions"),
                              uiOutput("uiSupport"),
-                             box(
+                             shinydashboard::box(
                                title="", solidHeader = TRUE, status = "warning", width = 12,
                                uiOutput("uiLanguage"),
                                selectInput("lang", label = "", choices = languages.list, size=1, selectize = FALSE, selected = "en_GB")

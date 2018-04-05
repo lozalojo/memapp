@@ -1158,23 +1158,19 @@ shinyServer(function(input, output, session) {
       dataweeksoriginal<-row.names(temp2$datasetread)
       dataweeksfiltered<-row.names(datasetread)
       if (as.logical(input$processdata)){
-        # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
-        # specially when splitting waves in two, in case there is only one epidemic instead of two
-        zerocols<-apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
-        if (sum(zerocols)>0){
-          datalog <- paste0(datalog, "Preprocessing data... removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
-          cat("reactive/read_data> Preprocessing data... removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
-          datasetread<-datasetread[!zerocols]
-        }
-        if (as.numeric(input$transformation)==1){
-          datalog <- paste0(datalog, "Preprocessing data... rearranging rows and columns\n")
-          cat("reactive/read_data> Preprocessing data... rearranging rows and columns\n")
-          
-        }else{
-          datalog <- paste0(datalog, "Preprocessing data... rearranging rows and columns and applying selected transformation\n")
-          cat("reactive/read_data> Preprocessing data... rearranging rows and columns and applying selected transformation\n")
+        if (as.numeric(input$transformation)!=1){
+          datalog <- paste0(datalog, "Note: applying selected transformation\n")
+          cat("reactive/read_data> Note: applying selected transformation\n")
         }
         datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
+        # specially when splitting waves in two, in case there is only one epidemic instead of two
+        zerocols<-apply(datasetread, 2, function(x) sum(x, na.rm=T)==0)
+        if (sum(zerocols)>0){
+          datalog <- paste0(datalog, "Note: removing 0/NA-only columns after transformation:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+          cat("reactive/read_data> Note: removing 0/NA-only columns after transformation:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+          datasetread<-datasetread[!zerocols]
+        }
       }
     }else{
       dataweeksoriginal=NULL
@@ -1736,6 +1732,10 @@ shinyServer(function(input, output, session) {
                                       i.pandemic=T,
                                       i.seasons=NA)
       if (length(selectedcolumns)>0){
+        cat("****\n")
+        cat(paste0(names(datfile)[selectedcolumns], collapse=";"),"\n")
+        print(datfile[selectedcolumns])
+        cat("****\n")
         datatoshow<-format(round(datfile[selectedcolumns], 2), nsmall=2)
       }else{
         datatoshow<-data.frame(Message="No data selected",row.names = NULL)
@@ -4601,7 +4601,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiDataset = renderUI({
-    box(title=trloc("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = FALSE, collapsed=FALSE,
+    shinydashboard::box(title=trloc("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = FALSE, collapsed=FALSE,
         uiOutput("uidataset"),
         uiOutput("uifirstWeek"),
         uiOutput("uilastWeek"),
@@ -4643,7 +4643,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiModel = renderUI({
-    box(title=trloc("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+    shinydashboard::box(title=trloc("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
           , title = trloc("From"), content = trloc("First season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
@@ -4660,7 +4660,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiSurveillance = renderUI({
-    box(title=trloc("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
+    shinydashboard::box(title=trloc("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
           , title = trloc("Season"), content = trloc("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
@@ -4674,7 +4674,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiVisualize = renderUI({
-    box(title=trloc("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+    shinydashboard::box(title=trloc("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
           , title = trloc("Seasons"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = 'focus', options = list(container = "body"))
@@ -4682,7 +4682,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiThresholds = renderUI({
-    box(title=trloc("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
+    shinydashboard::box(title=trloc("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
         popify(
           checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Pre-epidemic threshold")), value = TRUE)
           , title = trloc("Pre-epidemic threshold"), content = trloc("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
@@ -4732,7 +4732,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiTextoptions = renderUI({
-    box(
+    shinydashboard::box(
       title=trloc("Text options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
         textInput("textMain", label = h6(trloc("Main title"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("Main title"))
@@ -4747,7 +4747,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiGraphoptions = renderUI({
-    box(
+    shinydashboard::box(
       title=trloc("Graph options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
         selectInput("colObservedLines", h6(trloc("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
@@ -4791,7 +4791,7 @@ shinyServer(function(input, output, session) {
     type.list<-list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6)
     names(type.list)<-trloc(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and the KC Method to calculate its confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
     
-    box(
+    shinydashboard::box(
       title=trloc("MEM options"), status = "danger", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=TRUE,
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Timing")),
       popify(
@@ -4870,7 +4870,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiSupport = renderUI({
-    box(
+    shinydashboard::box(
       title=trloc("Support"), status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       h5(a(trloc("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
       h5(a(trloc("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
