@@ -231,7 +231,7 @@ read.data<-function(i.file,
       if (i.range.x[2]==0) i.range.x[2]<-52
       # If I use the transform functions I will join seasons formed by several parts, for example 2001/1, 2001/2 will
       # be joined in a single 2001 season.
-      cat("Note: rearranging rows and columns\n")
+      datalog <- paste0(datalog, "Note: rearranging rows and columns\n")
       cat("read_data> Note: rearranging rows and columns\n")
       datasetread<-transformdata.back(datasetread, i.name = "rates", i.cutoff.original=i.cutoff.original, i.range.x.final=i.range.x)$data
       datasetread<-transformdata(datasetread, i.name = "rates", i.range.x = i.range.x)$data
