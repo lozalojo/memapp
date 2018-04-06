@@ -841,6 +841,139 @@ shinyServer(function(input, output, session) {
     p
   }
   
+  plotMAP <- function(i.data,
+                      i.textMain="",
+                      i.textX="",
+                      i.textY="",
+                      i.method = 2, 
+                      i.param = 2.8){
+    if(is.null(i.data)){
+      p<-NULL
+    }else{  
+      timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+      dgrafgg<-as.data.frame(rbind(c(0,0),timdata$map.curve[,c(1,2)]))
+      names(dgrafgg)<-c("weeks","map")
+      # Calculate ticks for x
+      axis.x.range.original <- range(dgrafgg$weeks)
+      axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 10)
+      axis.x.range <- axis.x.otick$range
+      axis.x.ticks <- axis.x.otick$tickmarks
+      axis.x.labels <- axis.x.otick$tickmarks  
+      # Range y fix
+      axis.y.range.original <- c(0,100)
+      axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
+      axis.y.range <- axis.y.otick$range
+      axis.y.ticks <- axis.y.otick$tickmarks
+      axis.y.labels <- axis.y.otick$tickmarks  
+      
+      gplot<-ggplot(dgrafgg) +
+        geom_line(aes(x=weeks, y=map), color="#808080", linetype=1, size=1) +
+        geom_point(aes(x=weeks,y=map), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
+        geom_segment(aes(x = timdata$optimum.map[1], y = timdata$optimum.map[2], xend = timdata$optimum.map[1], yend = dgrafgg[1,2]),col="#FFB401",lwd=1 ) +
+        geom_segment(aes(x = timdata$optimum.map[1], y = timdata$optimum.map[2], xend = dgrafgg[1,1], yend =timdata$optimum.map[2] ),col="#FFB401",lwd=1) +
+        geom_point(aes(x=timdata$optimum.map[1],y=timdata$optimum.map[2]), color="#980043", size=3, shape=1) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+        labs(title = i.textMain, x = i.textX, y = i.textY) +
+        ggthemes::theme_few() +
+        theme(plot.title = element_text(hjust = 0.5))
+      p<-list(plot=gplot, gdata=dgrafgg)
+    }
+    p
+  }
+  
+  plotSlope <- function(i.data,
+                        i.textMain="",
+                        i.textX="",
+                        i.textY="",
+                        i.method = 2, 
+                        i.param = 2.8){
+    if(is.null(i.data)){
+      p<-NULL
+    }else{
+      if (i.method==1){
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        x<-i.curva.map[,1]
+        y<-i.curva.map[,2]
+        y.d<-diff(y)
+        x.d<-x[-length(x)]
+        y.s<-mem:::suavizado(y.d)
+        x.n<-mem:::normalizar(x.d)
+        y.n<-mem:::normalizar(y.s)
+        ene<-length(y.n)
+        dgrafgg<-data.frame(weeks=x.d, slope=y.s)
+        # Calculate ticks for x
+        axis.x.range.original <- range(dgrafgg$weeks)
+        axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.range <- axis.x.otick$range
+        axis.x.ticks <- axis.x.otick$tickmarks
+        axis.x.labels <- axis.x.otick$tickmarks
+        # Range y fix
+        axis.y.range.original <- range(dgrafgg$slope)
+        axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
+        axis.y.range <- axis.y.otick$range
+        axis.y.ticks <- axis.y.otick$tickmarks
+        axis.y.labels <- axis.y.otick$tickmarks  
+        b <- (dgrafgg$slope[ene]-dgrafgg$slope[1])/(dgrafgg$weeks[ene]-dgrafgg$weeks[1])
+        a1 <- dgrafgg$slope[timdata$optimum.map[1]]-b*timdata$optimum.map[1]
+        a2 <- dgrafgg$slope[1]-b*1
+        a3 <- dgrafgg$slope[timdata$optimum.map[1]]+b*timdata$optimum.map[1]
+        gplot<-ggplot(dgrafgg) +
+          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
+          geom_abline(slope=b, intercept=a1, col="#800080",lwd=1.5, linetype=2) +
+          geom_abline(slope=b, intercept=a2, col="#FFB401",lwd=1) +
+          geom_abline(slope=-b, intercept=a3, col="#FFB401",lwd=1) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+          scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+          labs(title = i.textMain, x = i.textX, y = i.textY) +
+          ggthemes::theme_few() +
+          theme(plot.title = element_text(hjust = 0.5))
+        p<-list(plot=gplot, gdata=dgrafgg)        
+      }else if (i.method==2){
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        temp1<-c(0,timdata$map.curve[,2])
+        y.100<-min((1:length(temp1))[round(temp1,2)==100])
+        y<-temp1[1:y.100]
+        y.s<-mem:::suavizado(y,1)
+        d.y<-diff(y.s)
+        d.x<-1:length(d.y)
+        dgrafgg<-data.frame(weeks=d.x, slope=d.y)
+        
+        # Calculate ticks for x
+        axis.x.range.original <- range(dgrafgg$weeks)
+        axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.range <- axis.x.otick$range
+        axis.x.ticks <- axis.x.otick$tickmarks
+        axis.x.labels <- axis.x.otick$tickmarks
+        # Range y fix
+        axis.y.range.original <- range(dgrafgg$slope)
+        axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
+        axis.y.range <- axis.y.otick$range
+        axis.y.ticks <- axis.y.otick$tickmarks
+        axis.y.labels <- axis.y.otick$tickmarks  
+        
+        gplot<-ggplot(dgrafgg) +
+          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
+          geom_hline(yintercept=timdata$param.param ,col="#800080",lwd=1.5, linetype=2) +
+          geom_segment(aes(x = timdata$optimum.map[1], y = 0, xend = timdata$optimum.map[1], yend = max(dgrafgg$slope,na.rm=T)),col="#FFB401",lwd=1) +
+          geom_segment(aes(x = min(dgrafgg$weeks), y = dgrafgg$slope[timdata$optimum.map[1]], xend = max(dgrafgg$weeks), yend =dgrafgg$slope[timdata$optimum.map[1]]),col="#FFB401",lwd=1) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+          scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+          labs(title = i.textMain, x = i.textX, y = i.textY) +
+          ggthemes::theme_few() +
+          theme(plot.title = element_text(hjust = 0.5))
+        p<-list(plot=gplot, gdata=dgrafgg)
+      }else{
+        p<-NULL
+      }
+    }
+    p
+  }
+
   #####################################
   ### REACTIVE FUNCTIONS
   #####################################
@@ -1277,8 +1410,32 @@ shinyServer(function(input, output, session) {
     datsheets <- readdata$datasets
     if (!is.null(datfile)){
       seasons<-names(datfile)
-      cat("observeEvent/read_data> updating timing plots... Check & describe\n")
-      lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderPlotly({
+      cat("observeEvent/read_data> updating timing graphs/structure... check & describe\n")
+      lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderUI({
+        if (as.logical(input$advancedfeatures)){
+          fluidPage(
+            fluidRow(
+              column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_plot"), height = 600))
+            ),
+            fluidRow(
+              column(1,h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_map"), height = 600))
+            ),
+            fluidRow(
+              column(1,h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_slope"), height = 600))
+            )
+          )            
+        }else{
+          fluidRow(
+            column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+            column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_plot"), height = 600))
+          )
+        }
+      })})
+      cat("observeEvent/read_data> updating timing graphs/timing plot... check & describe\n")
+      lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s),"_plot")]] <- renderPlotly({
         readdata <- isolate(read_data())
         datfile <- readdata$datasetread      
         if(is.null(datfile)){
@@ -1326,14 +1483,88 @@ shinyServer(function(input, output, session) {
           if (is.null(p)){
             zfix<-NULL
           }else{
-            z <- ggplotly(p$plot, width = 800, height = 600)
+            z <- ggplotly(p$plot, width=800, height=600)
             zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
           }
         }
         zfix
       })})
-      cat("observeEvent/read_data> updating timing plots... Visualize\n")
-      lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s))]] <- renderPlotly({
+      cat("observeEvent/read_data> updating timing graphs/map curve... check & describe\n")
+      lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s),"_map")]] <- renderPlotly({
+        readdata <- isolate(read_data())
+        datfile <- readdata$datasetread      
+        if(is.null(datfile)){
+          zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
+        }else{
+          datfile.plot<-datfile[as.character(s)]
+          p <- plotMAP(datfile.plot,
+                       i.textMain=input$textMain,
+                       i.textX=input$textX,
+                       i.textY=input$textY,
+                       i.method=as.numeric(input$method),
+                       i.param=as.numeric(input$param))
+          if (is.null(p)){
+            zfix<-NULL
+          }else{
+            z <- ggplotly(p$plot, width=800, height=600)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
+          }
+        }
+        zfix
+      })})
+      cat("observeEvent/read_data> updating timing graphs/slope curve... check & describe\n")
+      lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s),"_slope")]] <- renderPlotly({
+        readdata <- isolate(read_data())
+        datfile <- readdata$datasetread      
+        if(is.null(datfile)){
+          zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
+        }else{
+          datfile.plot<-datfile[as.character(s)]
+          p <- plotSlope(datfile.plot,
+                         i.textMain=input$textMain,
+                         i.textX=input$textX,
+                         i.textY=input$textY,
+                         i.method=as.numeric(input$method),
+                         i.param=as.numeric(input$param))
+          if (is.null(p)){
+            zfix<-NULL
+          }else{
+            z <- ggplotly(p$plot, width=800, height=600)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
+          }
+        }
+        zfix
+      })})
+      cat("observeEvent/read_data> updating timing graphs/structure... visualize\n")
+      lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s))]] <- renderUI({
+        if (as.logical(input$advancedfeatures)){
+          fluidPage(
+            fluidRow(
+              column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbvTiming_",as.character(s),"_plot"), height = 600))
+            ),
+            fluidRow(
+              column(1,h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbvTiming_",as.character(s),"_map"), height = 600))
+            ),
+            fluidRow(
+              column(1,h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbvTiming_",as.character(s),"_slope"), height = 600))
+            )
+          )
+        }else{
+          fluidRow(
+            column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+            column(11,plotlyOutput(paste0("tbvTiming_",as.character(s),"_plot"), height = 600))
+          )            
+        }
+      })})
+      cat("observeEvent/read_data> updating timing graphs/timing plot... visualize\n")
+      lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s),"_plot")]] <- renderPlotly({
         readdata <- isolate(read_data())
         datfile <- readdata$datasetread
         if(is.null(datfile)){
@@ -1381,7 +1612,57 @@ shinyServer(function(input, output, session) {
           if (is.null(p)){
             zfix<-NULL
           }else{
-            z <- ggplotly(p$plot, width = 800, height = 600)
+            z <- ggplotly(p$plot, width=800, height=600)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
+          }
+        }
+        zfix
+      })})
+      cat("observeEvent/read_data> updating timing graphs/map curve... visualize\n")
+      lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s),"_map")]] <- renderPlotly({
+        readdata <- isolate(read_data())
+        datfile <- readdata$datasetread      
+        if(is.null(datfile)){
+          zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
+        }else{
+          datfile.plot<-datfile[as.character(s)]
+          p <- plotMAP(datfile.plot,
+                       i.textMain=input$textMain,
+                       i.textX=input$textX,
+                       i.textY=input$textY,
+                       i.method=as.numeric(input$method),
+                       i.param=as.numeric(input$param))
+          if (is.null(p)){
+            zfix<-NULL
+          }else{
+            z <- ggplotly(p$plot, width=800, height=600)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
+          }
+        }
+        zfix
+      })})
+      cat("observeEvent/read_data> updating timing graphs/slope curve... visualize\n")
+      lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s),"_slope")]] <- renderPlotly({
+        readdata <- isolate(read_data())
+        datfile <- readdata$datasetread      
+        if(is.null(datfile)){
+          zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
+        }else{
+          datfile.plot<-datfile[as.character(s)]
+          p <- plotSlope(datfile.plot,
+                         i.textMain=input$textMain,
+                         i.textX=input$textX,
+                         i.textY=input$textY,
+                         i.method=as.numeric(input$method),
+                         i.param=as.numeric(input$param))
+          if (is.null(p)){
+            zfix<-NULL
+          }else{
+            z <- ggplotly(p$plot, width=800, height=600)
             zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
           }
         }
@@ -1413,8 +1694,32 @@ shinyServer(function(input, output, session) {
       values$clickdata <- data.frame()
       values$optimizegraphs <- data.frame()
       rm("origdata", "plotdata", "epidata")
-      cat("observeEvent/data_model> updating timing plots... model\n")
-      lapply(modseasons, function(s){output[[paste0("tbmTiming_",as.character(s))]] <- renderPlotly({
+      cat("observeEvent/data_model> updating timing graphs/structure... model\n")
+      lapply(modseasons, function(s){output[[paste0("tbmTiming_",as.character(s))]] <- renderUI({
+        if (as.logical(input$advancedfeatures)){
+          fluidPage(
+            fluidRow(
+              column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbmTiming_",as.character(s),"_plot"), height = 600))
+            ),
+            fluidRow(
+              column(1,h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbmTiming_",as.character(s),"_map"), height = 600))
+            ),
+            fluidRow(
+              column(1,h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11,plotlyOutput(paste0("tbmTiming_",as.character(s),"_slope"), height = 600))
+            )
+          )
+        }else{
+          fluidRow(
+            column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+            column(11,plotlyOutput(paste0("tbmTiming_",as.character(s),"_plot"), height = 600))
+          )            
+        }
+      })})
+      cat("observeEvent/data_model> updating timing graphs/timing plot... model\n")
+      lapply(modseasons, function(s){output[[paste0("tbmTiming_",as.character(s),"_plot")]] <- renderPlotly({
         datamodel<-isolate(data_model())
         moddata<-datamodel$param.data
         if(is.null(moddata)){
@@ -1462,12 +1767,62 @@ shinyServer(function(input, output, session) {
           if (is.null(p)){
             zfix<-NULL
           }else{
-            z <- ggplotly(p$plot, width = 800, height = 600)
+            z <- ggplotly(p$plot, width=800, height=600)
             zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
           }
         }
         zfix
       })})
+      cat("observeEvent/data_model> updating timing graphs/map curve... model\n")
+      lapply(modseasons, function(s){output[[paste0("tbmTiming_",as.character(s),"_map")]] <- renderPlotly({
+        readdata <- isolate(read_data())
+        datfile <- readdata$datasetread      
+        if(is.null(datfile)){
+          zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
+        }else{
+          datfile.plot<-datfile[as.character(s)]
+          p <- plotMAP(datfile.plot,
+                       i.textMain=input$textMain,
+                       i.textX=input$textX,
+                       i.textY=input$textY,
+                       i.method=as.numeric(input$method),
+                       i.param=as.numeric(input$param))
+          if (is.null(p)){
+            zfix<-NULL
+          }else{
+            z <- ggplotly(p$plot, width=800, height=600)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
+          }
+        }
+        zfix
+      })})
+      cat("observeEvent/data_model> updating timing graphs/slope curve... model\n")
+      lapply(modseasons, function(s){output[[paste0("tbmTiming_",as.character(s),"_slope")]] <- renderPlotly({
+        readdata <- isolate(read_data())
+        datfile <- readdata$datasetread      
+        if(is.null(datfile)){
+          zfix<-NULL
+        }else if (!(as.character(s) %in% names(datfile))){
+          zfix<-NULL
+        }else{
+          datfile.plot<-datfile[as.character(s)]
+          p <- plotSlope(datfile.plot,
+                         i.textMain=input$textMain,
+                         i.textX=input$textX,
+                         i.textY=input$textY,
+                         i.method=as.numeric(input$method),
+                         i.param=as.numeric(input$param))
+          if (is.null(p)){
+            zfix<-NULL
+          }else{
+            z <- ggplotly(p$plot, width=800, height=600)
+            zfix<-fixplotly(z,p$labels,p$haslines,p$haspoints,trloc("Week"),"value",p$weeklabels)
+          }
+        }
+        zfix
+      })})      
       cat("observeEvent/data_model> updating manual optimization plots... seasons' structure\n")
       lapply(modseasons, function(s){output[[paste0("tbmOptimizeM_",as.character(s))]] <- renderUI({
         imgfileok<-F
@@ -1910,7 +2265,7 @@ shinyServer(function(input, output, session) {
               lapply(tabnames,function(s){
                 ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
                 ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-                call("tabPanel",s,call('plotlyOutput',outputId=paste0("tbdTiming_",s), width ="100%", height ="100%"))
+                call("tabPanel", s, call('uiOutput',outputId=paste0("tbdTiming_",s), width ="100%", height ="100%"))
               })
       )
     }
@@ -2905,7 +3260,7 @@ shinyServer(function(input, output, session) {
               lapply(tabnames,function(s){
                 ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
                 ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-                call("tabPanel",s,call('plotlyOutput',outputId=paste0("tbmTiming_",s), width ="100%", height ="100%"))
+                call("tabPanel", s, call('uiOutput',outputId=paste0("tbmTiming_",s), width ="100%", height ="100%"))
               })
       )
     }
@@ -4580,7 +4935,7 @@ shinyServer(function(input, output, session) {
               lapply(tabnames,function(s){
                 ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
                 ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-                call("tabPanel",s,call('plotlyOutput',outputId=paste0("tbvTiming_",s), width ="100%", height ="100%"))
+                call("tabPanel", s, call('uiOutput',outputId=paste0("tbvTiming_",s), width ="100%", height ="100%"))
               })
       )
     }
