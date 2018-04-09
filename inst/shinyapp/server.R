@@ -893,14 +893,17 @@ shinyServer(function(input, output, session) {
     }else{
       if (i.method==1){
         timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
-        x<-i.curva.map[,1]
-        y<-i.curva.map[,2]
+        x<-timdata$map.curve[,1]
+        y<-timdata$map.curve[,2]
         y.d<-diff(y)
         x.d<-x[-length(x)]
         y.s<-mem:::suavizado(y.d)
         x.n<-mem:::normalizar(x.d)
         y.n<-mem:::normalizar(y.s)
-        ene<-length(y.n)
+        u<-(x.n-y.n)/sqrt(2)
+        v<-sqrt(x.n^2+y.n^2-u^2)
+        optimo<-which.min(v)
+        resultados<-timdata$map.curve[x==optimo,]
         dgrafgg<-data.frame(weeks=x.d, slope=y.s)
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
@@ -914,7 +917,7 @@ shinyServer(function(input, output, session) {
         axis.y.range <- axis.y.otick$range
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks  
-        b <- (dgrafgg$slope[ene]-dgrafgg$slope[1])/(dgrafgg$weeks[ene]-dgrafgg$weeks[1])
+        b <- (dgrafgg$slope[length(y.s)]-dgrafgg$slope[1])/(dgrafgg$weeks[length(y.s)]-dgrafgg$weeks[1])
         a1 <- dgrafgg$slope[timdata$optimum.map[1]]-b*timdata$optimum.map[1]
         a2 <- dgrafgg$slope[1]-b*1
         a3 <- dgrafgg$slope[timdata$optimum.map[1]]+b*timdata$optimum.map[1]
@@ -933,14 +936,19 @@ shinyServer(function(input, output, session) {
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if (i.method==2){
         timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
-        temp1<-c(0,timdata$map.curve[,2])
+        temp1<-c(0, timdata$map.curve[,2])
         y.100<-min((1:length(temp1))[round(temp1,2)==100])
         y<-temp1[1:y.100]
-        y.s<-mem:::suavizado(y,1)
+        y.s<-mem:::suavizado(y, 1)
         d.y<-diff(y.s)
         d.x<-1:length(d.y)
+        if (any(d.y<i.param)){
+          optimo<-min((1:(length(x)-1))[d.y<i.param],na.rm=T)-1
+        }else{
+          optimo<-length(d.y)
+        }
+        resultados<-timdata$map.curve[timdata$map.curve[,1]==optimo,]
         dgrafgg<-data.frame(weeks=d.x, slope=d.y)
-        
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
         axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
@@ -953,7 +961,6 @@ shinyServer(function(input, output, session) {
         axis.y.range <- axis.y.otick$range
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks  
-        
         gplot<-ggplot(dgrafgg) +
           geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
           geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
@@ -967,7 +974,91 @@ shinyServer(function(input, output, session) {
           ggthemes::theme_few() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)
-      }else{
+      }else if (i.method==3){
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        x<-timdata$map.curve[,1]
+        y<-timdata$map.curve[,2]
+        y.s<-loess(y~x)$fitted
+        x.range<-(max(x,na.rm=T)-min(x,na.rm=T))
+        y.range<-(max(y,na.rm=T)-min(y,na.rm=T))
+        pendiente<-y.range/x.range
+        y.d<-diff(y.s)
+        x.d<-x[2:length(x)]
+        optimo<-1+which.min(abs(y.d-pendiente))
+        resultados<-timdata$map.curve[x==optimo,]
+        dgrafgg<-data.frame(weeks=x.d, slope=y.d)
+        # Calculate ticks for x
+        axis.x.range.original <- range(dgrafgg$weeks)
+        axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.range <- axis.x.otick$range
+        axis.x.ticks <- axis.x.otick$tickmarks
+        axis.x.labels <- axis.x.otick$tickmarks
+        # Range y fix
+        axis.y.range.original <- range(dgrafgg$slope)
+        axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
+        axis.y.range <- axis.y.otick$range
+        axis.y.ticks <- axis.y.otick$tickmarks
+        axis.y.labels <- axis.y.otick$tickmarks  
+        b <- (dgrafgg$slope[length(y.s)]-dgrafgg$slope[1])/(dgrafgg$weeks[length(y.s)]-dgrafgg$weeks[1])
+        a1 <- dgrafgg$slope[timdata$optimum.map[1]]-b*timdata$optimum.map[1]
+        a2 <- dgrafgg$slope[1]-b*1
+        a3 <- dgrafgg$slope[timdata$optimum.map[1]]+b*timdata$optimum.map[1]
+        gplot<-ggplot(dgrafgg) +
+          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
+          geom_hline(yintercept=pendiente ,col="#800080",lwd=1.5, linetype=2) +
+          geom_segment(aes(x = timdata$optimum.map[1], y = 0, xend = timdata$optimum.map[1], yend = max(dgrafgg$slope,na.rm=T)),col="#FFB401",lwd=1) +
+          geom_segment(aes(x = min(dgrafgg$weeks), y = dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]], xend = max(dgrafgg$weeks), yend =dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]]),col="#FFB401",lwd=1) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+          scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+          labs(title = i.textMain, x = i.textX, y = i.textY) +
+          ggthemes::theme_few() +
+          theme(plot.title = element_text(hjust = 0.5))
+        p<-list(plot=gplot, gdata=dgrafgg)        
+      }else if(i.method==4){
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        x<-timdata$map.curve[,1]
+        y<-timdata$map.curve[,2]
+        y.s<-loess(y~x)$fitted
+        y.d<-diff(y.s)
+        y.d2<-diff(y.d)
+        x.d2<-1:(length(x)-2)
+        plot(x.d2,y.d2, type="l")
+        y.d2.s<-sign(y.d2)
+        cambio.signo<-abs(diff(y.d2.s))
+        if (any(cambio.signo!=0)){
+          optimo<-1+which.max(cambio.signo)
+          resultados<-timdata$map.curve[x==optimo,]
+        }else{
+          optimo<-NA
+          resultados<-rep(NA,5)
+        }
+        dgrafgg<-data.frame(weeks=x.d2, slope=y.d2)
+        # Calculate ticks for x
+        axis.x.range.original <- range(dgrafgg$weeks)
+        axis.x.otick <- optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.range <- axis.x.otick$range
+        axis.x.ticks <- axis.x.otick$tickmarks
+        axis.x.labels <- axis.x.otick$tickmarks
+        # Range y fix
+        axis.y.range.original <- range(dgrafgg$slope)
+        axis.y.otick <- optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
+        axis.y.range <- axis.y.otick$range
+        axis.y.ticks <- axis.y.otick$tickmarks
+        axis.y.labels <- axis.y.otick$tickmarks  
+        gplot<-ggplot(dgrafgg) +
+          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
+          geom_hline(yintercept=0 ,col="#800080",lwd=1.5, linetype=2) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+          scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+          labs(title = i.textMain, x = i.textX, y = i.textY) +
+          ggthemes::theme_few() +
+          theme(plot.title = element_text(hjust = 0.5))
+        p<-list(plot=gplot, gdata=dgrafgg)        
+        }else{
         p<-NULL
       }
     }
