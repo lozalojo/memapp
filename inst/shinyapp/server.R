@@ -221,7 +221,7 @@ shinyServer(function(input, output, session) {
       }
       axis.y.range.original <- i.range.y
       axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-      axis.y.range <- axis.y.otick$range
+      axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
       
@@ -478,7 +478,7 @@ shinyServer(function(input, output, session) {
       }
       axis.y.range.original <- i.range.y
       axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-      axis.y.range <- axis.y.otick$range
+      axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
       
@@ -747,7 +747,7 @@ shinyServer(function(input, output, session) {
       }
       axis.y.range.original <- i.range.y
       axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-      axis.y.range <- axis.y.otick$range
+      axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
       
@@ -811,14 +811,14 @@ shinyServer(function(input, output, session) {
         }
         axis.y.range.original <- i.range.y
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-        axis.y.range <- axis.y.otick$range
+        axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks
       }else{
         axis.y.range.original <- c(1,length(i.range.y.labels))
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10,
                                           i.valid.ticks=1:(length(i.range.y.labels)),  i.include.min=T, i.include.max=T)
-        axis.y.range <- axis.y.otick$range
+        axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- i.range.y.labels[axis.y.otick$tickmarks]
       }
@@ -846,7 +846,11 @@ shinyServer(function(input, output, session) {
                       i.textX="",
                       i.textY="",
                       i.method = 2, 
-                      i.param = 2.8){
+                      i.param = 2.8,
+                      i.colObservedLines="#808080",
+                      i.colObservedPoints="#000000",
+                      i.colOptimum="#FF0000",
+                      i.colLine="#FFB401"){
     if(is.null(i.data)){
       p<-NULL
     }else{  
@@ -862,18 +866,17 @@ shinyServer(function(input, output, session) {
       # Range y fix
       axis.y.range.original <- c(0,100)
       axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
-      axis.y.range <- axis.y.otick$range
+      axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks  
-      
       gplot<-ggplot(dgrafgg) +
-        geom_line(aes(x=weeks, y=map), color="#808080", linetype=1, size=1) +
-        geom_point(aes(x=weeks,y=map), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
-        geom_segment(aes(x = timdata$optimum.map[1], y = timdata$optimum.map[2], xend = timdata$optimum.map[1], yend = dgrafgg[1,2]),col="#FFB401",lwd=1 ) +
-        geom_segment(aes(x = timdata$optimum.map[1], y = timdata$optimum.map[2], xend = dgrafgg[1,1], yend =timdata$optimum.map[2] ),col="#FFB401",lwd=1) +
-        geom_point(aes(x=timdata$optimum.map[1],y=timdata$optimum.map[2]), color="#980043", size=3, shape=1) +
-        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
-        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
+        geom_line(aes(x=weeks, y=map), color=i.colObservedLines, linetype=1, size=1) +
+        geom_point(aes(x=weeks,y=map), color=i.colObservedPoints, size=3, shape=21, fill=i.colObservedPoints, stroke = 0.1) +
+        geom_segment(aes(x = timdata$optimum.map[1], y = timdata$optimum.map[2], xend = timdata$optimum.map[1], yend = dgrafgg[1,2]),col=i.colLine,lwd=1 ) +
+        geom_segment(aes(x = timdata$optimum.map[1], y = timdata$optimum.map[2], xend = dgrafgg[1,1], yend =timdata$optimum.map[2] ),col=i.colLine,lwd=1) +
+        geom_point(aes(x=timdata$optimum.map[1],y=timdata$optimum.map[2]), color=i.colOptimum, size=3, shape=21, fill=i.colOptimum) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range*1.1, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range*1.1, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
         ggthemes::theme_few() +
         theme(plot.title = element_text(hjust = 0.5))
@@ -887,7 +890,12 @@ shinyServer(function(input, output, session) {
                         i.textX="",
                         i.textY="",
                         i.method = 2, 
-                        i.param = 2.8){
+                        i.param = 2.8,
+                        i.colObservedLines="#808080",
+                        i.colObservedPoints="#000000",
+                        i.colOptimum="#FF0000",
+                        i.colLine1="#800080",
+                        i.colLine2="#FFB401"){
     if(is.null(i.data)){
       p<-NULL
     }else{
@@ -914,7 +922,7 @@ shinyServer(function(input, output, session) {
         # Range y fix
         axis.y.range.original <- range(dgrafgg$slope)
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
-        axis.y.range <- axis.y.otick$range
+        axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks  
         b <- (dgrafgg$slope[length(y.s)]-dgrafgg$slope[1])/(dgrafgg$weeks[length(y.s)]-dgrafgg$weeks[1])
@@ -922,12 +930,12 @@ shinyServer(function(input, output, session) {
         a2 <- dgrafgg$slope[1]-b*1
         a3 <- dgrafgg$slope[timdata$optimum.map[1]]+b*timdata$optimum.map[1]
         gplot<-ggplot(dgrafgg) +
-          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
-          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
-          geom_abline(slope=b, intercept=a1, col="#800080",lwd=1.5, linetype=2) +
-          geom_abline(slope=b, intercept=a2, col="#FFB401",lwd=1) +
-          geom_abline(slope=-b, intercept=a3, col="#FFB401",lwd=1) +
-          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          geom_line(aes(x=weeks, y=slope), color=i.colObservedLines, linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color=i.colObservedPoints, size=3, shape=21, fill=i.colObservedPoints, stroke = 0.1) +
+          geom_abline(slope=b, intercept=a1, col=i.colLine1,lwd=1.5, linetype=2) +
+          geom_abline(slope=b, intercept=a2, col=i.colLine2,lwd=1) +
+          geom_abline(slope=-b, intercept=a3, col=i.colLine2,lwd=1) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color=i.colOptimum, size=4, shape=21, fill=i.colOptimum) +
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -943,7 +951,7 @@ shinyServer(function(input, output, session) {
         d.y<-diff(y.s)
         d.x<-1:length(d.y)
         if (any(d.y<i.param)){
-          optimo<-min((1:(length(x)-1))[d.y<i.param],na.rm=T)-1
+          optimo<-min((1:length(d.y))[d.y<i.param],na.rm=T)-1
         }else{
           optimo<-length(d.y)
         }
@@ -958,16 +966,16 @@ shinyServer(function(input, output, session) {
         # Range y fix
         axis.y.range.original <- range(dgrafgg$slope)
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
-        axis.y.range <- axis.y.otick$range
+        axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks  
         gplot<-ggplot(dgrafgg) +
-          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
-          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
-          geom_hline(yintercept=timdata$param.param ,col="#800080",lwd=1.5, linetype=2) +
-          geom_segment(aes(x = timdata$optimum.map[1], y = 0, xend = timdata$optimum.map[1], yend = max(dgrafgg$slope,na.rm=T)),col="#FFB401",lwd=1) +
-          geom_segment(aes(x = min(dgrafgg$weeks), y = dgrafgg$slope[timdata$optimum.map[1]], xend = max(dgrafgg$weeks), yend =dgrafgg$slope[timdata$optimum.map[1]]),col="#FFB401",lwd=1) +
-          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          geom_line(aes(x=weeks, y=slope), color=i.colObservedLines, linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color=i.colObservedPoints, size=3, shape=21, fill=i.colObservedPoints, stroke = 0.1) +
+          geom_hline(yintercept=timdata$param.param ,col=i.colLine1,lwd=1.5, linetype=2) +
+          geom_segment(aes(x = timdata$optimum.map[1], y = 0, xend = timdata$optimum.map[1], yend = max(dgrafgg$slope,na.rm=T)),col=i.colLine2,lwd=1) +
+          geom_segment(aes(x = min(dgrafgg$weeks), y = dgrafgg$slope[timdata$optimum.map[1]], xend = max(dgrafgg$weeks), yend =dgrafgg$slope[timdata$optimum.map[1]]),col=i.colLine2,lwd=1) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color=i.colOptimum, size=4, shape=21, fill=i.colOptimum) +
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -996,7 +1004,7 @@ shinyServer(function(input, output, session) {
         # Range y fix
         axis.y.range.original <- range(dgrafgg$slope)
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
-        axis.y.range <- axis.y.otick$range
+        axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks  
         b <- (dgrafgg$slope[length(y.s)]-dgrafgg$slope[1])/(dgrafgg$weeks[length(y.s)]-dgrafgg$weeks[1])
@@ -1004,12 +1012,12 @@ shinyServer(function(input, output, session) {
         a2 <- dgrafgg$slope[1]-b*1
         a3 <- dgrafgg$slope[timdata$optimum.map[1]]+b*timdata$optimum.map[1]
         gplot<-ggplot(dgrafgg) +
-          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
-          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
-          geom_hline(yintercept=pendiente ,col="#800080",lwd=1.5, linetype=2) +
-          geom_segment(aes(x = timdata$optimum.map[1], y = 0, xend = timdata$optimum.map[1], yend = max(dgrafgg$slope,na.rm=T)),col="#FFB401",lwd=1) +
-          geom_segment(aes(x = min(dgrafgg$weeks), y = dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]], xend = max(dgrafgg$weeks), yend =dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]]),col="#FFB401",lwd=1) +
-          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          geom_line(aes(x=weeks, y=slope), color=i.colObservedLines, linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color=i.colObservedPoints, size=3, shape=21, fill=i.colObservedPoints, stroke = 0.1) +
+          geom_hline(yintercept=pendiente ,col=i.colLine1,lwd=1.5, linetype=2) +
+          geom_segment(aes(x = timdata$optimum.map[1], y = 0, xend = timdata$optimum.map[1], yend = max(dgrafgg$slope,na.rm=T)),col=i.colLine2,lwd=1) +
+          geom_segment(aes(x = min(dgrafgg$weeks), y = dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]], xend = max(dgrafgg$weeks), yend =dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]]),col=i.colLine2,lwd=1) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[dgrafgg$weeks==timdata$optimum.map[1]]), color=i.colOptimum, size=4, shape=21, fill=i.colOptimum) +
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -1044,14 +1052,14 @@ shinyServer(function(input, output, session) {
         # Range y fix
         axis.y.range.original <- range(dgrafgg$slope)
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
-        axis.y.range <- axis.y.otick$range
+        axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks  
         gplot<-ggplot(dgrafgg) +
-          geom_line(aes(x=weeks, y=slope), color="#808080", linetype=1, size=1) +
-          geom_point(aes(x=weeks,y=slope), color="#808080", size=3, shape=21, fill="#808080", stroke = 0.1) +
-          geom_hline(yintercept=0 ,col="#800080",lwd=1.5, linetype=2) +
-          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color="#980043", size=4, shape=1) +
+          geom_line(aes(x=weeks, y=slope), color=i.colObservedLines, linetype=1, size=1) +
+          geom_point(aes(x=weeks,y=slope), color=i.colObservedPoints, size=3, shape=21, fill=i.colObservedPoints, stroke = 0.1) +
+          geom_hline(yintercept=0 ,col=i.colLine1,lwd=1.5, linetype=2) +
+          geom_point(aes(x=timdata$optimum.map[1],y=dgrafgg$slope[timdata$optimum.map[1]]), color=i.colOptimum, size=4, shape=21, fill=i.colOptimum) +
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -1590,12 +1598,24 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
+          colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
           p <- plotMAP(datfile.plot,
                        i.textMain=input$textMain,
                        i.textX=input$textX,
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
-                       i.param=as.numeric(input$param))
+                       i.param=as.numeric(input$param),
+                       i.colObservedLines=colors.palette$colObservedLines,
+                       i.colObservedPoints=colors.palette$colObservedPoints,
+                       i.colOptimum=colors.palette$colEpidemicStart,
+                       i.colLine=colors.palette$colEpidemic[3])
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1615,12 +1635,25 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
+          colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
           p <- plotSlope(datfile.plot,
                          i.textMain=input$textMain,
                          i.textX=input$textX,
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
-                         i.param=as.numeric(input$param))
+                         i.param=as.numeric(input$param),
+                         i.colObservedLines=colors.palette$colObservedLines,
+                         i.colObservedPoints=colors.palette$colObservedPoints,
+                         i.colOptimum=colors.palette$colEpidemicStart,
+                         i.colLine1=colors.palette$colEpidemic[2],
+                         i.colLine2=colors.palette$colEpidemic[3])
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1719,12 +1752,25 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
+          colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
+          
           p <- plotMAP(datfile.plot,
                        i.textMain=input$textMain,
                        i.textX=input$textX,
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
-                       i.param=as.numeric(input$param))
+                       i.param=as.numeric(input$param),
+                       i.colObservedLines=colors.palette$colObservedLines,
+                       i.colObservedPoints=colors.palette$colObservedPoints,
+                       i.colOptimum=colors.palette$colEpidemicStart,
+                       i.colLine=colors.palette$colEpidemic[3])
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1744,12 +1790,25 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
+          colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
           p <- plotSlope(datfile.plot,
                          i.textMain=input$textMain,
                          i.textX=input$textX,
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
-                         i.param=as.numeric(input$param))
+                         i.param=as.numeric(input$param),
+                         i.colObservedLines=colors.palette$colObservedLines,
+                         i.colObservedPoints=colors.palette$colObservedPoints,
+                         i.colOptimum=colors.palette$colEpidemicStart,
+                         i.colLine1=colors.palette$colEpidemic[2],
+                         i.colLine2=colors.palette$colEpidemic[3])
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1874,12 +1933,25 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
+          colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
+          
           p <- plotMAP(datfile.plot,
                        i.textMain=input$textMain,
                        i.textX=input$textX,
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
-                       i.param=as.numeric(input$param))
+                       i.param=as.numeric(input$param),
+                       i.colObservedLines=colors.palette$colObservedLines,
+                       i.colObservedPoints=colors.palette$colObservedPoints,
+                       i.colOptimum=colors.palette$colEpidemicStart,
+                       i.colLine=colors.palette$colEpidemic[3])
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -1899,12 +1971,25 @@ shinyServer(function(input, output, session) {
           zfix<-NULL
         }else{
           datfile.plot<-datfile[as.character(s)]
+          colors.palette<-generate_palette(i.number.series=NCOL(datfile.plot),
+                                           i.colObservedLines=input$colObservedLines,
+                                           i.colObservedPoints=input$colObservedPoints,
+                                           i.colEpidemicStart=input$colEpidemicStart,
+                                           i.colEpidemicStop=input$colEpidemicStop,
+                                           i.colThresholds=input$colThresholds,
+                                           i.colSeasons=input$colSeasons,
+                                           i.colEpidemic=input$colEpidemic)
           p <- plotSlope(datfile.plot,
                          i.textMain=input$textMain,
                          i.textX=input$textX,
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
-                         i.param=as.numeric(input$param))
+                         i.param=as.numeric(input$param),
+                         i.colObservedLines=colors.palette$colObservedLines,
+                         i.colObservedPoints=colors.palette$colObservedPoints,
+                         i.colOptimum=colors.palette$colEpidemicStart,
+                         i.colLine1=colors.palette$colEpidemic[2],
+                         i.colLine2=colors.palette$colEpidemic[3])
           if (is.null(p)){
             zfix<-NULL
           }else{
@@ -2009,7 +2094,7 @@ shinyServer(function(input, output, session) {
           i.range.y <- c(0,1.05*max(values$origdata[s],na.rm=T))
           axis.y.range.original <- i.range.y
           axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-          axis.y.range <- axis.y.otick$range
+          axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
           axis.y.ticks <- axis.y.otick$tickmarks
           axis.y.labels <- axis.y.otick$tickmarks
           colors.palette<-generate_palette(i.number.series=NCOL(values$plotdata),
@@ -4286,7 +4371,7 @@ shinyServer(function(input, output, session) {
       
       axis.y.range.original <- c(0,1)
       axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10)
-      axis.y.range <- axis.y.otick$range
+      axis.y.range <- axis.y.otick$range*c(0.95, 1.05)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
       
