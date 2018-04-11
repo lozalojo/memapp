@@ -878,8 +878,8 @@ shinyServer(function(input, output, session) {
         geom_segment(aes(x = x.opt, y = y.opt, xend = x.opt, yend = dgrafgg[1,2]),col=i.colLine,lwd=1 ) +
         geom_segment(aes(x = x.opt, y = y.opt, xend = dgrafgg[1,1], yend =y.opt ),col=i.colLine,lwd=1) +
         geom_point(aes(x=x.opt,y=y.opt), color=i.colOptimum, size=3, shape=21, fill=i.colOptimum) +
-        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range*1.1, labels = axis.x.labels) +
-        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range*1.1, labels = axis.y.labels) +
+        scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
+        scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
         ggthemes::theme_few() +
         theme(plot.title = element_text(hjust = 0.5))
