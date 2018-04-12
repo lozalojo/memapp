@@ -262,3 +262,6 @@ Check this tickbox if you want to process input data, rearrange weeks acording t
 Log;Registro
 MAP curve;Curva PMA
 Slope curve;Curva pendiente
+Multi waves;Múltiples ondas
+Show experimental features;Características experimentales
+Show experimental features of memapp;Muestra las opciones experimentales de la aplicación

@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
   
   trloc <- function(i.text, i.trans=F){
     txtres<-as.character(sapply(i.text, function(s){
-      o.text<-tail(translation[translation$original==s,input$lang])
+      o.text<-tail(translation[translation$original==s,input$language])
       if (NROW(o.text)!=1) o.text<-s
       if (is.na(o.text)) o.text<-s
       o.text
@@ -817,7 +817,7 @@ shinyServer(function(input, output, session) {
       }else{
         axis.y.range.original <- c(1,length(i.range.y.labels))
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2],10,
-                                          i.valid.ticks=1:(length(i.range.y.labels)),  i.include.min=T, i.include.max=T)
+                                                i.valid.ticks=1:(length(i.range.y.labels)),  i.include.min=T, i.include.max=T)
         axis.y.range <- axis.y.otick$range+diff(range(axis.y.otick$range))*0.025*c(-1, 1)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- i.range.y.labels[axis.y.otick$tickmarks]
@@ -1086,13 +1086,13 @@ shinyServer(function(input, output, session) {
           ggthemes::theme_few() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
-        }else{
+      }else{
         p<-NULL
       }
     }
     p
   }
-
+  
   #####################################
   ### REACTIVE FUNCTIONS
   #####################################
@@ -1168,7 +1168,7 @@ shinyServer(function(input, output, session) {
         tfile<-tempfile()
         tfile.div<-extract.pfe(tfile)
         good<-memgoodness(datfile[selectedcolumns],
-                          i.graph=as.logical(input$advancedfeatures), i.prefix = tfile.div$name, i.output = tfile.div$path,
+                          i.graph=as.logical(input$advanced), i.prefix = tfile.div$name, i.output = tfile.div$path,
                           i.min.seasons = 3,
                           i.seasons=as.numeric(input$SelectMaximum),
                           i.type.threshold=as.numeric(input$typethreshold),
@@ -1230,7 +1230,7 @@ shinyServer(function(input, output, session) {
         tfile<-tempfile()
         tfile.div<-extract.pfe(tfile)
         good<-memgoodness(datfile[selectedcolumns],
-                          i.graph=as.logical(input$advancedfeatures), i.prefix=tfile.div$name, i.output = tfile.div$path,
+                          i.graph=as.logical(input$advanced), i.prefix=tfile.div$name, i.output = tfile.div$path,
                           i.min.seasons = 3,
                           i.seasons=as.numeric(input$SelectMaximum),
                           i.type.threshold=as.numeric(input$typethreshold),
@@ -1414,7 +1414,14 @@ shinyServer(function(input, output, session) {
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
           cat("reactive/read_data> Note: applying selected transformation\n")
         }
-        datasetread<-transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        if (as.numeric(input$transformation)==7){
+          temp1 <- mem:::transformseries.multiple(datasetread)
+          datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse="\t"))), collapse="\n"))
+          datasetread <- temp1$data.final
+          rm("temp1")
+        }else{
+          datasetread <- transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        }
         # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
         # specially when splitting waves in two, in case there is only one epidemic instead of two
         zerocols<-apply(datasetread, 2, function(x) sum(x, na.rm=T)==0)
@@ -1478,26 +1485,31 @@ shinyServer(function(input, output, session) {
   ### OBSERVERS
   #####################################
   # Pass url parameters to the app, in this case to advanced features, once the server is run, you can
-  # use http://127.0.0.1:7910/?advancedfeatures=TRUE to enable/disable advanced features
+  # use http://127.0.0.1:7910/?advanced=TRUE to enable/disable advanced features
   
   observe({
     cat("observe/urlquery> begin\n")
     query <- parseQueryString(session$clientData$url_search)
+    cat("observe/urlquery> searching for advanced features URL parameter\n")
+    if (!is.null(query[['advanced']])) {
+      cat("observe/urlquery> setting advanced features to ", query[['advanced']],"\n")
+      updateCheckboxInput(session, "advanced", value = as.logical(query[['advanced']]))
+    }
+    cat("observe/urlquery> searching for experimental features URL parameter\n")
+    if (!is.null(query[['experimental']])) {
+      cat("observe/urlquery> setting experimental features to ", query[['experimental']],"\n")
+      updateCheckboxInput(session, "experimental", value = as.logical(query[['experimental']]))
+    }
     cat("observe/urlquery> searching for language URL parameter\n")
     if (!is.null(query[['language']])) {
-      cat("query> language ", query[['language']],"\n")
-      updateSelectInput(session, "lang", selected = as.character(query[['language']]))
-    }
-    cat("observe/urlquery> searching for advanced features URL parameter\n")
-    if (!is.null(query[['advancedfeatures']])) {
-      cat("query> advancedfeatures ", query[['advancedfeatures']],"\n")
-      updateCheckboxInput(session, "advancedfeatures", value = as.logical(query[['advancedfeatures']]))
+      cat("observe/urlquery> setting language to ", query[['language']],"\n")
+      updateSelectInput(session, "language", selected = as.character(query[['language']]))
     }
     cat("observe/urlquery> begin\n")
   })
   
-  observeEvent(input$lang, {
-    lang<-input$lang
+  observeEvent(input$language, {
+    lang<-input$language
     cat("observeEvent/language> begin\n")
     cat("observeEvent/language> original locale:",values$locale,"\n")
     langs<-get.languages()
@@ -1516,7 +1528,7 @@ shinyServer(function(input, output, session) {
       cat("observeEvent/language> changing to:",dplyr::if_else(localestring=="","system default",localestring),"\n")
       Sys.setlocale(locale = localestring)
     }else{
-      cat("observeEvent/language> language not in the locales list\n")      
+      cat("observeEvent/language> language not in the locales list\n")
     }
     cat("observeEvent/language> current locale:",Sys.getlocale(),"\n")
     cat("observeEvent/language> end\n")
@@ -1531,7 +1543,7 @@ shinyServer(function(input, output, session) {
       seasons<-names(datfile)
       cat("observeEvent/read_data> updating timing graphs/structure... check & describe\n")
       lapply(seasons, function(s){output[[paste0("tbdTiming_",as.character(s))]] <- renderUI({
-        if (as.logical(input$advancedfeatures)){
+        if (as.logical(input$advanced)){
           fluidPage(
             fluidRow(
               column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
@@ -1685,7 +1697,7 @@ shinyServer(function(input, output, session) {
       })})
       cat("observeEvent/read_data> updating timing graphs/structure... visualize\n")
       lapply(seasons, function(s){output[[paste0("tbvTiming_",as.character(s))]] <- renderUI({
-        if (as.logical(input$advancedfeatures)){
+        if (as.logical(input$advanced)){
           fluidPage(
             fluidRow(
               column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
@@ -1866,7 +1878,7 @@ shinyServer(function(input, output, session) {
       rm("origdata", "plotdata", "epidata")
       cat("observeEvent/data_model> updating timing graphs/structure... model\n")
       lapply(modseasons, function(s){output[[paste0("tbmTiming_",as.character(s))]] <- renderUI({
-        if (as.logical(input$advancedfeatures)){
+        if (as.logical(input$advanced)){
           fluidPage(
             fluidRow(
               column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
@@ -2200,7 +2212,7 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile)){
       tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")))
     }else{
-      if (as.logical(input$advancedfeatures)){
+      if (as.logical(input$advanced)){
         tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
                     tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
@@ -3142,7 +3154,7 @@ shinyServer(function(input, output, session) {
     if(is.null(good)){
       return(NULL)
     }else{
-      if (as.logical(input$advancedfeatures)){
+      if (as.logical(input$advanced)){
         fluidRow(
           valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
           valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
@@ -3252,7 +3264,7 @@ shinyServer(function(input, output, session) {
     if(is.null(moddata)){
       return(NULL)
     }else{
-      if (as.logical(input$advancedfeatures)){
+      if (as.logical(input$advanced)){
         tabsetPanel(tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbmData"),
                              fluidRow(
@@ -3652,7 +3664,7 @@ shinyServer(function(input, output, session) {
     if(is.null(datfile.plot)){
       return(NULL)
     }else{
-      if (as.logical(input$advancedfeatures)){
+      if (as.logical(input$advanced)){
         tabsetPanel(tabPanel(trloc("Indicators"), uiOutput("tbmGoodnessIndicators")),
                     tabPanel(trloc("Summary"),
                              formattable::formattableOutput("tbmGoodnessSummary"),
@@ -3822,7 +3834,7 @@ shinyServer(function(input, output, session) {
     if(is.null(good)){
       return(NULL)
     }else{
-      if (as.logical(input$advancedfeatures)){
+      if (as.logical(input$advanced)){
         fluidRow(
           valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
           valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
@@ -5149,11 +5161,11 @@ shinyServer(function(input, output, session) {
   
   output$uiDataset = renderUI({
     shinydashboard::box(title=trloc("Dataset"), status = "warning", solidHeader = FALSE, width = 12, background = "navy", collapsible = FALSE, collapsed=FALSE,
-        uiOutput("uidataset"),
-        uiOutput("uifirstWeek"),
-        uiOutput("uilastWeek"),
-        uiOutput("uitransformation"),
-        uiOutput("uiprocess")
+                        uiOutput("uidataset"),
+                        uiOutput("uifirstWeek"),
+                        uiOutput("uilastWeek"),
+                        uiOutput("uitransformation"),
+                        uiOutput("uiprocess")
     )
   })
   
@@ -5176,8 +5188,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$uitransformation = renderUI({
-    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
-    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
+    if (as.logical(input$experimental)){
+      transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6, "Multi waves"=7)
+      names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)", "Multi waves"))
+    }else{
+      transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
+      names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
+    }
     popify(
       selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
       , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body"))
@@ -5191,54 +5208,54 @@ shinyServer(function(input, output, session) {
   
   output$uiModel = renderUI({
     shinydashboard::box(title=trloc("Model"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-        popify(
-          selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
-          , title = trloc("From"), content = trloc("First season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1])
-          , title = trloc("To"), content = trloc("Last season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
-          , title = trloc("Exclude"), content = trloc("Select any number of seasons to be excluded from the model"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Maximum seasons")), 10, step=1)
-          , title = trloc("Maximum seasons"), content = trloc("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                        popify(
+                          selectInput("SelectFrom", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("From")), size=1, selectize = FALSE, choices = getSeasons(), selected = head(getSeasons(), 1))
+                          , title = trloc("From"), content = trloc("First season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          selectInput("SelectTo", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("To")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(), 2)[1])
+                          , title = trloc("To"), content = trloc("Last season to include in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Exclude")), multiple = TRUE, choices = getSeasons(), selected=NULL)
+                          , title = trloc("Exclude"), content = trloc("Select any number of seasons to be excluded from the model"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Maximum seasons")), 10, step=1)
+                          , title = trloc("Maximum seasons"), content = trloc("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
   output$uiSurveillance = renderUI({
     shinydashboard::box(title=trloc("Surveillance"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
-        popify(
-          selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
-          , title = trloc("Season"), content = trloc("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
-          , title = trloc("Week"), content = trloc("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
-          , title = trloc("Force epidemic start"), content = trloc("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                        popify(
+                          selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Season")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
+                          , title = trloc("Season"), content = trloc("Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
+                          , title = trloc("Week"), content = trloc("Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
+                          , title = trloc("Force epidemic start"), content = trloc("Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
   output$uiVisualize = renderUI({
     shinydashboard::box(title=trloc("Visualize"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-        popify(
-          selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
-          , title = trloc("Seasons"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                        popify(
+                          selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
+                          , title = trloc("Seasons"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
   output$uiThresholds = renderUI({
     shinydashboard::box(title=trloc("Thresholds"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
-        popify(
-          checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Pre-epidemic threshold")), value = TRUE)
-          , title = trloc("Pre-epidemic threshold"), content = trloc("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Post-epidemic threshold")), value = FALSE)
-          , title = trloc("Post-epidemic threshold"), content = trloc("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
-        popify(
-          checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Intensity thresholds/levels")), value = TRUE)
-          , title = trloc("Intensity thresholds/levels"), content = trloc("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                        popify(
+                          checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Pre-epidemic threshold")), value = TRUE)
+                          , title = trloc("Pre-epidemic threshold"), content = trloc("Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Post-epidemic threshold")), value = FALSE)
+                          , title = trloc("Post-epidemic threshold"), content = trloc("Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body")),
+                        popify(
+                          checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Intensity thresholds/levels")), value = TRUE)
+                          , title = trloc("Intensity thresholds/levels"), content = trloc("Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs"), placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
@@ -5418,12 +5435,20 @@ shinyServer(function(input, output, session) {
   
   output$uiSupport = renderUI({
     shinydashboard::box(
+      shinyjs::useShinyjs(),
       title=trloc("Support"), status = "info", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       h5(a(trloc("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
       h5(a(trloc("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
       popify(
-        checkboxInput("advancedfeatures", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = FALSE)
-        , title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body"))
+        checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = FALSE)
+        , title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body")
+      ),
+      hidden(
+        popify(
+          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = FALSE)
+          , title = trloc("Show experimental features"), content = trloc("Show experimental features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body")
+        )
+      )
     )
   })
   

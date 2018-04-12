@@ -262,3 +262,6 @@ Check this tickbox if you want to process input data, rearrange weeks acording t
 Log;Log
 MAP curve;MAP curve
 Slope curve;Slope curve
+Multi waves;Multi waves
+Show experimental features;Show experimental features
+Show experimental features of memapp;Show experimental features of memapp
