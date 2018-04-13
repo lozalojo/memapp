@@ -89,9 +89,10 @@ https://github.com/lozalojo/memapp/blob/master/inst/shinyapp/lang/en-GB.txt
 
 With a text editor, translate the second column to your language and send it to the maintainer.
 
-# Localization credits:
+### Localization credits:
 
 @Spanish, José E. Lozano
+
 @French, Isabel Bergeri
 
 ## Useful links
