@@ -1,4 +1,4 @@
-﻿Original;Translated
+Original;Translated
 Load file;Загрузить файл
 Dataset;Набор данных
 Model;модель

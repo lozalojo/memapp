@@ -1,0 +1,268 @@
+Original;Translated
+<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve;<b>Original</b>: utilise le processus indiqué dans le document original.<br><b>Critère fixe</b>: utilise la pente de la courbe MAP pour trouver l´optimum, qui est le point où la pente est inférieure à une valeur prédéfinie.<br><b>Pente</b>: calcule la pente de la courbe MAP, mais l´optimum est celui qui correspond à la pente moyenne globale.<br><b>Deuxième dérivée</b>: calcule la dérivée seconde et égale à zéro pour rechercher un point d´inflexion dans la courbe d´origine
+1/season;1/saison
+10/season;10/saison
+2/season;2/saison
+3/season;3/saison
+30 in total;30 au total
+4/season;4/saison
+5/season;5/saison
+6/season;6/saison
+7/season;7/saison
+8/season;8/saison
+9/season;9/saison
+Aditive;Additif
+All;Tous
+Animated;Animé
+Arithmetic mean and mean confidence interval;Moyenne arithmétique et IC moyen
+Arithmetic mean and point confidence interval;Moyenne arithmétique et IC ponctuel
+Automatic;Automatique
+Average;Moyenne
+Average curve;Courbe moyenne
+Average curve CI.;IC de la courbe moyenne
+Average curve/Other CI. level;Courbe moyenne/Autre IC
+Average epidemic length;Durée moyenne de l´épidémie
+Average epidemic start week;Semaine moyenne de début de l´épidémie 
+Baseline;Base de référence
+Baseline level;Niveau de base
+Calculation in progress. This may take a while...;Calcul en cours. Cela peut prendre un peu de temps...
+Change the language of the application;Changer la langue de l´application
+Change the main title in most graphs;Changer le titre principal dans la plupart des graphiques
+Change the x-axis label in most graphs;Changer l´étiquette de l´axe des x dans la plupart des graphiques
+Change the y-axis label in most graphs;Changer l´étiquette de l´axe des y dans la plupart des graphiques
+Check & describe;Vérifier et décrire
+Check data series, timing and describe the data;Vérifier les séries de données, dates d´occurence et décrire les données
+Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs;Cochez cette case si vous souhaitez inclure les seuils épidémiques dans les graphiques.<br>C´est une option globale qui fonctionnera sur la plupart des graphes
+Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs;Cochez cette case si vous souhaitez inclure les seuils d´intensité dans les graphiques.<br>C´est une option globale qui fonctionnera sur la plupart des graphes
+Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs;Cochez cette case si vous souhaitez inclure les seuils post-épidémiques dans les graphiques.<br>C´est une option globale qui fonctionnera sur la plupart des graphes
+Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds;Choisissez si vous souhaitez utiliser des intervalles de confiance unilatéraux ou bilatéraux pour les seuils
+Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold;Choisissez une semaine pour forcer le début de la période épidémique.<br>L´épidémie débutera à la semaine choisie et non à la première semaine au-dessus du seuil épidémique
+Clicks;Cliquer
+Color of the line of observed data;Couleur de la ligne de données observées
+Color of the point of the epidemic end marker;Couleur du point de marquage de fin de l´épidémie
+Color of the point of the epidemic start marker;Couleur du point de marquage de début de l´ épidémie
+Color of the points of observed data;Couleur des points des données observées
+Cross;Croisé
+Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only;Croisé: Extrait une saison et le modèle est calculé avec les saisons restantes.<br>Séquentiel: Extrait une saison et le modèle est calculé uniquement avec les saisons précédentes
+Current parameter;Paramètre actuel
+Data;Données
+Dataset;Données
+Description;Description
+Detailed;Détaillé
+Duration;Durée
+Duration (lower limit);Durée (limite inférieure)
+Duration (upper limit);Durée (limite supérieure)
+End;Fin
+Epidemic;Epidémie
+Epidemic %; % épidémie
+Epidemic (missing);Epidémie (manquante)
+Epidemic end;Fin épidémie
+Epidemic perc.;Pourc. épidémie
+Epidemic perc. (lower limit);Pourc. épidémie (limite inférieure)
+Epidemic perc. (upper limit);Pourc. épidémie (limite supérieure)
+Epidemic percentage;Pourcentage épidémie
+Epidemic start;Début épidémie
+Epidemic thr.;Seuil épidém.
+Epidemic threshold;Seuil épidémique
+Estimators;Estimateurs
+Evolution;Evolution
+Exclude;Exclure
+File;Fichier
+Fill missings;Remplir les manquants
+First season to include in the model selection;Première saison à inclure dans la sélection du modèle
+First Week;Première semaine
+First week of the datasets surveillance period;Première semaine de la période de surveillance des  données
+Fixed criterium method;Méthode avec critére fixe
+Force epidemic start;Forcer le début de l´épidémie 
+From;De
+Geometric mean and mean confidence interval;Moyenne géométrique et intervalle de confiance moyen
+Geometric mean and point confidence interval;Moyenne géométrique et intervalle de confiance ponctuel
+Global goodness indicators;Indicateurs d´ajustement global
+Global goodness intensity;Intensité d´ajustement global
+Global goodness summary;Résumé de l´ajustement global
+Goodness;Ajustement
+Goodness & optimize;Ajustement & optimisation
+Graph options;Options graphe
+Graphs;Graphes
+High;Haut
+High int. thr.;Seuil int. haut
+High level;Haut niveau
+High lvl;Haut niv.
+High thr.;Seuil haut
+High threshold;Seuil haut
+If the format is able to store different datasets, select the one you want to open;Si le format est capable de stocker différents données, sélectionnez celui que vous voulez ouvri
+Indicator;Indicateur
+Indicators;Indicateurs
+Intensity;Intensité
+Intensity thresholds/levels;Seuils/niveaux d´intensité
+Language;Langue
+Last season to include in the model selection;Dernière saison  à inclure dans la sélection du modèle
+Last Week; Dernière semaine
+Last week of the datasets surveillance period;Dernière semaine de la période de surveillance des  données
+Legend;Légende
+level;niveau
+Level;Niveau
+Level of the confidence interval used to calculate the average curve and other intervals;Niveau de l´intervalle de confiance utilisé pour calculer la courbe moyenne et autres intervalles
+Level of the confidence interval used to calculate the high threshold;Niveau de l´intervalle de confiance utilisé pour calculer le seuil haut
+Level of the confidence interval used to calculate the medium threshold;Niveau de l´intervalle de confiance utilisé pour calculer le seuil moyen
+Level of the confidence interval used to calculate the very high threshold;Niveau de l´intervalle de confiance utilisé pour calculer le seuil très élevé
+Levels palette;Palette des niveaux
+Load file;Chargement du fichier
+Loess;Lœss
+Low;Bas
+Low level;Niveau bas
+Lower interval;Intervalle inférieur
+Lower limit;Limite inférieure
+Main title;Titre principal
+Manual;Manuel
+Matthews Correlation Coefficient; Coefficient de corrélation de Matthews 
+Matthews correlation coefficient; Coefficient de corrélation de Matthews 
+Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons;Nombre maximal de saisons à utiliser dans le modèle.<br>Notez que cela va probablement remplacer le reste des options, car cela va limiter les données au dernier nombre de saisons de la sélection déjà faite avec De / A / Exclure.<br>Pour la grippe, il n´est pas recommandé d´utiliser plus de 10 saisons
+Maximum seasons;Saisons maximum 
+Mean end;Moyenne de fin
+Mean start;Moyenne de début
+Median and bootstrap confidence interval;Médiane et intervalle de confiance bootstrap
+Median and the KC Method to calculate its confidence interval;Médiane et  méthode KC pour calculer son intervalle de confiance
+Medium;Moyen
+Medium int. thr.;Seuil int. moyen
+Medium level;Niveau moyen
+Medium lvl;Niv. moyen
+Medium thr.;Seuil moyen
+Medium threshold;Seuil moyen
+MEM needs at least two seasons;MEM a besoin d´au moins deux saisons
+MEM options;Options MEM
+memapp is able to read text, excel, access and R;memapp est capable de lire du texte, excel, access et R
+Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Méthode pour calculer d´autres intervalles de confiance: durée, pourcentage épidémique, début de l´épidémie, etc.
+Method for calculating the average curve confidence intervals;Méthode de calcul des intervalles de confiance de la courbe moyenne
+Method for calculating the epidemic threshold;Méthode de calcul du seuil épidémique
+Method for calculating the intensity threshold;Méthode de calcul du seuil d´intensité
+Method for timing;Méthode de temporalité
+Method to choose the optimum parameter;Méthode pour choisir le paramètre optimal
+missing;manquant
+Mixed;Mixé
+Model;Modèle
+Model data;Données du modèle
+Model goodness indicators;Indicateurs d´ajustement du modèle
+Model goodness intensity;Intensité d´ajustement du modèle
+Model goodness summary;Résumé d´ajustement du modèle
+Moving epidemics;Epidémies Mobiles
+Multiplicative;Multiplicatif
+Negative likehood;Vraisemblance negative 
+Negative predictive value;Valeur prédictive négative
+next;suivant
+No data seasons;Saisons sans données
+No transformation;Aucune transformation
+Number of columns must be greater than 2;Le nombre de colonnes doit être supérieur à 2
+Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used;Nombre de valeurs prises chaque saison pour calculer les seuils. Si -1, un total de 30 points est utilisé (30/nombre de saisons). Si 0, tous les points disponibles sont utilisés
+Observed (line);Observé (ligne)
+Observed (points);Observé (points)
+Odd;Odd
+Optimization;Optimisation
+Optimization method;Méthode d´ optimisation
+Optimize;Optimise
+Optimum parameter;Paramètre optimal
+Original method;Méthode originale
+Other;Autre
+Other CI.;Autre IC.
+Palette used to generate color for epidemic and intensity thresholds;Palette utilisée pour générer la couleur des seuils d´épidémie et d´intensité
+Palette used to generate color for intensity levels;Palette utilisée pour générer la couleur des niveaux d´intensité
+Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines;Palette utilisée pour générer les couleurs des lignes des graphiques des série et d´autres graphiques avec plusieurs lignes
+Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs;Palette utilisée pour générer les couleurs des points des marqueurs pre et post -épidemiques  dans les graphiques temporels
+Parameter;Paramètre
+Parameter range;Plage de paramètres
+Peak;Pic
+Peak week;Semaine du pic
+Percent agreement;Pourcentage de concordance
+Point;Temps t
+Positive likehood;Vraisemblance positive
+Positive predictive value;Valeur prédictive positive
+Post thr.;Post seuil
+Post-epidemic;Post-épidémique
+Post-epidemic (missing);Post-épidémique (manquant)
+Post-epidemic thr.;Seuil post-épidémique
+Post-epidemic threshold;Seuil post-épidémique
+Pre-epidemic;Pré-épidémie
+Pre-epidemic (missing);Pré-épidémie (manquant)
+Pre-epidemic thr.;Seuil pré-épidémique
+Pre-epidemic threshold;Seuil pré-épidémique
+Procedures;Procédures
+Range of possible of values of the slope parameter used by goodness and optimize functions;Plage de valeurs possibles du paramètre de pente utilisé par les fonctions d´ajustement et d´optimisation
+Results;Résultats
+Rtools not found;Rtools non trouvé
+Scheme;Schéma
+Season;Saison
+Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Saison que vous souhaitez utiliser pour la surveillance en appliquant les seuils MEM.<br>Cette saison peut être incomplète.<br> Il est recommandé de ne pas utiliser cette saison de surveillance dans la sélection du modèle
+Seasons;Saisons
+Seasons in the model;Saisons dans le modèle
+Seasons palette;Palette des saisons
+Second derivative method;Deuxième méthode des dérivées
+Select any number of seasons to be excluded from the model;Sélectionnez un nombre de saisons à exclure du modèle
+Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard;Sélectionnez n´importe quel nombre de saisons pour afficher les graphiques des séries, des saisons et des timing, et pour appliquer des seuils à partir du modèle actue.<br>Pour supprimer une saison, cliquez dessus et appuyez sur supprimer sur votre clavier
+Select the transformation to apply to the original data;Sélectionnez la transformation à appliquer aux données d´origine
+Sensitivity;Sensibilité
+Sequential;Séquentiel
+Series;Séries
+Show advanced features;Afficher les fonctionnalités avancées
+Show advanced features of memapp;Afficher les fonctionnalités avancées
+Slope method;Méthode de pente
+Slope parameter;Paramètre de pente
+Slope parameter used in fixed criterium method;Paramètre de pente utilisé dans la méthode du critère fixe
+Specificity;Specificité
+Stability;Stabilité
+Start;Début
+Start & end;Début & fin
+Start (lower limit);Début (lower limite inférieure)
+Start (upper limit);Début (limite supérieure)
+Submit issues;Envoyer les problèmes
+Summary;Résumé
+Summary, graphs, goodness and optimization of the MEM model;Résumé, graphiques, ajustement et optimisation du modèle MEM
+Support;Support
+Surveillance;Surveillance
+Surveillance tools;Outils de surveillance
+Tails;Queues
+Technical manual;Manuel technique
+Text options;Options de texte
+The Moving Epidemic Method Web Application;L´application Web de la Méthode des Epidémies Mobiles
+Thresholds;Seuils
+Thresholds palette;Palette de seuils
+Timing;Temporalité
+Timing palette;Palette des temporalités
+To;A
+Total seasons;Total des saisons
+Transform;Transforme
+Two waves (expected);Deux vagues (attendues)
+Two waves (observed);Deux vagues (observées)
+Upper interval;Intervalle supérieur
+Upper limit;Limite supérieure
+Validation;Validation
+Value;Valeur
+Values per season;Valeurs par saison
+Very high;Très haut 
+Very high int. thr.;Seuil int. très haut   
+Very high level;Très haut niveau
+Very high lvl;Très haut niv.
+Very high thr.;Seuil très élevé
+Very high threshold;Seuil très élevé
+Visualize;Visualise
+Visualize different sets of data with a MEM model;Visualisez différents ensembles de données avec le modèle MEM
+Week;Semaine
+Week na;Semaine na
+Week no;Semaine no
+Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data;Semaine pour laquelle vous voulez créer le graphique de surveillance . Cela peut être n´importe quelle semaine de la première semaine de la saison de surveillance à la dernière qui a des données
+Weekly data;Données hebdomadaires
+X-axis;Axe des X
+Y-axis;Axe des Y
+Youdens Index;Index de Youden
+Youden´s Index;Index de Youden
+Zip not found;Zip non trouvé
+y-axis starts at 0;L´axe y commence à 0
+Force y-axis to start at 0 for all plots;Forcer l´axe des y à commencer à 0 pour tous les graphiques
+Process data;Données traitées
+Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset;Cochez cette case si vous souhaitez traiter les données d´entrée, réorganiser les semaines selon la sélection de la première / dernière semaine et réunir les saisons divisées dans l´ensemble de données entrées
+Log;Registre
+MAP curve;Courbe MAP
+Slope curve;Pente de la courbe MAP
+Multi waves;Multi vagues
+Show experimental features;Afficher les fonctionnalités expérimental
+Show experimental features of memapp;Afficher les fonctionnalités expérimental
+No file or dataset selected;No file or dataset selected

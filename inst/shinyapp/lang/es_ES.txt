@@ -265,3 +265,4 @@ Slope curve;Curva pendiente
 Multi waves;Múltiples ondas
 Show experimental features;Características experimentales
 Show experimental features of memapp;Muestra las opciones experimentales de la aplicación
+No file or dataset selected;Ningún fichero u hoja de datos seleccionados
