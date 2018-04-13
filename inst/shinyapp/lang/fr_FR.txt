@@ -253,7 +253,7 @@ Weekly data;Données hebdomadaires
 X-axis;Axe des X
 Y-axis;Axe des Y
 Youdens Index;Index de Youden
-Youden´s Index;Index de Youden
+Youden's Index;Index de Youden
 Zip not found;Zip non trouvé
 y-axis starts at 0;L´axe y commence à 0
 Force y-axis to start at 0 for all plots;Forcer l´axe des y à commencer à 0 pour tous les graphiques
