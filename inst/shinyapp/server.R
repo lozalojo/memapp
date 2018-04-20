@@ -847,6 +847,7 @@ shinyServer(function(input, output, session) {
                       i.textY="",
                       i.method = 2, 
                       i.param = 2.8,
+                      i.centering = -1,
                       i.colObservedLines="#808080",
                       i.colObservedPoints="#000000",
                       i.colOptimum="#FF0000",
@@ -854,7 +855,7 @@ shinyServer(function(input, output, session) {
     if(is.null(i.data)){
       p<-NULL
     }else{  
-      timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+      timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
       #dgrafgg<-as.data.frame(rbind(c(0,0),timdata$map.curve[,c(1,2)]))
       dgrafgg<-as.data.frame(timdata$map.curve[,c(1,2)])
       names(dgrafgg)<-c("weeks","map")
@@ -894,6 +895,7 @@ shinyServer(function(input, output, session) {
                         i.textY="",
                         i.method = 2, 
                         i.param = 2.8,
+                        i.centering = -1,
                         i.colObservedLines="#808080",
                         i.colObservedPoints="#000000",
                         i.colOptimum="#FF0000",
@@ -903,7 +905,7 @@ shinyServer(function(input, output, session) {
       p<-NULL
     }else{
       if (i.method==1){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
         # x<-c(0, timdata$map.curve[,1])
         # y<-c(0, timdata$map.curve[,2])
         # y.d<-diff(y)
@@ -950,7 +952,7 @@ shinyServer(function(input, output, session) {
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if (i.method==2){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
         # x<-c(0, timdata$map.curve[,1])
         # y<-c(0, timdata$map.curve[,2])
         # y.s<-mem:::suavizado(y, 1)
@@ -994,7 +996,7 @@ shinyServer(function(input, output, session) {
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)
       }else if (i.method==3){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
         # x<-c(0, timdata$map.curve[,1])
         # y<-c(0, timdata$map.curve[,2])
         # y.s<-loess(y~x)$fitted
@@ -1042,7 +1044,7 @@ shinyServer(function(input, output, session) {
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if(i.method==4){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
         # x<-timdata$map.curve[,1]
         # y<-timdata$map.curve[,2]
         # y.s<-loess(y~x)$fitted
@@ -1126,6 +1128,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues))
         epi<-list()
         epi$epidemic.thresholds<-temp1$epidemic.thresholds
@@ -1144,6 +1147,7 @@ shinyServer(function(input, output, session) {
                         i.level.other=as.numeric(input$levelaveragecurve)/100,
                         i.method=as.numeric(input$method),
                         i.param=as.numeric(input$param),
+                        i.centering=as.numeric(input$centering),
                         i.n.max=as.numeric(input$nvalues))
       }
     }
@@ -1182,6 +1186,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                           i.n.max=as.numeric(input$nvalues),
                           i.goodness.method=as.character(input$validation))
@@ -1244,6 +1249,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                           i.n.max=as.numeric(input$nvalues),
                           i.goodness.method=as.character(input$validation),
@@ -1334,6 +1340,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues))
     }
     cat("reactive/data_evolution> end\n")
@@ -1361,6 +1368,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues))
     }
     cat("reactive/data_stability> end\n")
@@ -1604,6 +1612,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues),
                           i.colObservedLines=colors.palette$colObservedLines,
                           i.colThresholds=colors.palette$colThresholds,
@@ -1644,6 +1653,7 @@ shinyServer(function(input, output, session) {
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
+                       i.centering=as.numeric(input$centering),
                        i.colObservedLines=colors.palette$colObservedLines,
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colOptimum=colors.palette$colEpidemicStart,
@@ -1681,6 +1691,7 @@ shinyServer(function(input, output, session) {
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
+                         i.centering=as.numeric(input$centering),
                          i.colObservedLines=colors.palette$colObservedLines,
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colOptimum=colors.palette$colEpidemicStart,
@@ -1758,6 +1769,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues),
                           i.colObservedLines=colors.palette$colObservedLines,
                           i.colThresholds=colors.palette$colThresholds,
@@ -1799,6 +1811,7 @@ shinyServer(function(input, output, session) {
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
+                       i.centering=as.numeric(input$centering),
                        i.colObservedLines=colors.palette$colObservedLines,
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colOptimum=colors.palette$colEpidemicStart,
@@ -1836,6 +1849,7 @@ shinyServer(function(input, output, session) {
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
+                         i.centering=as.numeric(input$centering),
                          i.colObservedLines=colors.palette$colObservedLines,
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colOptimum=colors.palette$colEpidemicStart,
@@ -1939,6 +1953,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
+                          i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues),
                           i.colObservedLines=colors.palette$colObservedLines,
                           i.colThresholds=colors.palette$colThresholds,
@@ -1980,6 +1995,7 @@ shinyServer(function(input, output, session) {
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
+                       i.centering=as.numeric(input$centering),
                        i.colObservedLines=colors.palette$colObservedLines,
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colOptimum=colors.palette$colEpidemicStart,
@@ -2017,6 +2033,7 @@ shinyServer(function(input, output, session) {
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
+                         i.centering=as.numeric(input$centering),
                          i.colObservedLines=colors.palette$colObservedLines,
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colOptimum=colors.palette$colEpidemicStart,
@@ -2373,6 +2390,7 @@ shinyServer(function(input, output, session) {
                          i.level.other=as.numeric(input$levelaveragecurve)/100,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
+                         i.centering=as.numeric(input$centering),
                          i.n.max=as.numeric(input$nvalues),
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colSeasons=colors.palette$colSeasons,
@@ -2435,6 +2453,7 @@ shinyServer(function(input, output, session) {
                         i.level.other=as.numeric(input$levelaveragecurve)/100,
                         i.method=as.numeric(input$method),
                         i.param=as.numeric(input$param),
+                        i.centering=as.numeric(input$centering),
                         i.n.max=as.numeric(input$nvalues),
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
@@ -3382,6 +3401,7 @@ shinyServer(function(input, output, session) {
                        i.level.other=as.numeric(input$levelaveragecurve)/100,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
+                       i.centering=as.numeric(input$centering),
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=colors.palette$colSeasons,
@@ -3439,6 +3459,7 @@ shinyServer(function(input, output, session) {
                       i.level.other=as.numeric(input$levelaveragecurve)/100,
                       i.method=as.numeric(input$method),
                       i.param=as.numeric(input$param),
+                      i.centering=as.numeric(input$centering),
                       i.n.max=as.numeric(input$nvalues),
                       i.colObservedLines=colors.palette$colObservedLines,
                       i.colThresholds=colors.palette$colThresholds,
@@ -3569,6 +3590,7 @@ shinyServer(function(input, output, session) {
                        i.level.other=as.numeric(input$levelaveragecurve)/100,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
+                       i.centering=as.numeric(input$centering),
                        i.n.max=as.numeric(input$nvalues),
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colSeasons=colors.palette$colSeasons,
@@ -3591,7 +3613,7 @@ shinyServer(function(input, output, session) {
         z$x$data[[2*length(p$labels)+1]]$name<-trloc("Mean start")
         z$x$data[[2*length(p$labels)+2]]$name<-trloc("Mean end")
         z$x$data[[2*length(p$labels)+1]]$text<-paste(trloc("Mean start"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]],sep="")
-        z$x$data[[2*length(p$labels)+2]]$text<-paste(trloc("Mean end"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]+datamodel$mean.length-1],sep="")
+        z$x$data[[2*length(p$labels)+2]]$text<-paste(trloc("Mean end"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]+datamodel$centering.length-1],sep="")
         # And I need to rearrange the order of the z list for fixplotly to work
         names(z$x$data)<-as.character(1:(2*length(p$labels)+2))
         z$x$data<-z$x$data[as.character(c(1:length(p$labels),2*length(p$labels)+1,2*length(p$labels)+2,(length(p$labels)+1):(2*length(p$labels)),2*length(p$labels)+1,2*length(p$labels)+2))]
@@ -4214,6 +4236,7 @@ shinyServer(function(input, output, session) {
                              i.level.other=as.numeric(input$levelaveragecurve)/100,
                              i.method=as.numeric(input$method),
                              i.param=as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]),
+                             i.centering=as.numeric(input$centering),
                              i.n.max=as.numeric(input$nvalues),
                              i.calculation.method = "default",
                              i.goodness.method=as.character(input$validation),
@@ -4751,6 +4774,7 @@ shinyServer(function(input, output, session) {
                          i.level.other=as.numeric(input$levelaveragecurve)/100,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
+                         i.centering=as.numeric(input$centering),
                          i.n.max=as.numeric(input$nvalues),
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
@@ -4825,6 +4849,7 @@ shinyServer(function(input, output, session) {
                              i.level.other=as.numeric(input$levelaveragecurve)/100,
                              i.method=as.numeric(input$method),
                              i.param=as.numeric(input$param),
+                             i.centering=as.numeric(input$centering),
                              i.n.max=as.numeric(input$nvalues),
                              i.colObservedPoints=colors.palette$colObservedPoints,
                              i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
@@ -4906,6 +4931,7 @@ shinyServer(function(input, output, session) {
                              i.level.other=as.numeric(input$levelaveragecurve)/100,
                              i.method=as.numeric(input$method),
                              i.param=as.numeric(input$param),
+                             i.centering=as.numeric(input$centering),
                              i.n.max=as.numeric(input$nvalues),
                              i.colObservedPoints=colors.palette$colObservedPoints,
                              i.colSeasons=c(colors.palette$colObservedLines,colors.palette$colSeasons[c(3,2,3)]),
@@ -5041,6 +5067,7 @@ shinyServer(function(input, output, session) {
                          i.level.other=as.numeric(input$levelaveragecurve)/100,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
+                         i.centering=as.numeric(input$centering),
                          i.n.max=as.numeric(input$nvalues),
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colSeasons=colors.palette$colSeasons,
@@ -5115,6 +5142,7 @@ shinyServer(function(input, output, session) {
                         i.level.other=as.numeric(input$levelaveragecurve)/100,
                         i.method=as.numeric(input$method),
                         i.param=as.numeric(input$param),
+                        i.centering=as.numeric(input$centering),
                         i.n.max=as.numeric(input$nvalues),
                         i.colObservedLines=colors.palette$colObservedLines,
                         i.colThresholds=colors.palette$colThresholds,
@@ -5354,6 +5382,10 @@ shinyServer(function(input, output, session) {
     names(optimmethod.list)<-trloc(c("Positive likehood", "Negative likehood", "Aditive", "Multiplicative", "Mixed", "Percent agreement","Matthews Correlation Coefficient","Youden's Index"))
     type.list<-list("Arithmetic mean and mean confidence interval"=1, "Geometric mean and mean confidence interval"=2, "Median and the KC Method to calculate its confidence interval"=3, "Median and bootstrap confidence interval"=4, "Arithmetic mean and point confidence interval"=5, "Geometric mean and point confidence interval"=6)
     names(type.list)<-trloc(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and the KC Method to calculate its confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
+    centering.list<-list("Highest mean duration-weeks period"=-1, "Highest 1-week period (peak)"=1, "Highest 2-weeks period"=2, "Highest 3-weeks period"=3, "Highest 4-weeks period"=4, "Highest 5-weeks period"=5, "Highest 6-weeks period"=6, "Highest 7-weeks period"=7,
+                         "Highest 8-weeks period"=8, "Highest 9-weeks period"=9, "Highest 10-weeks period"=10, "Highest 11-weekss period"=11, "Highest 12-weeks period"=12, "Highest 13-weeks period"=13, "Highest 14-weeks period"=14, "Highest 15-weeks period"=15)
+    names(centering.list)<-trloc(c("Highest mean duration-weeks period", "Highest 1-week period (peak)", "Highest 2-weeks period", "Highest 3-weeks period", "Highest 4-weeks period", "Highest 5-weeks period", "Highest 6-weeks period", "Highest 7-weeks period", 
+                                   "Highest 8-weeks period", "Highest 9-weeks period", "Highest 10-weeks period", "Highest 11-weeks period", "Highest 12-weeks period", "Highest 13-weeks period", "Highest 14-weeks period", "Highest 15-weeks period"))
     
     shinydashboard::box(
       title=trloc("MEM options"), status = "danger", solidHeader = FALSE, width = 12,  background = "navy", collapsible = TRUE, collapsed=TRUE,
@@ -5429,7 +5461,12 @@ shinyServer(function(input, output, session) {
         , title = trloc("Other CI."), content = trloc("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         numericInput("levelaveragecurve", h6(trloc("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
-        , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = 'focus', options = list(container = "body"))
+        , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = 'focus', options = list(container = "body")),
+      conditionalPanel(condition = "input.experimental",
+                       popify(
+                         selectInput("centering", h6(trloc("Centering seasons"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size=1, selectize = FALSE, selected = -1)
+                         , title = trloc("Centering seasons"), content = trloc("Method for centering seasons to calculate the average curve"), placement = "left", trigger = 'focus', options = list(container = "body"))
+      )
     )
   })
   

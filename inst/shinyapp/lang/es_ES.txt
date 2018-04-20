@@ -266,3 +266,21 @@ Multi waves;Múltiples ondas
 Show experimental features;Características experimentales
 Show experimental features of memapp;Muestra las opciones experimentales de la aplicación
 No file or dataset selected;Ningún fichero u hoja de datos seleccionados
+Centering seasons;Centrado de las temporadas
+Method for centering seasons to calculate the average curve;Método de centrado de las temporadas para calcular la curva media
+Highest mean duration-weeks period;Mayor periodo de la longitud media en semanas
+Highest 1-week period (peak);Mayor periodo de 1 semana (máximo)
+Highest 2-weeks period;Mayor periodo de 2 semanas
+Highest 3-weeks period;Mayor periodo de 3 semanas
+Highest 4-weeks period;Mayor periodo de 4 semanas
+Highest 5-weeks period;Mayor periodo de 5 semanas
+Highest 6-weeks period;Mayor periodo de 6 semanas
+Highest 7-weeks period;Mayor periodo de 7 semanas
+Highest 8-weeks period;Mayor periodo de 8 semanas
+Highest 9-weeks period;Mayor periodo de 9 semanas
+Highest 10-weeks period;Mayor periodo de 10 semanas
+Highest 11-weeks period;Mayor periodo de 11 semanas
+Highest 12-weeks period;Mayor periodo de 12 semanas
+Highest 13-weeks period;Mayor periodo de 13 semanas
+Highest 14-weeks period;Mayor periodo de 14 semanas
+Highest 15-weeks period;Mayor periodo de 15 semanas

@@ -266,3 +266,21 @@ Multi waves;Multi waves
 Show experimental features;Show experimental features
 Show experimental features of memapp;Show experimental features of memapp
 No file or dataset selected;No file or dataset selected
+Centering seasons;Centering seasons
+Method for centering seasons to calculate the average curve;Method for centering seasons to calculate the average curve
+Highest mean duration-weeks period;Highest mean duration-weeks period
+Highest 1-week period (peak);Highest 1-week period (peak)
+Highest 2-weeks period;Highest 2-weeks period
+Highest 3-weeks period;Highest 3-weeks period
+Highest 4-weeks period;Highest 4-weeks period
+Highest 5-weeks period;Highest 5-weeks period
+Highest 6-weeks period;Highest 6-weeks period
+Highest 7-weeks period;Highest 7-weeks period
+Highest 8-weeks period;Highest 8-weeks period
+Highest 9-weeks period;Highest 9-weeks period
+Highest 10-weeks period;Highest 10-weeks period
+Highest 11-weeks period;Highest 11-weeks period
+Highest 12-weeks period;Highest 12-weeks period
+Highest 13-weeks period;Highest 13-weeks period
+Highest 14-weeks period;Highest 14-weeks period
+Highest 15-weeks period;Highest 15-weeks period
