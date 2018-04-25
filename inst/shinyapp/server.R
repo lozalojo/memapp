@@ -3600,28 +3600,37 @@ shinyServer(function(input, output, session) {
       if (is.null(p)){
         zfix<-NULL
       }else{
-        p0<-p$plot +
-          geom_vline(xintercept = datamodel$ci.start[1,2]-0.5,
+        p0<- p$plot +
+          geom_point(x=datamodel$mean.start, y=datfile.plot[datamodel$mean.start,"Average curve"],
+                     color=colors.palette$colEpidemicStart, size=2, fill=colors.palette$colEpidemicStart, shape=21) +
+          geom_point(x=datamodel$mean.start+datamodel$mean.length-1, y=datfile.plot[datamodel$mean.start+datamodel$mean.length-1,"Average curve"],
+                     color=colors.palette$colEpidemicStop, size=2, fill=colors.palette$colEpidemicStop, shape=21) +
+          geom_vline(xintercept = datamodel$centered.start-0.5,
                      col=colors.palette$colEpidemicStart, linetype="longdash", size=0.5) +
-          geom_vline(xintercept = datamodel$ci.start[1,2]+datamodel$mean.length-1+0.5,
+          geom_vline(xintercept = datamodel$centered.start+datamodel$centered.length-1+0.5,
                      col=colors.palette$colEpidemicStop, linetype="longdash", size=0.5)
         z <- ggplotly(p0, width = 800, height = 600)
-        # Average curve, more width and dot stype
+        # Change Average curve to: more width and dot stype
         z$x$data[[NCOL(datfile.plot)]]$line$width<-2*z$x$data[[NCOL(datfile.plot)]]$line$width
         z$x$data[[NCOL(datfile.plot)]]$line$dash<-"dot"
         # Rename name and text for vertical lines I've just added
         z$x$data[[2*length(p$labels)+1]]$name<-trloc("Mean start")
         z$x$data[[2*length(p$labels)+2]]$name<-trloc("Mean end")
-        z$x$data[[2*length(p$labels)+1]]$text<-paste(trloc("Mean start"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]],sep="")
-        z$x$data[[2*length(p$labels)+2]]$text<-paste(trloc("Mean end"),": ",rownames(datfile.plot)[datamodel$ci.start[1,2]+datamodel$centering.length-1],sep="")
+        z$x$data[[2*length(p$labels)+3]]$name<-trloc("Start centering period")
+        z$x$data[[2*length(p$labels)+4]]$name<-trloc("End centering period")
+        z$x$data[[2*length(p$labels)+1]]$text<-paste(trloc("Mean start"),": ", rownames(datfile.plot)[datamodel$mean.start],sep="")
+        z$x$data[[2*length(p$labels)+2]]$text<-paste(trloc("Mean end"),": ", rownames(datfile.plot)[datamodel$mean.start+datamodel$mean.length-1],sep="")
+        z$x$data[[2*length(p$labels)+3]]$text<-paste(trloc("Start centering period"),": ", rownames(datfile.plot)[datamodel$centered.start],sep="")
+        z$x$data[[2*length(p$labels)+4]]$text<-paste(trloc("End centering period"),": ", rownames(datfile.plot)[datamodel$centered.start+datamodel$centered.length-1],sep="")
+        
         # And I need to rearrange the order of the z list for fixplotly to work
-        names(z$x$data)<-as.character(1:(2*length(p$labels)+2))
-        z$x$data<-z$x$data[as.character(c(1:length(p$labels),2*length(p$labels)+1,2*length(p$labels)+2,(length(p$labels)+1):(2*length(p$labels)),2*length(p$labels)+1,2*length(p$labels)+2))]
+        names(z$x$data)<-as.character(1:(2*length(p$labels)+4))
+        z$x$data<-z$x$data[as.character(c(1:length(p$labels),2*length(p$labels)+1:4,(length(p$labels)+1):(2*length(p$labels)),2*length(p$labels)+1:4))]
         names(z$x$data)<-NULL
         zfix<-fixplotly(z,
-                        c(p$labels,trloc(c("Mean start","Mean end"))),
-                        c(p$haslines,T,T),
-                        c(p$haspoints,F,F),
+                        c(p$labels,trloc(c("Mean start","Mean end", "Start centering period", "End centering period"))),
+                        c(p$haslines,F,F,T,T),
+                        c(p$haspoints,T,T,F,F),
                         trloc("Week"),"value",p$weeklabels)
       }
     }
