@@ -847,7 +847,7 @@ shinyServer(function(input, output, session) {
                       i.textY="",
                       i.method = 2, 
                       i.param = 2.8,
-                      i.centering = -1,
+                      #i.centering = -1,
                       i.colObservedLines="#808080",
                       i.colObservedPoints="#000000",
                       i.colOptimum="#FF0000",
@@ -855,7 +855,7 @@ shinyServer(function(input, output, session) {
     if(is.null(i.data)){
       p<-NULL
     }else{  
-      timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
+      timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
       #dgrafgg<-as.data.frame(rbind(c(0,0),timdata$map.curve[,c(1,2)]))
       dgrafgg<-as.data.frame(timdata$map.curve[,c(1,2)])
       names(dgrafgg)<-c("weeks","map")
@@ -895,7 +895,7 @@ shinyServer(function(input, output, session) {
                         i.textY="",
                         i.method = 2, 
                         i.param = 2.8,
-                        i.centering = -1,
+                        #i.centering = -1,
                         i.colObservedLines="#808080",
                         i.colObservedPoints="#000000",
                         i.colOptimum="#FF0000",
@@ -905,7 +905,7 @@ shinyServer(function(input, output, session) {
       p<-NULL
     }else{
       if (i.method==1){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
         # x<-c(0, timdata$map.curve[,1])
         # y<-c(0, timdata$map.curve[,2])
         # y.d<-diff(y)
@@ -952,7 +952,7 @@ shinyServer(function(input, output, session) {
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if (i.method==2){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
         # x<-c(0, timdata$map.curve[,1])
         # y<-c(0, timdata$map.curve[,2])
         # y.s<-mem:::suavizado(y, 1)
@@ -996,7 +996,7 @@ shinyServer(function(input, output, session) {
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)
       }else if (i.method==3){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
         # x<-c(0, timdata$map.curve[,1])
         # y<-c(0, timdata$map.curve[,2])
         # y.s<-loess(y~x)$fitted
@@ -1044,7 +1044,7 @@ shinyServer(function(input, output, session) {
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if(i.method==4){
-        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param, i.centering = i.centering)
+        timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
         # x<-timdata$map.curve[,1]
         # y<-timdata$map.curve[,2]
         # y.s<-loess(y~x)$fitted
@@ -1653,7 +1653,7 @@ shinyServer(function(input, output, session) {
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
-                       i.centering=as.numeric(input$centering),
+                       #i.centering=as.numeric(input$centering),
                        i.colObservedLines=colors.palette$colObservedLines,
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colOptimum=colors.palette$colEpidemicStart,
@@ -1691,7 +1691,7 @@ shinyServer(function(input, output, session) {
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
-                         i.centering=as.numeric(input$centering),
+                         #i.centering=as.numeric(input$centering),
                          i.colObservedLines=colors.palette$colObservedLines,
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colOptimum=colors.palette$colEpidemicStart,
@@ -1811,7 +1811,7 @@ shinyServer(function(input, output, session) {
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
-                       i.centering=as.numeric(input$centering),
+                       #i.centering=as.numeric(input$centering),
                        i.colObservedLines=colors.palette$colObservedLines,
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colOptimum=colors.palette$colEpidemicStart,
@@ -1849,7 +1849,7 @@ shinyServer(function(input, output, session) {
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
-                         i.centering=as.numeric(input$centering),
+                         #i.centering=as.numeric(input$centering),
                          i.colObservedLines=colors.palette$colObservedLines,
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colOptimum=colors.palette$colEpidemicStart,
@@ -1995,7 +1995,7 @@ shinyServer(function(input, output, session) {
                        i.textY=input$textY,
                        i.method=as.numeric(input$method),
                        i.param=as.numeric(input$param),
-                       i.centering=as.numeric(input$centering),
+                       #i.centering=as.numeric(input$centering),
                        i.colObservedLines=colors.palette$colObservedLines,
                        i.colObservedPoints=colors.palette$colObservedPoints,
                        i.colOptimum=colors.palette$colEpidemicStart,
@@ -2033,7 +2033,7 @@ shinyServer(function(input, output, session) {
                          i.textY=input$textY,
                          i.method=as.numeric(input$method),
                          i.param=as.numeric(input$param),
-                         i.centering=as.numeric(input$centering),
+                         #i.centering=as.numeric(input$centering),
                          i.colObservedLines=colors.palette$colObservedLines,
                          i.colObservedPoints=colors.palette$colObservedPoints,
                          i.colOptimum=colors.palette$colEpidemicStart,
@@ -5225,7 +5225,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$uitransformation = renderUI({
-    if (as.logical(input$experimental)){
+    #if (as.logical(input$experimental)){
+    if (as.logical(input$advanced)){
       transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6, "Multi waves"=7)
       names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)", "Multi waves"))
     }else{
@@ -5471,7 +5472,8 @@ shinyServer(function(input, output, session) {
       popify(
         numericInput("levelaveragecurve", h6(trloc("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
         , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = 'focus', options = list(container = "body")),
-      conditionalPanel(condition = "input.experimental",
+      #conditionalPanel(condition = "input.experimental",
+      conditionalPanel(condition = "input.advanced",
                        popify(
                          selectInput("centering", h6(trloc("Centering seasons"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size=1, selectize = FALSE, selected = -1)
                          , title = trloc("Centering seasons"), content = trloc("Method for centering seasons to calculate the average curve"), placement = "left", trigger = 'focus', options = list(container = "body"))
