@@ -5409,7 +5409,7 @@ shinyServer(function(input, output, session) {
                          numericInput("param", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Slope parameter")), 2.8, step=0.1)
                          , title = trloc("Slope parameter"), content = trloc("Slope parameter used in fixed criterium method"), placement = "left", trigger = 'focus', options = list(container = "body"))
       ),
-      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), "Thresholds"),
+      h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Thresholds")),
       fluidRow(
         column(6,
                popify(
@@ -5426,7 +5426,7 @@ shinyServer(function(input, output, session) {
         selectInput("typethreshold", h6(trloc("Epidemic threshold"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 5)
         , title = trloc("Epidemic threshold"), content = trloc("Method for calculating the epidemic threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("typeintensity", h6("Intensity thresholds", tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 6)
+        selectInput("typeintensity", h6(trloc("Intensity thresholds"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = 6)
         , title = trloc("Intensity thresholds"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
       fluidRow(
         column(4,

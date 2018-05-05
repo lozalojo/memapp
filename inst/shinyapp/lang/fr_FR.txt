@@ -286,3 +286,4 @@ Highest 14-weeks period;Highest 14-weeks period
 Highest 15-weeks period;Highest 15-weeks period
 Start centering period;Start centering period
 End centering period;End centering period
+Intensity thresholds;Seuils d’intensité

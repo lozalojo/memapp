@@ -286,3 +286,4 @@ Highest 14-weeks period;Mayor periodo de 14 semanas
 Highest 15-weeks period;Mayor periodo de 15 semanas
 Start centering period;Inicio periodo de centrado
 End centering period;Fin periodo de centrado
+Intensity thresholds;Umbrales de intensidad
