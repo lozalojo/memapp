@@ -213,7 +213,7 @@ Start;Début
 Start & end;Début & fin
 Start (lower limit);Début (lower limite inférieure)
 Start (upper limit);Début (limite supérieure)
-Envoyer les problèmes;Submit issues
+Submit issues;Envoyer les problèmes
 Summary;Résumé
 Summary, graphs, goodness and optimization of the MEM model;Résumé, graphiques, ajustement et optimisation du modèle MEM
 Support;Support
