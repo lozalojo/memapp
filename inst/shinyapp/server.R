@@ -1423,7 +1423,7 @@ shinyServer(function(input, output, session) {
           cat("reactive/read_data> Note: applying selected transformation\n")
         }
         if (as.numeric(input$transformation)==7){
-          temp1 <- mem:::transformseries.multiple(datasetread)
+          temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), i.min.separation=as.numeric(input$wavesseparation))
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse="\t"))), collapse="\n"))
           datasetread <- temp1$data.final
           rm("temp1")
@@ -5233,9 +5233,23 @@ shinyServer(function(input, output, session) {
       transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
       names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
     }
-    popify(
-      selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
-      , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body"))
+    fluidRow(
+      popify(
+        selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
+        , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
+      conditionalPanel(condition = "input.transformation == 7",
+                       column(6,
+                              popify(
+                                numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), 0, step=1)
+                                , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                       ),
+                       column(6,
+                              popify(
+                                numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 2, step=1)
+                                , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                       )
+      )
+    )
   })
   
   output$uiprocess = renderUI({

@@ -287,3 +287,7 @@ Highest 15-weeks period;Highest 15-weeks period
 Start centering period;Start centering period
 End centering period;End centering period
 Intensity thresholds;Intensity thresholds
+No. waves;No. waves
+Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it;Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it
+Separation;Separation
+Minimum separation between two seasons to be considered different;Minimum separation between two seasons to be considered different
