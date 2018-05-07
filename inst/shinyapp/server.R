@@ -1186,7 +1186,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
-                          i.centering=as.numeric(input$centering),
+                          #i.centering=as.numeric(input$centering),
                           i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                           i.n.max=as.numeric(input$nvalues),
                           i.goodness.method=as.character(input$validation))
@@ -1249,7 +1249,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
-                          i.centering=as.numeric(input$centering),
+                          #i.centering=as.numeric(input$centering),
                           i.detection.values = seq(input$paramrange[1],input$paramrange[2],by=0.1),
                           i.n.max=as.numeric(input$nvalues),
                           i.goodness.method=as.character(input$validation),
@@ -1340,7 +1340,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
-                          i.centering=as.numeric(input$centering),
+                          #i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues))
     }
     cat("reactive/data_evolution> end\n")
@@ -1368,7 +1368,7 @@ shinyServer(function(input, output, session) {
                           i.level.other=as.numeric(input$levelaveragecurve)/100,
                           i.method=as.numeric(input$method),
                           i.param=as.numeric(input$param),
-                          i.centering=as.numeric(input$centering),
+                          #i.centering=as.numeric(input$centering),
                           i.n.max=as.numeric(input$nvalues))
     }
     cat("reactive/data_stability> end\n")
@@ -4245,7 +4245,7 @@ shinyServer(function(input, output, session) {
                              i.level.other=as.numeric(input$levelaveragecurve)/100,
                              i.method=as.numeric(input$method),
                              i.param=as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]),
-                             i.centering=as.numeric(input$centering),
+                             #i.centering=as.numeric(input$centering),
                              i.n.max=as.numeric(input$nvalues),
                              i.calculation.method = "default",
                              i.goodness.method=as.character(input$validation),
