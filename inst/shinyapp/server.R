@@ -1114,6 +1114,7 @@ shinyServer(function(input, output, session) {
                                       i.include="",
                                       i.pandemic=T,
                                       i.seasons=as.numeric(input$SelectMaximum))
+      
       if (length(selectedcolumns)<2){
         temp1 <- memmodel(cbind(datfile[selectedcolumns],datfile[selectedcolumns]),
                           i.seasons=as.numeric(input$SelectMaximum),
