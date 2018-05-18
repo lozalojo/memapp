@@ -1408,6 +1408,13 @@ shinyServer(function(input, output, session) {
       datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     }else{
+      if (as.logical(input$processdata)){
+        datalog <- paste0(datalog, "Note: preprocessing activated, data will be checked and rearranged\n")
+        cat("reactive/read_data> Note: preprocessing activated, data will be checked and rearranged\n")        
+      }else{
+        datalog <- paste0(datalog, "Note: preprocessing deactivated, data will be read as it is\n")
+        cat("reactive/read_data> Note: preprocessing deactivated, data will be read as it is\n")        
+      }      
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
       temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
@@ -1419,18 +1426,36 @@ shinyServer(function(input, output, session) {
       dataweeksoriginal<-row.names(temp2$datasetread)
       dataweeksfiltered<-row.names(datasetread)
       if (as.logical(input$processdata)){
-        if (as.numeric(input$transformation)!=1){
+        # Transformation
+        if (as.numeric(input$transformation) %in% c(2:4)){
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
           cat("reactive/read_data> Note: applying selected transformation\n")
-        }
-        if (as.numeric(input$transformation)==7){
+          datasetread <- transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        }else{
+          datalog <- paste0(datalog, "Note: no transformation selected\n")
+          cat("reactive/read_data> Note: no transformation selected\n")          
+        } 
+        # Waves separation
+        if (as.numeric(input$waves)==2){
+          datalog <- paste0(datalog, "Note: separating waves\n")
+          cat("reactive/read_data> Note: separating waves\n")
+          datasetread <- transformseries(datasetread, i.transformation=5)
+        }else if (as.numeric(input$waves)==3){
+          datalog <- paste0(datalog, "Note: separating waves\n")
+          cat("reactive/read_data> Note: separating waves\n")
+          datasetread <- transformseries(datasetread, i.transformation=6)          
+        }else if (as.numeric(input$waves)==4){
+          datalog <- paste0(datalog, "Note: separating waves\n")
+          cat("reactive/read_data> Note: separating waves\n")          
           temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), i.min.separation=as.numeric(input$wavesseparation))
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse="\t"))), collapse="\n"))
           datasetread <- temp1$data.final
           rm("temp1")
         }else{
-          datasetread <- transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+          datalog <- paste0(datalog, "Note: no separation of waves selected\n")
+          cat("reactive/read_data> Note: no separation of waves selected\n")          
         }
+        
         # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
         # specially when splitting waves in two, in case there is only one epidemic instead of two
         zerocols<-apply(datasetread, 2, function(x) sum(x, na.rm=T)==0)
@@ -5203,6 +5228,7 @@ shinyServer(function(input, output, session) {
                         uiOutput("uifirstWeek"),
                         uiOutput("uilastWeek"),
                         uiOutput("uitransformation"),
+                        uiOutput("uiwaves"),
                         uiOutput("uiprocess")
     )
   })
@@ -5227,18 +5253,28 @@ shinyServer(function(input, output, session) {
   
   output$uitransformation = renderUI({
     #if (as.logical(input$experimental)){
-    if (as.logical(input$advanced)){
-      transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6, "Multi waves"=7)
-      names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)", "Multi waves"))
-    }else{
-      transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4, "Two waves (observed)"=5, "Two waves (expected)"=6)
-      names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess", "Two waves (observed)", "Two waves (expected)"))
-    }
+    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4)
+    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess"))
     fluidRow(
       popify(
         selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
-        , title = trloc("Transform"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
-      conditionalPanel(condition = "input.transformation == 7",
+        , title = trloc("Transformation"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body"))
+    )
+  })
+  
+  output$uiwaves = renderUI({
+    if (as.logical(input$advanced)){
+      waves.list<-list("One wave"=1, "Two waves (observed)"=2, "Two waves (expected)"=3, "Multi waves"=4)
+      names(waves.list)<-trloc(c("One wave", "Two waves (observed)", "Two waves (expected)", "Multi waves"))
+    }else{
+      waves.list<-list("One wave"=1, "Two waves (observed)"=2, "Two waves (expected)"=3)
+      names(waves.list)<-trloc(c("One wave", "Two waves (observed)", "Two waves (expected)"))
+    }
+    fluidRow(
+      popify(
+        selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
+        , title = trloc("Waves"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
+      conditionalPanel(condition = "input.waves == 4",
                        column(6,
                               popify(
                                 numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), 0, step=1)
