@@ -13,7 +13,7 @@ Imports:
     shinyBS,
     shinyjs,
     RColorBrewer,
-    ggthemes,
+    ggthemes (== 3.4.2),
     magrittr,
     tidyr,
     dplyr,
