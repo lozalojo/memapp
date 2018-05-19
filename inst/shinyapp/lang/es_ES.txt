@@ -291,3 +291,7 @@ No. waves;N. de ondas
 Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it;Número total de ondas del periodo. Póngalo a 0 para dejar que el programa lo determine automáticamente
 Separation;Separación
 Minimum separation between two seasons to be considered different;Separación mínima entre dos temporadas para que sean consideradas distintas
+Transformation;Transformación
+Waves;Ondas
+Select the number of waves in the original data;Seleccione el número de ondas por temporada en los datos originales
+One wave;Una onda

@@ -294,3 +294,4 @@ Minimum separation between two seasons to be considered different;Minimum separa
 Transformation;Transformation
 Waves;Waves
 Select the number of waves in the original data;Select the number of waves in the original data
+One wave;One wave

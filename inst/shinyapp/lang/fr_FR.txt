@@ -108,7 +108,7 @@ Level of the confidence interval used to calculate the medium threshold;Niveau d
 Level of the confidence interval used to calculate the very high threshold;Niveau de l’intervalle de confiance utilisé pour calculer le seuil très élevé
 Levels palette;Palette des niveaux
 Load file;Chargement du fichier
-Loess;Lss
+Loess;Loess
 Low;Bas
 Low level;Niveau bas
 Lower interval;Intervalle inférieur
@@ -262,7 +262,7 @@ Check this tickbox if you want to process input data, rearrange weeks acording t
 Log;Log
 MAP curve;MAP curve
 Slope curve;Slope curve
-Multi waves;Multi waves
+Multi waves;Multi vagues
 Show experimental features;Show experimental features
 Show experimental features of memapp;Show experimental features of memapp
 No file or dataset selected;No file or dataset selected
@@ -287,7 +287,11 @@ Highest 15-weeks period;Highest 15-weeks period
 Start centering period;Start centering period
 End centering period;End centering period
 Intensity thresholds;Seuils d’intensité
-No. waves;No. waves
+No. waves;N. vagues
 Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it;Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it
 Separation;Separation
 Minimum separation between two seasons to be considered different;Minimum separation between two seasons to be considered different
+Transformation;Transformation
+Waves;Vagues
+Select the number of waves in the original data;Select the number of waves in the original data
+One wave;Un vague

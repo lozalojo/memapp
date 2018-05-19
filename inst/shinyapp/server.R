@@ -206,7 +206,7 @@ shinyServer(function(input, output, session) {
       
       # Calculate ticks for x
       axis.x.range.original <- range(i.range.x.values$week.no)
-      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], i.tickmarks, 1:axis.x.range.original[2],T,F)
+      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], i.tickmarks, 1:axis.x.range.original[2],T,T)
       axis.x.range <- axis.x.otick$range
       axis.x.ticks<- axis.x.otick$tickmarks
       axis.x.labels<-i.range.x.values$week.lab[axis.x.otick$tickmarks]
@@ -459,7 +459,7 @@ shinyServer(function(input, output, session) {
       data.x <- 1:NROW(data.orig)
       axis.x.range <- range(data.x)
       temp1 <- range(i.range.x.values$week.no)
-      temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2],T,F)
+      temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2],T,T)
       axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
       axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
       axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
@@ -861,7 +861,7 @@ shinyServer(function(input, output, session) {
       names(dgrafgg)<-c("weeks","map")
       # Calculate ticks for x
       axis.x.range.original <- range(dgrafgg$weeks)
-      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 10)
+      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 10, T, T)
       axis.x.range <- axis.x.otick$range
       axis.x.ticks <- axis.x.otick$tickmarks
       axis.x.labels <- axis.x.otick$tickmarks  
@@ -922,7 +922,7 @@ shinyServer(function(input, output, session) {
         dgrafgg <- timdata$slope.curve
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T, i.include.max=T)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -969,7 +969,7 @@ shinyServer(function(input, output, session) {
         dgrafgg <- timdata$slope.curve
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T, i.include.max=T)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -1013,7 +1013,7 @@ shinyServer(function(input, output, session) {
         pendiente <- timdata$slope.threshold
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T, i.include.max=T)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -1064,7 +1064,7 @@ shinyServer(function(input, output, session) {
         # cat("Old: ",timdata$optimum.map[1],"\tNew: ",optimo,"\n")
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks=1:5, i.include.min = T, i.include.max=T)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -2161,7 +2161,7 @@ shinyServer(function(input, output, session) {
           data.x <- values$origdata$weekno
           axis.x.range <- range(data.x)
           temp1 <- range(i.range.x.values$week.no)
-          temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], 30, 1:temp1[2],T,F)
+          temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], 30, 1:temp1[2],T,T)
           axis.x.ticks<-data.x[values$origdata$weekna %in% i.range.x.values$week.lab[temp2$tickmarks]]
           axis.x.labels<-values$origdata$weekna[values$origdata$weekna %in% i.range.x.values$week.lab[temp2$tickmarks]]
           rm("temp1","temp2")
