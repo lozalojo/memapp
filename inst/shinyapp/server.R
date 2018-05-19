@@ -236,7 +236,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        ggthemes::theme_base() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=i.range.x.values$week.lab, gdata=dgrafgg.s)
@@ -493,7 +493,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        ggthemes::theme_base() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=paste(data.orig$week,paste0("<br />",trloc("Season"),": "),data.orig$season,sep=""), gdata=dgrafgg.s)
@@ -762,7 +762,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        ggthemes::theme_base() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=current.season$nombre.semana, gdata=dgrafgg.s)
@@ -834,7 +834,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        ggthemes::theme_base() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot, gdata=dgrafgg)
     }
@@ -882,7 +882,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        ggthemes::theme_base() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot, gdata=dgrafgg)
     }
@@ -948,7 +948,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          ggthemes::theme_base() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if (i.method==2){
@@ -992,7 +992,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          ggthemes::theme_base() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)
       }else if (i.method==3){
@@ -1040,7 +1040,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          ggthemes::theme_base() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if(i.method==4){
@@ -1085,7 +1085,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          ggthemes::theme_base() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else{
@@ -2189,7 +2189,7 @@ shinyServer(function(input, output, session) {
             scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
             scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
             labs(title = input$textMain, x = input$textX, y = input$textY) +
-            ggthemes::theme_few() +
+            ggthemes::theme_base() +
             theme(plot.title = element_text(hjust = 0.5)) +
             guides(color=FALSE, size=FALSE)          
         }else{
@@ -4472,7 +4472,7 @@ shinyServer(function(input, output, session) {
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         scale_color_manual(values=colors.palette$colSeasons, name=trloc("Indicator")) +
         labs(title = input$textMain, x = input$textX, y = input$textY) +
-        ggthemes::theme_few() +
+        ggthemes::theme_base() +
         theme(plot.title = element_text(hjust = 0.5))
       
       z<-ggplotly(p, width = 800, height = 600)
