@@ -5227,9 +5227,9 @@ shinyServer(function(input, output, session) {
                         uiOutput("uidataset"),
                         uiOutput("uifirstWeek"),
                         uiOutput("uilastWeek"),
-                        uiOutput("uiprocess",
+                        uiOutput("uiprocess"),
                         uiOutput("uitransformation"),
-                        uiOutput("uiwaves"))
+                        uiOutput("uiwaves")
     )
   })
   
