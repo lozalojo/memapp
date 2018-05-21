@@ -278,6 +278,9 @@ read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-openxlsx::read.xlsx(wb,sheet=i.dataset,rowNames=F)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -341,6 +344,9 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
       datasetread<-as.data.frame(readxl::read_xls(i.file, sheet = i.dataset, col_types= "numeric"), stringsAsFactors = F)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -404,6 +410,9 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n")
         cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
         datasetread<-sqlFetch(channel,i.dataset,rownames=T)
+        # Remove na lines
+        nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+        if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
         # Detect format year, week, rate
         columnsn<-tolower(names(datasetread))
         if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -473,6 +482,9 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
           mydec<-decimals[which.max(stringr::str_count(gsub(mysep,"",restlines,fixed=T), stringr::fixed(decimals)))]
           datasetread<-read.delim(filecsv,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
           names(datasetread)<-vnames
+          # Remove na lines
+          nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+          if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
           # Detect format year, week, rate
           columnsn<-tolower(names(datasetread))
           if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -559,6 +571,9 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
       temp1<-as.character(read.delim(i.file,header=F,sep=mysep,nrows=1,colClasses="character", as.is=T, encoding = myencoding))
       datasetread<-read.delim(i.file,header=T,sep=mysep,dec=mydec,row.names=NULL,fill=T,colClasses="numeric", as.is=T, encoding = myencoding)
       names(datasetread)<-temp1
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -619,6 +634,9 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-readRDS(i.file)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -681,6 +699,9 @@ read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading table: ",i.dataset,"\n",sep="")
       datasetread<-rdaenv[[i.dataset]]
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -743,6 +764,9 @@ read.data.dbf<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-foreign::read.dbf(i.file)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -803,6 +827,9 @@ read.data.sav<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-foreign::read.spss(i.file)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -863,6 +890,9 @@ read.data.dta<-function(i.file, i.file.name=NA, i.dataset=NA){
       datalog <- paste0(datalog, "Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n")
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-foreign::read.dta(i.file)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
@@ -924,6 +954,9 @@ read.data.sas<-function(i.file, i.file.name=NA, i.dataset=NA){
       cat("read_data> Number of datasets: ",n.datasets,"\tReading dataset: ",i.dataset,"\n",sep="")
       datasetread<-as.data.frame(haven::read_sas(i.file))
       for (i in 1:NCOL(datasetread)) names(datasetread)[i]<-attr(datasetread[[i]], "label")
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines)>0) datasetread <- datasetread[!nalines,]
       # Detect format year, week, rate
       columnsn<-tolower(names(datasetread))
       if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread)==3){
