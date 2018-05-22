@@ -122,7 +122,7 @@ Maximum seasons;Maximum seasons
 Mean end;Mean end
 Mean start;Mean start
 Median and bootstrap confidence interval;Median and bootstrap confidence interval
-Median and the KC Method to calculate its confidence interval;Median and the KC Method to calculate its confidence interval
+Median and Nyblom confidence interval;Median and Nyblom confidence interval
 Medium;Medium
 Medium int. thr.;Medium int. thr.
 Medium level;Medium level

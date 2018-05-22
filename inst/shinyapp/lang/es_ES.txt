@@ -122,7 +122,7 @@ Maximum seasons;Máximo temporadas
 Mean end;Fin medio
 Mean start;Inicio medio
 Median and bootstrap confidence interval;Mediana e IC remuestreo
-Median and the KC Method to calculate its confidence interval;Mediana e IC método KC
+Median and Nyblom confidence interval;Mediana e IC método Nyblom
 Medium;Medio
 Medium int. thr.;Umb. medio
 Medium level;Nivel medio
