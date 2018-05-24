@@ -1388,6 +1388,7 @@ shinyServer(function(input, output, session) {
     cat("reactive/read_data> Name: ",inname,"\n")
     cat("reactive/read_data> Dataset: ",indataset,"\n")
     cat("reactive/read_data> Range: ",i.range.x[1],"-",i.range.x[2],"\n")
+    plots <- NULL
     if(is.null(infile)){
       datasets=NULL
       datasetread=NULL
@@ -1446,10 +1447,17 @@ shinyServer(function(input, output, session) {
           datasetread <- transformseries(datasetread, i.transformation=6)          
         }else if (as.numeric(input$waves)==4){
           datalog <- paste0(datalog, "Note: separating waves\n")
-          cat("reactive/read_data> Note: separating waves\n")          
-          temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), i.min.separation=as.numeric(input$wavesseparation))
+          cat("reactive/read_data> Note: separating waves\n")
+          #print(names(datasetread))
+          cat(paste(as.numeric(input$numberwaves),as.numeric(input$wavesseparation),
+              as.numeric(input$wavesparam1), as.numeric(input$wavesparam2),sep="-"),"\n")
+          temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), 
+                                                  i.min.separation=as.numeric(input$wavesseparation),
+                                                  i.param.1=as.numeric(input$wavesparam1), i.param.2=as.numeric(input$wavesparam2))
+          #print(names(temp1))
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse="\t"))), collapse="\n"))
           datasetread <- temp1$data.final
+          plots <- temp1$plots
           rm("temp1")
         }else{
           datalog <- paste0(datalog, "Note: no separation of waves selected\n")
@@ -1474,7 +1482,7 @@ shinyServer(function(input, output, session) {
     cat("reactive/read_data> dataweeksfiltered returning NULL?: ",is.null(dataweeksfiltered),"\n")
     cat("reactive/read_data> datasetread NULL?: ",is.null(datasetread),"\n")
     cat("reactive/read_data> end\n")
-    readdata<-list(datasets=datasets, datasetread=datasetread, dataweeksoriginal=dataweeksoriginal, dataweeksfiltered=dataweeksfiltered, datalog=datalog)
+    readdata<-list(datasets=datasets, datasetread=datasetread, dataweeksoriginal=dataweeksoriginal, dataweeksfiltered=dataweeksfiltered, datalog=datalog, plots=plots)
     readdata
   })
   
@@ -2253,10 +2261,12 @@ shinyServer(function(input, output, session) {
     readdata <- read_data()
     datfile <- readdata$datasetread
     if(is.null(datfile)){
-      tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")))
+      # tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")))
+      tabsetPanel(tabPanel(trloc("File"), uiOutput("tbdFile")))
     }else{
       if (as.logical(input$advanced)){
-        tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
+        # tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
+        tabsetPanel(tabPanel(trloc("File"), uiOutput("tbdFile")),
                     tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
                              fluidRow(
@@ -2280,7 +2290,8 @@ shinyServer(function(input, output, session) {
                     tabPanel(trloc("Goodness"),uiOutput("tbdGoodness"))
         )
       }else{
-        tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
+        # tabsetPanel(tabPanel(trloc("File"), verbatimTextOutput("tbdFile")),
+        tabsetPanel(tabPanel(trloc("File"), uiOutput("tbdFile")),
                     tabPanel(trloc("Data"),
                              DT::dataTableOutput("tbdData"),
                              fluidRow(
@@ -2306,7 +2317,47 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$tbdFile <- renderPrint({
+  # output$tbdFile <- renderPrint({
+  #   infile <- input$file
+  #   indataset <- input$dataset
+  #   readdata <- read_data()
+  #   datfile <- readdata$datasetread
+  #   if(is.null(datfile)){
+  #     cat(trloc("No file or dataset selected"),"\n", sep="")
+  #     cat(trloc("Log"),":\n\t", sep="")
+  #     cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
+  #   }else{
+  #     cat(trloc("File"),":\n\t",infile$name,"\n", sep="")
+  #     cat(trloc("Dataset"),":\n\t",indataset,"\n", sep="")
+  #     cat(trloc("Log"),":\n\t", sep="")
+  #     cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
+  #   }
+  # })
+  
+  output$tbdFile <- renderUI({
+    if (as.numeric(input$waves)==4){
+      fluidPage(
+        verbatimTextOutput("tbdFileTxt"),
+        plotOutput("tbdFilePlot")
+        # fluidRow(
+        #   column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+        #   column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_plot"), height = 600))
+        # ),
+        # fluidRow(
+        #   column(1,h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+        #   column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_map"), height = 600))
+        # ),
+        # fluidRow(
+        #   column(1,h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+        #   column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_slope"), height = 600))
+        # )
+      )            
+    }else{
+      verbatimTextOutput("tbdFileTxt")
+    }
+  })
+  
+  output$tbdFileTxt <- renderPrint({
     infile <- input$file
     indataset <- input$dataset
     readdata <- read_data()
@@ -2322,6 +2373,16 @@ shinyServer(function(input, output, session) {
       cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
     }
   })
+  
+  output$tbdFilePlot <- renderPlot({
+    readdata <- read_data()
+    plots <- readdata$plots
+    if(is.null(plots)){
+      NULL
+    }else{
+      plots$p4[[2]]
+    }
+  }, width = 800, height = 600)
   
   output$tbdData <- DT::renderDataTable({
     readdata <- read_data()
@@ -5275,15 +5336,29 @@ shinyServer(function(input, output, session) {
         selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
         , title = trloc("Waves"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
       conditionalPanel(condition = "input.waves == 4",
-                       column(6,
-                              popify(
-                                numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), 0, step=1)
-                                , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                       fluidRow(
+                         column(6,
+                                popify(
+                                  numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), 0, step=1)
+                                  , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                         ),
+                         column(6,
+                                popify(
+                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 2, step=1)
+                                  , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                         )
                        ),
-                       column(6,
-                              popify(
-                                numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 2, step=1)
-                                , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                       fluidRow(
+                         column(6,
+                                popify(
+                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), 2.8, step=0.1)
+                                  , title = trloc("Param 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                         ),
+                         column(6,
+                                popify(
+                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), 2.8, step=0.1)
+                                  , title = trloc("Param 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                         )
                        )
       )
     )
