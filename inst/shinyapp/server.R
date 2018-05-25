@@ -1449,8 +1449,8 @@ shinyServer(function(input, output, session) {
           datalog <- paste0(datalog, "Note: separating waves\n")
           cat("reactive/read_data> Note: separating waves\n")
           #print(names(datasetread))
-          cat(paste(as.numeric(input$numberwaves),as.numeric(input$wavesseparation),
-              as.numeric(input$wavesparam1), as.numeric(input$wavesparam2),sep="-"),"\n")
+          # cat(paste(as.numeric(input$numberwaves),as.numeric(input$wavesseparation),
+          #     as.numeric(input$wavesparam1), as.numeric(input$wavesparam2),sep="-"),"\n")
           temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), 
                                                   i.min.separation=as.numeric(input$wavesseparation),
                                                   i.param.1=as.numeric(input$wavesparam1), i.param.2=as.numeric(input$wavesparam2))
@@ -5318,23 +5318,23 @@ shinyServer(function(input, output, session) {
     names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess"))
     fluidRow(
       popify(
-        selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transform")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
+        selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
         , title = trloc("Transformation"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body"))
     )
   })
   
   output$uiwaves = renderUI({
     if (as.logical(input$advanced)){
-      waves.list<-list("One wave"=1, "Two waves (observed)"=2, "Two waves (expected)"=3, "Multi waves"=4)
-      names(waves.list)<-trloc(c("One wave", "Two waves (observed)", "Two waves (expected)", "Multi waves"))
+      waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
+      names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
     }else{
-      waves.list<-list("One wave"=1, "Two waves (observed)"=2, "Two waves (expected)"=3)
-      names(waves.list)<-trloc(c("One wave", "Two waves (observed)", "Two waves (expected)"))
+      waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3)
+      names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)"))
     }
     fluidRow(
       popify(
-        selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
-        , title = trloc("Waves"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
+        selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves detection")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
+        , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
       conditionalPanel(condition = "input.waves == 4",
                        fluidRow(
                          column(6,
