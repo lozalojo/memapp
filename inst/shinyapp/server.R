@@ -1415,13 +1415,22 @@ shinyServer(function(input, output, session) {
       }else{
         datalog <- paste0(datalog, "Note: preprocessing deactivated, data will be read as it is\n")
         cat("reactive/read_data> Note: preprocessing deactivated, data will be read as it is\n")        
-      }      
+      }
+      datalog <- paste0(datalog, "Note: reading original data\n")
+      cat("reactive/read_data> Note: reading original data\n")
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
       temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       datalog <- paste0(datalog, temp1$datalog)
       rm("temp1")
+      # Delete all columns with only 0s and NAs, it is possible that when rearranging x.range it produces 0's or NA's columns that will give errors afterwards
+      zerocols <- apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
+      if (any(zerocols)){
+        datalog <- paste0(datalog, "Note: removing zero data columns from the original file after rearrangement: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
+        cat("read_data> Note: removing zero data columns from the original file after rearrangement:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+        datasetread<-datasetread[!zerocols]        
+      }
     }
     if(!is.null(datasetread)){
       dataweeksoriginal<-row.names(temp2$datasetread)
@@ -1435,7 +1444,7 @@ shinyServer(function(input, output, session) {
         }else{
           datalog <- paste0(datalog, "Note: no transformation selected\n")
           cat("reactive/read_data> Note: no transformation selected\n")          
-        } 
+        }
         # Waves separation
         if (as.numeric(input$waves)==2){
           datalog <- paste0(datalog, "Note: separating waves\n")

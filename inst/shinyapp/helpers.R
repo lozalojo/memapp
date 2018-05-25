@@ -215,9 +215,11 @@ read.data<-function(i.file,
     }else if (i.process.data){
       # Delete all columns with only 0s and NAs
       zerocols <- apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
-      datalog <- paste0(datalog, "Note: removing 0-only columns: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
-      cat("read_data> Note: removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
-      datasetread<-datasetread[!zerocols]
+      if (any(zerocols)){
+        datalog <- paste0(datalog, "Note: removing 0-only columns: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
+        cat("read_data> Note: removing 0-only columns:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+        datasetread<-datasetread[!zerocols]
+      }
       # Fix when reading access files, sometimes it changes the order of the weeks
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
