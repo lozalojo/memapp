@@ -236,7 +236,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=i.range.x.values$week.lab, gdata=dgrafgg.s)
@@ -459,7 +459,7 @@ shinyServer(function(input, output, session) {
       data.x <- 1:NROW(data.orig)
       axis.x.range <- range(data.x)
       temp1 <- range(i.range.x.values$week.no)
-      temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2],T,T)
+      temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2], T, F)
       axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
       axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
       axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
@@ -493,7 +493,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=paste(data.orig$week,paste0("<br />",trloc("Season"),": "),data.orig$season,sep=""), gdata=dgrafgg.s)
@@ -762,7 +762,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=current.season$nombre.semana, gdata=dgrafgg.s)
@@ -834,7 +834,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot, gdata=dgrafgg)
     }
@@ -882,7 +882,7 @@ shinyServer(function(input, output, session) {
         scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
-        ggthemes::theme_few() +
+        theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5))
       p<-list(plot=gplot, gdata=dgrafgg)
     }
@@ -948,7 +948,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          theme_minimal() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if (i.method==2){
@@ -992,7 +992,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          theme_minimal() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)
       }else if (i.method==3){
@@ -1040,7 +1040,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          theme_minimal() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else if(i.method==4){
@@ -1085,7 +1085,7 @@ shinyServer(function(input, output, session) {
           scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
           scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
           labs(title = i.textMain, x = i.textX, y = i.textY) +
-          ggthemes::theme_few() +
+          theme_minimal() +
           theme(plot.title = element_text(hjust = 0.5))
         p<-list(plot=gplot, gdata=dgrafgg)        
       }else{
@@ -1462,7 +1462,9 @@ shinyServer(function(input, output, session) {
           #     as.numeric(input$wavesparam1), as.numeric(input$wavesparam2),sep="-"),"\n")
           temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), 
                                                   i.min.separation=as.numeric(input$wavesseparation),
-                                                  i.param.1=as.numeric(input$wavesparam1), i.param.2=as.numeric(input$wavesparam2))
+                                                  i.param.1=as.numeric(input$wavesparam1), i.param.2=as.numeric(input$wavesparam2),
+                                                  i.method=as.numeric(input$method),
+                                                  i.param=as.numeric(input$param))
           #print(names(temp1))
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse="\t"))), collapse="\n"))
           datasetread <- temp1$data.final
@@ -2206,7 +2208,7 @@ shinyServer(function(input, output, session) {
             scale_x_continuous(breaks=axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
             scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
             labs(title = input$textMain, x = input$textX, y = input$textY) +
-            ggthemes::theme_few() +
+            theme_minimal() +
             theme(plot.title = element_text(hjust = 0.5)) +
             guides(color=FALSE, size=FALSE)          
         }else{
@@ -4542,7 +4544,7 @@ shinyServer(function(input, output, session) {
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         scale_color_manual(values=colors.palette$colSeasons, name=trloc("Indicator")) +
         labs(title = input$textMain, x = input$textX, y = input$textY) +
-        ggthemes::theme_few() +
+        theme_minimal() +
         theme(plot.title = element_text(hjust = 0.5))
       
       z<-ggplotly(p, width = 800, height = 600)
@@ -5353,19 +5355,19 @@ shinyServer(function(input, output, session) {
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 2, step=1)
+                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 1, step=1)
                                   , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "left", trigger = 'focus', options = list(container = "body"))
                          )
                        ),
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), 2.8, step=0.1)
+                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), 2, step=0.1)
                                   , title = trloc("Param 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "left", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), 2.8, step=0.1)
+                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), 2, step=0.1)
                                   , title = trloc("Param 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "left", trigger = 'focus', options = list(container = "body"))
                          )
                        )

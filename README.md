@@ -79,6 +79,19 @@ install.GraphicsMagick()
 install.ImageMagick()
 ```
 
+Most data can be exported to csv or excel files, but for the later to work you have to install Rtools. You can download and install it here:
+
+https://cran.r-project.org/bin/windows/Rtools/
+
+```
+# check if installr is installed, and install it otherwise
+if(!require("installr")) install.packages('installr')
+library("installr")
+# install Rtools
+install.Rtools()
+
+```
+
 ## Localization
 
 Starting with version 2.6, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at github:
