@@ -1441,6 +1441,10 @@ shinyServer(function(input, output, session) {
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
           cat("reactive/read_data> Note: applying selected transformation\n")
           datasetread <- transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        }else if (as.numeric(input$transformation)==5){
+          datalog <- paste0(datalog, "Note: applying selected transformation\n")
+          cat("reactive/read_data> Note: applying selected transformation\n")
+          datasetread <- transformseries(datasetread, i.transformation=7, i.span=as.numeric(input$loesspan))
         }else{
           datalog <- paste0(datalog, "Note: no transformation selected\n")
           cat("reactive/read_data> Note: no transformation selected\n")          
@@ -5325,12 +5329,17 @@ shinyServer(function(input, output, session) {
   
   output$uitransformation = renderUI({
     #if (as.logical(input$experimental)){
-    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Loess"=4)
-    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Loess"))
+    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Smoothing regression"=4, "Loess"=5)
+    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess"))
     fluidRow(
       popify(
         selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
-        , title = trloc("Transformation"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body"))
+        , title = trloc("Transformation"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
+      conditionalPanel(condition = "input.transformation == 5 & input.advanced",
+                       popify(
+                         sliderInput("loesspan",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Loess span")), min = 0.05, max = 1, value = 0.15, step=0.05), 
+                         title = trloc("Loess span"), content = trloc("Loess span parameter"), placement = "right", trigger = 'focus', options = list(container = "body"))
+      )
     )
   })
   
@@ -5350,7 +5359,7 @@ shinyServer(function(input, output, session) {
         , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
       conditionalPanel(condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
                        popify(
-                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 5, max = 95, value = 25, step=5), 
+                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 0, step=5), 
                          title = trloc("Minimum proportion"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = 'focus', options = list(container = "body"))
       ),
       conditionalPanel(condition = "input.waves == 4 & input.advanced",
