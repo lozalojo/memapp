@@ -1449,11 +1449,11 @@ shinyServer(function(input, output, session) {
         if (as.numeric(input$waves)==2){
           datalog <- paste0(datalog, "Note: separating waves\n")
           cat("reactive/read_data> Note: separating waves\n")
-          datasetread <- transformseries(datasetread, i.transformation=5)
+          datasetread <- transformseries(datasetread, i.transformation=5, i.proportion=as.numeric(input$twowavesproportion/100))
         }else if (as.numeric(input$waves)==3){
           datalog <- paste0(datalog, "Note: separating waves\n")
           cat("reactive/read_data> Note: separating waves\n")
-          datasetread <- transformseries(datasetread, i.transformation=6)          
+          datasetread <- transformseries(datasetread, i.transformation=6, i.proportion=as.numeric(input$twowavesproportion/100))          
         }else if (as.numeric(input$waves)==4){
           datalog <- paste0(datalog, "Note: separating waves\n")
           cat("reactive/read_data> Note: separating waves\n")
@@ -5335,40 +5335,47 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiwaves = renderUI({
-    if (as.logical(input$advanced)){
-      waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
-      names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
-    }else{
-      waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3)
-      names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)"))
-    }
+    # if (as.logical(input$advanced)){
+    #   waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
+    #   names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
+    # }else{
+    #   waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3)
+    #   names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)"))
+    # }
+    waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
+    names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
     fluidRow(
       popify(
         selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves detection")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
         , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
-      conditionalPanel(condition = "input.waves == 4",
+      conditionalPanel(condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
+                       popify(
+                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 5, max = 95, value = 25, step=5), 
+                         title = trloc("Minimum proportion"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = 'focus', options = list(container = "body"))
+      ),
+      conditionalPanel(condition = "input.waves == 4 & input.advanced",
                        fluidRow(
                          column(6,
                                 popify(
                                   numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), 0, step=1)
-                                  , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                                  , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
                                   numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 1, step=1)
-                                  , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                                  , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        ),
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), 2, step=0.1)
-                                  , title = trloc("Param 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), 3, step=0.1)
+                                  , title = trloc("Param 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
                                   numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), 2, step=0.1)
-                                  , title = trloc("Param 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "left", trigger = 'focus', options = list(container = "body"))
+                                  , title = trloc("Param 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        )
       )
