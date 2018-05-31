@@ -1409,13 +1409,6 @@ shinyServer(function(input, output, session) {
       datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     }else{
-      if (as.logical(input$processdata)){
-        datalog <- paste0(datalog, "Note: preprocessing activated, data will be checked and rearranged\n")
-        cat("reactive/read_data> Note: preprocessing activated, data will be checked and rearranged\n")        
-      }else{
-        datalog <- paste0(datalog, "Note: preprocessing deactivated, data will be read as it is\n")
-        cat("reactive/read_data> Note: preprocessing deactivated, data will be read as it is\n")        
-      }
       datalog <- paste0(datalog, "Note: reading original data\n")
       cat("reactive/read_data> Note: reading original data\n")
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
@@ -1424,18 +1417,20 @@ shinyServer(function(input, output, session) {
       datasetread=temp1$datasetread
       datalog <- paste0(datalog, temp1$datalog)
       rm("temp1")
-      # Delete all columns with only 0s and NAs, it is possible that when rearranging x.range it produces 0's or NA's columns that will give errors afterwards
-      zerocols <- apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
-      if (any(zerocols)){
-        datalog <- paste0(datalog, "Note: removing zero data columns from the original file after rearrangement: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
-        cat("read_data> Note: removing zero data columns from the original file after rearrangement:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
-        datasetread<-datasetread[!zerocols]        
-      }
     }
     if(!is.null(datasetread)){
       dataweeksoriginal<-row.names(temp2$datasetread)
       dataweeksfiltered<-row.names(datasetread)
       if (as.logical(input$processdata)){
+        datalog <- paste0(datalog, "Note: preprocessing activated, data will be checked and rearranged\n")
+        cat("reactive/read_data> Note: preprocessing activated, data will be checked and rearranged\n")        
+        # Delete all columns with only 0s and NAs, it is possible that when rearranging x.range it produces 0's or NA's columns that will give errors afterwards
+        zerocols <- apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
+        if (any(zerocols)){
+          datalog <- paste0(datalog, "Note: removing zero data columns from the original file after rearrangement: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
+          cat("read_data> Note: removing zero data columns from the original file after rearrangement:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+          datasetread<-datasetread[!zerocols]        
+        }
         # Transformation
         if (as.numeric(input$transformation) %in% c(2:4)){
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
@@ -1478,7 +1473,6 @@ shinyServer(function(input, output, session) {
           datalog <- paste0(datalog, "Note: no separation of waves selected\n")
           cat("reactive/read_data> Note: no separation of waves selected\n")          
         }
-        
         # Delete all columns with only 0s and NAs. After transformation is possible that some columns are NA, 
         # specially when splitting waves in two, in case there is only one epidemic instead of two
         zerocols<-apply(datasetread, 2, function(x) sum(x, na.rm=T)==0)
@@ -1487,6 +1481,9 @@ shinyServer(function(input, output, session) {
           cat("reactive/read_data> Note: removing 0/NA-only columns after transformation:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
           datasetread<-datasetread[!zerocols]
         }
+      }else{
+        datalog <- paste0(datalog, "Note: preprocessing deactivated, data will be read as it is\n")
+        cat("reactive/read_data> Note: preprocessing deactivated, data will be read as it is\n")        
       }
     }else{
       dataweeksoriginal=NULL
