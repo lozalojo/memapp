@@ -2,6 +2,7 @@
 
 [![Travis Build Status](https://travis-ci.org/lozalojo/memapp.svg?branch=master)](https://travis-ci.org/lozalojo/memapp)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lozalojo/memapp/master.svg)](https://codecov.io/github/lozalojo/memapp?branch=master)
+[![DOI](https://zenodo.org/badge/90709196.svg)](https://zenodo.org/badge/latestdoi/90709196)
 [![monthly](http://cranlogs.r-pkg.org/badges/memapp)](https://www.rpackages.io/package/memapp) 
 [![total](http://cranlogs.r-pkg.org/badges/grand-total/memapp)](https://www.rpackages.io/package/memapp)
 [![CRAN](http://www.r-pkg.org/badges/version/memapp?color=009999)](https://cran.r-project.org/package=memapp)
@@ -23,10 +24,10 @@ install.packages("memapp")
 To install the development version of *memapp* use the *devtools* package.
 
 ```
-# install the devtools package
-install.packages("devtools")
+if(!require("devtools")) install.packages("devtools")
+library("devtools")
 # install the memapp development version from GitHub
-devtools::install_github("lozalojo/memapp")
+install_github("lozalojo/memapp")
 ```
 When installing this version also you are intalling development versions of some sensitive packages that are used by *memapp* (including the *mem* package).
 
