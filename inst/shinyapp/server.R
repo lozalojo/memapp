@@ -5358,7 +5358,7 @@ shinyServer(function(input, output, session) {
                          sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 0, step=5), 
                          title = trloc("Minimum proportion"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = 'focus', options = list(container = "body"))
       ),
-      conditionalPanel(condition = "input.waves == 4 & input.experimental",
+      conditionalPanel(condition = "input.waves == 4 & input.experimental & input.advanced",
                        fluidRow(
                          column(6,
                                 popify(
