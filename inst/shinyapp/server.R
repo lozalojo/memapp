@@ -5641,7 +5641,7 @@ shinyServer(function(input, output, session) {
       ),
       hidden(
         popify(
-          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = FALSE)
+          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = TRUE)
           , title = trloc("Show experimental features"), content = trloc("Show experimental features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body")
         )
       )
