@@ -5341,15 +5341,15 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiwaves = renderUI({
-    # if (as.logical(input$advanced)){
-    #   waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
-    #   names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
-    # }else{
-    #   waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3)
-    #   names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)"))
-    # }
-    waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
-    names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
+    if (as.logical(input$experimental)){
+      waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
+      names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
+    }else{
+      waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3)
+      names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)"))
+    }
+    # waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
+    # names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
     fluidRow(
       popify(
         selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves detection")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
@@ -5359,7 +5359,7 @@ shinyServer(function(input, output, session) {
                          sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 0, step=5), 
                          title = trloc("Minimum proportion"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = 'focus', options = list(container = "body"))
       ),
-      conditionalPanel(condition = "input.waves == 4 & input.advanced",
+      conditionalPanel(condition = "input.waves == 4 & input.experimental",
                        fluidRow(
                          column(6,
                                 popify(
