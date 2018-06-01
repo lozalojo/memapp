@@ -5325,7 +5325,6 @@ shinyServer(function(input, output, session) {
   })
   
   output$uitransformation = renderUI({
-    #if (as.logical(input$experimental)){
     transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Smoothing regression"=4, "Loess"=5)
     names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess"))
     fluidRow(
@@ -5622,7 +5621,6 @@ shinyServer(function(input, output, session) {
       popify(
         numericInput("levelaveragecurve", h6(trloc("Average curve/Other CI. level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), 95.0, step=0.5, min = 0.5, max = 99.5)
         , title = trloc("Average curve/Other CI. level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = 'focus', options = list(container = "body")),
-      #conditionalPanel(condition = "input.experimental",
       conditionalPanel(condition = "input.advanced",
                        popify(
                          selectInput("centering", h6(trloc("Centering seasons"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size=1, selectize = FALSE, selected = -1)
@@ -5643,7 +5641,7 @@ shinyServer(function(input, output, session) {
       ),
       hidden(
         popify(
-          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = FALSE)
+          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = TRUE)
           , title = trloc("Show experimental features"), content = trloc("Show experimental features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body")
         )
       )
