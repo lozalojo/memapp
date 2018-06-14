@@ -99,7 +99,7 @@ shinyUI(
                       ### BODY/MAIN SECTION           ###
                       ###   FIRST COLUMN DEFINITION   ###
                       ###################################
-                      column(9,
+                      column(9, offset = 0, style='padding:0px;',
                              #######################################
                              ### BODY/MAIN SECTION               ###
                              ###   FIRST COLUMN DEFINITION       ###
@@ -111,7 +111,7 @@ shinyUI(
                       ### BODY/MAIN SECTION           ###
                       ###   SECOND COLUMN DEFINITION  ###
                       ###################################
-                      column(3,
+                      column(3, offset = 0, style='padding:0px;',
                              uiOutput("uiTextoptions"),
                              uiOutput("uiGraphoptions"),
                              uiOutput("uiMEMoptions"),
