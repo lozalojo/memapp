@@ -13,7 +13,6 @@ Imports:
     shinyBS,
     shinyjs,
     RColorBrewer,
-    magrittr,
     tidyr,
     dplyr,
     openxlsx,
