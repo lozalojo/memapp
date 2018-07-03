@@ -460,14 +460,33 @@ shinyServer(function(input, output, session) {
       axis.x.range <- range(data.x)
       temp1 <- range(i.range.x.values$week.no)
       temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks/NCOL(i.data)), 1:temp1[2], T, F)
-      axis.x.ticks<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+      temp3 <- floor(mean(i.range.x.values$week.no))
+      # Ticks for the weeks
+      axis.x.ticks.1<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+      # Ticks for the seasons
+      axis.x.ticks.2<-data.x[data.orig$week %in% i.range.x.values$week.lab[temp3]]
+      # Labels for the week-ticks
       axis.x.labels1<-data.orig$week[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-      axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-      axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
-      axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
+      # Labels for the season-ticks
+      axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp3]]
+      # I join both type of ticks, maybe they are in the same position
+      axis.x.ticks <- sort(unique(c(axis.x.ticks.1,axis.x.ticks.2)))
+      # Part of the final label of the week
+      temp4 <- rep("", length(axis.x.ticks))
+      temp4[axis.x.ticks %in% axis.x.ticks.1]<-axis.x.labels1
+      # Part of the final label of the year
+      temp5 <- rep("", length(axis.x.ticks))
+      temp5[axis.x.ticks %in% axis.x.ticks.2]<-axis.x.labels2
+      # And paste both parts
+      axis.x.labels <- paste(temp4, temp5, sep="\n")
+      # axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
+      # axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
+      # axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
       if (i.replace.x.cr) axis.x.labels<-gsub("/","\n",axis.x.labels)
-      rm("temp1","temp2")
-      
+      # This is not to print a tickmark when there is only a season label, tickmarks are only for weeks
+      axis.x.tickmarks <- rep(NA, length(axis.x.ticks))
+      axis.x.tickmarks[axis.x.ticks %in% axis.x.ticks.1]<-"black"
+      rm("temp1", "temp2", "temp3", "temp4", "temp5")
       # Range y fix
       if (length(i.range.y)!=2){
         if (i.yaxis.starts.at.0){
@@ -481,7 +500,6 @@ shinyServer(function(input, output, session) {
       axis.y.range <- axis.y.otick$range+diff(range(axis.y.otick$range))*0.025*c(-1, 1)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
-      
       gplot<-ggplot(dgrafgg.s) +
         geom_line(aes(x=week,y=value,group=variable, color=variable, linetype=variable),size=0.5) +
         geom_point(aes(x=week,y=value,group=variable, color=variable, size=variable, fill=variable, shape=variable), color="#ffffff", stroke = 0.1) +
@@ -494,7 +512,7 @@ shinyServer(function(input, output, session) {
         scale_y_continuous(breaks=axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
         theme_light() +
-        theme(plot.title = element_text(hjust = 0.5))
+        theme(plot.title = element_text(hjust = 0.5), axis.ticks.x = element_line(color = axis.x.tickmarks))
       p<-list(plot=gplot,labels=labels.s,haspoints=haspoints.s,haslines=haslines.s,
               weeklabels=paste(data.orig$week,paste0("<br />",trloc("Season"),": "),data.orig$season,sep=""), gdata=dgrafgg.s)
     }
