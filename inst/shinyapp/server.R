@@ -1446,7 +1446,7 @@ shinyServer(function(input, output, session) {
         zerocols <- apply(datasetread, 2, function(x) sum(x,na.rm=T)==0)
         if (any(zerocols)){
           datalog <- paste0(datalog, "Note: removing zero data columns from the original file after rearrangement: ",paste0(names(datasetread)[zerocols], collapse="; "),"\n")
-          cat("read_data> Note: removing zero data columns from the original file after rearrangement:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
+          cat("reactive/read_data> Note: removing zero data columns from the original file after rearrangement:",paste0(names(datasetread)[zerocols], collapse=";"),"\n")
           datasetread<-datasetread[!zerocols]        
         }
         # Transformation
@@ -1604,6 +1604,24 @@ shinyServer(function(input, output, session) {
     }
     cat("observeEvent/language> current locale:",Sys.getlocale(),"\n")
     cat("observeEvent/language> end\n")
+  })
+  
+  observeEvent(input$dataset, {
+    lang<-input$language
+    cat("observeEvent/dataset> begin\n")
+    cat("observeEvent/dataset> setting to default values\n")
+    updateCheckboxInput(session, "processdata", value = TRUE)
+    updateSelectInput(session, "transformation", selected = 1)
+    if (input$transformation == 5 & input$advanced) updatesliderInput(session, "loesspan", value = 0.15)
+    updateSelectInput(session, "waves", selected = 1)
+    if ((input$waves == 2 | input$waves == 3) & input$advanced) updateSliderInput(session, "twowavesproportion", value = 0)
+    if (input$waves == 4 & input$experimental & input$advanced){
+      updateNumericInput(session, "numberwaves", value = 0)
+      updateNumericInput(session, "wavesseparation", value = 1)
+      updateNumericInput(session, "wavesparam1", value = 3)
+      updateNumericInput(session, "wavesparam2", value = 2)
+    }
+    cat("observeEvent/dataset> end\n")
   })
   
   observeEvent(read_data(), {
@@ -5380,24 +5398,24 @@ shinyServer(function(input, output, session) {
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), 0, min = 0, max = NA, step=1)
+                                  numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), value = 0, min = 0, max = NA, step=1)
                                   , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), 1, min = 0, max = NA, step=1)
+                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), value = 1, min = 0, max = NA, step=1)
                                   , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        ),
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), 3, min = 0.5, max = 10, step=0.1)
+                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), value = 3, min = 0.5, max = 10, step=0.1)
                                   , title = trloc("Param 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), 2, min = 0.5, max = 10, step=0.1)
+                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), value = 2, min = 0.5, max = 10, step=0.1)
                                   , title = trloc("Param 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        )
