@@ -131,7 +131,7 @@ www.memwebapp.com
 
 ## Technical manual
 
-At the following google drive, updated to v2.9
+At the following google drive:
 
 ```
 https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing

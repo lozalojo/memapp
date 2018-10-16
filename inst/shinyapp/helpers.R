@@ -96,70 +96,70 @@ read.data<-function(i.file,
     }
     filenameextension<-paste(filename, fileextension, sep=".")
     if (fileextension=="xlsx"){
-      temp2<-read.data.xlsx(i.file, filenameextension, i.dataset)
+      temp2<-read.data.xlsx(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension=="xls"){
-      temp2<-read.data.xls(i.file, filenameextension, i.dataset)
+      temp2<-read.data.xls(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("mdb","accdb")){
-      temp2<-read.data.access(i.file, filenameextension, i.dataset)
+      temp2<-read.data.access(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("csv","dat","prn","txt")){
-      temp2<-read.data.text(i.file, filenameextension, i.dataset)
+      temp2<-read.data.text(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("rds")){
-      temp2<-read.data.rds(i.file, filenameextension, i.dataset)
+      temp2<-read.data.rds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("rda","rdata")){
-      temp2<-read.data.rdata(i.file, filenameextension, i.dataset)
+      temp2<-read.data.rdata(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("dbf")){
-      temp2<-read.data.dbf(i.file, filenameextension, i.dataset)
+      temp2<-read.data.dbf(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("sav")){
-      temp2<-read.data.sav(i.file, filenameextension, i.dataset)
+      temp2<-read.data.sav(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("dta")){
-      temp2<-read.data.dta(i.file, filenameextension, i.dataset)
+      temp2<-read.data.dta(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
       dataweeks=temp2$dataweeks
       rm("temp2")
     }else if (fileextension %in% c("sas7bdat")){
-      temp2<-read.data.sas(i.file, filenameextension, i.dataset)
+      temp2<-read.data.sas(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets=temp2$datasets
       datasetread=temp2$datasetread
@@ -243,7 +243,10 @@ read.data<-function(i.file,
   readdata
 }
 
-read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.xlsx<-function(i.file, 
+                         i.file.name=NA, 
+                         i.dataset=NA, 
+                         i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -289,7 +292,7 @@ read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{      
         # First column is the week name
         if (all(datasetread[,1] %in% 1:53)){
@@ -307,7 +310,10 @@ read.data.xlsx<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.xls<-function(i.file, 
+                        i.file.name=NA, 
+                        i.dataset=NA, 
+                        i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -355,7 +361,7 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{      
         # First column is the week name      
         if (all(datasetread[,1] %in% 1:53)){
@@ -373,7 +379,10 @@ read.data.xls<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.access<-function(i.file, 
+                           i.file.name=NA, 
+                           i.dataset=NA, 
+                           i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -421,7 +430,7 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
           datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
           cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
           names(datasetread)<-tolower(names(datasetread))
-          datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+          datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
         }else{        
           if (all(datasetread[,1] %in% 1:53)){
             rownames(datasetread)<-as.character(datasetread[,1])
@@ -493,7 +502,7 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
             datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
             cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
             names(datasetread)<-tolower(names(datasetread))
-            datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+            datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
           }else{          
             if (all(datasetread[,1] %in% 1:53)){
               rownames(datasetread)<-as.character(datasetread[,1])
@@ -518,7 +527,10 @@ read.data.access<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.text<-function(i.file, 
+                         i.file.name=NA, 
+                         i.dataset=NA, 
+                         i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -582,7 +594,7 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{      
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])
@@ -599,7 +611,10 @@ read.data.text<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.rds<-function(i.file, 
+                        i.file.name=NA, 
+                        i.dataset=NA, 
+                        i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -645,7 +660,7 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])
@@ -664,7 +679,10 @@ read.data.rds<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.rdata<-function(i.file, 
+                          i.file.name=NA, 
+                          i.dataset=NA, 
+                          i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -710,7 +728,7 @@ read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])
@@ -729,7 +747,10 @@ read.data.rdata<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.dbf<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.dbf<-function(i.file, 
+                        i.file.name=NA, 
+                        i.dataset=NA, 
+                        i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -775,7 +796,7 @@ read.data.dbf<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])
@@ -792,7 +813,10 @@ read.data.dbf<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.sav<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.sav<-function(i.file, 
+                        i.file.name=NA, 
+                        i.dataset=NA, 
+                        i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -838,7 +862,7 @@ read.data.sav<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])
@@ -855,7 +879,10 @@ read.data.sav<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.dta<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.dta<-function(i.file, 
+                        i.file.name=NA, 
+                        i.dataset=NA, 
+                        i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -901,7 +928,7 @@ read.data.dta<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])
@@ -918,7 +945,10 @@ read.data.dta<-function(i.file, i.file.name=NA, i.dataset=NA){
   list(datasets=datasets, datasetread=datasetread, dataweeks=dataweeks, datalog=datalog)
 }
 
-read.data.sas<-function(i.file, i.file.name=NA, i.dataset=NA){
+read.data.sas<-function(i.file, 
+                        i.file.name=NA, 
+                        i.dataset=NA, 
+                        i.range.x=NA){
   datalog <- character()
   if (!file.exists(i.file)){
     datasets=NULL
@@ -965,7 +995,7 @@ read.data.sas<-function(i.file, i.file.name=NA, i.dataset=NA){
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")        
         names(datasetread)<-tolower(names(datasetread))
-        datasetread<-transformdata(datasetread, i.range.x=c(1,52), i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread<-transformdata(datasetread, i.range.x=i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       }else{
         if (all(datasetread[,1] %in% 1:53)){
           rownames(datasetread)<-as.character(datasetread[,1])

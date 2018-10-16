@@ -1413,14 +1413,14 @@ shinyServer(function(input, output, session) {
       datalog <- paste0(datalog, "No file\n")
       cat("reactive/read_data> Warning: No file\n")
     }else if(is.null(indataset)){
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=as.logical(input$processdata))
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
       datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     }else if (indataset==""){
-      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.process.data=as.logical(input$processdata))
+      temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       rm("temp1")
@@ -1430,7 +1430,7 @@ shinyServer(function(input, output, session) {
       datalog <- paste0(datalog, "Note: reading original data\n")
       cat("reactive/read_data> Note: reading original data\n")
       temp1<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
-      temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.process.data=as.logical(input$processdata))
+      temp2<-read.data(i.file=infile$datapath, i.file.name=inname, i.dataset = indataset, i.range.x=i.range.x, i.process.data=as.logical(input$processdata))
       datasets=temp1$datasets
       datasetread=temp1$datasetread
       datalog <- paste0(datalog, temp1$datalog)
