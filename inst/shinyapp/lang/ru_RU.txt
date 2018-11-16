@@ -300,3 +300,7 @@ Two waves/season (observed);Две волны (отмеченные)/сезон
 Two waves/season (expected);Две волны (ожидаемые)/сезон
 Multiple waves/series;Несколько волны/серии
 default;по умолчанию
+Waves detection;Обнаружение волн
+Minimum proportion;Минимальная пропорция
+Param. 1;парам. 1
+Param. 2;парам. 2

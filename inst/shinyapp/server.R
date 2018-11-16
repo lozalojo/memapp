@@ -1614,7 +1614,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "transformation", selected = 1)
     if (input$transformation == 5 & input$advanced) updatesliderInput(session, "loesspan", value = 0.15)
     updateSelectInput(session, "waves", selected = 1)
-    if ((input$waves == 2 | input$waves == 3) & input$advanced) updateSliderInput(session, "twowavesproportion", value = 0)
+    if ((input$waves == 2 | input$waves == 3) & input$advanced) updateSliderInput(session, "twowavesproportion", value = 15)
     if (input$waves == 4 & input$experimental & input$advanced){
       updateNumericInput(session, "numberwaves", value = 0)
       updateNumericInput(session, "wavesseparation", value = 1)
@@ -5391,7 +5391,7 @@ shinyServer(function(input, output, session) {
         , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
       conditionalPanel(condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
                        popify(
-                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 0, step=5), 
+                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 15, step=5), 
                          title = trloc("Minimum proportion"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = 'focus', options = list(container = "body"))
       ),
       conditionalPanel(condition = "input.waves == 4 & input.experimental & input.advanced",
@@ -5410,13 +5410,13 @@ shinyServer(function(input, output, session) {
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 1")), value = 3, min = 0.5, max = 10, step=0.1)
-                                  , title = trloc("Param 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 1")), value = 3, min = 0.5, max = 10, step=0.1)
+                                  , title = trloc("Param. 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param 2")), value = 2, min = 0.5, max = 10, step=0.1)
-                                  , title = trloc("Param 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 2")), value = 2, min = 0.5, max = 10, step=0.1)
+                                  , title = trloc("Param. 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        )
       )
@@ -5648,7 +5648,7 @@ shinyServer(function(input, output, session) {
         )
       ),
       popify(
-        sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Parameter range")), min = 0.1, max = 10, value = c(2, 4), step=0.1)
+        sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Parameter range")), min = 0.1, max = 10, value = c(1, 5), step=0.1)
         , title = trloc("Parameter range"), content = trloc("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = 'focus', options = list(container = "body")
       ),
       h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Other")),

@@ -300,3 +300,7 @@ Two waves/season (observed);Dos ondas/temporada (observados)
 Two waves/season (expected);Dos ondas/temporada (esperados)
 Multiple waves/series;Multiples ondas/series
 default;por defecto
+Waves detection;Detección de ondas
+Minimum proportion;Proporción mínima
+Param. 1;Parám. 1
+Param. 2;Parám. 2
