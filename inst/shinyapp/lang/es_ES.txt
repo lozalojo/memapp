@@ -301,6 +301,10 @@ Two waves/season (expected);Dos ondas/temporada (esperados)
 Multiple waves/series;Multiples ondas/series
 default;por defecto
 Waves detection;Detección de ondas
+Select the number of waves in the original data or the algorith to separate diferent waves;Select the number of waves in the original data or the algorith to separate diferent waves
 Minimum proportion;Proporción mínima
+Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same;Proporción minima que debe tener una de las ondas para que se considere independiente de la otra
 Param. 1;Parám. 1
+Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic;Parámetro 1 del algoritmo de ondas múltiples: cuando se decide que una tasa no pertenece a la onda que se está detectando en cada iteración
 Param. 2;Parám. 2
+Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Parámetro 2 del algoritmo de ondas múltiples: cuando una agrupación de ondas no tiene el suficiente volumen para poderse considerar una onda independiente

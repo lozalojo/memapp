@@ -301,6 +301,10 @@ Two waves/season (expected);Deux vagues/saison (attendues)
 Multiple waves/series;Plusieurs vagues/séries
 default;par défaut
 Waves detection;Détection des vagues
+Select the number of waves in the original data or the algorith to separate diferent waves;Select the number of waves in the original data or the algorith to separate diferent waves
 Minimum proportion;Proportion minimale
+Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same;Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same
 Param. 1;Param. 1
+Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic;Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic
 Param. 2;Param. 2
+Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic

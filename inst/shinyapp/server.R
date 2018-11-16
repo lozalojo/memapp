@@ -5388,7 +5388,7 @@ shinyServer(function(input, output, session) {
     fluidRow(
       popify(
         selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves detection")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
-        , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
+        , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data or the algorith to separate diferent waves"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
       conditionalPanel(condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
                        popify(
                          sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 15, step=5), 
@@ -5411,12 +5411,12 @@ shinyServer(function(input, output, session) {
                          column(6,
                                 popify(
                                   numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 1")), value = 3, min = 0.5, max = 10, step=0.1)
-                                  , title = trloc("Param. 1"), content = trloc("Multiple waves algorith parameter 1"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                                  , title = trloc("Param. 1"), content = trloc("Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
                                   numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 2")), value = 2, min = 0.5, max = 10, step=0.1)
-                                  , title = trloc("Param. 2"), content = trloc("Multiple waves algorith parameter 2"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                                  , title = trloc("Param. 2"), content = trloc("Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        )
       )
