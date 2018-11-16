@@ -39,4 +39,4 @@ License: GPL (>= 2)
 URL: https://github.com/lozalojo/memapp
 BugReports: https://github.com/lozalojo/memapp/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
