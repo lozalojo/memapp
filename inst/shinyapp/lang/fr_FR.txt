@@ -295,3 +295,8 @@ Transformation;Transformation
 Waves;Vagues
 Select the number of waves in the original data;Select the number of waves in the original data
 One wave;Un vague
+One wave/season;Un vague/saison
+Two waves/season (observed);Deux vagues/saison (observées)
+Two waves/season (expected);Deux vagues/saison (attendues)
+Multiple waves/series;Plusieurs vagues/séries
+default;par défaut

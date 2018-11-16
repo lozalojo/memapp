@@ -295,3 +295,8 @@ Transformation;Transformación
 Waves;Ondas
 Select the number of waves in the original data;Seleccione el número de ondas por temporada en los datos originales
 One wave;Una onda
+One wave/season;Una onda/temporada
+Two waves/season (observed);Dos ondas/temporada (observados)
+Two waves/season (expected);Dos ondas/temporada (esperados)
+Multiple waves/series;Multiples ondas/series
+default;por defecto

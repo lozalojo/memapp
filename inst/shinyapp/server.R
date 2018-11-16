@@ -5534,31 +5534,35 @@ shinyServer(function(input, output, session) {
   })
   
   output$uiGraphoptions = renderUI({
+    colObservedLines.list<-as.list(c("default",colors()))
+    names(colObservedLines.list)<-c(trloc("default"),colors())
+    colThresholds.list<-as.list(c("default",rownames(brewer.pal.info),colors()))
+    names(colThresholds.list)<-c(trloc("default"),rownames(brewer.pal.info),colors())
     shinydashboard::box(
       title=trloc("Graph options"), status = "primary", solidHeader = TRUE, width = 12,  background = "black", collapsible = TRUE, collapsed=TRUE,
       popify(
-        selectInput("colObservedLines", h6(trloc("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colObservedLines", h6(trloc("Observed (line)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Observed (line)"), content = trloc("Color of the line of observed data"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colObservedPoints", h6(trloc("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colObservedPoints", h6(trloc("Observed (points)"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Observed (points)"), content = trloc("Color of the points of observed data"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colEpidemicStart", h6(trloc("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colEpidemicStart", h6(trloc("Epidemic start"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Epidemic start"), content = trloc("Color of the point of the epidemic start marker"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colEpidemicStop", h6(trloc("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colEpidemicStop", h6(trloc("Epidemic end"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Epidemic end"), content = trloc("Color of the point of the epidemic end marker"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colThresholds", h6(trloc("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colThresholds", h6(trloc("Thresholds palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Thresholds palette"), content = trloc("Palette used to generate color for epidemic and intensity thresholds"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colLevels", h6(trloc("Levels palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colLevels", h6(trloc("Levels palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Levels palette"), content = trloc("Palette used to generate color for intensity levels"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colSeasons", h6(trloc("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colSeasons", h6(trloc("Seasons palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Seasons palette"), content = trloc("Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
-        selectInput("colEpidemic", h6(trloc("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = c("default",rownames(brewer.pal.info),colors()), size=1, selectize = FALSE, selected = "default")
+        selectInput("colEpidemic", h6(trloc("Timing palette"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size=1, selectize = FALSE, selected = "default")
         , title = trloc("Timing palette"), content = trloc("Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs"), placement = "left", trigger = 'focus', options = list(container = "body")),
       popify(
         checkboxInput("yaxis0", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("y-axis starts at 0")), value = TRUE)

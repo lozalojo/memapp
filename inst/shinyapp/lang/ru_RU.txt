@@ -1,12 +1,302 @@
 Original;Translated
-Load file;Загрузить файл
+"<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve";"<b>Оригинал</b>: использует процесс, указанный в оригинальной статье.<br><b>Фиксированный критерий</b>: использует угол наклона кривой MAP для поиска оптимального значения, представляющего собой точку, в которой угол наклона кривой ниже заранее определенного значения.<br><b>Угол наклона кривой </b>: рассчитывает угол наклона кривой MAP, однако оптимальное значение — это такое значение, которое соответствует глобальному среднему углу наклона.<br><b>Второе производное</b>: рассчитывает второе производное, показатель равен нулю для поиска точки перегиба в оригинальной кривой."
+1/season;1/сезон
+10/season;10/сезон
+2/season;2/сезон
+3/season;3/сезон
+30 in total;30 всего
+4/season;4/сезон
+5/season;5/сезон
+6/season;6/сезон
+7/season;7/сезон
+8/season;8/сезон
+9/season;9/сезон
+Aditive;Наполнитель
+All;Все
+Animated;Анимировано
+Arithmetic mean and mean confidence interval;Арифметическое среднее и средний доверительный интервал
+Arithmetic mean and point confidence interval;Арифметическое среднее и точка доверительного интервала
+Automatic;Автоматически
+Average;Среднее
+Average curve;Средняя кривая
+Average curve CI.;"Средняя кривая, ДИ"
+Average curve/Other CI. level;Средняя кривая/другой уровень ДИ
+Average epidemic length;Средняя продолжительность эпидемии
+Average epidemic start week;Средняя неделя начала эпидемии
+Baseline;Исходный момент
+Baseline level;Исходный уровень
+Calculation in progress. This may take a while...;Расчет продолжается. Это может занять некоторое время...
+Change the language of the application;Изменение языка приложения
+Change the main title in most graphs;Изменение основного названия в большинстве графиков
+Change the x-axis label in most graphs;Изменение маркировки оси Х в большинстве графиков
+Change the y-axis label in most graphs;Изменение маркировки оси Y в большинстве графиков
+Check & describe;Проверка и описание
+"Check data series, timing and describe the data";"Проверка серий данных, сроков и описания данных"
+Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs;"Отметьте эту ячейку, если Вы ходите включить в графики эпидемические пороги.<br>Это глобальная опция, которая будет работать на большинстве графиков"
+Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs;"Отметьте эту ячейку, если Вы ходите включить в графики пороговые значения интенсивности.<br>Это глобальная опция, которая будет работать на большинстве графиков"
+Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs;"Отметьте эту ячейку, если Вы ходите включить в графики постэпидемические пороги.<br>Это глобальная опция, которая будет работать на большинстве графиков"
+Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds;"Выберите, если хотите использовать односторонние или двусторонние доверительные интервалы для пороговых значений"
+Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold;"Выберите неделю для ускорения начала эпидемического периода.<br>Эпидемия начнется в выбранную неделю, а не в первую неделю превышения эпидемического порога"
+Clicks;Нажатия
+Color of the line of observed data;Цвет линии для отмеченных данных
+Color of the point of the epidemic end marker;Цвет точки маркера окончания эпидемии
+Color of the point of the epidemic start marker;Цвет точки маркера начала эпидемии
+Color of the points of observed data;Цвет точек отмеченных данных
+Cross;Пересечение
+Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only;"Пересечение: исключение одного сезона, а модель рассчитывают с использованием оставшихся сезонов.<br>Последовательно: исключение сезона, а модель рассчитывают с использованием только лишь предыдущих сезонов"
+Current parameter;Текущий параметр
+Data;Данные
 Dataset;Набор данных
-Model;модель
-Visualize;Визуализируйте
+Description;Описание
+Detailed;Уточнено
+Duration;Продолжительность
+Duration (lower limit);Продолжительность (нижняя граница)
+Duration (upper limit);Продолжительность (верхняя граница)
+End;Окончание
+Epidemic;Эпидемический 
+Epidemic %;Эпидемический %
+Epidemic (missing);Эпидемический (данные отсутствуют)
+Epidemic end;Окончание эпидемии
+Epidemic perc.;Эпидемический процент
+Epidemic perc. (lower limit);Эпидемический процент (нижняя граница)
+Epidemic perc. (upper limit);Эпидемический процент (верхняя граница)
+Epidemic percentage;Эпидемический процент
+Epidemic start;Начало эпидемии
+Epidemic thr.;Пороговое значение эпидемии
+Epidemic threshold;Эпидемический порог
+Estimators;Вычисляемые показатели
+Evolution;Оценка
+Exclude;Исключить
+File;Файл
+Fill missings;Пропуски заполнения
+First season to include in the model selection;Первый сезон для включения в выбор модели
+First Week;Первая неделя
+First week of the datasets surveillance period;Первая неделя периода наблюдения за наборами данных
+Fixed criterium method;Метод фиксированного критерия
+Force epidemic start;Ускоренное начало эпидемии
+From;От
+Geometric mean and mean confidence interval;Геометрическое среднее и среднее значение доверительного интервала
+Geometric mean and point confidence interval;Геометрическое среднее и точечный доверительный интервал
+Global goodness indicators;Глобальные индикаторы согласованности
+Global goodness intensity;Глобальная интенсивность согласованности
+Global goodness summary;Глобальное резюме согласованности
+Goodness;Согласованность
+Goodness & optimize;Согласованность и оптимизация
+Graph options;Опции графика
+Graphs;Графики
+High;Высокий
+High int. thr.;Высокий внутренний порог
+High level;Высокий уровень
+High lvl;Высокий уровень
+High thr.;Высокое пороговое значение
+High threshold;Высокое пороговое значение
+"If the format is able to store different datasets, select the one you want to open";"Если формат способен хранить различные наборы данных, следует выбрать один из них, который Вы хотите открыть"
+Indicator;Индикатор
+Indicators;Индикаторы
+Intensity;Интенсивность
+Intensity thresholds/levels;Пороги/уровни интенсивности
+Language;Язык
+Last season to include in the model selection;Последний сезон для включения при выборе модели
+Last Week;Последняя неделя
+Last week of the datasets surveillance period;Последняя неделя периода наблюдения за наборами данных
+Legend;Легенда
+level;уровень
+Level;Уровень
+Level of the confidence interval used to calculate the average curve and other intervals;"Уровень доверительного интервала, используемый для расчета средней кривой и других интервалов"
+Level of the confidence interval used to calculate the high threshold;"Уровень доверительного интервала, используемый для расчета высокого порога"
+Level of the confidence interval used to calculate the medium threshold;"Уровень доверительного интервала, используемый для расчета среднего порога"
+Level of the confidence interval used to calculate the very high threshold;"Уровень доверительного интервала, используемый для расчета очень высокого порога"
+Levels palette;Палитра уровней
+Load file;Загрузить файл
+Loess;"Loess (locally estimated scatterplot smoothing, оцениваемое на местном уровне сглаживание диаграммы рассеивания)"
+Low;Низкий
+Low level;Низкий уровень
+Lower interval;Нижний интервал
+Lower limit;Нижнее предельное значение
+Main title;Главное название
+Manual;Руководство
+Matthews Correlation Coefficient;Коэффициент корреляции Мэтьюса
+Matthews correlation coefficient;Коэффициент корреляции Мэтьюса
+"Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons";"Максимальное количество сезонов, подлежащее использованию в модели.<br>Обратите внимание, что данный фактор будет иметь приоритет по сравнению с остальными опциями, поскольку он ограничит данные последним числом сезонов в результате уже сделанного выбора опциями От/До/ Исключить.<br>Для гриппа не рекомендовано использовать более 10 сезонов"
+Maximum seasons;Максимальное количество сезонов
+Mean end;Средний момент окончания
+Mean start;Средний момент начала
+Median and bootstrap confidence interval;Медиана и доверительный интервал «бутстреп»
+Median and Nyblom confidence interval;Медиана и доверительный интервал Nyblom
+Medium;Среднее значение
+Medium int. thr.;Средний внутренний порог
+Medium level;Средний уровень
+Medium lvl;Средний уровень
+Medium thr.;Средний порог
+Medium threshold;Средний порог
+MEM needs at least two seasons;Для MEM необходимо по крайней мере два сезона
+MEM options;Опции MEM
+"memapp is able to read text, excel, access and R";"Приложение memapp (веб-приложение метода движущейся эпидемии, The Moving Epidemic Method Web Application) может прочитать файл в формате text, excel, access и R"
+"Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.";"Метод для расчета других доверительных интервалов: продолжительности, процента эпидемии, начала эпидемии и т.д."
+Method for calculating the average curve confidence intervals;Метод для расчета средних значений доверительных интервалов кривой
+Method for calculating the epidemic threshold;Метод для расчета эпидемического порога
+Method for calculating the intensity threshold;Метод для расчета порога интенсивности
+Method for timing;Метод для сроков
+Method to choose the optimum parameter;Метод для выбора оптимального параметра
+missing;Пропущено
+Mixed;Смешанная
+Model;Модель
+Model data;Данные модели
+Model goodness indicators;Индикаторы согласованности модели
+Model goodness intensity;Интенсивность согласованности модели
+Model goodness summary;Резюме согласованности модели
+Moving epidemics;Движущаяся эпидемия
+Multiplicative;Мультипликативный
+Negative likehood;Отрицательная вероятность
+Negative predictive value;Отрицательное прогностическое значение
+next;следующий
+No data seasons;Данные о сезонах отсутствуют
+No transformation;Нет преобразования
+Number of columns must be greater than 2;Число столбцов должно быть больше 2
+"Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used";"Количество использованных значений в каждом сезоне для расчета пороговых значений. Если значение равно -1, то используется в общей сложности 30 точек (30/количество сезонов). Если значение равно 0, то используются все доступные точки"
+Observed (line);Отмечено (линия)
+Observed (points);Отмечено (точки)
+Odd;Нечетное значение
+Optimization;Оптимизация
+Optimization method;Метод оптимизации
+Optimize;Оптимизировать
+Optimum parameter;Оптимальный параметр
+Original method;Оригинальный метод
+Other;Другие
+Other CI.;Другие ДИ
+Palette used to generate color for epidemic and intensity thresholds;"Палитра, использованная при создании цвета для порога эпидемии и порога интенсивности"
+Palette used to generate color for intensity levels;"Палитра, использованная при создании цвета для уровней интенсивности"
+Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines;"Палитра, использованная для создания цветов линий серий графиков и прочих графиков с множественными линиями"
+"Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs";"Палитра, использованная для создания цветов точек предэпидемических, эпидемических и постэпидемических маркеров во временных графиках"
+Parameter;Параметр
+Parameter range;Диапазон параметра
+Peak;Пик
+Peak week;Неделя пика
+Percent agreement;Процент согласованности
+Point;Точка
+Positive likehood;Положительная вероятность
+Positive predictive value;Положительное прогностическое значение
+Post thr.;После порога
+Post-epidemic;Постэпидемический
+Post-epidemic (missing);Постэпидемический (пропущенные данные)
+Post-epidemic thr.;Постэпидемический порог
+Post-epidemic threshold;Постэпидемический порог
+Pre-epidemic;Предэпидемический
+Pre-epidemic (missing);Предэпидемический (пропущенные данные)
+Pre-epidemic thr.;Предэпидемический порог
+Pre-epidemic threshold;Предэпидемический порог
+Procedures;Процедуры
+Range of possible of values of the slope parameter used by goodness and optimize functions;" Диапазон возможных показателей параметра угла наклона, использованного в функциях согласованности и оптимизации"
+Results;Результаты
+Rtools not found;R-инструменты не обнаружены
+Scheme;Схема
+Season;Сезон
+Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;"Сезон, который Вы хотите использовать для наблюдения с использованием пороговых значений MEM .<br>Этот сезон может быть неполным.<br> При выборе модели рекомендуется не использовать сезон наблюдения"
+Seasons;Сезоны
+Seasons in the model;Сезоны в модели
+Seasons palette;Палитра сезонов
+Second derivative method;Второй производный метод
+Select any number of seasons to be excluded from the model;"Выбрать любое количество сезонов, подлежащих исключению из модели"
+"Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard";"Выбор любого количества сезонов для отображения графиков серий, сезонов и времени, а также для применения пороговых значений из текущей модели.<br>Для удаления сезона нажмите на него, после чего нажмите «удалить» на своей клавиатуре"
+Select the transformation to apply to the original data;Выберите преобразование для применения к оригинальным данным
+Sensitivity;Чувствительность
+Sequential;Последовательный
+Series;Серии
+Show advanced features;Показать расширенные возможности
+Show advanced features of memapp;Показать расширенные возможности приложения memapp
+Slope method;Метод угла наклона
+Slope parameter;Параметр угла наклона
+Slope parameter used in fixed criterium method;"Параметр угла наклона, использованный в методе фиксированного критерия"
+Specificity;Специфичность
+Stability;Стабильность
+Start;Начало
+Start & end;Начало и завершение
+Start (lower limit);Начало (нижняя граница)
+Start (upper limit);Начало (верхняя граница)
+Submit issues;Утвердить вопросы
+Summary;Резюме
+"Summary, graphs, goodness and optimization of the MEM model";"Резюме, графики, согласованность и оптимизация модели MEM"
+Support;Поддержка
+Surveillance;Наблюдение
+Surveillance tools;Инструменты наблюдения
+Tails;«Хвосты» 
+Technical manual;Техническое руководство
+Text options;Опции текста
+The Moving Epidemic Method Web Application;Интернет-приложение метода движущейся эпидемии
 Thresholds;Пороги
-Text options;Параметры текста
-Graph options;Параметры графика
-MEM options;Параметры MEM
-Support;поддержка
-Language;язык
-Season;сезон
+Thresholds palette;Пороговая палитра
+Timing;Сроки
+Timing palette;Палитра сроков
+To;Кому
+Total seasons;Все сезоны
+Transform;Преобразовать
+Two waves (expected);Две волны (ожидаемые)
+Two waves (observed);Две волны (отмеченные)
+Upper interval;Верхний интервал
+Upper limit;Верхняя граница
+Validation;Валидация
+Value;Значение
+Values per season;Показатели за сезон
+Very high;Очень высокий
+Very high int. thr.;Очень высокий внутренний порог
+Very high level;Очень высокий уровень
+Very high lvl;Очень высокий уровень
+Very high thr.;Очень высокий порог
+Very high threshold;Очень высокий порог
+Visualize;Визуализация
+Visualize different sets of data with a MEM model;Визуализировать различные наборы данных с использованием модели MEM
+Week;Неделя
+Week na;"Неделя, НА (не применимо)"
+Week no;Номер недели
+Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data;"Неделя, для которой Вы хотели бы создать график наблюдения. Это может быть любая неделя от первой недели сезона наблюдения до последней недели с наличием данных"
+Weekly data;Еженедельные данные
+X-axis;Ось X
+Y-axis;Ось Y
+Youdens Index;Индекс Юдена
+Youden's Index;Индекс Юдена
+Zip not found;Архив не обнаружен
+y-axis starts at 0;Ось y начинается на уровне 0
+Force y-axis to start at 0 for all plots;Обеспечить начало оси y на уровне 0 для всех графиков
+Process data;Обработка данных
+"Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset";"Отметьте эту ячейку, если Вы хотите обработать входящие данные, перестройте недели в соответствии с выбором первой/последней недели и объедините сезоны, разделенные в наборе входящих данных."
+Log;Журнал
+MAP curve;Кривая MAP
+Slope curve;Угол наклона кривой
+Multi waves;Многочисленные волны
+Show experimental features;Показать экспериментальные характеристики
+Show experimental features of memapp;Показать экспериментальные характеристики приложения memapp
+No file or dataset selected;Файл или набор данных не обнаружены
+Centering seasons;Центрирование сезонов
+Method for centering seasons to calculate the average curve;Метод центрирования сезонов для расчета средней кривой
+Highest mean duration-weeks period;Наибольшая средняя продолжительность периода в неделях
+Highest 1-week period (peak);Наибольший 1-недельный период (пик)
+Highest 2-weeks period;Наибольший 2-недельный период
+Highest 3-weeks period;Наибольший 3-недельный период
+Highest 4-weeks period;Наибольший 4-недельный период
+Highest 5-weeks period;Наибольший 5-недельный период
+Highest 6-weeks period;Наибольший 6-недельный период
+Highest 7-weeks period;Наибольший 7-недельный период
+Highest 8-weeks period;Наибольший 8-недельный период
+Highest 9-weeks period;Наибольший 9-недельный период
+Highest 10-weeks period;Наибольший 10-недельный период
+Highest 11-weeks period;Наибольший 11-недельный период
+Highest 12-weeks period;Наибольший 12-недельный период
+Highest 13-weeks period;Наибольший 13-недельный период
+Highest 14-weeks period;Наибольший 14-недельный период
+Highest 15-weeks period;Наибольший 15-недельный период
+Start centering period;Начало периода центрирования
+End centering period;Окончание периода центрирования
+Intensity thresholds;Пороговые значения интенсивности
+No. waves;Количество волн
+"Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it";"Общее количество волн во всем наборе данных, установите их на уровне 0, если Вы хотите, чтобы программа выполняла их автоматическое обнаружение."
+Separation;Разделение
+Minimum separation between two seasons to be considered different;"Минимальное разделение между двумя сезонами, которое расценивается в качестве различия"
+Transformation;Преобразование
+Waves;Волны
+Select the number of waves in the original data;Выбор количества волн в оригинальных данных
+One wave;Одна волна
+One wave/season;Одна волна/сезон
+Two waves/season (observed);Две волны (отмеченные)/сезон
+Two waves/season (expected);Две волны (ожидаемые)/сезон
+Multiple waves/series;Несколько волны/серии
+default;по умолчанию
