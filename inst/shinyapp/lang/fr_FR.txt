@@ -308,3 +308,5 @@ Param. 1;Param. 1
 Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic;Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic
 Param. 2;Param. 2
 Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic
+Yes;Oui
+No;Non

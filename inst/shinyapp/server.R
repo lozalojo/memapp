@@ -2871,7 +2871,7 @@ shinyServer(function(input, output, session) {
       datashow<-formattable::formattable(temp1, apply(temp1, 2,
                                                       function(noxneeded) formattable::formatter("span",
                                                                                                  style = x ~ formattable::style(color = ifelse(x, "green", "red")),
-                                                                                                 x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No"))))
+                                                                                                 x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, trloc("Yes"), trloc("No")))))
       )
     }
     datashow
@@ -3143,7 +3143,7 @@ shinyServer(function(input, output, session) {
       datashow<-formattable::formattable(temp1, apply(temp1, 2,
                                                       function(noxneeded) formattable::formatter("span",
                                                                                                  style = x ~ formattable::style(color = ifelse(x, "green", "red")),
-                                                                                                 x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No"))))
+                                                                                                 x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, trloc("Yes"), trloc("No")))))
       )
     }
     datashow
@@ -3736,9 +3736,9 @@ shinyServer(function(input, output, session) {
         zfix<-NULL
       }else{
         p0<- p$plot +
-          geom_point(x=datamodel$mean.start, y=datfile.plot[datamodel$mean.start,"Average curve"],
+          geom_point(x=datamodel$mean.start, y=datfile.plot[datamodel$mean.start,trloc("Average curve")],
                      color=colors.palette$colEpidemicStart, size=2, fill=colors.palette$colEpidemicStart, shape=21) +
-          geom_point(x=datamodel$mean.start+datamodel$mean.length-1, y=datfile.plot[datamodel$mean.start+datamodel$mean.length-1,"Average curve"],
+          geom_point(x=datamodel$mean.start+datamodel$mean.length-1, y=datfile.plot[datamodel$mean.start+datamodel$mean.length-1,trloc("Average curve")],
                      color=colors.palette$colEpidemicStop, size=2, fill=colors.palette$colEpidemicStop, shape=21) +
           geom_vline(xintercept = datamodel$centered.start-0.5,
                      col=colors.palette$colEpidemicStart, linetype="longdash", size=0.5) +
