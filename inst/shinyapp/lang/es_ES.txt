@@ -310,3 +310,4 @@ Param. 2;Parám. 2
 Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Parámetro 2 del algoritmo de ondas múltiples: cuando una agrupación de ondas no tiene el suficiente volumen para poderse considerar una onda independiente
 Yes;Sí
 No;No
+Reset;Reiniciar

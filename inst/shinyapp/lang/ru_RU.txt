@@ -310,3 +310,4 @@ Param. 2;парам. 2
 Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Параметр 2 алгоритма нескольких волн: когда решено, что набор частот не формирует независимую эпидемическую волну
 Yes;Да
 No;Нет
+Reset;Сброс

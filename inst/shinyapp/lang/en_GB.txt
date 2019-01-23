@@ -310,3 +310,4 @@ Param. 2;Param. 2
 Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic
 Yes;Yes
 No;No
+Reset;Reset
