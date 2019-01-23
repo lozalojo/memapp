@@ -1474,15 +1474,21 @@ shinyServer(function(input, output, session) {
         }else if (as.numeric(input$waves)==4){
           datalog <- paste0(datalog, "Note: separating waves\n")
           cat("reactive/read_data> Note: separating waves\n")
-          #print(names(datasetread))
-          # cat(paste(as.numeric(input$numberwaves),as.numeric(input$wavesseparation),
-          #     as.numeric(input$wavesparam1), as.numeric(input$wavesparam2),sep="-"),"\n")
+          # If I use the i.method and i.param parameters when I produce the graph of multiple 
+          # waves, it modifies this the graph I use (that shows the epidemic period as shown
+          # by the algorithm) and then consequently read_data changes and reset the information
+          # shown at Model. So if I use multiple and change the i.param then it is reset the 
+          # Model selection, which I do not want it to happen.
+          # temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), 
+          #                                         i.min.separation=as.numeric(input$wavesseparation),
+          #                                         i.param.1=as.numeric(input$wavesparam1), 
+          #                                         i.param.2=as.numeric(input$wavesparam2),
+          #                                         i.method=as.numeric(input$method),
+          #                                         i.param=as.numeric(input$param))
           temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves), 
                                                   i.min.separation=as.numeric(input$wavesseparation),
-                                                  i.param.1=as.numeric(input$wavesparam1), i.param.2=as.numeric(input$wavesparam2),
-                                                  i.method=as.numeric(input$method),
-                                                  i.param=as.numeric(input$param))
-          #print(names(temp1))
+                                                  i.param.1=as.numeric(input$wavesparam1), 
+                                                  i.param.2=as.numeric(input$wavesparam2))
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse="\t"))), collapse="\n"))
           datasetread <- temp1$data.final
           plots <- temp1$plots
@@ -2365,40 +2371,11 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # output$tbdFile <- renderPrint({
-  #   infile <- input$file
-  #   indataset <- input$dataset
-  #   readdata <- read_data()
-  #   datfile <- readdata$datasetread
-  #   if(is.null(datfile)){
-  #     cat(trloc("No file or dataset selected"),"\n", sep="")
-  #     cat(trloc("Log"),":\n\t", sep="")
-  #     cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
-  #   }else{
-  #     cat(trloc("File"),":\n\t",infile$name,"\n", sep="")
-  #     cat(trloc("Dataset"),":\n\t",indataset,"\n", sep="")
-  #     cat(trloc("Log"),":\n\t", sep="")
-  #     cat(gsub("\n","\n\t",readdata$datalog, fixed=T), sep="")
-  #   }
-  # })
-  
   output$tbdFile <- renderUI({
     if (as.numeric(input$waves)==4){
       fluidPage(
         verbatimTextOutput("tbdFileTxt"),
         plotOutput("tbdFilePlot")
-        # fluidRow(
-        #   column(1,h4(trloc("Timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-        #   column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_plot"), height = 600))
-        # ),
-        # fluidRow(
-        #   column(1,h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-        #   column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_map"), height = 600))
-        # ),
-        # fluidRow(
-        #   column(1,h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-        #   column(11,plotlyOutput(paste0("tbdTiming_",as.character(s),"_slope"), height = 600))
-        # )
       )            
     }else{
       verbatimTextOutput("tbdFileTxt")
@@ -2428,7 +2405,7 @@ shinyServer(function(input, output, session) {
     if(is.null(plots)){
       NULL
     }else{
-      plots$p4[[2]]
+      plots$p4[[1]]
     }
   }, width = 800, height = 600)
   
