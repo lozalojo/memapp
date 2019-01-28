@@ -311,3 +311,9 @@ Multiple waves algorith parameter 2: when a set of rates is decided not to form 
 Yes;Yes
 No;No
 Reset;Reset
+Show the experimental features tickbox;Show the experimental features tickbox
+Loess span;Loess span
+Loess span parameter;Loess span parameter
+Smoothing parameter;Smoothing parameter
+Smoothing parameter of the smoothing regression;Smoothing parameter of the smoothing regression
+Optimum;Optimum

@@ -30,7 +30,7 @@ shinyServer(function(input, output, session) {
     colLevels="default",
     colSeasons="default",
     colEpidemic="default",
-    yaxis0=TRUE,
+    yaxis0 = TRUE,
     method = 2,
     param=list(value = 2.8, min = 0.5, max = 10, step=0.1),
     nvalues = -1,
@@ -46,7 +46,21 @@ shinyServer(function(input, output, session) {
     typecurve = 2,
     typeother = 3,
     levelaveragecurve=list(value = 95.0, min = 0.5, max = 99.5, step=0.5),
-    centering = -1
+    centering = -1,
+    advanced = FALSE,
+    showexperimental = TRUE,
+    experimental = FALSE,
+    processdata = TRUE,
+    transformation = 1,
+    loesspan = list(min = 0.05, max = 1, value = 0.50, step=0.05),
+    waves = 1,
+    twowavesproportion = list(min = 0, max = 100, value = 15, step=5),
+    numberwaves = list(value = 0, min = 0, max = NA, step=1),
+    wavesseparation = list(value = 1, min = 0, max = NA, step=1),
+    wavesparam1 = list(value = 3, min = 0.5, max = 10, step=0.1),
+    wavesparam2 = list(value = 2, min = 0.5, max = 10, step=0.1),
+    smregressionoptimum = TRUE,
+    smregressionsmoothing = list(min = 0.1, max = 5, value = 1, step=0.1)
   )
   
   #####################################
@@ -1481,14 +1495,19 @@ shinyServer(function(input, output, session) {
           datasetread<-datasetread[!zerocols]        
         }
         # Transformation
-        if (as.numeric(input$transformation) %in% c(2:4)){
+        if (as.numeric(input$transformation) %in% c(2:3)){
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
           cat("reactive/read_data> Note: applying selected transformation\n")
           datasetread <- transformseries(datasetread, i.transformation=as.numeric(input$transformation))
+        }else if (as.numeric(input$transformation)==4){
+          datalog <- paste0(datalog, "Note: applying selected transformation\n")
+          cat("reactive/read_data> Note: applying selected transformation\n")
+          if (input$smregressionoptimum) hsuav.value <- -1 else hsuav.value <- as.numeric(input$smregressionsmoothing)
+          datasetread <- transformseries(datasetread, i.transformation=4, hsuav=hsuav.value)
         }else if (as.numeric(input$transformation)==5){
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
           cat("reactive/read_data> Note: applying selected transformation\n")
-          datasetread <- transformseries(datasetread, i.transformation=7, i.span=as.numeric(input$loesspan))
+          datasetread <- transformseries(datasetread, i.transformation=7, span=as.numeric(input$loesspan))
         }else{
           datalog <- paste0(datalog, "Note: no transformation selected\n")
           cat("reactive/read_data> Note: no transformation selected\n")          
@@ -1644,20 +1663,53 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$dataset, {
-    lang<-input$language
+    lang <- input$language
     cat("observeEvent/dataset> begin\n")
     cat("observeEvent/dataset> setting to default values\n")
-    updateCheckboxInput(session, "processdata", value = TRUE)
-    updateSelectInput(session, "transformation", selected = 1)
-    if (input$transformation == 5 & input$advanced) updatesliderInput(session, "loesspan", value = 0.15)
-    updateSelectInput(session, "waves", selected = 1)
-    if ((input$waves == 2 | input$waves == 3) & input$advanced) updateSliderInput(session, "twowavesproportion", value = 15)
+    updateCheckboxInput(session, "processdata", value = default.values$processdata)
+    updateSelectInput(session, "transformation", selected = default.values$transformation)
+    if (input$transformation == 5 & input$advanced) updateSliderInput(session, "loesspan", value = default.values$loesspan$value, min = default.values$loesspan$min, max = default.values$loesspan$max, step = default.values$loesspan$step)
+    if (input$transformation == 4 & input$advanced) updateCheckboxInput(session, "smregressionoptimum", value = default.values$smregressionoptimum)
+    if (input$transformation == 4 & input$advanced) updateSliderInput(session, "smregressionsmoothing", value = default.values$smregressionsmoothing$value, min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, step = default.values$smregressionsmoothing$step)
+    updateSelectInput(session, "waves", selected = default.values$waves)
+    if ((input$waves == 2 | input$waves == 3) & input$advanced) updateSliderInput(session, "twowavesproportion", min = default.values$twowavesproportion$min, max = default.values$twowavesproportion$max, step = default.values$twowavesproportion$step, value = default.values$twowavesproportion$value)
     if (input$waves == 4 & input$experimental & input$advanced){
-      updateNumericInput(session, "numberwaves", value = 0)
-      updateNumericInput(session, "wavesseparation", value = 1)
-      updateNumericInput(session, "wavesparam1", value = 3)
-      updateNumericInput(session, "wavesparam2", value = 2)
+      updateNumericInput(session, "numberwaves", min = default.values$numberwaves$min, max = default.values$numberwaves$max, step = default.values$numberwaves$step, value = default.values$numberwaves$value)
+      updateNumericInput(session, "wavesseparation", min = default.values$wavesseparation$min, max = default.values$wavesseparation$max, step = default.values$wavesseparation$step, value = default.values$wavesseparation$value)
+      updateNumericInput(session, "wavesparam1", min = default.values$wavesparam1$min, max = default.values$wavesparam1$max, step = default.values$wavesparam1$step, value = default.values$wavesparam1$value)
+      updateNumericInput(session, "wavesparam2", min = default.values$wavesparam2$min, max = default.values$wavesparam2$max, step = default.values$wavesparam2$step, value = default.values$wavesparam2$value)
     }
+    # Text options
+    updateTextInput(session, "textMain", value = trloc(default.values$textMain))
+    updateTextInput(session, "textY", value = trloc(default.values$textY))
+    updateTextInput(session, "textX", value = trloc(default.values$textX))
+    # Graph options
+    updateSelectInput(session, "colObservedLines", selected=default.values$colObservedLines)
+    updateSelectInput(session, "colObservedPoints", selected=default.values$colObservedPoints)
+    updateSelectInput(session, "colEpidemicStart", selected=default.values$colEpidemicStart)
+    updateSelectInput(session, "colEpidemicStop", selected=default.values$colEpidemicStop)
+    updateSelectInput(session, "colThresholds", selected=default.values$colThresholds)
+    updateSelectInput(session, "colLevels", selected=default.values$colLevels)
+    updateSelectInput(session, "colSeasons", selected=default.values$colSeasons)
+    updateSelectInput(session, "colEpidemic", selected = default.values$colEpidemic)
+    updateCheckboxInput(session, "yaxis0", value = default.values$yaxis0)
+    # MEM options
+    updateSelectInput(session, "method", selected = default.values$method)
+    updateNumericInput(session, "param", value = default.values$param$value, min = default.values$param$min, max = default.values$param$max, step=default.values$param$step)
+    updateSelectInput(session, "nvalues", selected = default.values$nvalues)
+    updateNumericInput(session, "ntails", value = default.values$ntails$value, min = default.values$ntails$min, max = default.values$ntails$max, step=default.values$ntails$step)
+    updateSelectInput(session, "typethreshold", selected = default.values$typethreshold)
+    updateSelectInput(session, "typeintensity", selected = default.values$typeintensity)
+    updateNumericInput(session, "levelintensitym", value = default.values$levelintensitym$value, min = default.values$levelintensitym$min, max = default.values$levelintensitym$max, step=default.values$levelintensitym$step)
+    updateNumericInput(session, "levelintensityh",  value = default.values$levelintensityh$value, min = default.values$levelintensityh$min, max = default.values$levelintensityh$max, step=default.values$levelintensityh$step)
+    updateNumericInput(session, "levelintensityv",  value = default.values$levelintensityv$value, min = default.values$levelintensityv$min, max = default.values$levelintensityv$max, step=default.values$levelintensityv$step)
+    updateSelectInput(session, "validation", selected = default.values$validation)
+    updateSelectInput(session, "optimmethod", selected = default.values$optimmethod)
+    updateSliderInput(session, "paramrange", value = default.values$paramrange$value, min = default.values$paramrange$min, max = default.values$paramrange$max, step=default.values$paramrange$step)
+    updateSelectInput(session, "typecurve", selected = default.values$typecurve)
+    updateSelectInput(session, "typeother", selected = default.values$typeother)
+    updateNumericInput(session, "levelaveragecurve", value = default.values$levelaveragecurve$value, min = default.values$levelaveragecurve$min, max = default.values$levelaveragecurve$max, step=default.values$levelaveragecurve$step)
+    updateSelectInput(session, "centering", selected =  default.values$centering)
     cat("observeEvent/dataset> end\n")
   })
   
@@ -5419,12 +5471,26 @@ shinyServer(function(input, output, session) {
     names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess"))
     fluidRow(
       popify(
-        selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size=1, selectize = FALSE, choices = transformation.list, selected = 1)
-        , title = trloc("Transformation"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
+        selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size=1, selectize = FALSE, choices = transformation.list, selected = default.values$transformation)
+        , title = trloc("Transformation"), content = trloc("Select the transformation to apply to the original data"),                            placement = "right", trigger = 'focus', options = list(container = "body")
+      ),
       conditionalPanel(condition = "input.transformation == 5 & input.advanced",
                        popify(
-                         sliderInput("loesspan",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Loess span")), min = 0.05, max = 1, value = 0.15, step=0.05), 
-                         title = trloc("Loess span"), content = trloc("Loess span parameter"), placement = "right", trigger = 'focus', options = list(container = "body"))
+                         sliderInput("loesspan",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Loess span")), min = default.values$loesspan$min, max = default.values$loesspan$max, value = default.values$loesspan$value, step=default.values$loesspan$step), 
+                         title = trloc("Loess span"), content = trloc("Loess span parameter"), placement = "right", trigger = 'focus', options = list(container = "body")
+                       )
+      ),
+      conditionalPanel(condition = "input.transformation == 4 & input.advanced",
+                       popify(
+                         checkboxInput("smregressionoptimum", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Optimum")), value = default.values$smregressionoptimum)
+                         , title = trloc("Optimum"), content = trloc("Check this tickbox if you want SM to chose the optimum smoothing parameter"), placement = "right", trigger = 'focus', options = list(container = "body")
+                       )
+      ),
+      conditionalPanel(condition = "input.transformation == 4 & input.advanced & !input.smregressionoptimum",
+                       popify(
+                         sliderInput("smregressionsmoothing",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Smoothing parameter")), min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, value = default.values$smregressionsmoothing$value, step=default.values$smregressionsmoothing$step), 
+                         title = trloc("Smoothing parameter"), content = trloc("Smoothing parameter of the smoothing regression"), placement = "right", trigger = 'focus', options = list(container = "body")
+                       )
       )
     )
   })
@@ -5441,35 +5507,35 @@ shinyServer(function(input, output, session) {
     # names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
     fluidRow(
       popify(
-        selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves detection")), size=1, selectize = FALSE, choices = waves.list, selected = 1)
+        selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Waves detection")), size=1, selectize = FALSE, choices = waves.list, selected = default.values$waves)
         , title = trloc("Waves detection"), content = trloc("Select the number of waves in the original data or the algorith to separate diferent waves"),                            placement = "right", trigger = 'focus', options = list(container = "body")),
       conditionalPanel(condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
                        popify(
-                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = 0, max = 100, value = 15, step=5), 
+                         sliderInput("twowavesproportion",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Minimum proportion")), min = default.values$twowavesproportion$min, max = default.values$twowavesproportion$max, value = default.values$twowavesproportion$value, step=default.values$twowavesproportion$step), 
                          title = trloc("Minimum proportion"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = 'focus', options = list(container = "body"))
       ),
       conditionalPanel(condition = "input.waves == 4 & input.experimental & input.advanced",
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), value = 0, min = 0, max = NA, step=1)
+                                  numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("No. waves")), value = default.values$numberwaves$value, min = default.values$numberwaves$min, max = default.values$numberwaves$max, step=default.values$numberwaves$step)
                                   , title = trloc("No. waves"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), value = 1, min = 0, max = NA, step=1)
+                                  numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Separation")), value = default.values$wavesseparation$value, min = default.values$wavesseparation$min, max = default.values$wavesseparation$max, step=default.values$wavesseparation$step)
                                   , title = trloc("Separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        ),
                        fluidRow(
                          column(6,
                                 popify(
-                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 1")), value = 3, min = 0.5, max = 10, step=0.1)
+                                  numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 1")), value = default.values$wavesparam1$value, min = default.values$wavesparam1$min, max = default.values$wavesparam1$max, step=default.values$wavesparam1$step)
                                   , title = trloc("Param. 1"), content = trloc("Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          ),
                          column(6,
                                 popify(
-                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 2")), value = 2, min = 0.5, max = 10, step=0.1)
+                                  numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Param. 2")), value = default.values$wavesparam2$value, min = default.values$wavesparam2$min, max = default.values$wavesparam2$max, step=default.values$wavesparam2$step)
                                   , title = trloc("Param. 2"), content = trloc("Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic"), placement = "right", trigger = 'focus', options = list(container = "body"))
                          )
                        )
@@ -5479,7 +5545,7 @@ shinyServer(function(input, output, session) {
   
   output$uiprocess = renderUI({
     popify(
-      checkboxInput("processdata", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Process data")), value = TRUE)
+      checkboxInput("processdata", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Process data")), value = default.values$processdata)
       , title = trloc("Process data"), content = trloc("Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset"), placement = "right", trigger = 'focus', options = list(container = "body"))
   })
   
@@ -5733,12 +5799,17 @@ shinyServer(function(input, output, session) {
       h5(a(trloc("Technical manual"), href="https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target="_blank")),
       h5(a(trloc("Submit issues"), href="https://github.com/lozalojo/memapp/issues", target="_blank")),
       popify(
-        checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = FALSE)
+        checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = default.values$advanced)
         , title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body")
       ),
-      hidden(
+      hidden(popify(
+                         checkboxInput("showexperimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the experimental features tickbox")), value = default.values$showexperimental)
+                         , title = trloc("Show the experimental features tickbox"), content = trloc("Show the experimental features tickbox"), placement = "left", trigger = 'focus', options = list(container = "body")
+                       )
+      ),
+      conditionalPanel(condition = "input.showexperimental",
         popify(
-          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = TRUE)
+          checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = default.values$experimental)
           , title = trloc("Show experimental features"), content = trloc("Show experimental features of memapp"), placement = "left", trigger = 'focus', options = list(container = "body")
         )
       )
