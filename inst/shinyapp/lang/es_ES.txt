@@ -317,3 +317,4 @@ Loess span parameter;Parámetro de suavizado Loess
 Smoothing parameter;Parámetro de suavizado
 Smoothing parameter of the smoothing regression;Parámetro de suavizado de la regresión de suavizado
 Optimum;Óptimo
+MEM Model Summary;Resumen del modelo MEM

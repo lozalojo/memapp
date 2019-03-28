@@ -3769,14 +3769,24 @@ shinyServer(function(input, output, session) {
   })
   
   output$tbmMemOutput <- renderPrint({
+    infile <- input$file
+    indataset <- input$dataset
+    readdata <- read_data()
+    datfile <- readdata$datasetread
     datamodel<-data_model()
     datfile.plot<-datamodel$param.data
     if(!is.null(datfile.plot)){
-      summary(datamodel)
+      cat(trloc("File"),":\n\t",infile$name,"\n", sep="")
+      cat(trloc("Dataset"),":\n\t",indataset,"\n", sep="")
+      cat(trloc("Log"),":\n", sep="")
+      writeLines(paste("\t", capture.output(cat(readdata$datalog, sep="")), sep=""))
+      cat(trloc("MEM Model Summary"), ":\n", sep="")
+      writeLines(paste("\t", capture.output(summary(datamodel)), sep=""))
     }else{
       war.text <- as.data.frame(error=trloc("MEM needs at least two seasons"))
       names(war.text) <- NULL
-      print(noquote(war.text), row.names = FALSE)}
+      print(noquote(war.text), row.names = FALSE)
+    }
   })
   
   output$tbmMemGraph <- renderUI({
