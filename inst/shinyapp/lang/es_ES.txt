@@ -318,3 +318,6 @@ Smoothing parameter;Parámetro de suavizado
 Smoothing parameter of the smoothing regression;Parámetro de suavizado de la regresión de suavizado
 Optimum;Óptimo
 MEM Model Summary;Resumen del modelo MEM
+Spline;Spline
+Positive;Positivos
+Check this tickbox if you want to replace negative values with zeroes;Active esta opción si quiere que se reemplacen los valores negativos con ceros

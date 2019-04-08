@@ -318,3 +318,6 @@ Smoothing parameter;Smoothing parameter
 Smoothing parameter of the smoothing regression;Smoothing parameter of the smoothing regression
 Optimum;Optimum
 MEM Model Summary;Резюме модели MEM
+Spline;Spline
+Positive;Positive
+Check this tickbox if you want to replace negative values with zeroes;Check this tickbox if you want to replace negative values with zeroes

@@ -60,7 +60,8 @@ shinyServer(function(input, output, session) {
     wavesparam1 = list(value = 3, min = 0.5, max = 10, step=0.1),
     wavesparam2 = list(value = 2, min = 0.5, max = 10, step=0.1),
     smregressionoptimum = TRUE,
-    smregressionsmoothing = list(min = 0.1, max = 5, value = 1, step=0.1)
+    smregressionsmoothing = list(min = 0.1, max = 5, value = 1, step=0.1),
+    transfpositive = FALSE
   )
   
   #####################################
@@ -1507,7 +1508,11 @@ shinyServer(function(input, output, session) {
         }else if (as.numeric(input$transformation)==5){
           datalog <- paste0(datalog, "Note: applying selected transformation\n")
           cat("reactive/read_data> Note: applying selected transformation\n")
-          datasetread <- transformseries(datasetread, i.transformation=7, span=as.numeric(input$loesspan))
+          datasetread <- transformseries(datasetread, i.transformation=7, i.positive = as.logical(input$transfpositive), span=as.numeric(input$loesspan))
+        }else if (as.numeric(input$transformation)==6){
+          datalog <- paste0(datalog, "Note: applying selected transformation\n")
+          cat("reactive/read_data> Note: applying selected transformation\n")
+          datasetread <- transformseries(datasetread, i.transformation=8, i.positive = as.logical(input$transfpositive))
         }else{
           datalog <- paste0(datalog, "Note: no transformation selected\n")
           cat("reactive/read_data> Note: no transformation selected\n")          
@@ -5623,8 +5628,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$uitransformation = renderUI({
-    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Smoothing regression"=4, "Loess"=5)
-    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess"))
+    transformation.list<-list("No transformation"=1, "Odd"=2, "Fill missings"=3, "Smoothing regression"=4, "Loess"=5, "Spline"=6)
+    names(transformation.list)<-trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess", "Spline"))
     fluidRow(
       popify(
         selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size=1, selectize = FALSE, choices = transformation.list, selected = default.values$transformation)
@@ -5646,6 +5651,12 @@ shinyServer(function(input, output, session) {
                        popify(
                          sliderInput("smregressionsmoothing",  h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Smoothing parameter")), min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, value = default.values$smregressionsmoothing$value, step=default.values$smregressionsmoothing$step), 
                          title = trloc("Smoothing parameter"), content = trloc("Smoothing parameter of the smoothing regression"), placement = "right", trigger = 'focus', options = list(container = "body")
+                       )
+      ),
+      conditionalPanel(condition = "(input.transformation == 5 | input.transformation == 6) & input.advanced",
+                       popify(
+                         checkboxInput("transfpositive", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Positive")), value = default.values$transfpositive)
+                         , title = trloc("Positive"), content = trloc("Check this tickbox if you want to replace negative values with zeroes"), placement = "right", trigger = 'focus', options = list(container = "body")
                        )
       )
     )
