@@ -202,7 +202,7 @@ Select the transformation to apply to the original data;Seleccione qué transfor
 Sensitivity;Sensibilidad
 Sequential;Secuencial
 Series;Serie
-Show advanced features;Características avanzadas
+Advanced features;Características avanzadas
 Show advanced features of memapp;Muestra las opciones avanzadas de la aplicación
 Slope method;Pendiente
 Slope parameter;Parametro pendiente
@@ -263,7 +263,7 @@ Log;Registro
 MAP curve;Curva PMA
 Slope curve;Curva pendiente
 Multi waves;Múltiples ondas
-Show experimental features;Características experimentales
+Experimental features;Características experimentales
 Show experimental features of memapp;Muestra las opciones experimentales de la aplicación
 No file or dataset selected;Ningún fichero u hoja de datos seleccionados
 Centering seasons;Centrado de las temporadas

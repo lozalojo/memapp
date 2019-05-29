@@ -202,7 +202,7 @@ Select the transformation to apply to the original data;Select the transformatio
 Sensitivity;Sensitivity
 Sequential;Sequential
 Series;Series
-Show advanced features;Show advanced features
+Advanced features;Advanced features
 Show advanced features of memapp;Show advanced features of memapp
 Slope method;Slope method
 Slope parameter;Slope parameter
@@ -263,7 +263,7 @@ Log;Log
 MAP curve;MAP curve
 Slope curve;Slope curve
 Multi waves;Multi waves
-Show experimental features;Show experimental features
+Experimental features;Experimental features
 Show experimental features of memapp;Show experimental features of memapp
 No file or dataset selected;No file or dataset selected
 Centering seasons;Centering seasons
