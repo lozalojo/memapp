@@ -1,7 +1,6 @@
 library("shiny")
 library("shinythemes")
 library("shinydashboard")
-library("shinydashboardPlus")
 library("shinyWidgets")
 library("shinyBS")
 library("shinyjs")
@@ -32,21 +31,18 @@ names(languages.list) <- languages$lang_name
 running.versions <- get.r.versions()
 
 shinyUI(
-  shinydashboardPlus::dashboardPagePlus(
+  dashboardPage(
     title = "The Moving Epidemic Method Web Application",
     skin = "black",
-    collapse_sidebar = FALSE,
     ###################################
     ### HEADER SECTION              ###
     ###################################
     # Tricky way of placing elements in dashboardHeader, expects a tag element of type li and class dropdown,
     # so we can pass such elements instead of dropdownMenus
-    header = shinydashboardPlus::dashboardHeaderPlus(
+    header = dashboardHeader(
       title = "MEM dashboard",
-      enable_rightsidebar = TRUE,
-      rightSidebarIcon = "gears",
       tags$li(paste(running.versions$r, "/", running.versions$platform, ", memapp ", running.versions$memapp, ", mem ", running.versions$mem, " - code under GPLv2 at", sep = ""),
-        class = "dropdown"
+              class = "dropdown"
       ),
       tags$li(a(
         href = "https://github.com/lozalojo/",
@@ -123,27 +119,34 @@ shinyUI(
       ###   FIRST COLUMN DEFINITION       ###
       ###      FIRST PART: OUTPUTS        ###
       #######################################
-      uiOutput("uiProcedures")
-    ),
-    ###################################
-    ### LEFT PANEL SECTION          ###
-    ###################################
-    rightsidebar = shinydashboardPlus::rightSidebar(
-      width = 350,
-      background = "light",
-      rightSidebarTabContent(
-        id = 1,
-        title = NULL,
-        icon = NULL,
-        active = TRUE,
-        uiOutput("uiTextoptions"),
-        uiOutput("uiGraphoptions"),
-        uiOutput("uiMEMoptions"),
-        uiOutput("uiSupport"),
-        shinydashboard::box(
-          title = "", solidHeader = TRUE, status = "warning", width = 12,
-          uiOutput("uiLanguage"),
-          selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
+      fluidRow(
+        column(11, uiOutput("uiProcedures")),
+        column(
+          1,
+          # Text options
+          uiOutput("uiTextoptions"),
+          # Graph options
+          uiOutput("uiGraphoptions"),
+          # MEM options
+          uiOutput("uiMEMoptions"),
+          # Support
+          uiOutput("uiSupport"),
+          # Language
+          dropdown(shinydashboard::box(
+            title = "", solidHeader = TRUE, status = "warning", width = 12,
+            uiOutput("uiLanguage"),
+            selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
+          ),
+          style = "minimal",
+          icon = icon("sign-language"),
+          status = "warning",
+          width = "300px",
+          right = TRUE,
+          animate = animateOptions(
+            enter = animations$fading_entrances$fadeInLeftBig,
+            exit = animations$fading_exits$fadeOutRightBig
+          )
+          )
         )
       )
     )
