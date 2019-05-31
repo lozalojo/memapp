@@ -137,6 +137,9 @@ shinyUI(
             uiOutput("uiLanguage"),
             selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
           ),
+          circle = TRUE, 
+          tooltip = tooltipOptions(placement = "left", title = "Language", html = TRUE),
+          margin = "0px",
           style = "minimal",
           icon = icon("sign-language"),
           status = "warning",

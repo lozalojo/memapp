@@ -6355,6 +6355,9 @@ shinyServer(function(input, output, session) {
           title = trloc("X-axis"), content = trloc("Change the x-axis label in most graphs"), placement = "left", trigger = "focus", options = list(container = "body")
         )
       ),
+      circle = TRUE, 
+      tooltip = tooltipOptions(placement = "left", title = trloc("Text options"), html = TRUE),
+      margin = "0px",
       style = "minimal", 
       icon = icon("text-height"),
       status = "primary", 
@@ -6419,6 +6422,9 @@ shinyServer(function(input, output, session) {
           title = trloc("y-axis starts at 0"), content = trloc("Force y-axis to start at 0 for all plots"), placement = "left", trigger = "focus", options = list(container = "body")
         )
       ),
+      circle = TRUE, 
+      tooltip = tooltipOptions(placement = "left", title = trloc("Graph options"), html = TRUE),
+      margin = "0px",
       style = "minimal", 
       icon = icon("palette"),
       status = "primary", 
@@ -6593,6 +6599,9 @@ shinyServer(function(input, output, session) {
         #                    , title = trloc("Centering seasons"), content = trloc("Method for centering seasons to calculate the average curve"), placement = "left", trigger = 'focus', options = list(container = "body"))
         # )
       ),
+      circle = TRUE, 
+      tooltip = tooltipOptions(placement = "left", title = trloc("MEM options"), html = TRUE),
+      margin = "0px",
       style = "minimal", 
       icon = icon("cogs"),
       status = "danger", 
@@ -6646,6 +6655,9 @@ shinyServer(function(input, output, session) {
           )
         )
       ),
+      circle = TRUE, 
+      tooltip = tooltipOptions(placement = "left", title = trloc("Support"), html = TRUE),
+      margin = "0px",
       style = "minimal", 
       icon = icon("info"),
       status = "royal", 
