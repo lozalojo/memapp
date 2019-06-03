@@ -277,7 +277,8 @@ shinyServer(function(input, output, session) {
       axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
-
+      # Rounding values
+      dgrafgg.s$value <- round(dgrafgg.s$value, 2)
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 0.5) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
@@ -564,6 +565,7 @@ shinyServer(function(input, output, session) {
       axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
+      dgrafgg.s$value <- round(dgrafgg.s$value, 2)
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 0.5) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
@@ -833,7 +835,7 @@ shinyServer(function(input, output, session) {
       axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
-
+      dgrafgg.s$value <- round(dgrafgg.s$value, 2)
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 1.2) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
@@ -907,7 +909,7 @@ shinyServer(function(input, output, session) {
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- i.range.y.labels[axis.y.otick$tickmarks]
       }
-
+      dgrafgg$value <- round(dgrafgg$value, 2)
       gplot <- ggplot(dgrafgg) +
         geom_line(aes(x = num, y = value, group = variable, color = variable, linetype = variable), size = i.linesize) +
         geom_point(aes(x = num, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
@@ -958,6 +960,7 @@ shinyServer(function(input, output, session) {
       axis.y.labels <- axis.y.otick$tickmarks
       x.opt <- timdata$optimum.map[1]
       y.opt <- timdata$optimum.map[2]
+      dgrafgg$map <- round(dgrafgg$map, 2)
       gplot <- ggplot(dgrafgg) +
         geom_line(aes(x = weeks, y = map), color = i.colObservedLines, linetype = 1, size = 1) +
         geom_point(aes(x = weeks, y = map), color = i.colObservedPoints, size = 3, shape = 21, fill = i.colObservedPoints, stroke = 0.1) +
@@ -1023,6 +1026,7 @@ shinyServer(function(input, output, session) {
         a1 <- dgrafgg$slope[x.opt] - b * x.opt
         a2 <- dgrafgg$slope[1] - b * 1
         a3 <- dgrafgg$slope[x.opt] + b * x.opt
+        dgrafgg$slope <- round(dgrafgg$slope, 2)
         gplot <- ggplot(dgrafgg) +
           geom_line(aes(x = weeks, y = slope), color = i.colObservedLines, linetype = 1, size = 1) +
           geom_point(aes(x = weeks, y = slope), color = i.colObservedPoints, size = 3, shape = 21, fill = i.colObservedPoints, stroke = 0.1) +
@@ -1067,6 +1071,7 @@ shinyServer(function(input, output, session) {
         # x.opt<-timdata$optimum.map[1]
         x.opt <- timdata$optimum.map[1]
         y.opt <- dgrafgg$slope[dgrafgg$week == x.opt]
+        dgrafgg$slope <- round(dgrafgg$slope, 2)
         gplot <- ggplot(dgrafgg) +
           geom_line(aes(x = weeks, y = slope), color = i.colObservedLines, linetype = 1, size = 1) +
           geom_point(aes(x = weeks, y = slope), color = i.colObservedPoints, size = 3, shape = 21, fill = i.colObservedPoints, stroke = 0.1) +
@@ -1115,6 +1120,7 @@ shinyServer(function(input, output, session) {
         a1 <- dgrafgg$slope[x.opt] - b * x.opt
         a2 <- dgrafgg$slope[1] - b * 1
         a3 <- dgrafgg$slope[x.opt] + b * x.opt
+        dgrafgg$slope <- round(dgrafgg$slope, 2)
         gplot <- ggplot(dgrafgg) +
           geom_line(aes(x = weeks, y = slope), color = i.colObservedLines, linetype = 1, size = 1) +
           geom_point(aes(x = weeks, y = slope), color = i.colObservedPoints, size = 3, shape = 21, fill = i.colObservedPoints, stroke = 0.1) +
@@ -1162,6 +1168,7 @@ shinyServer(function(input, output, session) {
         # x.opt<-timdata$optimum.map[1]
         x.opt <- timdata$optimum.map[1]
         y.opt <- dgrafgg$slope[dgrafgg$week == x.opt]
+        dgrafgg$slope <- round(dgrafgg$slope, 2)
         gplot <- ggplot(dgrafgg) +
           geom_line(aes(x = weeks, y = slope), color = i.colObservedLines, linetype = 1, size = 1) +
           geom_point(aes(x = weeks, y = slope), color = i.colObservedPoints, size = 3, shape = 21, fill = i.colObservedPoints, stroke = 0.1) +
@@ -5193,7 +5200,7 @@ shinyServer(function(input, output, session) {
       axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
-
+      dgrafgg$Value <- round(dgrafgg$Value, 2)
       p <- ggplot(dgrafgg, aes(x = Parameter, y = Value, color = Indicator)) +
         geom_line() +
         geom_point() +
@@ -6355,21 +6362,21 @@ shinyServer(function(input, output, session) {
           title = trloc("X-axis"), content = trloc("Change the x-axis label in most graphs"), placement = "left", trigger = "focus", options = list(container = "body")
         )
       ),
-      circle = TRUE, 
+      circle = TRUE,
       tooltip = tooltipOptions(placement = "left", title = trloc("Text options"), html = TRUE),
       margin = "0px",
-      style = "minimal", 
+      style = "minimal",
       icon = icon("text-height"),
-      status = "primary", 
+      status = "primary",
       width = "400px",
       right = TRUE,
       animate = animateOptions(
-        enter = animations$fading_entrances$fadeInLeftBig,
-        exit = animations$fading_exits$fadeOutRightBig
+        enter = animations$fading_entrances$fadeInRight,
+        exit = animations$fading_exits$fadeOutRight
       )
     )
   })
-  
+
   output$uiGraphoptions <- renderUI({
     colObservedLines.list <- as.list(c("default", colors()))
     names(colObservedLines.list) <- c(trloc("default"), colors())
@@ -6422,17 +6429,17 @@ shinyServer(function(input, output, session) {
           title = trloc("y-axis starts at 0"), content = trloc("Force y-axis to start at 0 for all plots"), placement = "left", trigger = "focus", options = list(container = "body")
         )
       ),
-      circle = TRUE, 
+      circle = TRUE,
       tooltip = tooltipOptions(placement = "left", title = trloc("Graph options"), html = TRUE),
       margin = "0px",
-      style = "minimal", 
+      style = "minimal",
       icon = icon("palette"),
-      status = "primary", 
+      status = "primary",
       width = "400px",
       right = TRUE,
       animate = animateOptions(
-        enter = animations$fading_entrances$fadeInLeftBig,
-        exit = animations$fading_exits$fadeOutRightBig
+        enter = animations$fading_entrances$fadeInRight,
+        exit = animations$fading_exits$fadeOutRight
       )
     )
   })
@@ -6599,17 +6606,17 @@ shinyServer(function(input, output, session) {
         #                    , title = trloc("Centering seasons"), content = trloc("Method for centering seasons to calculate the average curve"), placement = "left", trigger = 'focus', options = list(container = "body"))
         # )
       ),
-      circle = TRUE, 
+      circle = TRUE,
       tooltip = tooltipOptions(placement = "left", title = trloc("MEM options"), html = TRUE),
       margin = "0px",
-      style = "minimal", 
+      style = "minimal",
       icon = icon("cogs"),
-      status = "danger", 
+      status = "danger",
       width = "400px",
       right = TRUE,
       animate = animateOptions(
-        enter = animations$fading_entrances$fadeInLeftBig,
-        exit = animations$fading_exits$fadeOutRightBig
+        enter = animations$fading_entrances$fadeInRight,
+        exit = animations$fading_exits$fadeOutRight
       )
     )
   })
@@ -6655,17 +6662,17 @@ shinyServer(function(input, output, session) {
           )
         )
       ),
-      circle = TRUE, 
+      circle = TRUE,
       tooltip = tooltipOptions(placement = "left", title = trloc("Support"), html = TRUE),
       margin = "0px",
-      style = "minimal", 
+      style = "minimal",
       icon = icon("info"),
-      status = "royal", 
+      status = "royal",
       width = "400px",
       right = TRUE,
       animate = animateOptions(
-        enter = animations$fading_entrances$fadeInLeftBig,
-        exit = animations$fading_exits$fadeOutRightBig
+        enter = animations$fading_entrances$fadeInRight,
+        exit = animations$fading_exits$fadeOutRight
       )
     )
   })

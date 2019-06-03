@@ -42,7 +42,7 @@ shinyUI(
     header = dashboardHeader(
       title = "MEM dashboard",
       tags$li(paste(running.versions$r, "/", running.versions$platform, ", memapp ", running.versions$memapp, ", mem ", running.versions$mem, " - code under GPLv2 at", sep = ""),
-              class = "dropdown"
+        class = "dropdown"
       ),
       tags$li(a(
         href = "https://github.com/lozalojo/",
@@ -137,7 +137,7 @@ shinyUI(
             uiOutput("uiLanguage"),
             selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
           ),
-          circle = TRUE, 
+          circle = TRUE,
           tooltip = tooltipOptions(placement = "left", title = "Language", html = TRUE),
           margin = "0px",
           style = "minimal",
@@ -146,8 +146,8 @@ shinyUI(
           width = "300px",
           right = TRUE,
           animate = animateOptions(
-            enter = animations$fading_entrances$fadeInLeftBig,
-            exit = animations$fading_exits$fadeOutRightBig
+            enter = animations$fading_entrances$fadeInRight,
+            exit = animations$fading_exits$fadeOutRight
           )
           )
         )
