@@ -8,8 +8,6 @@
 [![CRAN](http://www.r-pkg.org/badges/version/memapp?color=009999)](https://cran.r-project.org/package=memapp)
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%202%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 
-[![Official Server](http://www.memapp.me)](http://www.memapp.me)
-
 ## Overview
 
 *memapp* is a web application created to serve as a graphical user interface for the R mem package. It was created using Shiny, a web application framework for R.
