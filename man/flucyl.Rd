@@ -4,7 +4,8 @@
 \name{flucyl}
 \alias{flucyl}
 \title{Castilla y Leon influenza crude rates}
-\format{A data frame with 33 observations on 8 variables. Each observation is one surveillance
+\format{
+A data frame with 33 observations on 8 variables. Each observation is one surveillance
 week, and each variable is an influenza season.
 \describe{
   \item{\code{2001/2002}}{a numeric vector - 2001/2002 rates per 100,000 inhabitants.}
@@ -15,7 +16,8 @@ week, and each variable is an influenza season.
   \item{\code{2006/2007}}{a numeric vector - 2006/2007 rates per 100,000 inhabitants.}
   \item{\code{2007/2008}}{a numeric vector - 2007/2008 rates per 100,000 inhabitants.}
   \item{\code{2008/2009}}{a numeric vector - 2008/2009 rates per 100,000 inhabitants.}
-}}
+}
+}
 \source{
 Influenza Surveillance Programme. Castilla y Leon Health Sentinel Network. Consejeria
 de Sanidad. Junta de Castilla y Leon 2001-2008.
