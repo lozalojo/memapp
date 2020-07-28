@@ -27,7 +27,7 @@ Parameters sent to the mem R library are set in the application itself.\cr
 \examples{
 \donttest{
 library("memapp")
-runmemapp(launch.browser = TRUE)
+if (interactive()) runmemapp(launch.browser = TRUE)
 }
 
 }

@@ -19,7 +19,7 @@
 #' @examples
 #' \donttest{
 #' library("memapp")
-#' runmemapp(launch.browser = TRUE)
+#' if (interactive()) runmemapp(launch.browser = TRUE)
 #' }
 #'
 #' @author Jose E. Lozano \email{lozalojo@@gmail.com}

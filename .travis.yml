@@ -10,10 +10,29 @@ r:
 env:
   global:
   - _R_CHECK_FORCE_SUGGESTS_=false
+  - _R_CHECK_DONTTEST_EXAMPLES_=false
 
 r_packages:
   - devtools
   - covr
+  - shiny
+  - shinythemes
+  - shinydashboard
+  - shinyWidgets
+  - shinyBS
+  - shinyjs
+  - RColorBrewer
+  - tidyr
+  - dplyr
+  - openxlsx
+  - foreign
+  - haven
+  - readxl
+  - stringr
+  - stringi
+  - DT
+  - RODBC
+  - formattable
 
 r_github_packages:
   - lozalojo/mem
@@ -27,3 +46,4 @@ before_install:
   - sudo apt-get --yes --force-yes update -qq
   - sudo apt-get install --yes libssl-dev libcurl4-openssl-dev libmagick++-dev mdbtools unixodbc-dev zip graphicsmagick imagemagick
   - Rscript -e 'update.packages(ask = FALSE)'
+  - sudo R CMD javareconf
