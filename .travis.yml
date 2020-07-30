@@ -43,7 +43,5 @@ after_success:
   - Rscript -e 'library(covr); codecov()'
 
 before_install:
-  - sudo apt-get --yes --force-yes update -qq
   - sudo apt-get install --yes libssl-dev libcurl4-openssl-dev libmagick++-dev mdbtools unixodbc-dev zip graphicsmagick imagemagick
   - Rscript -e 'update.packages(ask = FALSE)'
-
