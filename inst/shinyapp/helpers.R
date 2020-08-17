@@ -1375,7 +1375,7 @@ read.locales.table <- function() {
   locales <- utils::read.delim(paste0(translation.dir(), "/localestable.txt"), header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T) %>%
     tidyr::extract(filename,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
-      "^([:alpha:]{2})(_([:alpha:]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
+      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
     ) %>%
     select(-v1, -v2, -v3) %>%
     dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
@@ -1390,7 +1390,7 @@ get.linux.locales <- function() {
   locales <- data.frame(localelinux = system("locale -a ", intern = TRUE), stringsAsFactors = F) %>%
     tidyr::extract(localelinux,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
-      "^([:alpha:]{2})(_([:alpha:]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
+      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
     ) %>%
     select(-v1, -v2, -v3) %>%
     dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
