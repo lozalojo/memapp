@@ -40,8 +40,8 @@ plot(flucylraw$rates,type="l")
 }
 \references{
 Castilla y Leon Health Sentinel Network Reports (Informes de la Red Centinela Sanitaria
-de Castilla y Leon: \url{http://www.salud.jcyl.es/centinelas}).
-Influenza Surveillance Programme (Programa de vigilancia de la gripe:
-\url{http://www.salud.jcyl.es/centinelas}).
+de Castilla y Leon).\cr
+Influenza Surveillance Programme (Programa de vigilancia de la gripe).\cr
+\url{https://www.saludcastillayleon.es/profesionales/es/centinelas}
 }
 \keyword{datasets}
