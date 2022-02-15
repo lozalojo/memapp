@@ -2598,9 +2598,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbdData_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbdData_c", "csv"))
@@ -2627,9 +2627,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbdData_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbdData_c", "csv"))
@@ -2929,9 +2929,9 @@ shinyServer(function(input, output, session) {
               if (zip.present()) {
                 downloadButton("tbdEdetailed_x", "xlsx")
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdEdetailed_c", "csv"))
@@ -3247,9 +3247,9 @@ shinyServer(function(input, output, session) {
               if (zip.present()) {
                 downloadButton("tbdSdetailed_x", "xlsx")
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdSdetailed_c", "csv"))
@@ -3548,9 +3548,9 @@ shinyServer(function(input, output, session) {
               if (zip.present()) {
                 downloadButton("tbdGoodnessSummary_x", "xlsx")
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdGoodnessSummary_c", "csv"))
@@ -3568,9 +3568,9 @@ shinyServer(function(input, output, session) {
               if (zip.present()) {
                 downloadButton("tbdGoodnessDetailed_x", "xlsx")
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdGoodnessDetailed_c", "csv"))
@@ -3586,25 +3586,25 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       # fluidRow(
-      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua")
+      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow"))
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
         ),
         fluidRow(
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("heartbeat"), width = 12, color = "aqua"))
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
         )
       )
     }
@@ -3682,46 +3682,46 @@ shinyServer(function(input, output, session) {
     } else {
       if (as.logical(input$advanced)) {
         # fluidRow(
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal"),
-        #   valueBox(peaks$Count[peaks[,1]==0], trloc(peaks$Description[peaks[,1]==0]), icon = icon("heartbeat"), width=3, color="teal")
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("fas fa-heartbeat"), width=2, color="lime"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("fas fa-thermometer-empty"), width=2, color="green"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("fas fa-thermometer-quarter"), width=2, color="yellow"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("fas fa-thermometer-half"), width=2, color="orange"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width=2, color="red"),
+        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("fas fa-heartbeat"), width=3, color="teal"),
+        #   valueBox(peaks$Count[peaks[,1]==0], trloc(peaks$Description[peaks[,1]==0]), icon = icon("fas fa-heartbeat"), width=3, color="teal")
         # )
         fluidPage(
           fluidRow(
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("heartbeat"), width = 12, color = "lime")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("thermometer-1"), width = 12, color = "green")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("thermometer-2"), width = 12, color = "yellow")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("thermometer-3"), width = 12, color = "orange")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("thermometer-4"), width = 12, color = "red"))
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("fas fa-heartbeat"), width = 12, color = "lime")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
           ),
           fluidRow(
-            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("heartbeat"), width = 12, color = "teal")),
-            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == 0], trloc(peaks$Description[peaks[, 1] == 0]), icon = icon("heartbeat"), width = 12, color = "teal"))
+            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("fas fa-heartbeat"), width = 12, color = "teal")),
+            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == 0], trloc(peaks$Description[peaks[, 1] == 0]), icon = icon("fas fa-heartbeat"), width = 12, color = "teal"))
           )
         )
       } else {
         # fluidRow(
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal")
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("fas fa-heartbeat"), width=2, color="lime"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("fas fa-thermometer-empty"), width=2, color="green"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("fas fa-thermometer-quarter"), width=2, color="yellow"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("fas fa-thermometer-half"), width=2, color="orange"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width=2, color="red"),
+        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("fas fa-heartbeat"), width=3, color="teal")
         # )
         fluidPage(
           fluidRow(
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("heartbeat"), width = 12, color = "lime")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("thermometer-1"), width = 12, color = "green")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("thermometer-2"), width = 12, color = "yellow")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("thermometer-3"), width = 12, color = "orange")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("thermometer-4"), width = 12, color = "red"))
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("fas fa-heartbeat"), width = 12, color = "lime")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
           ),
           fluidRow(
-            column(width = 10, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("heartbeat"), width = 12, color = "teal"))
+            column(width = 10, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("fas fa-heartbeat"), width = 12, color = "teal"))
           )
         )
       }
@@ -3836,9 +3836,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbmData_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmData_c", "csv"))
@@ -3863,9 +3863,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbmData_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmData_c", "csv"))
@@ -4083,30 +4083,30 @@ shinyServer(function(input, output, session) {
     } else {
       # fluidPage(
       #   fluidRow(
-      #     valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("heartbeat"), width=3, color="light-blue"),
-      #     valueBox(datamodel$ci.start[2,2], trloc("Average epidemic start week"), icon = icon("heartbeat"), width=3, color="light-blue"),
-      #     valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), trloc("Average epidemic length"), icon = icon("heartbeat"), width=3, color="light-blue"),
-      #     valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), trloc("Epidemic percentage"), icon = icon("heartbeat"), width=3, color="light-blue")
+      #     valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
+      #     valueBox(datamodel$ci.start[2,2], trloc("Average epidemic start week"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
+      #     valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), trloc("Average epidemic length"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
+      #     valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), trloc("Epidemic percentage"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue")
       #   ),
       #   fluidRow(
-      #     valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), trloc("Epidemic threshold"), icon = icon("thermometer-1"), width=3, color="green"),
-      #     valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), trloc("Medium threshold"), icon = icon("thermometer-2"), width=3, color="yellow"),
-      #     valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), trloc("High threshold"), icon = icon("thermometer-3"), width=3, color="orange"),
-      #     valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), trloc("Very high threshold"), icon = icon("thermometer-4"), width=3, color="red")
+      #     valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), trloc("Epidemic threshold"), icon = icon("fas fa-thermometer-empty"), width=3, color="green"),
+      #     valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), trloc("Medium threshold"), icon = icon("fas fa-thermometer-quarter"), width=3, color="yellow"),
+      #     valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), trloc("High threshold"), icon = icon("fas fa-thermometer-half"), width=3, color="orange"),
+      #     valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), trloc("Very high threshold"), icon = icon("fas fa-thermometer-three-quarters"), width=3, color="red")
       #   )
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("heartbeat"), width = 12, color = "light-blue")),
-          column(width = 3, shinydashboard::valueBox(datamodel$ci.start[2, 2], trloc("Average epidemic start week"), icon = icon("heartbeat"), width = 12, color = "light-blue")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$ci.length[1, 2], 2), nsmall = 1), trloc("Average epidemic length"), icon = icon("heartbeat"), width = 12, color = "light-blue")),
-          column(width = 3, shinydashboard::valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall = 1), "%"), trloc("Epidemic percentage"), icon = icon("heartbeat"), width = 12, color = "light-blue"))
+          column(width = 3, shinydashboard::valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
+          column(width = 3, shinydashboard::valueBox(datamodel$ci.start[2, 2], trloc("Average epidemic start week"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$ci.length[1, 2], 2), nsmall = 1), trloc("Average epidemic length"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
+          column(width = 3, shinydashboard::valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall = 1), "%"), trloc("Epidemic percentage"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue"))
         ),
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$pre.post.intervals[1, 3], 2), nsmall = 1), trloc("Epidemic threshold"), icon = icon("thermometer-1"), width = 12, color = "green")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[1, 4], 2), nsmall = 1), trloc("Medium threshold"), icon = icon("thermometer-2"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[2, 4], 2), nsmall = 1), trloc("High threshold"), icon = icon("thermometer-3"), width = 12, color = "orange")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[3, 4], 2), nsmall = 1), trloc("Very high threshold"), icon = icon("thermometer-4"), width = 12, color = "red"))
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$pre.post.intervals[1, 3], 2), nsmall = 1), trloc("Epidemic threshold"), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[1, 4], 2), nsmall = 1), trloc("Medium threshold"), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[2, 4], 2), nsmall = 1), trloc("High threshold"), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[3, 4], 2), nsmall = 1), trloc("Very high threshold"), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
         )
       )
     }
@@ -4319,9 +4319,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbmGoodnessSummary_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessSummary_c", "csv"))
@@ -4339,9 +4339,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbmGoodnessDetailed_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessDetailed_c", "csv"))
@@ -4361,9 +4361,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbmGoodnessSummary_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessSummary_c", "csv"))
@@ -4380,9 +4380,9 @@ shinyServer(function(input, output, session) {
                 if (zip.present()) {
                   downloadButton("tbmGoodnessDetailed_x", "xlsx")
                 } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessDetailed_c", "csv"))
@@ -4399,25 +4399,25 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       # fluidRow(
-      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua")
+      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow"))
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
         ),
         fluidRow(
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("heartbeat"), width = 12, color = "aqua"))
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
         )
       )
     }
@@ -4513,46 +4513,46 @@ shinyServer(function(input, output, session) {
     } else {
       if (as.logical(input$advanced)) {
         # fluidRow(
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal"),
-        #   valueBox(peaks$Count[peaks[,1]==0], trloc(peaks$Description[peaks[,1]==0]), icon = icon("heartbeat"), width=3, color="teal")
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("fas fa-heartbeat"), width=2, color="lime"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("fas fa-thermometer-empty"), width=2, color="green"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("fas fa-thermometer-quarter"), width=2, color="yellow"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("fas fa-thermometer-half"), width=2, color="orange"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width=2, color="red"),
+        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("fas fa-heartbeat"), width=3, color="teal"),
+        #   valueBox(peaks$Count[peaks[,1]==0], trloc(peaks$Description[peaks[,1]==0]), icon = icon("fas fa-heartbeat"), width=3, color="teal")
         # )
         fluidPage(
           fluidRow(
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("heartbeat"), width = 12, color = "lime")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("thermometer-1"), width = 12, color = "green")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("thermometer-2"), width = 12, color = "yellow")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("thermometer-3"), width = 12, color = "orange")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("thermometer-4"), width = 12, color = "red"))
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("fas fa-heartbeat"), width = 12, color = "lime")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
           ),
           fluidRow(
-            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("heartbeat"), width = 12, color = "teal")),
-            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == 0], trloc(peaks$Description[peaks[, 1] == 0]), icon = icon("heartbeat"), width = 12, color = "teal"))
+            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("fas fa-heartbeat"), width = 12, color = "teal")),
+            column(width = 5, shinydashboard::valueBox(peaks$Count[peaks[, 1] == 0], trloc(peaks$Description[peaks[, 1] == 0]), icon = icon("fas fa-heartbeat"), width = 12, color = "teal"))
           )
         )
       } else {
         # fluidRow(
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("heartbeat"), width=2, color="lime"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("thermometer-1"), width=2, color="green"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("thermometer-2"), width=2, color="yellow"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("thermometer-3"), width=2, color="orange"),
-        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("thermometer-4"), width=2, color="red"),
-        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("heartbeat"), width=3, color="teal")
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==1]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==1]," ", "level")), icon = icon("fas fa-heartbeat"), width=2, color="lime"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==2]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==2]," ", "level")), icon = icon("fas fa-thermometer-empty"), width=2, color="green"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==3]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==3]," ", "level")), icon = icon("fas fa-thermometer-quarter"), width=2, color="yellow"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==4]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==4]," ", "level")), icon = icon("fas fa-thermometer-half"), width=2, color="orange"),
+        #   valueBox(paste0(format(round(peaks$Percentage[peaks[,1]==5]*100, 2), nsmall=1), "%"), trloc(paste0(peaks$Description[peaks[,1]==5]," ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width=2, color="red"),
+        #   valueBox(peaks$Count[peaks[,1]==-1], trloc(peaks$Description[peaks[,1]==-1]), icon = icon("fas fa-heartbeat"), width=3, color="teal")
         # )
         fluidPage(
           fluidRow(
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("heartbeat"), width = 12, color = "lime")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("thermometer-1"), width = 12, color = "green")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("thermometer-2"), width = 12, color = "yellow")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("thermometer-3"), width = 12, color = "orange")),
-            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("thermometer-4"), width = 12, color = "red"))
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 1] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 1], " ", "level")), icon = icon("fas fa-heartbeat"), width = 12, color = "lime")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 2] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 2], " ", "level")), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 3] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 3], " ", "level")), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 4] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 4], " ", "level")), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+            column(width = 2, shinydashboard::valueBox(paste0(format(round(peaks$Percentage[peaks[, 1] == 5] * 100, 2), nsmall = 1), "%"), trloc(paste0(peaks$Description[peaks[, 1] == 5], " ", "level")), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
           ),
           fluidRow(
-            column(width = 10, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("heartbeat"), width = 12, color = "teal"))
+            column(width = 10, shinydashboard::valueBox(peaks$Count[peaks[, 1] == -1], trloc(peaks$Description[peaks[, 1] == -1]), icon = icon("fas fa-heartbeat"), width = 12, color = "teal"))
           )
         )
       }
@@ -4953,17 +4953,17 @@ shinyServer(function(input, output, session) {
 
           # fluidRow(
           #   fluidRow(
-          #     valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-          #     valueBox(format(round(optim["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-          #     valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-          #     valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow")
+          #     valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+          #     valueBox(format(round(optim["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+          #     valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+          #     valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow")
           #   ),
           #   fluidRow(
-          #     valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-          #     valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-          #     valueBox(format(round(optim["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua"),
-          #     valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("heartbeat"), width=3, color="red"),
-          #     valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("heartbeat"), width=3, color="olive")
+          #     valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+          #     valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+          #     valueBox(format(round(optim["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+          #     valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width=3, color="red"),
+          #     valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width=3, color="olive")
           #   ),
           #   fluidRow(
           #     formattable::renderFormattable({
@@ -4993,19 +4993,19 @@ shinyServer(function(input, output, session) {
           # )
           fluidPage(
             fluidRow(
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow"))
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
             ),
             fluidRow(
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Percent agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("heartbeat"), width = 12, color = "aqua"))
+              column(width = 4, shinydashboard::valueBox(format(round(optim["Percent agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+              column(width = 4, shinydashboard::valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+              column(width = 4, shinydashboard::valueBox(format(round(optim["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
             ),
             fluidRow(
-              column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("Current parameter"), icon = icon("heartbeat"), width = 12, color = "red")),
-              column(width = 6, shinydashboard::valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("Optimum parameter"), icon = icon("heartbeat"), width = 12, color = "olive"))
+              column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
+              column(width = 6, shinydashboard::valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive"))
             ),
             fluidRow(
               column(width = 12, formattable::renderFormattable({
@@ -5056,9 +5056,9 @@ shinyServer(function(input, output, session) {
               if (zip.present()) {
                 downloadButton("tbmOptimizeADetail_x", "xlsx")
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbmOptimizeADetail_c", "csv"))
@@ -5077,31 +5077,31 @@ shinyServer(function(input, output, session) {
       doptim <- dataoptim$roc.data
       optim <- doptim[doptim$value == as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), ]
       # fluidRow(
-      #   valueBox(format(round(optim["sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(optim["youdens.index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("heartbeat"), width=3, color="red"),
-      #   valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("heartbeat"), width=3, color="olive")
+      #   valueBox(format(round(optim["sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(optim["youdens.index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width=3, color="red"),
+      #   valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width=3, color="olive")
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(optim["sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(optim["specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(optim["positive.predictive.value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(optim["negative.predictive.value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("heartbeat"), width = 12, color = "yellow"))
+          column(width = 3, shinydashboard::valueBox(format(round(optim["sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(optim["specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(optim["positive.predictive.value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(optim["negative.predictive.value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
         ),
         fluidRow(
-          column(width = 4, shinydashboard::valueBox(format(round(optim["percent.agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(optim["youdens.index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("heartbeat"), width = 12, color = "aqua"))
+          column(width = 4, shinydashboard::valueBox(format(round(optim["percent.agreement"], 2), nsmall = 2), trloc("Percent agreement"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(optim["youdens.index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
         ),
         fluidRow(
-          column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("Current parameter"), icon = icon("heartbeat"), width = 12, color = "red")),
-          column(width = 6, shinydashboard::valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("Optimum parameter"), icon = icon("heartbeat"), width = 12, color = "olive"))
+          column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
+          column(width = 6, shinydashboard::valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive"))
         )
       )
     }
@@ -5295,9 +5295,9 @@ shinyServer(function(input, output, session) {
               if (zip.present()) {
                 downloadButton("tbsSurveillanceAverage_x", "xlsx")
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("file-excel-o"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("file-excel-o"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbsSurveillanceAverage_c", "csv"))
@@ -6366,7 +6366,7 @@ shinyServer(function(input, output, session) {
       tooltip = tooltipOptions(placement = "left", title = trloc("Text options"), html = TRUE),
       margin = "0px",
       style = "minimal",
-      icon = icon("text-height"),
+      icon = icon("fas fa-text-height"),
       status = "primary",
       width = "400px",
       right = TRUE,
@@ -6433,7 +6433,7 @@ shinyServer(function(input, output, session) {
       tooltip = tooltipOptions(placement = "left", title = trloc("Graph options"), html = TRUE),
       margin = "0px",
       style = "minimal",
-      icon = icon("palette"),
+      icon = icon("fas fa-palette"),
       status = "primary",
       width = "400px",
       right = TRUE,
@@ -6610,7 +6610,7 @@ shinyServer(function(input, output, session) {
       tooltip = tooltipOptions(placement = "left", title = trloc("MEM options"), html = TRUE),
       margin = "0px",
       style = "minimal",
-      icon = icon("cogs"),
+      icon = icon("fas fa-cogs"),
       status = "danger",
       width = "400px",
       right = TRUE,
@@ -6666,7 +6666,7 @@ shinyServer(function(input, output, session) {
       tooltip = tooltipOptions(placement = "left", title = trloc("Support"), html = TRUE),
       margin = "0px",
       style = "minimal",
-      icon = icon("info"),
+      icon = icon("fas fa-info"),
       status = "royal",
       width = "400px",
       right = TRUE,
