@@ -1,6 +1,6 @@
 Package: memapp
-Version: 2.14.20210331
-Date: 2021-03-31
+Version: 2.15
+Date: 2022-04-13
 Title: The Moving Epidemic Method Web Application
 Description: The Moving Epidemic Method, created by T Vega and JE Lozano (2012, 2015) <doi:10.1111/j.1750-2659.2012.00422.x>, <doi:10.1111/irv.12330>, allows the weekly assessment of the epidemic and intensity status to help in routine respiratory infections surveillance in health systems. Allows the comparison of different epidemic indicators, timing and shape with past epidemics and across different regions or countries with different surveillance systems. Also, it gives a measure of the performance of the method in terms of sensitivity and specificity of the alert week. 'memapp' is a web application created in the Shiny framework for the 'mem' R package.
 Authors@R: person(given = "Jose E.", family = "Lozano", email = "lozalojo@gmail.com", role = c("aut", "cre"))
@@ -27,16 +27,12 @@ Imports:
     formattable,
     ggplot2,
     plotly,
-    mem (>= 2.15)
+    mem (>= 2.17)
 Suggests:
     magick,
     animation
-Remotes:
-  github::lozalojo/mem,
-  github::tidyverse/ggplot2,
-  github::ropensci/plotly
 License: GPL (>= 2)
 URL: https://github.com/lozalojo/memapp
 BugReports: https://github.com/lozalojo/memapp/issues
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

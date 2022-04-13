@@ -50,7 +50,7 @@ shinyServer(function(input, output, session) {
     levelaveragecurve = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
     centering = -1,
     advanced = FALSE,
-    showexperimental = TRUE,
+    showexperimental = FALSE,
     experimental = FALSE,
     processdata = TRUE,
     preepidemicthr = TRUE,
