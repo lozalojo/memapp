@@ -131,7 +131,7 @@ Medium thr.;Medium thr.
 Medium threshold;Medium threshold
 MEM needs at least two seasons;MEM needs at least two seasons
 MEM options;MEM options
-memapp is able to read text, excel, access and R;memapp is able to read text, excel, access and R
+memapp is able to read text, excel, access and R;memapp is able to read MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) and OpenDocument Spreadsheet (ods)
 Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.
 Method for calculating the average curve confidence intervals;Method for calculating the average curve confidence intervals
 Method for calculating the epidemic threshold;Method for calculating the epidemic threshold
@@ -189,6 +189,7 @@ Procedures;Procedures
 Range of possible of values of the slope parameter used by goodness and optimize functions;Range of possible of values of the slope parameter used by goodness and optimize functions
 Results;Results
 Rtools not found;Rtools not found
+openxlsx not found;openxlsx not found
 Scheme;Scheme
 Season;Season
 Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection

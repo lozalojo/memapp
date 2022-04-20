@@ -97,15 +97,8 @@ read.data <- function(i.file,
       fileextension <- tolower(temp1[1, 3])
     }
     filenameextension <- paste(filename, fileextension, sep = ".")
-    if (fileextension == "xlsx") {
-      temp2 <- read.data.xlsx(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
-      datalog <- paste0(datalog, temp2$datalog)
-      datasets <- temp2$datasets
-      datasetread <- temp2$datasetread
-      dataweeks <- temp2$dataweeks
-      rm("temp2")
-    } else if (fileextension == "xls") {
-      temp2 <- read.data.xls(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+    if (fileextension %in% c("xls", "xlsx")) {
+      temp2 <- read.data.excel(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
@@ -164,6 +157,13 @@ read.data <- function(i.file,
       temp2 <- read.data.sas(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
+      datasetread <- temp2$datasetread
+      dataweeks <- temp2$dataweeks
+      rm("temp2")
+    } else if (fileextension == "ods") {
+      temp2 <- read.data.ods(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+	  datalog <- paste0(datalog, temp2$datalog)
+	  datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
@@ -245,12 +245,18 @@ read.data <- function(i.file,
   readdata
 }
 
-read.data.xlsx <- function(i.file,
-                           i.file.name = NA,
-                           i.dataset = NA,
-                           i.range.x = NA) {
+read.data.excel <- function(i.file,
+                            i.file.name = NA,
+                            i.dataset = NA,
+                            i.range.x = NA) {
   datalog <- character()
-  if (!file.exists(i.file)) {
+  if (!("readxl" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: readxl package not found, please install it to import MSExcel (xls, xlsx) files\n")
+    cat("read_data> Warning: readxl package not found, please install it to import MSExcel (xls, xlsx) files\n")
+  } else if (!file.exists(i.file)) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -268,81 +274,16 @@ read.data.xlsx <- function(i.file,
       fileextension <- tolower(temp1[1, 3])
     }
     filenameextension <- paste(filename, fileextension, sep = ".")
-    datalog <- paste0(datalog, "Excel 2007+ file detected: ", filenameextension, "\n")
-    cat("read_data> Excel 2007+ file detected: ", filenameextension, "\n", sep = "")
-    wb <- openxlsx::loadWorkbook(i.file)
-    datasets <- openxlsx::sheets(wb)
-    n.datasets <- length(datasets)
-    if (is.na(i.dataset)) {
-      datasetread <- NULL
-      dataweeks <- NULL
-    } else if (!(i.dataset %in% datasets)) {
-      datasetread <- NULL
-      dataweeks <- NULL
-      datalog <- paste0(datalog, "Warning: Table ", i.dataset, " not found\n")
-      cat("read_data> Warning: Table ", i.dataset, " not found\n")
-    } else {
-      datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
-      cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
-      datasetread <- openxlsx::read.xlsx(wb, sheet = i.dataset, rowNames = F)
-      # Remove na lines
-      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
-      if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
-      # Detect format year, week, rate
-      columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
-        names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
-      } else {
-        # First column is the week name
-        if (all(datasetread[, 1] %in% 1:53)) {
-          rownames(datasetread) <- as.character(datasetread[, 1])
-          datasetread <- datasetread[-1]
-          datalog <- paste0(datalog, "Note: First column is the week name\n")
-          cat("read_data> Note: First column is the week name\n")
-        } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
-        }
-      }
-      dataweeks <- as.numeric(row.names(datasetread))
-      datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
-      cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
+    if (fileextension=="xlsx"){
+      datalog <- paste0(datalog, "Excel 2007+ file detected: ", filenameextension, "\n")
+      cat("read_data> Excel 2007+ file detected: ", filenameextension, "\n", sep = "")
+    }else if (fileextension=="xls"){
+      datalog <- paste0(datalog, "Excel 97-2003 file detected: ", filenameextension, "\n")
+      cat("read_data> Excel 97-2003 file detected: ", filenameextension, "\n", sep = "")      
     }
-  }
-  list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
-}
-
-read.data.xls <- function(i.file,
-                          i.file.name = NA,
-                          i.dataset = NA,
-                          i.range.x = NA) {
-  datalog <- character()
-  if (!file.exists(i.file)) {
-    datasets <- NULL
-    datasetread <- NULL
-    dataweeks <- NULL
-    datalog <- paste0(datalog, "Warning: file not found\n")
-    cat("read_data> Warning: file not found\n")
-  } else {
-    if (is.na(i.file.name)) {
-      temp1 <- stringr::str_match(i.file, "^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
-      temp1[is.na(temp1)] <- ""
-      filename <- temp1[1, 3]
-      fileextension <- tolower(temp1[1, 5])
-    } else {
-      temp1 <- stringr::str_match(i.file.name, "^(.*)\\.([^\\.]*)$")
-      filename <- temp1[1, 2]
-      fileextension <- tolower(temp1[1, 3])
-    }
-    filenameextension <- paste(filename, fileextension, sep = ".")
-    datalog <- paste0(datalog, "Excel 97-2003 file detected: ", filenameextension, "\n")
-    cat("read_data> Excel 97-2003 file detected: ", filenameextension, "\n", sep = "")
-    i.file.xls <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = ".xls")
+    i.file.xls <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = paste0(".",fileextension))
     file.copy(i.file, i.file.xls)
     datasets <- readxl::excel_sheets(i.file.xls)
-    rm("i.file.xls")
     n.datasets <- length(datasets)
     if (is.na(i.dataset)) {
       datasetread <- NULL
@@ -355,7 +296,7 @@ read.data.xls <- function(i.file,
     } else {
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
-      datasetread <- as.data.frame(readxl::read_xls(i.file, sheet = i.dataset, col_types = "numeric"), stringsAsFactors = F)
+      datasetread <- as.data.frame(readxl::read_excel(i.file.xls, sheet = i.dataset, col_types = "numeric"), stringsAsFactors = F)
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
@@ -381,6 +322,7 @@ read.data.xls <- function(i.file,
       datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
       cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
     }
+    rm("i.file.xls")
   }
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
@@ -411,7 +353,14 @@ read.data.access <- function(i.file,
     datalog <- paste0(datalog, "Access file detected: ", filenameextension, "\n")
     cat("read_data> Access file detected: ", filenameextension, "\n", sep = "")
     if (.Platform$OS.type == "windows") {
-      connectstring <- paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=", i.file, sep = "")
+	if (!("RODBC" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
+    cat("read_data> Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
+  } else {
+        connectstring <- paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=", i.file, sep = "")
       channel <- odbcDriverConnect(connectstring)
       datasets <- subset(sqlTables(channel), TABLE_TYPE != "SYSTEM TABLE")[, "TABLE_NAME"]
       n.datasets <- length(datasets)
@@ -452,14 +401,15 @@ read.data.access <- function(i.file,
         cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
       }
       odbcCloseAll()
+  }
     } else if (.Platform$OS.type == "unix") {
       # check if mdbtools is installed
       if (!mdbtools.present()) {
         datasets <- NULL
         datasetread <- NULL
         dataweeks <- NULL
-        datalog <- paste0(datalog, "Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
-        cat("read_data> Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools mdbtools-gmdb")
+        datalog <- paste0(datalog, "Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools")
+        cat("read_data> Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools")
       } else {
         # read tables in file
         datasets <- system(paste("mdb-tables -1", shQuote(i.file)), intern = TRUE)
@@ -679,7 +629,7 @@ read.data.rds <- function(i.file,
           datasetread <- datasetread[-1]
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
-        } else if (!(as.numeric(rownames(datasetread)) %in% 1:53)) {
+        } else if (!all(as.numeric(rownames(datasetread)) %in% 1:53)) {
           rownames(datasetread) <- 1:NROW(datasetread)
         }
       }
@@ -750,7 +700,7 @@ read.data.rdata <- function(i.file,
           datasetread <- datasetread[-1]
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
-        } else if (!(as.numeric(rownames(datasetread)) %in% 1:53)) {
+        } else if (!all(as.numeric(rownames(datasetread)) %in% 1:53)) {
           rownames(datasetread) <- 1:NROW(datasetread)
         }
       }
@@ -767,7 +717,13 @@ read.data.dbf <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!file.exists(i.file)) {
+  if (!("foreign" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: foreign package not found, please install it to import dbf files\n")
+    cat("read_data> Warning: foreign package not found, please install it to import dbf files\n")
+  } else if (!file.exists(i.file)) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -835,7 +791,13 @@ read.data.sav <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!file.exists(i.file)) {
+  if (!("foreign" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: foreign package not found, please install it to import SPSS (sav) files\n")
+    cat("read_data> Warning: foreign package not found, please install it to import SPSS (sav) files\n")
+  } else if (!file.exists(i.file)) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -869,7 +831,7 @@ read.data.sav <- function(i.file,
     } else {
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
-      datasetread <- foreign::read.spss(i.file)
+      datasetread <- foreign::read.spss(i.file, to.data.frame = T)
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
@@ -903,7 +865,13 @@ read.data.dta <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!file.exists(i.file)) {
+  if (!("foreign" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: foreign package not found, please install it to import Stata (dta) files\n")
+    cat("read_data> Warning: foreign package not found, please install it to import Stata (dta) files\n")
+  } else if (!file.exists(i.file)) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -971,7 +939,13 @@ read.data.sas <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!file.exists(i.file)) {
+  if (!("haven" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: haven package not found, please install it to import SAS (sas7bdat) files\n")
+    cat("read_data> Warning: haven package not found, please install it to import SAS (sas7bdat) files\n")
+  } else if (!file.exists(i.file)) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -1018,6 +992,80 @@ read.data.sas <- function(i.file,
         names(datasetread) <- tolower(names(datasetread))
         datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
       } else {
+        if (all(datasetread[, 1] %in% 1:53)) {
+          rownames(datasetread) <- as.character(datasetread[, 1])
+          datasetread <- datasetread[-1]
+          datalog <- paste0(datalog, "Note: First column is the week name\n")
+          cat("read_data> Note: First column is the week name\n")
+        } else {
+          rownames(datasetread) <- 1:NROW(datasetread)
+        }
+      }
+      dataweeks <- as.numeric(row.names(datasetread))
+      datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
+      cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
+    }
+  }
+  list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
+}
+
+read.data.ods <- function(i.file,
+                          i.file.name = NA,
+                          i.dataset = NA,
+                          i.range.x = NA) {
+  datalog <- character()
+  if (!("readODS" %in% rownames(installed.packages()))){
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: readODS package not found, please install it to import ods files\n")
+    cat("read_data> Warning: readODS package not found, please install it to import ods files\n")
+  } else if (!file.exists(i.file)) {
+    datasets <- NULL
+    datasetread <- NULL
+    dataweeks <- NULL
+    datalog <- paste0(datalog, "Warning: file not found\n")
+    cat("read_data> Warning: file not found\n")
+  } else {
+    if (is.na(i.file.name)) {
+      temp1 <- stringr::str_match(i.file, "^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
+      temp1[is.na(temp1)] <- ""
+      filename <- temp1[1, 3]
+      fileextension <- tolower(temp1[1, 5])
+    } else {
+      temp1 <- stringr::str_match(i.file.name, "^(.*)\\.([^\\.]*)$")
+      filename <- temp1[1, 2]
+      fileextension <- tolower(temp1[1, 3])
+    }
+    filenameextension <- paste(filename, fileextension, sep = ".")
+    datalog <- paste0(datalog, "OpenDocument Spreadsheet file detected: ", filenameextension, "\n")
+    cat("read_data> OpenDocument Spreadsheet file detected: ", filenameextension, "\n", sep = "")
+    datasets <- readODS::list_ods_sheets(i.file)
+    n.datasets <- length(datasets)
+    if (is.na(i.dataset)) {
+      datasetread <- NULL
+      dataweeks <- NULL
+    } else if (!(i.dataset %in% datasets)) {
+      datasetread <- NULL
+      dataweeks <- NULL
+      datalog <- paste0(datalog, "Warning: Table ", i.dataset, " not found\n")
+      cat("read_data> Warning: Table ", i.dataset, " not found\n")
+    } else {
+      datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
+      cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
+      datasetread <- readODS::read_ods(i.file, sheet = i.dataset)
+      # Remove na lines
+      nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+      if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Detect format year, week, rate
+      columnsn <- tolower(names(datasetread))
+      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+        names(datasetread) <- tolower(names(datasetread))
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+      } else {
+        # First column is the week name
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
           datasetread <- datasetread[-1]
@@ -1285,6 +1333,10 @@ extract.pfe <- function(i.file) {
 zip.present <- function() file.exists(Sys.getenv("R_ZIPCMD"))
 
 mdbtools.present <- function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
+
+openxlsx.present <- function(){
+	"openxlsx" %in% rownames(installed.packages())
+}
 
 # check what animation method has to be used
 

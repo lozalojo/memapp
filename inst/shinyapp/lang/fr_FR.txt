@@ -131,7 +131,7 @@ Medium thr.;Seuil moyen
 Medium threshold;Seuil moyen
 MEM needs at least two seasons;MEM a besoin d’au moins deux saisons
 MEM options;Options MEM
-memapp is able to read text, excel, access and R;memapp est capable de lire du texte, excel, access et R
+memapp is able to read text, excel, access and R;memapp est capable de lire MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) et OpenDocument Spreadsheet (ods)
 Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Méthode pour calculer d’autres intervalles de confiance: durée, pourcentage épidémique, début de l’épidémie, etc.
 Method for calculating the average curve confidence intervals;Méthode de calcul des intervalles de confiance de la courbe moyenne
 Method for calculating the epidemic threshold;Méthode de calcul du seuil épidémique
@@ -189,6 +189,7 @@ Procedures;Procédures
 Range of possible of values of the slope parameter used by goodness and optimize functions;Plage de valeurs possibles du paramètre de pente utilisé par les fonctions d’ajustement et d’optimisation
 Results;Résultats
 Rtools not found;Rtools non trouvé
+openxlsx not found;openxlsx non trouvé
 Scheme;Schéma
 Season;Saison
 Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Saison que vous souhaitez utiliser pour la surveillance en appliquant les seuils MEM.<br>Cette saison peut être incomplète.<br> Il est recommandé de ne pas utiliser cette saison de surveillance dans la sélection du modèle

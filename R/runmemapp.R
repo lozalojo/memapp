@@ -44,6 +44,20 @@
 #'
 #' @export
 #' @importFrom shiny runApp
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom DT dataTableOutput renderDataTable
+#' @importFrom formattable formattableOutput renderFormattable formattable formatter style icontext
+#' @importFrom shinyWidgets prettyCheckbox materialSwitch pickerInput
+#' @importFrom shinydashboard box valueBox
+#' @importFrom shinyjs useShinyjs
+#' @importFrom dplyr arrange if_else inner_join filter select
+#' @importFrom ggplot2 ggplot geom_line geom_point geom_segment scale_x_continuous scale_y_continuous labs theme_light theme
+#' @importFrom mem memmodel memtiming memgoodness memevolution memstability
+#' @importFrom plotly ggplotly
+#' @importFrom shinyBS popify
+#' @importFrom stringi stri_trans_general stri_enc_detect stri_enc_isascii
+#' @importFrom stringr str_match str_count
+#' @importFrom tidyr gather spread extract
 runmemapp <- function(launch.browser = TRUE, ...) {
   appDir <- system.file("shinyapp", package = "memapp")
   if (appDir == "") {

@@ -1514,6 +1514,7 @@ shinyServer(function(input, output, session) {
       temp1 <- read.data(i.file = infile$datapath, i.file.name = inname, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
       datasets <- temp1$datasets
       datasetread <- temp1$datasetread
+	  datalog <- paste0(datalog, temp1$datalog)
       rm("temp1")
       datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
@@ -1521,18 +1522,19 @@ shinyServer(function(input, output, session) {
       temp1 <- read.data(i.file = infile$datapath, i.file.name = inname, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
       datasets <- temp1$datasets
       datasetread <- temp1$datasetread
+	  datalog <- paste0(datalog, temp1$datalog)
       rm("temp1")
       datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     } else {
       datalog <- paste0(datalog, "Note: reading original data\n")
       cat("reactive/read_data> Note: reading original data\n")
-      temp1 <- read.data(i.file = infile$datapath, i.file.name = inname, i.dataset = indataset, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
+      # temp1 <- read.data(i.file = infile$datapath, i.file.name = inname, i.dataset = indataset, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
       temp2 <- read.data(i.file = infile$datapath, i.file.name = inname, i.dataset = indataset, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
-      datasets <- temp1$datasets
-      datasetread <- temp1$datasetread
-      datalog <- paste0(datalog, temp1$datalog)
-      rm("temp1")
+      datasets <- temp2$datasets
+      datasetread <- temp2$datasetread
+      datalog <- paste0(datalog, temp2$datalog)
+      # rm("temp1")
     }
     if (!is.null(datasetread)) {
       dataweeksoriginal <- row.names(temp2$datasetread)
@@ -2595,9 +2597,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbdData_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -2624,9 +2628,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbdData_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -2926,8 +2932,10 @@ shinyServer(function(input, output, session) {
             column(8),
             column(
               2,
-              if (zip.present()) {
+              if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdEdetailed_x", "xlsx")
+              } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
                 shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
@@ -3244,8 +3252,10 @@ shinyServer(function(input, output, session) {
             column(8),
             column(
               2,
-              if (zip.present()) {
+              if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdSdetailed_x", "xlsx")
+              } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
                 shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
@@ -3545,8 +3555,10 @@ shinyServer(function(input, output, session) {
             column(8),
             column(
               2,
-              if (zip.present()) {
+              if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdGoodnessSummary_x", "xlsx")
+              } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
                 shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
@@ -3565,8 +3577,10 @@ shinyServer(function(input, output, session) {
             column(8),
             column(
               2,
-              if (zip.present()) {
+              if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdGoodnessDetailed_x", "xlsx")
+              } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
                 shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
@@ -3833,9 +3847,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmData_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -3860,9 +3876,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmData_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -4316,9 +4334,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessSummary_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -4336,9 +4356,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessDetailed_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -4358,9 +4380,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessSummary_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -4377,9 +4401,11 @@ shinyServer(function(input, output, session) {
               column(8),
               column(
                 2,
-                if (zip.present()) {
+                if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessDetailed_x", "xlsx")
-                } else if (.Platform$OS.type == "windows") {
+                } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+              } else if (.Platform$OS.type == "windows") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
                   shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
@@ -5053,8 +5079,10 @@ shinyServer(function(input, output, session) {
             column(8),
             column(
               2,
-              if (zip.present()) {
+              if (zip.present() & openxlsx.present()) {
                 downloadButton("tbmOptimizeADetail_x", "xlsx")
+              } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
                 shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
@@ -5292,8 +5320,10 @@ shinyServer(function(input, output, session) {
             column(8),
             column(
               2,
-              if (zip.present()) {
+              if (zip.present() & openxlsx.present()) {
                 downloadButton("tbsSurveillanceAverage_x", "xlsx")
+              } else if (!openxlsx.present()) {
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
                 shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {

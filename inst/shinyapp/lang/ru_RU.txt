@@ -131,7 +131,7 @@ Medium thr.;Средний порог
 Medium threshold;Средний порог
 MEM needs at least two seasons;Для MEM необходимо по крайней мере два сезона
 MEM options;Опции MEM
-memapp is able to read text, excel, access and R;Приложение memapp (веб-приложение метода движущейся эпидемии, The Moving Epidemic Method Web Application) может прочитать файл в форматах text, excel, access и R
+memapp is able to read text, excel, access and R;Приложение memapp может прочитать файл в форматах MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) и OpenDocument Spreadsheet (ods)
 Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Метод для расчета других доверительных интервалов: продолжительности, эпидемического процентного показателя, начала эпидемии и т.д.
 Method for calculating the average curve confidence intervals;Метод для расчета средних значений доверительных интервалов кривой
 Method for calculating the epidemic threshold;Метод для расчета эпидемического порога
@@ -189,6 +189,7 @@ Procedures;Процедуры
 Range of possible of values of the slope parameter used by goodness and optimize functions; Диапазон возможных показателей параметра угла наклона, используемых в функциях согласованности и оптимизации
 Results;Результаты
 Rtools not found;R-инструменты не обнаружены
+openxlsx not found;openxlsx не обнаружены
 Scheme;Схема
 Season;Сезон
 Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Сезон, который Вы хотите использовать для наблюдения с использованием пороговых значений MEM .<br>Этот сезон может быть неполным.<br> При выборе модели рекомендуется не использовать сезон наблюдения

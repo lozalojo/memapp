@@ -13,6 +13,15 @@ The stable package can be installed from the official R repositories (*CRAN*) us
 install.packages("memapp")
 ```
 
+Or from the official repository:
+
+```
+if(!require("devtools")) install.packages("devtools")
+library("devtools")
+# install the memapp stable version from GitHub
+install_github("lozalojo/memapp", branch = "master")
+```
+
 To install the development version of *memapp* use the *devtools* package.
 
 ```
@@ -21,6 +30,7 @@ library("devtools")
 # install the memapp development version from GitHub
 install_github("lozalojo/memapp", branch = "development")
 ```
+
 When installing this version also you are intalling development versions of some sensitive packages that are used by *memapp* (including the *mem* package).
 
 See installation videos for Windows 10, Ubuntu 16.04.4 and MacOS 10.13.1 High Sierra here:
@@ -41,6 +51,11 @@ memapp::runmemapp()
 You can specify other parameters passed to `shiny::runApp`, such as `display = normal`, or  
 `launch.browser = TRUE`.
 
+```
+# run the app:
+memapp::runmemapp(launch.browser = TRUE)
+```
+
 ## Notes
 
 In order to use the Surveillance/Animation graph, *magick* package must be installed:
@@ -57,8 +72,23 @@ install.packages("animation")
 
 Along with one of the following programs: *GraphicsMagick* or *ImageMagick*:
 
-www.imagemagick.org
-www.graphicsmagick.org
+[www.imagemagick.org](www.imagemagick.org "ImageMagick")
+[www.graphicsmagick.org](www.graphicsmagick.org "GraphicsMagick")
+
+To import other formats like SAS, Stata, SPSS, excel, you'll need additional packages:
+
+```
+# MS Excel(xls, xlsx)
+install.packages("readxl")
+# dBase (dbf), SPSS (sav) and Stata (dta)
+install.packages("foreign")
+# SAS (sas7bdat)
+install.packages("haven")
+# OpenDocument Spreadsheet (ods)
+install.packages("readODS")
+# MS Access under Windows (mdb, accdb)
+install.packages("RODBC")
+```
 
 The installers can be downloaded from their webpages or can be installed directly from R:
 
@@ -72,9 +102,11 @@ install.GraphicsMagick()
 install.ImageMagick()
 ```
 
-Most data can be exported to csv or excel files, but for the later to work you have to install Rtools. You can download and install it here:
+Most data can be exported to csv or excel files, but for the later to work you have to install Rtools toolset and the openxlsx package.
 
-https://cran.r-project.org/bin/windows/Rtools/
+You can download and install Rtools it here:
+
+[https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/ "Rtools")
 
 ```
 # check if installr is installed, and install it otherwise
@@ -82,7 +114,13 @@ if(!require("installr")) install.packages('installr')
 library("installr")
 # install Rtools
 install.Rtools()
+```
 
+And install openxlsx package:
+
+```
+# Install openxlsx package
+install.packages("openxlsx")
 ```
 
 ## Localization
@@ -137,6 +175,6 @@ Vega T, Lozano JE, Meerhoff T, Snacken R, Mott J, Ortiz de Lejarazu R, et al. In
 
 Vega T, Lozano JE, Meerhoff T, Snacken R, Beaute J, Jorgensen P, et al. Influenza surveillance in Europe: comparing intensity levels calculated using the moving epidemic method. Influenza Other Respir Viruses. 2015 Sep;9(5):234–46. DOI:10.1111/irv.12330.
 
-Lozano JE. lozalojo/mem: Second release of the MEM R library. Zenodo [Internet]. [cited 2017 Feb 1]; Available from: https://zenodo.org/record/165983. [![DOI](https://zenodo.org/badge/47120918.svg)](https://zenodo.org/badge/latestdoi/47120918)
+Lozano JE. lozalojo/mem: Second release of the MEM R package. Zenodo [Internet]. [cited 2017 Feb 1]; Available from: https://zenodo.org/record/165983. [![DOI](https://zenodo.org/badge/47120918.svg)](https://zenodo.org/badge/latestdoi/47120918)
 
 Lozano JE. lozalojo/memapp: Second release of the MEM Shiny Web Application R package. Zenodo [Internet]. [cited 2018 Feb 15]; Available from: https://zenodo.org/record/1173518. [![DOI](https://zenodo.org/badge/90709196.svg)](https://zenodo.org/badge/latestdoi/90709196)

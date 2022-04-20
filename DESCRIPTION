@@ -8,7 +8,6 @@ Depends:
     R (>= 3.4.0)
 Imports:
     shiny,
-    shinythemes,
     shinydashboard,
     shinyWidgets,
     shinyBS,
@@ -16,19 +15,20 @@ Imports:
     RColorBrewer,
     tidyr,
     dplyr,
-    openxlsx,
-    foreign,
-    haven,
-    readxl,
     stringr,
     stringi,
     DT,
-    RODBC,
     formattable,
     ggplot2,
     plotly,
     mem (>= 2.17)
 Suggests:
+    openxlsx,
+    readxl,
+    foreign,
+    haven,
+    readODS,
+    RODBC,
     magick,
     animation
 License: GPL (>= 2)
