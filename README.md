@@ -123,6 +123,13 @@ And install openxlsx package:
 install.packages("openxlsx")
 ```
 
+## Technical manual
+
+Technical manuals can be downloaded from here:
+
+[Technical manual (stable version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf "stable")
+[Technical manual (development version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf "development")
+
 ## Localization
 
 Starting with version 2.6, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at github:
