@@ -1405,8 +1405,13 @@ extract.two <- function(i.data, i.order, i.column) {
 # locale funcions
 
 translation.dir <- function() {
-  translation.loc <- c("lang", "inst/shinyapp/lang", paste0(.libPaths(), "/memapp/shinyapp/lang"))
+  translation.loc <- c("lang", "inst/shinyapp/lang", file.path(.libPaths(), "/memapp/shinyapp/lang"))
   utils::head(translation.loc[dir.exists(translation.loc)], 1)
+}
+
+manual.dir <- function() {
+  manual.loc <- c("manual", "inst/manual", file.path(.libPaths(), "/memapp/manual"))
+  utils::head(manual.loc[dir.exists(manual.loc)], 1)
 }
 
 get.languages <- function() {

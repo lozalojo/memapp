@@ -6652,11 +6652,13 @@ shinyServer(function(input, output, session) {
   })
 
   output$uiSupport <- renderUI({
+  manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/master/inst/manual/",ifelse(as.logical(input$experimental),"technicalmanualdev.pdf","technicalmanual.pdf")))
+  #cat("---\n",manuallocation,"\n---\n")
     dropdown(
       shinydashboard::box(
         shinyjs::useShinyjs(),
         title = trloc("Support"), status = "info", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = FALSE,
-        h5(a(trloc("Technical manual"), href = "https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing", target = "_blank")),
+        h5(a(trloc("Technical manual"), href = manuallocation, target = "_blank")),
         h5(a(trloc("Submit issues"), href = "https://github.com/lozalojo/memapp/issues", target = "_blank")),
         popify(
           # checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = default.values$advanced)
