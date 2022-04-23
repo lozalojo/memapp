@@ -73,6 +73,7 @@ install.packages("animation")
 Along with one of the following programs: *GraphicsMagick* or *ImageMagick*:
 
 [www.imagemagick.org](www.imagemagick.org "ImageMagick")
+
 [www.graphicsmagick.org](www.graphicsmagick.org "GraphicsMagick")
 
 To import other formats like SAS, Stata, SPSS, excel, you'll need additional packages:
@@ -127,8 +128,9 @@ install.packages("openxlsx")
 
 The technical manual of the application can be downloaded from here:
 
-[Technical manual (stable version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true "stable"){:target="_blank"}
-[Technical manual (development version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true "development"){:target="_blank"}
+[Technical manual (stable version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true "stable")
+
+[Technical manual (development version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true "development")
 
 ## Localization
 
