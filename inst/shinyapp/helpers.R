@@ -408,8 +408,8 @@ read.data.access <- function(i.file,
         datasets <- NULL
         datasetread <- NULL
         dataweeks <- NULL
-        datalog <- paste0(datalog, "Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools")
-        cat("read_data> Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools")
+        datalog <- paste0(datalog, "Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools\n")
+        cat("read_data> Error: mdb tools not installed.\nFor debian/ubuntu:\nsudo apt-get install mdbtools\n")
       } else {
         # read tables in file
         datasets <- system(paste("mdb-tables -1", shQuote(i.file)), intern = TRUE)
