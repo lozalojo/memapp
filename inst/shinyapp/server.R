@@ -6652,7 +6652,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$uiSupport <- renderUI({
-  manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(as.logical(input$experimental),"technicalmanualdev.pdf","technicalmanual.pdf")))
+  manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(as.logical(input$experimental),"technicalmanualdev.pdf","technicalmanual.pdf"),"?raw=true")
   #cat("---\n",manuallocation,"\n---\n")
     dropdown(
       shinydashboard::box(
