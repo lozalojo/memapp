@@ -134,7 +134,7 @@ The technical manual of the application can be downloaded from here:
 
 Starting with version 2.6, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at github:
 
-[English language definition](https://github.com/lozalojo/memapp/blob/master/inst/shinyapp/lang/en-GB.txt "en file")
+[English language definition](https://github.com/lozalojo/memapp/blob/master/inst/shinyapp/lang/en_GB.txt "en file")
 
 With a text editor, translate the second column to your language and send it to the maintainer.
 
