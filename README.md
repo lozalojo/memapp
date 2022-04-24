@@ -72,9 +72,9 @@ install.packages("animation")
 
 Along with one of the following programs: *GraphicsMagick* or *ImageMagick*:
 
-[www.imagemagick.org](https://imagemagick.org/ "ImageMagick")
+[ImageMagick](https://imagemagick.org/ "ImageMagick")
 
-[www.graphicsmagick.org](http://www.graphicsmagick.org/ "GraphicsMagick")
+[GraphicsMagick](http://www.graphicsmagick.org/ "GraphicsMagick")
 
 To import other formats like SAS, Stata, SPSS, excel, you'll need additional packages:
 
