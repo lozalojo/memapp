@@ -35,9 +35,7 @@ When installing this version also you are intalling development versions of some
 
 See installation videos for Windows 10, Ubuntu 16.04.4 and MacOS 10.13.1 High Sierra here:
 
-```
-https://www.youtube.com/watch?v=rTIlQGM0qbE&list=PLhUpdbxODE7DizLt2TA-Hgw0cQ5ycM8BB
-```
+[Youtube's installation videos playlist](https://www.youtube.com/watch?v=rTIlQGM0qbE&list=PLhUpdbxODE7DizLt2TA-Hgw0cQ5ycM8BB "installation videos")
 
 ## Usage
 
@@ -107,7 +105,7 @@ Most data can be exported to csv or excel files, but for the later to work you h
 
 You can download and install Rtools it here:
 
-[https://cran.r-project.org/bin/windows/Rtools/](https://cran.r-project.org/bin/windows/Rtools/ "Rtools")
+[Rtools download website](https://cran.r-project.org/bin/windows/Rtools/ "Rtools")
 
 ```
 # check if installr is installed, and install it otherwise
@@ -136,9 +134,7 @@ The technical manual of the application can be downloaded from here:
 
 Starting with version 2.6, memapp enabled an option to localize the app. If your language is not listed in the Languages section and you want to see the app translated please, open the semicolon separated values file at github:
 
-```
-https://github.com/lozalojo/memapp/blob/master/inst/shinyapp/lang/en-GB.txt
-```
+[English language definition](https://github.com/lozalojo/memapp/blob/master/inst/shinyapp/lang/en-GB.txt "en file")
 
 With a text editor, translate the second column to your language and send it to the maintainer.
 
@@ -150,31 +146,11 @@ With a text editor, translate the second column to your language and send it to 
 
 ## Useful links
 
-memapp R package *official webpage*
+[memapp R package *official webpage*](https://github.com/lozalojo/memapp "official webpage")
 
-```
-https://github.com/lozalojo/memapp
-```
+[memapp R package *CRAN webpage*](https://cran.r-project.org/package=memapp "CRAN webpage")
 
-memapp R package *CRAN webpage*
-
-```
-https://cran.r-project.org/package=memapp
-```
-
-memapp *official server*
-
-```
-http://memapp.iecscyl.com:8080/
-```
-
-## Technical manual
-
-At the following google drive:
-
-```
-https://drive.google.com/file/d/0B0IUo_0NhTOoX29zc2p5RmlBUWc/view?usp=sharing
-```
+[memapp *official server*](http://memapp.iecscyl.com:8080/ "official server")
 
 ## References
 
@@ -184,6 +160,9 @@ Vega T, Lozano JE, Meerhoff T, Snacken R, Mott J, Ortiz de Lejarazu R, et al. In
 
 Vega T, Lozano JE, Meerhoff T, Snacken R, Beaute J, Jorgensen P, et al. Influenza surveillance in Europe: comparing intensity levels calculated using the moving epidemic method. Influenza Other Respir Viruses. 2015 Sep;9(5):234–46. DOI:10.1111/irv.12330.
 
-Lozano JE. lozalojo/mem: Second release of the MEM R package. Zenodo [Internet]. [cited 2017 Feb 1]; Available from: https://zenodo.org/record/165983. [![DOI](https://zenodo.org/badge/47120918.svg)](https://zenodo.org/badge/latestdoi/47120918)
+Lozano JE. lozalojo/mem: Second release of the MEM R package. Zenodo [Internet]. [cited 2017 Feb 1]; Available from: [https://zenodo.org/record/165983](https://zenodo.org/record/165983 "https://zenodo.org/record/165983"). [![DOI](https://zenodo.org/badge/47120918.svg)](https://zenodo.org/badge/latestdoi/47120918)
 
-Lozano JE. lozalojo/memapp: Second release of the MEM Shiny Web Application R package. Zenodo [Internet]. [cited 2018 Feb 15]; Available from: https://zenodo.org/record/1173518. [![DOI](https://zenodo.org/badge/90709196.svg)](https://zenodo.org/badge/latestdoi/90709196)
+Lozano JE. lozalojo/memapp: Second release of the MEM Shiny Web Application R package. Zenodo [Internet]. [cited 2018 Feb 15]; Available from: [https://zenodo.org/record/1173518](https://zenodo.org/record/1173518 "https://zenodo.org/record/1173518"). [![DOI](https://zenodo.org/badge/90709196.svg)](https://zenodo.org/badge/latestdoi/90709196)
+
+
+
