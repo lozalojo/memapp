@@ -313,6 +313,7 @@ Yes;Sí
 No;No
 Reset;Reiniciar
 Show the experimental features tickbox;Mostrar opción para habilitar las características experimentales
+Show the advanced features tickbox;Mostrar opción para habilitar las características avanzadas
 Loess span;Suavizado Loess
 Loess span parameter;Parámetro de suavizado Loess
 Smoothing parameter;Parámetro de suavizado

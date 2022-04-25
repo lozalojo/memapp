@@ -49,6 +49,7 @@ shinyServer(function(input, output, session) {
     typeother = 3,
     levelaveragecurve = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
     centering = -1,
+    showadvanced = TRUE,
     advanced = FALSE,
     showexperimental = TRUE,
     experimental = FALSE,
@@ -6652,14 +6653,29 @@ shinyServer(function(input, output, session) {
   })
 
   output$uiSupport <- renderUI({
-  manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(as.logical(input$experimental),"technicalmanualdev.pdf","technicalmanual.pdf"),"?raw=true")
+  #manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/","technicalmanual.pdf","?raw=true")
+  #manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(input$experimental,"technicalmanualdev.pdf","technicalmanual.pdf"),"?raw=true")
   #cat("---\n",manuallocation,"\n---\n")
     dropdown(
       shinydashboard::box(
         shinyjs::useShinyjs(),
         title = trloc("Support"), status = "info", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = FALSE,
-        h5(a(trloc("Technical manual"), href = manuallocation, target = "_blank")),
+        #h5(a(trloc("Technical manual"), href = manuallocation, target = "_blank")),
+		conditionalPanel(condition = "input.experimental",h5(a(trloc("Technical manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true", target = "_blank"))),
+		conditionalPanel(condition = "!input.experimental",h5(a(trloc("Technical manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true", target = "_blank"))),
         h5(a(trloc("Submit issues"), href = "https://github.com/lozalojo/memapp/issues", target = "_blank")),
+        hidden(popify(
+          # checkboxInput("showadvanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the advanced features tickbox")), value = default.values$showadvanced)
+          shinyWidgets::prettyCheckbox(
+            inputId = "showadvanced",
+            label = trloc("Show the advanced features tickbox"),
+            value = default.values$showadvanced,
+            shape = "curve"
+          ),
+          title = trloc("Show the advanced features tickbox"), content = trloc("Show the advanced features tickbox"), placement = "left", trigger = "focus", options = list(container = "body")
+        )),
+        conditionalPanel(
+          condition = "input.showadvanced",
         popify(
           # checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = default.values$advanced)
           shinyWidgets::prettyCheckbox(
@@ -6669,6 +6685,7 @@ shinyServer(function(input, output, session) {
             shape = "curve"
           ),
           title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = "focus", options = list(container = "body")
+        )
         ),
         hidden(popify(
           # checkboxInput("showexperimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the experimental features tickbox")), value = default.values$showexperimental)

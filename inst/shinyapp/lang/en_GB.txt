@@ -313,6 +313,7 @@ Yes;Yes
 No;No
 Reset;Reset
 Show the experimental features tickbox;Show the experimental features tickbox
+Show the advanced features tickbox;Show the advanced features tickbox
 Loess span;Loess span
 Loess span parameter;Loess span parameter
 Smoothing parameter;Smoothing parameter
