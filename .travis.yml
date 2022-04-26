@@ -41,7 +41,12 @@ r_github_packages:
   - lozalojo/mem
   - tidyverse/ggplot2
   - ropensci/plotly
-  
+
+branches:
+  only:
+    - master
+    - development
+
 after_success:
   - Rscript -e 'library(covr); codecov()'
 
