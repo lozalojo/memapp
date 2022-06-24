@@ -1595,11 +1595,14 @@ shinyServer(function(input, output, session) {
           #                                         i.param.2=as.numeric(input$wavesparam2),
           #                                         i.method=as.numeric(input$method),
           #                                         i.param=as.numeric(input$param))
+		  # Calcular el número de puntos que se toman
           temp1 <- mem:::transformseries.multiple(datasetread,
             i.waves = as.numeric(input$numberwaves),
             i.min.separation = as.numeric(input$wavesseparation),
             i.intra.param = as.numeric(input$wavesparam1),
-            i.inter.param = as.numeric(input$wavesparam2)
+            i.inter.param = as.numeric(input$wavesparam2),
+			i.method = as.numeric(input$method),
+            i.param = as.numeric(input$param)
           )
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse = "\t"))), collapse = "\n"))
           datasetread <- temp1$data.final
@@ -2654,9 +2657,15 @@ shinyServer(function(input, output, session) {
 
   output$tbdFile <- renderUI({
     if (as.numeric(input$waves) == 4) {
-      fluidPage(
-        verbatimTextOutput("tbdFileTxt"),
-        plotOutput("tbdFilePlot")
+	  fluidPage(
+        fluidRow(
+          column(6, verbatimTextOutput("tbdFileTxt")),
+          column(6, plotOutput("tbdFilePlot1"))
+        ),
+        fluidRow(
+          column(6, plotOutput("tbdFilePlot2")),
+          column(6, plotOutput("tbdFilePlot3"))
+        )
       )
     } else {
       verbatimTextOutput("tbdFileTxt")
@@ -2680,7 +2689,17 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$tbdFilePlot <- renderPlot({
+  output$tbdFilePlot1 <- renderPlot({
+    readdata <- read_data()
+    plots <- readdata$plots
+    if (is.null(plots)) {
+      NULL
+    } else {
+      tail(plots$p3, 1)
+    }
+  }, width = 640, height = 480)
+  
+  output$tbdFilePlot2 <- renderPlot({
     readdata <- read_data()
     plots <- readdata$plots
     if (is.null(plots)) {
@@ -2688,8 +2707,18 @@ shinyServer(function(input, output, session) {
     } else {
       plots$p4[[2]]
     }
-  }, width = 800, height = 600)
+  }, width = 640, height = 480)
 
+  output$tbdFilePlot3 <- renderPlot({
+    readdata <- read_data()
+    plots <- readdata$plots
+    if (is.null(plots)) {
+      NULL
+    } else {
+      plots$p5[[2]]
+    }
+  }, width = 640, height = 480)
+  
   output$tbdData <- DT::renderDataTable({
     readdata <- read_data()
     datfile <- readdata$datasetread
