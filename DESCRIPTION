@@ -29,7 +29,6 @@ Suggests:
     haven,
     readODS,
     RODBC,
-    magick,
     animation
 Remotes:
   url::https://github.com/lozalojo/mem/archive/refs/heads/development.zip,
