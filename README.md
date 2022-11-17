@@ -27,7 +27,7 @@ Or from the official repository:
 if(!require("devtools")) install.packages("devtools")
 library("devtools")
 # install the memapp stable version from GitHub
-install_github("lozalojo/memapp", branch = "master")
+install_github("lozalojo/memapp", ref = "master")
 ```
 
 To install the development version of *memapp* use the *devtools* package.
@@ -36,7 +36,7 @@ To install the development version of *memapp* use the *devtools* package.
 if(!require("devtools")) install.packages("devtools")
 library("devtools")
 # install the memapp development version from GitHub
-install_github("lozalojo/memapp", branch = "development")
+install_github("lozalojo/memapp", ref = "development")
 ```
 
 When installing this version also you are intalling development versions of some sensitive packages that are used by *memapp* (including the *mem* package).
