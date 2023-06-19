@@ -321,5 +321,8 @@ Smoothing parameter of the smoothing regression;Smoothing parameter of the smoot
 Optimum;Optimum
 MEM Model Summary;MEM Model Summary
 Spline;Spline
+Moving average;Moving average
+MA weeks;MA weeks
+Moving Average weeks;Moving Average weeks
 Positive;Positive
 Check this tickbox if you want to replace negative values with zeroes;Check this tickbox if you want to replace negative values with zeroes

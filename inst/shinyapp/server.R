@@ -59,6 +59,7 @@ shinyServer(function(input, output, session) {
     intensitythr = TRUE,
     transformation = 1,
     loesspan = list(min = 0.05, max = 1, value = 0.50, step = 0.05),
+    movavgweeks = list(min = 1, max = 5, value = 3, step = 1),
     waves = 1,
     twowavesproportion = list(min = 0, max = 100, value = 15, step = 5),
     numberwaves = list(value = 0, min = 0, max = NA, step = 1),
@@ -1551,24 +1552,32 @@ shinyServer(function(input, output, session) {
           datasetread <- datasetread[!zerocols]
         }
         # Transformation
-        if (as.numeric(input$transformation) %in% c(2:3)) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+        if (as.numeric(input$transformation) == 2) {
+          datalog <- paste0(datalog, "Note: applying selected transformation - Odd\n")
+          cat("reactive/read_data> Note: applying selected transformation - Odd\n")
+          datasetread <- transformseries(datasetread, i.transformation = as.numeric(input$transformation))
+        } else if (as.numeric(input$transformation) == 3) {
+          datalog <- paste0(datalog, "Note: applying selected transformation - Fill missings\n")
+          cat("reactive/read_data> Note: applying selected transformation - Fill missings\n")
           datasetread <- transformseries(datasetread, i.transformation = as.numeric(input$transformation))
         } else if (as.numeric(input$transformation) == 4) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+          datalog <- paste0(datalog, "Note: applying selected transformation - Smoothing regression\n")
+          cat("reactive/read_data> Note: applying selected transformation - Smoothing regression\n")
           if (input$smregressionoptimum) hsuav.value <- -1 else hsuav.value <- as.numeric(input$smregressionsmoothing)
           datasetread <- transformseries(datasetread, i.transformation = 4, hsuav = hsuav.value)
         } else if (as.numeric(input$transformation) == 5) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+          datalog <- paste0(datalog, "Note: applying selected transformation - Loess\n")
+          cat("reactive/read_data> Note: applying selected transformation - Loess\n")
           datasetread <- transformseries(datasetread, i.transformation = 7, i.positive = as.logical(input$transfpositive), span = as.numeric(input$loesspan))
         } else if (as.numeric(input$transformation) == 6) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+          datalog <- paste0(datalog, "Note: applying selected transformation - Spline\n")
+          cat("reactive/read_data> Note: applying selected transformation - Spline\n")
           datasetread <- transformseries(datasetread, i.transformation = 8, i.positive = as.logical(input$transfpositive))
-        } else {
+        } else if (as.numeric(input$transformation) == 7) {
+          datalog <- paste0(datalog, "Note: applying selected transformation - Moving average\n")
+          cat("reactive/read_data> Note: applying selected transformation - Moving average\n")
+          datasetread <- transformseries(datasetread, i.transformation = 9, i.number = as.numeric(input$movavgweeks))
+        }else {
           datalog <- paste0(datalog, "Note: no transformation selected\n")
           cat("reactive/read_data> Note: no transformation selected\n")
         }
@@ -1745,6 +1754,7 @@ shinyServer(function(input, output, session) {
     updatePickerInput(session, "SelectSeasons", selected = NULL)
     updatePickerInput(session, "SelectExclude", selected = NULL)
     if (input$transformation == 5 & input$advanced) updateSliderInput(session, "loesspan", value = default.values$loesspan$value, min = default.values$loesspan$min, max = default.values$loesspan$max, step = default.values$loesspan$step)
+    if (input$transformation == 7 & input$advanced) updateSliderInput(session, "movavgweeks", value = default.values$movavgweeks$value, min = default.values$movavgweeks$min, max = default.values$movavgweeks$max, step = default.values$movavgweeks$step)
     if (input$transformation == 4 & input$advanced) updatePrettyCheckbox(session, "smregressionoptimum", value = default.values$smregressionoptimum)
     if (input$transformation == 4 & input$advanced) updateSliderInput(session, "smregressionsmoothing", value = default.values$smregressionsmoothing$value, min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, step = default.values$smregressionsmoothing$step)
     if ((input$transformation == 5 | input$transformation == 6) & input$advanced) updatePrettyCheckbox(session, "transfpositive", value = default.values$transfpositive)
@@ -6111,8 +6121,8 @@ shinyServer(function(input, output, session) {
   })
 
   output$uitransformation <- renderUI({
-    transformation.list <- list("No transformation" = 1, "Odd" = 2, "Fill missings" = 3, "Smoothing regression" = 4, "Loess" = 5, "Spline" = 6)
-    names(transformation.list) <- trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess", "Spline"))
+    transformation.list <- list("No transformation" = 1, "Odd" = 2, "Fill missings" = 3, "Smoothing regression" = 4, "Loess" = 5, "Spline" = 6, "Moving average" = 7)
+    names(transformation.list) <- trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess", "Spline", "Moving average"))
     fluidRow(
       popify(
         selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size = 1, selectize = FALSE, choices = transformation.list, selected = default.values$transformation),
@@ -6123,6 +6133,13 @@ shinyServer(function(input, output, session) {
         popify(
           sliderInput("loesspan", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Loess span")), min = default.values$loesspan$min, max = default.values$loesspan$max, value = default.values$loesspan$value, step = default.values$loesspan$step),
           title = trloc("Loess span"), content = trloc("Loess span parameter"), placement = "right", trigger = "focus", options = list(container = "body")
+        )
+      ),
+      conditionalPanel(
+        condition = "input.transformation == 7 & input.advanced",
+        popify(
+          sliderInput("movavgweeks", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("MA weeks")), min = default.values$movavgweeks$min, max = default.values$movavgweeks$max, value = default.values$movavgweeks$value, step = default.values$movavgweeks$step),
+          title = trloc("MA weeks"), content = trloc("Moving Average weeks"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(

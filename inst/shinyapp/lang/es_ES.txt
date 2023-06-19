@@ -321,5 +321,8 @@ Smoothing parameter of the smoothing regression;Parámetro de suavizado de la re
 Optimum;Óptimo
 MEM Model Summary;Resumen del modelo MEM
 Spline;Spline
+Moving average;Media móvil
+MA weeks;Semanas MM
+Moving Average weeks;Semanas media móvil
 Positive;Positivos
 Check this tickbox if you want to replace negative values with zeroes;Active esta opción si quiere que se reemplacen los valores negativos con ceros
