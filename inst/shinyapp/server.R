@@ -51,7 +51,7 @@ shinyServer(function(input, output, session) {
     centering = -1,
     showadvanced = TRUE,
     advanced = FALSE,
-    showexperimental = FALSE,
+    showexperimental = TRUE,
     experimental = FALSE,
     processdata = TRUE,
     preepidemicthr = TRUE,
