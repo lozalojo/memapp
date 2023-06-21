@@ -1,13 +1,5 @@
 # The Moving Epidemic Method Shiny Web Application
 
-[![Travis Build Status](https://travis-ci.org/lozalojo/memapp.svg?branch=master)](https://travis-ci.org/lozalojo/memapp)
-[![Coverage Status](https://img.shields.io/codecov/c/github/lozalojo/memapp/master.svg)](https://codecov.io/github/lozalojo/memapp?branch=master)
-[![DOI](https://zenodo.org/badge/90709196.svg)](https://zenodo.org/badge/latestdoi/90709196)
-[![monthly](http://cranlogs.r-pkg.org/badges/memapp)](https://www.rpackages.io/package/memapp) 
-[![total](http://cranlogs.r-pkg.org/badges/grand-total/memapp)](https://www.rpackages.io/package/memapp)
-[![CRAN](http://www.r-pkg.org/badges/version/memapp?color=009999)](https://cran.r-project.org/package=memapp)
-[![License](https://img.shields.io/badge/license-GPL%20%28%3E=%202%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
-
 ## Overview
 
 *memapp* is a web application created to serve as a graphical user interface for the R mem package. It was created using Shiny, a web application framework for R.
@@ -70,17 +62,9 @@ In order to use the Surveillance/Animation graph, *magick* package must be insta
 install.packages("magick")
 ```
 
-Or alternatively, for low specs machines (recommended for most users), the *animation* package:
-
-```
-install.packages("animation")
-```
-
-Along with one of the following programs: *GraphicsMagick* or *ImageMagick*:
+Along with *ImageMagick*:
 
 [ImageMagick Website](https://imagemagick.org/ "ImageMagick")
-
-[GraphicsMagick Website](http://www.graphicsmagick.org/ "GraphicsMagick")
 
 To import other formats like SAS, Stata, SPSS, excel, you'll need additional packages:
 
@@ -103,8 +87,6 @@ The installers can be downloaded from their webpages or can be installed directl
 # check if installr is installed, and install it otherwise
 if(!require("installr")) install.packages('installr')
 library("installr")
-# install GraphicsMagic
-install.GraphicsMagick()
 # install ImageMagick
 install.ImageMagick()
 ```
