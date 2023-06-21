@@ -54,6 +54,7 @@ shinyServer(function(input, output, session) {
     showexperimental = TRUE,
     experimental = FALSE,
     processdata = TRUE,
+	usetdistribution = FALSE,
     preepidemicthr = TRUE,
     postepidemicthr = FALSE,
     intensitythr = TRUE,
@@ -1226,7 +1227,8 @@ shinyServer(function(input, output, session) {
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
-          i.n.max = as.numeric(input$nvalues)
+          i.n.max = as.numeric(input$nvalues),
+		  i.use.t = as.logical(input$usetdistribution)
         )
         epi <- list()
         epi$epidemic.thresholds <- temp1$epidemic.thresholds
@@ -1246,7 +1248,8 @@ shinyServer(function(input, output, session) {
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
-          i.n.max = as.numeric(input$nvalues)
+          i.n.max = as.numeric(input$nvalues),
+		  i.use.t = as.logical(input$usetdistribution)
         )
       }
     }
@@ -1882,7 +1885,8 @@ shinyServer(function(input, output, session) {
               i.colThresholds = colors.palette$colThresholds,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colEpidemic = colors.palette$colEpidemic,
-              i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+              i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
             )
             if (is.null(p)) {
               zfix <- NULL
@@ -2055,7 +2059,8 @@ shinyServer(function(input, output, session) {
               i.colThresholds = colors.palette$colThresholds,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colEpidemic = colors.palette$colEpidemic,
-              i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+              i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
             )
             if (is.null(p)) {
               zfix <- NULL
@@ -2255,7 +2260,8 @@ shinyServer(function(input, output, session) {
               i.colThresholds = colors.palette$colThresholds,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colEpidemic = colors.palette$colEpidemic,
-              i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+              i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
             )
             if (is.null(p)) {
               zfix <- NULL
@@ -2844,7 +2850,8 @@ shinyServer(function(input, output, session) {
           i.colObservedPoints = colors.palette$colObservedPoints,
           i.colSeasons = colors.palette$colSeasons,
           i.colThresholds = colors.palette$colThresholds,
-          i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+          i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
         )
         if (is.null(p)) {
           zfix <- NULL
@@ -2911,7 +2918,8 @@ shinyServer(function(input, output, session) {
           i.colThresholds = colors.palette$colThresholds,
           i.colObservedPoints = colors.palette$colObservedPoints,
           i.colEpidemic = colors.palette$colEpidemic,
-          i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+          i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
         )
         if (is.null(p)) {
           zfix <- NULL
@@ -4027,7 +4035,8 @@ shinyServer(function(input, output, session) {
         i.colObservedPoints = colors.palette$colObservedPoints,
         i.colSeasons = colors.palette$colSeasons,
         i.colThresholds = colors.palette$colThresholds,
-        i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+        i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
       )
       if (is.null(p)) {
         zfix <- NULL
@@ -4088,7 +4097,8 @@ shinyServer(function(input, output, session) {
         i.colThresholds = colors.palette$colThresholds,
         i.colObservedPoints = colors.palette$colObservedPoints,
         i.colEpidemic = colors.palette$colEpidemic,
-        i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+        i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
       )
       if (is.null(p)) {
         zfix <- NULL
@@ -4251,7 +4261,8 @@ shinyServer(function(input, output, session) {
         i.colObservedPoints = colors.palette$colObservedPoints,
         i.colSeasons = colors.palette$colSeasons,
         i.colThresholds = colors.palette$colThresholds,
-        i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+        i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
       )
       if (is.null(p)) {
         zfix <- NULL
@@ -5638,7 +5649,8 @@ shinyServer(function(input, output, session) {
           i.colObservedPoints = colors.palette$colObservedPoints,
           i.colSeasons = c(colors.palette$colObservedLines, colors.palette$colSeasons[c(3, 2, 3)]),
           i.colThresholds = colors.palette$colThresholds,
-          i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+          i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
         )
         if (is.null(p)) {
           zfix <- NULL
@@ -5717,7 +5729,8 @@ shinyServer(function(input, output, session) {
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colSeasons = c(colors.palette$colObservedLines, colors.palette$colSeasons[c(3, 2, 3)]),
               i.colThresholds = colors.palette$colThresholds,
-              i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+              i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
             )
             if (!is.null(p)) {
               temp1 <- p$gdata
@@ -5807,7 +5820,8 @@ shinyServer(function(input, output, session) {
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colSeasons = c(colors.palette$colObservedLines, colors.palette$colSeasons[c(3, 2, 3)]),
               i.colThresholds = colors.palette$colThresholds,
-              i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+              i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
             )
             if (!is.null(p)) {
               temp1 <- p$gdata
@@ -5957,7 +5971,8 @@ shinyServer(function(input, output, session) {
           i.colObservedPoints = colors.palette$colObservedPoints,
           i.colSeasons = colors.palette$colSeasons,
           i.colThresholds = colors.palette$colThresholds,
-          i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+          i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
         )
         if (is.null(p)) {
           zfix <- NULL
@@ -6038,7 +6053,8 @@ shinyServer(function(input, output, session) {
           i.colThresholds = colors.palette$colThresholds,
           i.colObservedPoints = colors.palette$colObservedPoints,
           i.colEpidemic = colors.palette$colEpidemic,
-          i.yaxis.starts.at.0 = as.logical(input$yaxis0)
+          i.yaxis.starts.at.0 = as.logical(input$yaxis0),
+		  i.use.t = as.logical(input$usetdistribution)
         )
         if (is.null(p)) {
           zfix <- NULL
@@ -6600,6 +6616,25 @@ shinyServer(function(input, output, session) {
         # popify(
         #   selectInput("typeintensity", h6(trloc("Intensity thresholds"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typeintensity)
         #   , title = trloc("Intensity thresholds"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
+		conditionalPanel(
+        condition = "input.advanced",
+        fluidRow(
+          column(3, offset = 0,),
+          column(9, offset = 0, popify(
+            shinyWidgets::materialSwitch(
+            inputId = "usetdistribution",
+            label = trloc("Use t distribution"),
+            value = default.values$usetdistribution,
+            right = T,
+            status = "info"
+          ),
+          title = trloc("Use t distribution"), 
+          content = trloc("Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30"), 
+          placement = "right", trigger = "focus", options = list(container = "body")
+          )
+          )
+        )
+        ),
         fluidRow(
           column(
             4,

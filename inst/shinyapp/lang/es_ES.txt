@@ -326,3 +326,5 @@ MA weeks;Semanas MM
 Moving Average weeks;Semanas media móvil
 Positive;Positivos
 Check this tickbox if you want to replace negative values with zeroes;Active esta opción si quiere que se reemplacen los valores negativos con ceros
+Use t distribution;Usar distribución t
+Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30;Marque esta opción para usar la distribución t en lugar de la normal al calcular intervalos para la media. Útil cuando se tienen menos de 30 valores
