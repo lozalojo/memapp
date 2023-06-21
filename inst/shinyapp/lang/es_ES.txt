@@ -313,6 +313,7 @@ Yes;Sí
 No;No
 Reset;Reiniciar
 Show the experimental features tickbox;Mostrar opción para habilitar las características experimentales
+Show the advanced features tickbox;Mostrar opción para habilitar las características avanzadas
 Loess span;Suavizado Loess
 Loess span parameter;Parámetro de suavizado Loess
 Smoothing parameter;Parámetro de suavizado
@@ -320,5 +321,8 @@ Smoothing parameter of the smoothing regression;Parámetro de suavizado de la re
 Optimum;Óptimo
 MEM Model Summary;Resumen del modelo MEM
 Spline;Spline
+Moving average;Media móvil
+MA weeks;Semanas MM
+Moving Average weeks;Semanas media móvil
 Positive;Positivos
 Check this tickbox if you want to replace negative values with zeroes;Active esta opción si quiere que se reemplacen los valores negativos con ceros

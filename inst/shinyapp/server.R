@@ -49,6 +49,7 @@ shinyServer(function(input, output, session) {
     typeother = 3,
     levelaveragecurve = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
     centering = -1,
+    showadvanced = TRUE,
     advanced = FALSE,
     showexperimental = FALSE,
     experimental = FALSE,
@@ -58,6 +59,7 @@ shinyServer(function(input, output, session) {
     intensitythr = TRUE,
     transformation = 1,
     loesspan = list(min = 0.05, max = 1, value = 0.50, step = 0.05),
+    movavgweeks = list(min = 1, max = 5, value = 3, step = 1),
     waves = 1,
     twowavesproportion = list(min = 0, max = 100, value = 15, step = 5),
     numberwaves = list(value = 0, min = 0, max = NA, step = 1),
@@ -1550,24 +1552,32 @@ shinyServer(function(input, output, session) {
           datasetread <- datasetread[!zerocols]
         }
         # Transformation
-        if (as.numeric(input$transformation) %in% c(2:3)) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+        if (as.numeric(input$transformation) == 2) {
+          datalog <- paste0(datalog, "Note: applying selected transformation - Odd\n")
+          cat("reactive/read_data> Note: applying selected transformation - Odd\n")
+          datasetread <- transformseries(datasetread, i.transformation = as.numeric(input$transformation))
+        } else if (as.numeric(input$transformation) == 3) {
+          datalog <- paste0(datalog, "Note: applying selected transformation - Fill missings\n")
+          cat("reactive/read_data> Note: applying selected transformation - Fill missings\n")
           datasetread <- transformseries(datasetread, i.transformation = as.numeric(input$transformation))
         } else if (as.numeric(input$transformation) == 4) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+          datalog <- paste0(datalog, "Note: applying selected transformation - Smoothing regression\n")
+          cat("reactive/read_data> Note: applying selected transformation - Smoothing regression\n")
           if (input$smregressionoptimum) hsuav.value <- -1 else hsuav.value <- as.numeric(input$smregressionsmoothing)
           datasetread <- transformseries(datasetread, i.transformation = 4, hsuav = hsuav.value)
         } else if (as.numeric(input$transformation) == 5) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+          datalog <- paste0(datalog, "Note: applying selected transformation - Loess\n")
+          cat("reactive/read_data> Note: applying selected transformation - Loess\n")
           datasetread <- transformseries(datasetread, i.transformation = 7, i.positive = as.logical(input$transfpositive), span = as.numeric(input$loesspan))
         } else if (as.numeric(input$transformation) == 6) {
-          datalog <- paste0(datalog, "Note: applying selected transformation\n")
-          cat("reactive/read_data> Note: applying selected transformation\n")
+          datalog <- paste0(datalog, "Note: applying selected transformation - Spline\n")
+          cat("reactive/read_data> Note: applying selected transformation - Spline\n")
           datasetread <- transformseries(datasetread, i.transformation = 8, i.positive = as.logical(input$transfpositive))
-        } else {
+        } else if (as.numeric(input$transformation) == 7) {
+          datalog <- paste0(datalog, "Note: applying selected transformation - Moving average\n")
+          cat("reactive/read_data> Note: applying selected transformation - Moving average\n")
+          datasetread <- transformseries(datasetread, i.transformation = 9, i.number = as.numeric(input$movavgweeks))
+        }else {
           datalog <- paste0(datalog, "Note: no transformation selected\n")
           cat("reactive/read_data> Note: no transformation selected\n")
         }
@@ -1594,11 +1604,14 @@ shinyServer(function(input, output, session) {
           #                                         i.param.2=as.numeric(input$wavesparam2),
           #                                         i.method=as.numeric(input$method),
           #                                         i.param=as.numeric(input$param))
+		  # Calcular el número de puntos que se toman
           temp1 <- mem:::transformseries.multiple(datasetread,
             i.waves = as.numeric(input$numberwaves),
             i.min.separation = as.numeric(input$wavesseparation),
-            i.param.1 = as.numeric(input$wavesparam1),
-            i.param.2 = as.numeric(input$wavesparam2)
+            i.intra.param = as.numeric(input$wavesparam1),
+            i.inter.param = as.numeric(input$wavesparam2),
+			i.method = as.numeric(input$method),
+            i.param = as.numeric(input$param)
           )
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("Season"), "\t", trloc("From"), "\t", trloc("To"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse = "\t"))), collapse = "\n"))
           datasetread <- temp1$data.final
@@ -1741,6 +1754,7 @@ shinyServer(function(input, output, session) {
     updatePickerInput(session, "SelectSeasons", selected = NULL)
     updatePickerInput(session, "SelectExclude", selected = NULL)
     if (input$transformation == 5 & input$advanced) updateSliderInput(session, "loesspan", value = default.values$loesspan$value, min = default.values$loesspan$min, max = default.values$loesspan$max, step = default.values$loesspan$step)
+    if (input$transformation == 7 & input$advanced) updateSliderInput(session, "movavgweeks", value = default.values$movavgweeks$value, min = default.values$movavgweeks$min, max = default.values$movavgweeks$max, step = default.values$movavgweeks$step)
     if (input$transformation == 4 & input$advanced) updatePrettyCheckbox(session, "smregressionoptimum", value = default.values$smregressionoptimum)
     if (input$transformation == 4 & input$advanced) updateSliderInput(session, "smregressionsmoothing", value = default.values$smregressionsmoothing$value, min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, step = default.values$smregressionsmoothing$step)
     if ((input$transformation == 5 | input$transformation == 6) & input$advanced) updatePrettyCheckbox(session, "transfpositive", value = default.values$transfpositive)
@@ -2653,9 +2667,15 @@ shinyServer(function(input, output, session) {
 
   output$tbdFile <- renderUI({
     if (as.numeric(input$waves) == 4) {
-      fluidPage(
-        verbatimTextOutput("tbdFileTxt"),
-        plotOutput("tbdFilePlot")
+	  fluidPage(
+        fluidRow(
+          column(6, verbatimTextOutput("tbdFileTxt")),
+          column(6, plotOutput("tbdFilePlot1"))
+        ),
+        fluidRow(
+          column(6, plotOutput("tbdFilePlot2")),
+          column(6, plotOutput("tbdFilePlot3"))
+        )
       )
     } else {
       verbatimTextOutput("tbdFileTxt")
@@ -2679,16 +2699,36 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$tbdFilePlot <- renderPlot({
+  output$tbdFilePlot1 <- renderPlot({
     readdata <- read_data()
     plots <- readdata$plots
     if (is.null(plots)) {
       NULL
     } else {
-      plots$p4[[1]]
+      tail(plots$p3, 1)
     }
-  }, width = 800, height = 600)
+  }, width = 640, height = 480)
+  
+  output$tbdFilePlot2 <- renderPlot({
+    readdata <- read_data()
+    plots <- readdata$plots
+    if (is.null(plots)) {
+      NULL
+    } else {
+      plots$p4[[2]]
+    }
+  }, width = 640, height = 480)
 
+  output$tbdFilePlot3 <- renderPlot({
+    readdata <- read_data()
+    plots <- readdata$plots
+    if (is.null(plots)) {
+      NULL
+    } else {
+      plots$p5[[2]]
+    }
+  }, width = 640, height = 480)
+  
   output$tbdData <- DT::renderDataTable({
     readdata <- read_data()
     datfile <- readdata$datasetread
@@ -6081,8 +6121,8 @@ shinyServer(function(input, output, session) {
   })
 
   output$uitransformation <- renderUI({
-    transformation.list <- list("No transformation" = 1, "Odd" = 2, "Fill missings" = 3, "Smoothing regression" = 4, "Loess" = 5, "Spline" = 6)
-    names(transformation.list) <- trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess", "Spline"))
+    transformation.list <- list("No transformation" = 1, "Odd" = 2, "Fill missings" = 3, "Smoothing regression" = 4, "Loess" = 5, "Spline" = 6, "Moving average" = 7)
+    names(transformation.list) <- trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess", "Spline", "Moving average"))
     fluidRow(
       popify(
         selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Transformation")), size = 1, selectize = FALSE, choices = transformation.list, selected = default.values$transformation),
@@ -6093,6 +6133,13 @@ shinyServer(function(input, output, session) {
         popify(
           sliderInput("loesspan", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Loess span")), min = default.values$loesspan$min, max = default.values$loesspan$max, value = default.values$loesspan$value, step = default.values$loesspan$step),
           title = trloc("Loess span"), content = trloc("Loess span parameter"), placement = "right", trigger = "focus", options = list(container = "body")
+        )
+      ),
+      conditionalPanel(
+        condition = "input.transformation == 7 & input.advanced",
+        popify(
+          sliderInput("movavgweeks", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("MA weeks")), min = default.values$movavgweeks$min, max = default.values$movavgweeks$max, value = default.values$movavgweeks$value, step = default.values$movavgweeks$step),
+          title = trloc("MA weeks"), content = trloc("Moving Average weeks"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
@@ -6652,14 +6699,29 @@ shinyServer(function(input, output, session) {
   })
 
   output$uiSupport <- renderUI({
-  manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(as.logical(input$experimental),"technicalmanualdev.pdf","technicalmanual.pdf"),"?raw=true")
+  #manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/","technicalmanual.pdf","?raw=true")
+  #manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(input$experimental,"technicalmanualdev.pdf","technicalmanual.pdf"),"?raw=true")
   #cat("---\n",manuallocation,"\n---\n")
     dropdown(
       shinydashboard::box(
         shinyjs::useShinyjs(),
         title = trloc("Support"), status = "info", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = FALSE,
-        h5(a(trloc("Technical manual"), href = manuallocation, target = "_blank")),
+        #h5(a(trloc("Technical manual"), href = manuallocation, target = "_blank")),
+		conditionalPanel(condition = "input.experimental",h5(a(trloc("Technical manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true", target = "_blank"))),
+		conditionalPanel(condition = "!input.experimental",h5(a(trloc("Technical manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true", target = "_blank"))),
         h5(a(trloc("Submit issues"), href = "https://github.com/lozalojo/memapp/issues", target = "_blank")),
+        hidden(popify(
+          # checkboxInput("showadvanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the advanced features tickbox")), value = default.values$showadvanced)
+          shinyWidgets::prettyCheckbox(
+            inputId = "showadvanced",
+            label = trloc("Show the advanced features tickbox"),
+            value = default.values$showadvanced,
+            shape = "curve"
+          ),
+          title = trloc("Show the advanced features tickbox"), content = trloc("Show the advanced features tickbox"), placement = "left", trigger = "focus", options = list(container = "body")
+        )),
+        conditionalPanel(
+          condition = "input.showadvanced",
         popify(
           # checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = default.values$advanced)
           shinyWidgets::prettyCheckbox(
@@ -6669,6 +6731,7 @@ shinyServer(function(input, output, session) {
             shape = "curve"
           ),
           title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = "focus", options = list(container = "body")
+        )
         ),
         hidden(popify(
           # checkboxInput("showexperimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the experimental features tickbox")), value = default.values$showexperimental)

@@ -62,17 +62,9 @@ In order to use the Surveillance/Animation graph, *magick* package must be insta
 install.packages("magick")
 ```
 
-Or alternatively, for low specs machines (recommended for most users), the *animation* package:
-
-```
-install.packages("animation")
-```
-
-Along with one of the following programs: *GraphicsMagick* or *ImageMagick*:
+Along with *ImageMagick*:
 
 [ImageMagick Website](https://imagemagick.org/ "ImageMagick")
-
-[GraphicsMagick Website](http://www.graphicsmagick.org/ "GraphicsMagick")
 
 To import other formats like SAS, Stata, SPSS, excel, you'll need additional packages:
 
@@ -95,8 +87,6 @@ The installers can be downloaded from their webpages or can be installed directl
 # check if installr is installed, and install it otherwise
 if(!require("installr")) install.packages('installr')
 library("installr")
-# install GraphicsMagic
-install.GraphicsMagick()
 # install ImageMagick
 install.ImageMagick()
 ```
