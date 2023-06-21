@@ -124,9 +124,7 @@ install.packages("openxlsx")
 
 The technical manual of the application can be downloaded from here:
 
-[Technical manual (stable version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true "manual stable")
-
-[Technical manual (development version)](https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true "manual development")
+[Technical manual](https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true "tech manual")
 
 ## Localization
 
