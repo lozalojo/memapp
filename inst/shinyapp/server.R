@@ -2588,7 +2588,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "typeother", selected = default.values$typeother)
     updateNumericInput(session, "levelaveragecurve", value = default.values$levelaveragecurve$value, min = default.values$levelaveragecurve$min, max = default.values$levelaveragecurve$max, step = default.values$levelaveragecurve$step)
     updateSelectInput(session, "centering", selected = default.values$centering)
-	updateMaterialSwitch(session, "usetdistribution", selected = default.values$usetdistribution)
+	updateMaterialSwitch(session, "usetdistribution", value = default.values$usetdistribution)
     cat("observeEvent/resetuiMEMoptions> end\n")
   })
 
