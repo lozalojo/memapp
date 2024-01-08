@@ -21,7 +21,7 @@ The stable package can be installed from the official R repositories (*CRAN*) us
 install.packages("memapp")
 ```
 
-Or from the official repository:
+Or from the official repository using the *devtools* package:
 
 ```
 if(!require("devtools")) install.packages("devtools")
@@ -30,7 +30,7 @@ library("devtools")
 install_github("lozalojo/memapp", ref = "master")
 ```
 
-To install the development version of *memapp* use the *devtools* package.
+To install the development version of *memapp* for lastest features:
 
 ```
 if(!require("devtools")) install.packages("devtools")
@@ -55,7 +55,7 @@ memapp::runmemapp()
 ```
 
 You can specify other parameters passed to `shiny::runApp`, such as `display = normal`, or  
-`launch.browser = TRUE`.
+`launch.browser = TRUE`. Check runmemapp help for more info
 
 ```
 # run the app:
@@ -63,16 +63,6 @@ memapp::runmemapp(launch.browser = TRUE)
 ```
 
 ## Notes
-
-In order to use the Surveillance/Animation graph, *magick* package must be installed:
-
-```
-install.packages("magick")
-```
-
-Along with *ImageMagick*:
-
-[ImageMagick Website](https://imagemagick.org/ "ImageMagick")
 
 To import other formats like SAS, Stata, SPSS, excel, you'll need additional packages:
 
@@ -89,7 +79,17 @@ install.packages("readODS")
 install.packages("RODBC")
 ```
 
-The installers can be downloaded from their webpages or can be installed directly from R:
+In order to use the Surveillance/Animation graph, *magick* package must be installed:
+
+```
+install.packages("magick")
+```
+
+Along with *ImageMagick*. It can be installed using the installer downloadable from its webpage:
+
+[ImageMagick Website](https://imagemagick.org/ "ImageMagick")
+
+Or directly within R, using the package *installr*:
 
 ```
 # check if installr is installed, and install it otherwise
@@ -101,9 +101,11 @@ install.ImageMagick()
 
 Most data can be exported to csv or excel files, but for the later to work you have to install Rtools toolset and the openxlsx package.
 
-You can download and install Rtools it here:
+You can download and install Rtools here:
 
 [Rtools download website](https://cran.r-project.org/bin/windows/Rtools/ "Rtools")
+
+Or directly within R, using the package *installr*:
 
 ```
 # check if installr is installed, and install it otherwise
