@@ -1391,7 +1391,7 @@ animation.method <- function() {
 
 tail.order <- function(i.data, i.n, i.order) {
   res <- tail(i.data, n = i.n)
-  res <- res[order(res[i.order]), ]
+  res <- res[order(res[,i.order]), ]
   res$id.tail <- 1:NROW(res)
   res
 }
