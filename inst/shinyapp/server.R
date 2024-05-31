@@ -1311,8 +1311,8 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = graph.file,
             contentType = "image/png",
-            width = 800,
-            height = 600,
+            width = 1280,
+            height = 800,
             alt = "No image found"
           )
         }
@@ -1382,8 +1382,8 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = graph.file,
             contentType = "image/png",
-            width = 800,
-            height = 600,
+            width = 1280,
+            height = 800,
             alt = "No image found"
           )
         }
@@ -1891,7 +1891,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -1934,7 +1934,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -1978,7 +1978,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2065,7 +2065,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2109,7 +2109,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2153,7 +2153,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2266,7 +2266,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2310,7 +2310,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2354,7 +2354,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 800, height = 600)
+              z <- ggplotly(p$plot, width = 1280, height = 800)
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2380,7 +2380,7 @@ shinyServer(function(input, output, session) {
               plotOutput(
                 outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"),
                 click = paste0("tbmOptimizeM_", as.character(s), "_click"),
-                width = "800px", height = "600px"
+                width = "1280px", height = "800px"
               ),
               tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table")),
               imageOutput(paste0("tbmOptimizeM_", as.character(s), "_image"))
@@ -2390,7 +2390,7 @@ shinyServer(function(input, output, session) {
               plotOutput(
                 outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"),
                 click = paste0("tbmOptimizeM_", as.character(s), "_click"),
-                width = "800px", height = "600px"
+                width = "1280px", height = "800px"
               ),
               tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table"))
             )
@@ -2428,8 +2428,8 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = imgfile,
             contentType = "image/png",
-            width = 800,
-            height = 600,
+            width = 1280,
+            height = 800,
             alt = "No image found"
           )
           gfile
@@ -2857,7 +2857,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 800, height = 600)
+          z <- ggplotly(p$plot, width = 1280, height = 800)
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -2925,7 +2925,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 800, height = 600)
+          z <- ggplotly(p$plot, width = 1280, height = 800)
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -3036,7 +3036,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3091,7 +3091,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3145,7 +3145,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3197,7 +3197,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3353,7 +3353,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3405,7 +3405,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3457,7 +3457,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3507,7 +3507,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -4042,7 +4042,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -4104,7 +4104,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -4285,7 +4285,7 @@ shinyServer(function(input, output, session) {
             xintercept = datamodel$centered.start + datamodel$centered.length - 1 + 0.5,
             col = colors.palette$colEpidemicStop, linetype = "longdash", size = 0.5
           )
-        z <- ggplotly(p0, width = 800, height = 600)
+        z <- ggplotly(p0, width = 1280, height = 800)
         # Change Average curve to: more width and dot stype
         z$x$data[[NCOL(datfile.plot)]]$line$width <- 2 * z$x$data[[NCOL(datfile.plot)]]$line$width
         z$x$data[[NCOL(datfile.plot)]]$line$dash <- "dot"
@@ -4363,7 +4363,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -4998,8 +4998,8 @@ shinyServer(function(input, output, session) {
               gfile <- list(
                 src = imgfile,
                 contentType = "image/png",
-                width = 800,
-                height = 600,
+                width = 1280,
+                height = 800,
                 alt = "No image found"
               )
               gfile
@@ -5291,7 +5291,7 @@ shinyServer(function(input, output, session) {
         theme_light() +
         theme(plot.title = element_text(hjust = 0.5))
 
-      z <- ggplotly(p, width = 800, height = 600)
+      z <- ggplotly(p, width = 1280, height = 800)
       # fix popup values
       for (i in 1:length(z$x$data)) {
         z$x$data[[i]]$text <- gsub("Parameter", trloc("Parameter"), z$x$data[[i]]$text, fixed = T)
@@ -5454,7 +5454,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 800, height = 600)
+        z <- ggplotly(p$plot, width = 1280, height = 800)
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -5569,8 +5569,8 @@ shinyServer(function(input, output, session) {
       outdistAnimated <- list(
         src = imgfilegif,
         contentType = "image/gif",
-        width = 800,
-        height = 600,
+        width = 1280,
+        height = 800,
         alt = "This is alternate text"
       )
     }
@@ -5656,7 +5656,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 800, height = 600)
+          z <- ggplotly(p$plot, width = 1280, height = 800)
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -5978,7 +5978,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 800, height = 600)
+          z <- ggplotly(p$plot, width = 1280, height = 800)
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -6060,7 +6060,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 800, height = 600)
+          z <- ggplotly(p$plot, width = 1280, height = 800)
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
