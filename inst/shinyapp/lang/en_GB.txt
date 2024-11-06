@@ -15,7 +15,7 @@ Aditive;Aditive
 All;All
 Animated;Animated
 Arithmetic mean and mean confidence interval;Arithmetic mean and mean confidence interval
-Arithmetic mean and point confidence interval;Arithmetic mean and point confidence interval
+Arithmetic mean and point confidence interval;Arithmetic mean and prediction interval
 Automatic;Automatic
 Average;Average
 Average curve;Average curve
@@ -76,7 +76,7 @@ Fixed criterium method;Fixed criterium method
 Force epidemic start;Force epidemic start
 From;From
 Geometric mean and mean confidence interval;Geometric mean and mean confidence interval
-Geometric mean and point confidence interval;Geometric mean and point confidence interval
+Geometric mean and point confidence interval;Geometric mean and prediction interval
 Global goodness indicators;Global goodness indicators
 Global goodness intensity;Global goodness intensity
 Global goodness summary;Global goodness summary

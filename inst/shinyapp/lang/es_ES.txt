@@ -15,7 +15,7 @@ Aditive;Aditivo
 All;Todos
 Animated;Animación
 Arithmetic mean and mean confidence interval;Media aritmética e IC de la media
-Arithmetic mean and point confidence interval;Media aritmética e IC de los datos
+Arithmetic mean and point confidence interval;Media aritmética e IC de predicción
 Automatic;Automática
 Average;Media
 Average curve;Curva media
@@ -76,7 +76,7 @@ Fixed criterium method;Criterio fijo
 Force epidemic start;Forzar inicio epidemia
 From;Desde
 Geometric mean and mean confidence interval;Media geométrica e IC de la media
-Geometric mean and point confidence interval;Media geométrica e IC de los datos
+Geometric mean and point confidence interval;Media geométrica e IC de predicción
 Global goodness indicators;Indicadores bondad globales
 Global goodness intensity;Intensidad bondad global
 Global goodness summary;Resumen bondad global
