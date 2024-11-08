@@ -69,7 +69,9 @@ shinyServer(function(input, output, session) {
     wavesparam2 = list(value = 2, min = 0.5, max = 10, step = 0.1),
     smregressionoptimum = TRUE,
     smregressionsmoothing = list(min = 0.1, max = 5, value = 1, step = 0.1),
-    transfpositive = FALSE
+    transfpositive = FALSE,
+	dwidth=800,
+	dheight=600
   )
 
   #####################################
@@ -1311,8 +1313,8 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = graph.file,
             contentType = "image/png",
-            width = 1280,
-            height = 800,
+            width = as.numeric(input$dwidth),
+            height = as.numeric(input$dheight),
             alt = "No image found"
           )
         }
@@ -1382,8 +1384,8 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = graph.file,
             contentType = "image/png",
-            width = 1280,
-            height = 800,
+            width = as.numeric(input$dwidth),
+            height = as.numeric(input$dheight),
             alt = "No image found"
           )
         }
@@ -1784,6 +1786,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "colEpidemic", selected = default.values$colEpidemic)
     # updateCheckboxInput(session, "yaxis0", value = default.values$yaxis0)
     updatePrettyCheckbox(session, "yaxis0", value = default.values$yaxis0)
+    updateNumericInput(session, "dwidth", value = default.values$dwidth)
+    updateNumericInput(session, "dheight", value = default.values$dheight)
     # MEM options
     updateSelectInput(session, "method", selected = default.values$method)
     updateNumericInput(session, "param", value = default.values$param$value, min = default.values$param$min, max = default.values$param$max, step = default.values$param$step)
@@ -1891,7 +1895,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -1934,7 +1938,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -1978,7 +1982,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2065,7 +2069,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2109,7 +2113,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2153,7 +2157,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2266,7 +2270,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2310,7 +2314,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2354,7 +2358,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = 1280, height = 800)
+              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
               zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
             }
           }
@@ -2428,8 +2432,8 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = imgfile,
             contentType = "image/png",
-            width = 1280,
-            height = 800,
+            width = as.numeric(input$dwidth),
+            height = as.numeric(input$dheight),
             alt = "No image found"
           )
           gfile
@@ -2566,6 +2570,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "colSeasons", selected = default.values$colSeasons)
     updateSelectInput(session, "colEpidemic", selected = default.values$colEpidemic)
     updateCheckboxInput(session, "yaxis0", value = default.values$yaxis0)
+    updateNumericInput(session, "dwidth", value = default.values$dwidth)
+    updateNumericInput(session, "dheight", value = default.values$dheight)
     cat("observeEvent/resetuiGraphoptions> end\n")
   })
 
@@ -2857,7 +2863,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 1280, height = 800)
+          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -2925,7 +2931,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 1280, height = 800)
+          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -2972,7 +2978,7 @@ shinyServer(function(input, output, session) {
         tabPanel(trloc("Duration"), plotlyOutput("tbdEduration", width = "100%", height = "100%")),
         tabPanel(trloc("Start"), plotlyOutput("tbdEstart", width = "100%", height = "100%")),
         tabPanel(trloc("Epidemic %"), plotlyOutput("tbdEpercentage", width = "100%", height = "100%")),
-        tabPanel(trloc("Thresholds"), plotlyOutput("tbdEthresholds", width = "100%", height = "100%")),
+        tabPanel(trloc("Thresholds 2"), plotlyOutput("tbdEthresholds", width = "100%", height = "100%")),
         tabPanel(trloc("Scheme"), formattable::formattableOutput("tbdEscheme")),
         tabPanel(
           trloc("Detailed"),
@@ -3036,7 +3042,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3091,7 +3097,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3145,7 +3151,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3197,7 +3203,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3292,7 +3298,7 @@ shinyServer(function(input, output, session) {
         tabPanel(trloc("Duration"), plotlyOutput("tbdSduration", width = "100%", height = "100%")),
         tabPanel(trloc("Start"), plotlyOutput("tbdSstart", width = "100%", height = "100%")),
         tabPanel(trloc("Epidemic %"), plotlyOutput("tbdSpercentage", width = "100%", height = "100%")),
-        tabPanel(trloc("Thresholds"), plotlyOutput("tbdSthresholds", width = "100%", height = "100%")),
+        tabPanel(trloc("Thresholds 2"), plotlyOutput("tbdSthresholds", width = "100%", height = "100%")),
         tabPanel(trloc("Scheme"), formattable::formattableOutput("tbdSscheme")),
         tabPanel(
           trloc("Detailed"),
@@ -3353,7 +3359,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3405,7 +3411,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3457,7 +3463,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3507,7 +3513,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(
           z,
           names(datfile.plot),
@@ -3912,7 +3918,7 @@ shinyServer(function(input, output, session) {
           tabPanel(trloc("Seasons"), plotlyOutput("tbmSeasons", width = "100%", height = "100%")),
           tabPanel(trloc("Series"), plotlyOutput("tbmSeries", width = "100%", height = "100%")),
           tabPanel(trloc("Timing"), uiOutput("tbmTiming")),
-          tabPanel("MEM", uiOutput("tbmMem")),
+          tabPanel(trloc("MEM"), uiOutput("tbmMem")),
           tabPanel(trloc("Goodness"), uiOutput("tbmGoodness")),
           tabPanel(trloc("Optimize"), uiOutput("tbmOptimize"))
         )
@@ -3941,7 +3947,7 @@ shinyServer(function(input, output, session) {
           tabPanel(trloc("Seasons"), plotlyOutput("tbmSeasons", width = "100%", height = "100%")),
           tabPanel(trloc("Series"), plotlyOutput("tbmSeries", width = "100%", height = "100%")),
           tabPanel(trloc("Timing"), uiOutput("tbmTiming")),
-          tabPanel("MEM", uiOutput("tbmMem")),
+          tabPanel(trloc("MEM"), uiOutput("tbmMem")),
           tabPanel(trloc("Goodness"), uiOutput("tbmGoodness")),
           tabPanel(trloc("Optimize"), uiOutput("tbmOptimizeA"))
         )
@@ -4042,7 +4048,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -4104,7 +4110,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -4285,7 +4291,7 @@ shinyServer(function(input, output, session) {
             xintercept = datamodel$centered.start + datamodel$centered.length - 1 + 0.5,
             col = colors.palette$colEpidemicStop, linetype = "longdash", size = 0.5
           )
-        z <- ggplotly(p0, width = 1280, height = 800)
+        z <- ggplotly(p0, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         # Change Average curve to: more width and dot stype
         z$x$data[[NCOL(datfile.plot)]]$line$width <- 2 * z$x$data[[NCOL(datfile.plot)]]$line$width
         z$x$data[[NCOL(datfile.plot)]]$line$dash <- "dot"
@@ -4363,7 +4369,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -4998,8 +5004,8 @@ shinyServer(function(input, output, session) {
               gfile <- list(
                 src = imgfile,
                 contentType = "image/png",
-                width = 1280,
-                height = 800,
+                width = as.numeric(input$dwidth),
+                height = as.numeric(input$dheight),
                 alt = "No image found"
               )
               gfile
@@ -5291,7 +5297,7 @@ shinyServer(function(input, output, session) {
         theme_light() +
         theme(plot.title = element_text(hjust = 0.5))
 
-      z <- ggplotly(p, width = 1280, height = 800)
+      z <- ggplotly(p, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
       # fix popup values
       for (i in 1:length(z$x$data)) {
         z$x$data[[i]]$text <- gsub("Parameter", trloc("Parameter"), z$x$data[[i]]$text, fixed = T)
@@ -5454,7 +5460,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = 1280, height = 800)
+        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
         zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
       }
     }
@@ -5569,8 +5575,8 @@ shinyServer(function(input, output, session) {
       outdistAnimated <- list(
         src = imgfilegif,
         contentType = "image/gif",
-        width = 1280,
-        height = 800,
+        width = as.numeric(input$dwidth),
+        height = as.numeric(input$dheight),
         alt = "This is alternate text"
       )
     }
@@ -5656,7 +5662,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 1280, height = 800)
+          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -5978,7 +5984,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 1280, height = 800)
+          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -6060,7 +6066,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = 1280, height = 800)
+          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
           zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("Week"), "value", p$weeklabels)
         }
       }
@@ -6308,7 +6314,7 @@ shinyServer(function(input, output, session) {
           )
         ),
         column(6, offset = 0, style = "padding:0px;", popify(
-          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons")), 10, min = 2, max = NA, step = 1),
+          numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Seasons 2")), 10, min = 2, max = NA, step = 1),
           title = trloc("Maximum seasons"), content = trloc("Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons"), placement = "right", trigger = "focus", options = list(container = "body")
         ))
       )
@@ -6368,7 +6374,7 @@ shinyServer(function(input, output, session) {
 
   output$uiThresholds <- renderUI({
     shinydashboard::box(
-      title = trloc("Thresholds"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = TRUE,
+      title = trloc("Thresholds 3"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = TRUE,
       popify(
         # checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Pre-epidemic threshold")), value = TRUE)
         shinyWidgets::prettyCheckbox(
@@ -6434,7 +6440,7 @@ shinyServer(function(input, output, session) {
       tabPanel(h4(trloc("Check & describe"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Check data series, timing and describe the data"), uiOutput("tbData")),
       tabPanel(h4(trloc("Model"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Summary, graphs, goodness and optimization of the MEM model"), uiOutput("tbModel")),
       tabPanel(h4(trloc("Surveillance"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Surveillance tools"), uiOutput("tbSurveillance")),
-      tabPanel(h4(trloc("Visualize"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Visualize different sets of data with a MEM model"), uiOutput("tbVisualize"))
+      tabPanel(h4(trloc("Visualize 2"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("Visualize different sets of data with a MEM model"), uiOutput("tbVisualize"))
     )
   })
 
@@ -6521,6 +6527,22 @@ shinyServer(function(input, output, session) {
             shape = "curve"
           ),
           title = trloc("y-axis starts at 0"), content = trloc("Force y-axis to start at 0 for all plots"), placement = "left", trigger = "focus", options = list(container = "body")
+        ),
+        fluidRow(
+          column(
+            6,
+            popify(
+              numericInput("dwidth", h6(trloc("Graphs width"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$dwidth),
+              title = trloc("Graphs width"), content = trloc("Width of applications graphs"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          ),
+          column(
+            6,
+            popify(
+              numericInput("dheight", h6(trloc("Graphs height"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$dheight),
+              title = trloc("Graphs height"), content = trloc("Height of applications graphs"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
         )
       ),
       circle = TRUE,
@@ -6561,7 +6583,7 @@ shinyServer(function(input, output, session) {
       shinydashboard::box(
         title = p(trloc("MEM options"), actionButton("resetuiMEMoptions", label = trloc("Reset"))),
         status = "danger", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed = FALSE,
-        h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Timing")),
+        h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Timing 2")),
         fluidRow(
           column(8, offset = 0, popify(
             selectInput("method", h6(trloc("Method for timing"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = method.list, size = 1, selectize = FALSE, selected = default.values$method),
