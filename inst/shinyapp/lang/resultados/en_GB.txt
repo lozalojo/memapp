@@ -1,104 +1,104 @@
 Original;Translated
-<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve;<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve
-1/season;1/season
-10/season;10/season
-2/season;2/season
-3/season;3/season
-30 in total;30 in total
-4/season;4/season
-5/season;5/season
-6/season;6/season
-7/season;7/season
-8/season;8/season
-9/season;9/season
-Aditive;Aditive
-All;All
+options.mem.timing.method.hint;<b>Original</b>: uses the process shown in the original paper.<br><b>Fixed criterium</b>: uses the slope of the MAP curve fo find the optimum, which is the point where the slope is lower than a predefined value.<br><b>Slope</b>: calculates the slope of the MAP curve, but the optimum is the one that matches the global mean slope.<br><b>Second derivative</b>: calculates the second derivative and equals to zero to search an inflexion point in the original curve
+options.mem.thresholds.values.1;1/season
+options.mem.thresholds.values.10;10/season
+options.mem.thresholds.values.2;2/season
+options.mem.thresholds.values.3;3/season
+options.mem.thresholds.values.30;30 in total
+options.mem.thresholds.values.4;4/season
+options.mem.thresholds.values.5;5/season
+options.mem.thresholds.values.6;6/season
+options.mem.thresholds.values.7;7/season
+options.mem.thresholds.values.8;8/season
+options.mem.thresholds.values.9;9/season
+options.mem.goodness.optimization.aditive;Aditive
+options.mem.thresholds.values.all;All
 Animated;Animated
-Arithmetic mean and mean confidence interval;Arithmetic mean and mean confidence interval
-Arithmetic mean and point confidence interval;Arithmetic mean and prediction interval
+options.mem.thresholds.epidemic.arithmeticmean;Arithmetic mean and mean confidence interval
+options.mem.thresholds.epidemic.arithmeticprediction;Arithmetic mean and prediction interval
 Automatic;Automatic
 Average;Average
 Average curve;Average curve
-Average curve CI.;Average curve CI.
-Average curve/Other CI. level;Average curve/Other CI. level
+options.mem.other.averagecurveci.label;Average curve CI.
+options.mem.other.averagecurveci.level;Average curve/Other CI. level
 Average epidemic length;Average epidemic length
 Average epidemic start week;Average epidemic start week
 Baseline;Baseline
 Baseline level;Baseline level
-Calculation in progress. This may take a while...;Calculation in progress. This may take a while...
-Change the language of the application;Change the language of the application
-Change the main title in most graphs;Change the main title in most graphs
-Change the x-axis label in most graphs;Change the x-axis label in most graphs
-Change the y-axis label in most graphs;Change the y-axis label in most graphs
-Check & describe;Check & describe
-Check data series, timing and describe the data;Check data series, timing and describe the data
-Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs;Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs
-Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs;Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs
-Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs;Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs
-Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds;Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds
-Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold;Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold
+ui.calculating;Calculation in progress. This may take a while...
+options.language.hint;Change the language of the application
+options.text.main.hint;Change the main title in most graphs
+options.text.xaxis.hint;Change the x-axis label in most graphs
+options.text.yaxis.hint;Change the y-axis label in most graphs
+main.checkdescribe.label;Check & describe
+main.checkdescribe.hint;Check data series, timing and describe the data
+selections.thresholds.pre.hint;Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs
+selections.thresholds.intensity.hint;Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs
+selections.thresholds.post.hint;Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs
+options.mem.thresholds.tails.label.hint;Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds
+selections.surveillance.force.hint;Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold
 Clicks;Clicks
-Color of the line of observed data;Color of the line of observed data
-Color of the point of the epidemic end marker;Color of the point of the epidemic end marker
-Color of the point of the epidemic start marker;Color of the point of the epidemic start marker
-Color of the points of observed data;Color of the points of observed data
-Cross;Cross
-Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only;Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only
+options.graphs.observedline.hint;Color of the line of observed data
+options.graphs.epidemicend.hint;Color of the point of the epidemic end marker
+options.graphs.epidemicstart.hint;Color of the point of the epidemic start marker
+options.graphs.observedpoints.hint;Color of the points of observed data
+options.mem.goodness.validation.cross;Cross
+options.mem.goodness.validation.hint;Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only
 Current parameter;Current parameter
-Data;Data
-Dataset;Dataset
+main.checkdescribe.data.label;Data
+selections.dataset.label;Dataset
 Description;Description
-Detailed;Detailed
-Duration;Duration
+main.checkdescribe.evolution.detailed;Detailed
+main.checkdescribe.evolution.duration;Duration
 Duration (lower limit);Duration (lower limit)
 Duration (upper limit);Duration (upper limit)
 End;End
-Epidemic;Epidemic
-Epidemic %;Epidemic %
+selections.surveillance.force.label;Epidemic
+main.checkdescribe.evolution.epidemicperc;Epidemic %
 Epidemic (missing);Epidemic (missing)
-Epidemic end;Epidemic end
+options.graphs.epidemicend.label;Epidemic end
 Epidemic perc.;Epidemic perc.
 Epidemic perc. (lower limit);Epidemic perc. (lower limit)
 Epidemic perc. (upper limit);Epidemic perc. (upper limit)
 Epidemic percentage;Epidemic percentage
-Epidemic start;Epidemic start
+options.graphs.epidemicstart.label;Epidemic start
 Epidemic thr.;Epidemic thr.
-Epidemic threshold;Epidemic threshold
+options.mem.thresholds.epidemic.label;Epidemic threshold
 Estimators;Estimators
-Evolution;Evolution
-Exclude;Exclude
-File;File
-Fill missings;Fill missings
-First season to include in the model selection;First season to include in the model selection
-First Week;First Week
-First week of the datasets surveillance period;First week of the datasets surveillance period
-Fixed criterium method;Fixed criterium method
+main.checkdescribe.evolution.label;Evolution
+selections.model.exclude;Exclude
+main.checkdescribe.file.label;File
+selections.dataset.transformation.fillmiss;Fill missings
+selections.model.from.hint;First season to include in the model selection
+selections.dataset.firstweek.label;First Week
+selections.dataset.firstweek.hint;First week of the datasets surveillance period
+options.mem.timing.method.fixed;Fixed criterium method
 Force epidemic start;Force epidemic start
-From;From
-Geometric mean and mean confidence interval;Geometric mean and mean confidence interval
-Geometric mean and point confidence interval;Geometric mean and prediction interval
+selections.model.from;From
+options.mem.thresholds.epidemic.geometricmean;Geometric mean and mean confidence interval
+options.mem.thresholds.epidemic.geometricprediction;Geometric mean and prediction interval
 Global goodness indicators;Global goodness indicators
 Global goodness intensity;Global goodness intensity
 Global goodness summary;Global goodness summary
-Goodness;Goodness
-Goodness & optimize;Goodness & optimize
-Graph options;Graph options
+main.model.goodness;Goodness
+options.mem.goodness.label;Goodness & optimize
+options.graphs.label;Graph options
 Graphs;Graphs
 High;High
 High int. thr.;High int. thr.
 High level;High level
-High lvl;High lvl
+options.mem.thresholds.intensity.high;High lvl
 High thr.;High thr.
 High threshold;High threshold
-If the format is able to store different datasets, select the one you want to open;If the format is able to store different datasets, select the one you want to open
+selections.dataset.dataset.hint;If the format is able to store different datasets, select the one you want to open
 Indicator;Indicator
 Indicators;Indicators
 Intensity;Intensity
-Intensity thresholds/levels;Intensity thresholds/levels
-Language;Language
-Last season to include in the model selection;Last season to include in the model selection
-Last Week;Last Week
-Last week of the datasets surveillance period;Last week of the datasets surveillance period
+selections.thresholds.intensity;Intensity thresholds/levels
+options.language.label;Language
+selections.model.to.hint;Last season to include in the model selection
+selections.dataset.lastweek.label;Last Week
+selections.dataset.lastweek.hint;Last week of the datasets surveillance period
 Legend;Legend
 level;level
 Level;Level
@@ -106,27 +106,27 @@ Level of the confidence interval used to calculate the average curve and other i
 Level of the confidence interval used to calculate the high threshold;Level of the confidence interval used to calculate the high threshold
 Level of the confidence interval used to calculate the medium threshold;Level of the confidence interval used to calculate the medium threshold
 Level of the confidence interval used to calculate the very high threshold;Level of the confidence interval used to calculate the very high threshold
-Levels palette;Levels palette
-Load file;Load file
-Loess;Loess
+options.graphs.levelspalette.label;Levels palette
+selections.loadfile.label;Load file
+selections.dataset.transformation.loess.label;Loess
 Low;Low
 Low level;Low level
 Lower interval;Lower interval
 Lower limit;Lower limit
-Main title;Main title
+options.text.main.label;Main title
 Manual;Manual
-Matthews Correlation Coefficient;Matthews Correlation Coefficient
+options.mem.goodness.optimization.matthews;Matthews Correlation Coefficient
 Matthews correlation coefficient;Matthews correlation coefficient
-Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons;Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons
+selections.model.seasons.hint;Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons
 Maximum seasons;Maximum seasons
 Mean end;Mean end
 Mean start;Mean start
-Median and bootstrap confidence interval;Median and bootstrap confidence interval
-Median and Nyblom confidence interval;Median and Nyblom confidence interval
+options.mem.thresholds.epidemic.medianbootstrap;Median and bootstrap confidence interval
+options.mem.thresholds.epidemic.mediannyblom;Median and Nyblom confidence interval
 Medium;Medium
 Medium int. thr.;Medium int. thr.
 Medium level;Medium level
-Medium lvl;Medium lvl
+options.mem.thresholds.intensity.medium;Medium lvl
 Medium thr.;Medium thr.
 Medium threshold;Medium threshold
 MEM needs at least two seasons;MEM needs at least two seasons
@@ -136,195 +136,209 @@ Method for calculating other confidence intervals: duration, epidemic percentage
 Method for calculating the average curve confidence intervals;Method for calculating the average curve confidence intervals
 Method for calculating the epidemic threshold;Method for calculating the epidemic threshold
 Method for calculating the intensity threshold;Method for calculating the intensity threshold
-Method for timing;Method for timing
+options.mem.timing.method.label;Method for timing
 Method to choose the optimum parameter;Method to choose the optimum parameter
 missing;missing
-Mixed;Mixed
-Model;Model
+options.mem.goodness.optimization.mixed;Mixed
+selections.model.label;Model
 Model data;Model data
 Model goodness indicators;Model goodness indicators
 Model goodness intensity;Model goodness intensity
 Model goodness summary;Model goodness summary
 Moving epidemics;Moving epidemics
-Multiplicative;Multiplicative
-Negative likehood;Negative likehood
+options.mem.goodness.optimization.multiplicative;Multiplicative
+options.mem.goodness.optimization.negative;Negative likehood
 Negative predictive value;Negative predictive value
 next;next
 No data seasons;No data seasons
-No transformation;No transformation
+selections.dataset.transformation.no;No transformation
 Number of columns must be greater than 2;Number of columns must be greater than 2
-Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used;Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used
-Observed (line);Observed (line)
-Observed (points);Observed (points)
-Odd;Odd
+options.mem.thresholds.values.hint;Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used
+options.graphs.observedline.label;Observed (line)
+options.graphs.observedpoints.label;Observed (points)
+selections.dataset.transformation.odd;Odd
 Optimization;Optimization
-Optimization method;Optimization method
-Optimize;Optimize
+options.mem.goodness.optimization.label;Optimization method
+main.model.optimize;Optimize
 Optimum parameter;Optimum parameter
-Original method;Original method
-Other;Other
-Other CI.;Other CI.
-Palette used to generate color for epidemic and intensity thresholds;Palette used to generate color for epidemic and intensity thresholds
-Palette used to generate color for intensity levels;Palette used to generate color for intensity levels
-Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines;Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines
-Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs;Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs
+options.mem.timing.method.original;Original method
+options.mem.other.label;Other
+options.mem.other.otherci.label;Other CI.
+options.graphs.thresholdspalette.hint;Palette used to generate color for epidemic and intensity thresholds
+options.graphs.levelspalette.hint;Palette used to generate color for intensity levels
+options.graphs.seasonspalette.hint;Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines
+options.graphs.timingpalette.hint;Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs
 Parameter;Parameter
-Parameter range;Parameter range
+options.mem.goodness.optimization.paramrange;Parameter range
 Peak;Peak
 Peak week;Peak week
-Percent agreement;Percent agreement
+options.mem.goodness.optimization.percent;Percent agreement
 Point;Point
-Positive likehood;Positive likehood
+options.mem.goodness.optimization.positive;Positive likehood
 Positive predictive value;Positive predictive value
 Post thr.;Post thr.
 Post-epidemic;Post-epidemic
 Post-epidemic (missing);Post-epidemic (missing)
 Post-epidemic thr.;Post-epidemic thr.
-Post-epidemic threshold;Post-epidemic threshold
+selections.thresholds.post;Post-epidemic threshold
 Pre-epidemic;Pre-epidemic
 Pre-epidemic (missing);Pre-epidemic (missing)
 Pre-epidemic thr.;Pre-epidemic thr.
-Pre-epidemic threshold;Pre-epidemic threshold
-Procedures;Procedures
+selections.thresholds.pre;Pre-epidemic threshold
+main.procedures.label;Procedures
 Range of possible of values of the slope parameter used by goodness and optimize functions;Range of possible of values of the slope parameter used by goodness and optimize functions
 Results;Results
 Rtools not found;Rtools not found
 openxlsx not found;openxlsx not found
-Scheme;Scheme
-Season;Season
-Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection;Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection
-Seasons;Seasons
+main.checkdescribe.evolution.scheme;Scheme
+selections.surveillance.season.label;Season
+selections.surveillance.season.hint;Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection
+selections.model.seasons;Seasons
 Seasons in the model;Seasons in the model
-Seasons palette;Seasons palette
-Second derivative method;Second derivative method
-Select any number of seasons to be excluded from the model;Select any number of seasons to be excluded from the model
+options.graphs.seasonspalette.label;Seasons palette
+options.mem.timing.method.derivative;Second derivative method
+selections.model.exclude.hint;Select any number of seasons to be excluded from the model
 Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard;Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard
-Select the transformation to apply to the original data;Select the transformation to apply to the original data
+selections.dataset.transformation.hint;Select the transformation to apply to the original data
 Sensitivity;Sensitivity
-Sequential;Sequential
-Series;Series
-Advanced features;Advanced features
+options.mem.goodness.validation.sequential;Sequential
+main.checkdescribe.series.label;Series
+options.support.advancedfeatures;Advanced features
 Show advanced features of memapp;Show advanced features of memapp
-Slope method;Slope method
-Slope parameter;Slope parameter
-Slope parameter used in fixed criterium method;Slope parameter used in fixed criterium method
+options.mem.timing.method.slope;Slope method
+options.mem.timing.slope.label;Slope parameter
+options.mem.timing.slope.hint;Slope parameter used in fixed criterium method
 Specificity;Specificity
-Stability;Stability
-Start;Start
+main.checkdescribe.stability.label;Stability
+main.checkdescribe.evolution.start;Start
 Start & end;Start & end
 Start (lower limit);Start (lower limit)
 Start (upper limit);Start (upper limit)
-Submit issues;Submit issues
+options.support.issues;Submit issues
 Summary;Summary
-Summary, graphs, goodness and optimization of the MEM model;Summary, graphs, goodness and optimization of the MEM model
-Support;Support
-Surveillance;Surveillance
-Surveillance tools;Surveillance tools
-Tails;Tails
-Technical manual;Technical manual
-Text options;Text options
+main.model.hint;Summary, graphs, goodness and optimization of the MEM model
+options.support.label;Support
+main.surveillance.label;Surveillance
+main.surveillance.hint;Surveillance tools
+options.mem.thresholds.tails.label;Tails
+options.support.manual;Technical manual
+options.text.label;Text options
 The Moving Epidemic Method Web Application;The Moving Epidemic Method Web Application
-Thresholds;Thresholds
-Thresholds palette;Thresholds palette
-Timing;Timing
-Timing palette;Timing palette
-To;To
+options.mem.thresholds.label;Thresholds
+options.graphs.thresholdspalette.label;Thresholds palette
+options.mem.timing.label;Timing
+options.graphs.timingpalette.label;Timing palette
+selections.model.to;To
 Total seasons;Total seasons
 Transform;Transform
 Two waves (expected);Two waves (expected)
 Two waves (observed);Two waves (observed)
 Upper interval;Upper interval
 Upper limit;Upper limit
-Validation;Validation
+options.mem.goodness.validation;Validation
 Value;Value
-Values per season;Values per season
+options.mem.thresholds.values.label;Values per season
 Very high;Very high
 Very high int. thr.;Very high int. thr.
 Very high level;Very high level
-Very high lvl;Very high lvl
+options.mem.thresholds.intensity.veryhigh;Very high lvl
 Very high thr.;Very high thr.
 Very high threshold;Very high threshold
-Visualize;Visualize
-Visualize different sets of data with a MEM model;Visualize different sets of data with a MEM model
-Week;Week
+selections.visualize.label;Visualize
+selections.visualize.hint;Visualize different sets of data with a MEM model
+selections.surveillance.week.label;Week
 Week na;Week na
 Week no;Week no
-Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data;Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data
+selections.surveillance.week.hint;Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data
 Weekly data;Weekly data
-X-axis;X-axis
-Y-axis;Y-axis
+options.text.xaxis.label;X-axis
+options.text.yaxis.label;Y-axis
 Youdens Index;Youdens Index
-Youden's Index;Youden's Index
+options.mem.goodness.optimization.youden;Youden's Index
 Zip not found;Zip not found
-y-axis starts at 0;y-axis starts at 0
-Force y-axis to start at 0 for all plots;Force y-axis to start at 0 for all plots
-Process data;Process data
-Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset;Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset
+options.graphs.yaxis0.label;y-axis starts at 0
+options.graphs.yaxis0.hint;Force y-axis to start at 0 for all plots
+selections.dataset.processdata.label;Process data
+selections.dataset.processdata.hint;Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset
 Log;Log
 MAP curve;MAP curve
 Slope curve;Slope curve
-Multi waves;Multi waves
-Experimental features;Experimental features
+selections.dataset.wavesdetection.multiple;Multi waves
+options.support.experimentalfeatures;Experimental features
 Show experimental features of memapp;Show experimental features of memapp
 No file or dataset selected;No file or dataset selected
-Centering seasons;Centering seasons
+options.mem.other.centering.label;Centering seasons
 Method for centering seasons to calculate the average curve;Method for centering seasons to calculate the average curve
-Highest mean duration-weeks period;Highest mean duration-weeks period
-Highest 1-week period (peak);Highest 1-week period (peak)
-Highest 2-weeks period;Highest 2-weeks period
-Highest 3-weeks period;Highest 3-weeks period
-Highest 4-weeks period;Highest 4-weeks period
-Highest 5-weeks period;Highest 5-weeks period
-Highest 6-weeks period;Highest 6-weeks period
-Highest 7-weeks period;Highest 7-weeks period
-Highest 8-weeks period;Highest 8-weeks period
-Highest 9-weeks period;Highest 9-weeks period
-Highest 10-weeks period;Highest 10-weeks period
-Highest 11-weeks period;Highest 11-weeks period
-Highest 12-weeks period;Highest 12-weeks period
-Highest 13-weeks period;Highest 13-weeks period
-Highest 14-weeks period;Highest 14-weeks period
-Highest 15-weeks period;Highest 15-weeks period
+options.mem.other.centering.mean;Highest mean duration-weeks period
+options.mem.other.centering.1;Highest 1-week period (peak)
+options.mem.other.centering.2;Highest 2-weeks period
+options.mem.other.centering.3;Highest 3-weeks period
+options.mem.other.centering.4;Highest 4-weeks period
+options.mem.other.centering.5;Highest 5-weeks period
+options.mem.other.centering.6;Highest 6-weeks period
+options.mem.other.centering.7;Highest 7-weeks period
+options.mem.other.centering.8;Highest 8-weeks period
+options.mem.other.centering.9;Highest 9-weeks period
+options.mem.other.centering.10;Highest 10-weeks period
+options.mem.other.centering.11;Highest 11-weeks period
+options.mem.other.centering.12;Highest 12-weeks period
+options.mem.other.centering.13;Highest 13-weeks period
+options.mem.other.centering.14;Highest 14-weeks period
+options.mem.other.centering.15;Highest 15-weeks period
 Start centering period;Start centering period
 End centering period;End centering period
-Intensity thresholds;Intensity thresholds
-No. waves;No. waves
+options.mem.thresholds.intensity.label;Intensity thresholds
+selections.dataset.wavesdetection.multiple.no;No. waves
 Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it;Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it
-Separation;Separation
+selections.dataset.wavesdetection.multiple.separation;Separation
 Minimum separation between two seasons to be considered different;Minimum separation between two seasons to be considered different
-Transformation;Transformation
+selections.dataset.transformation.label;Transformation
 Waves;Waves
 Select the number of waves in the original data;Select the number of waves in the original data
 One wave;One wave
-One wave/season;One wave/season
-Two waves/season (observed);Two waves/season (observed)
-Two waves/season (expected);Two waves/season (expected)
+selections.dataset.wavesdetection.one;One wave/season
+selections.dataset.wavesdetection.twoobserved;Two waves/season (observed)
+selections.dataset.wavesdetection.twoexpected;Two waves/season (expected)
 Multiple waves/series;Multiple waves/series
 default;default
-Waves detection;Waves detection
-Select the number of waves in the original data or the algorith to separate diferent waves;Select the number of waves in the original data or the algorith to separate diferent waves
-Minimum proportion;Minimum proportion
+selections.dataset.wavesdetection.label;Waves detection
+selections.dataset.wavesdetection.hint;Select the number of waves in the original data or the algorith to separate diferent waves
+selections.dataset.wavesdetection.twoobserved.minimumprop;Minimum proportion
 Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same;Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same
-Param. 1;Param. 1
+selections.dataset.wavesdetection.multiple.param1;Param. 1
 Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic;Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic
-Param. 2;Param. 2
+selections.dataset.wavesdetection.multiple.param2;Param. 2
 Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic
 Yes;Yes
 No;No
-Reset;Reset
+options.graphs.reset;Reset
 Show the experimental features tickbox;Show the experimental features tickbox
 Show the advanced features tickbox;Show the advanced features tickbox
-Loess span;Loess span
+selections.dataset.transformation.loess.span;Loess span
 Loess span parameter;Loess span parameter
-Smoothing parameter;Smoothing parameter
+selections.dataset.transformation.smothing.parameter;Smoothing parameter
 Smoothing parameter of the smoothing regression;Smoothing parameter of the smoothing regression
-Optimum;Optimum
+selections.dataset.transformation.smothing.optimum;Optimum
 MEM Model Summary;MEM Model Summary
 Spline;Spline
 Moving average;Moving average
 MA weeks;MA weeks
 Moving Average weeks;Moving Average weeks
-Positive;Positive
-Check this tickbox if you want to replace negative values with zeroes;Check this tickbox if you want to replace negative values with zeroes
-Use t distribution;Use t distribution
-Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30;Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30
+selections.dataset.transformation.loess.positive;Positive
+selections.dataset.transformation.loess.positive.hint;Check this tickbox if you want to replace negative values with zeroes
+options.mem.thresholds.epidemic.uset;Use t distribution
+options.mem.thresholds.epidemic.uset.hint;Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30
+selections.dataset.transformation.smothing;Smoothing regression
+main.model.mem;MEM
+main.visualize.label;Visualize
+main.model.label;Model
+main.checkdescribe.seasons.label;Seasons
+main.checkdescribe.timing.label;Timing
+main.checkdescribe.evolution.thresholds;Thresholds
+selections.thresholds.label;Thresholds
+options.graphs.width.label;Graphs width
+options.graphs.width.hint;Width of applications graphs
+options.graphs.height.label;Graphs height
+options.graphs.height.hint;Height of applications graphs
+selections.surveillance.label;Surveillance
+selections.dataset.dataset.label;Dataset

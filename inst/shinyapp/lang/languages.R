@@ -19,6 +19,14 @@ txttoxlsx <- function(){
   saveWorkbook(wb, filexlsx, overwrite = TRUE)
 }
 
+replace.in.file <- function(input, output, search, replace){
+  x <- readLines(input, encoding="UTF-8", warn=FALSE)
+  y <- gsub( search, replace, x, fixed = T)
+  con <- file(output, encoding="UTF-8")
+  writeLines(y, con)
+  close(con)
+}
+
 writeUtf8 <- function(x, fileo, bom=F) {
   temp1 <- data.frame(line="Original;Translated", stringsAsFactors = F) %>%
     bind_rows(x %>%
@@ -45,8 +53,56 @@ xlsxtotxt <- function(){
   } 
 }
 
-txttoxlsx()
-xlsxtotxt()
+# txttoxlsx()
+# xlsxtotxt()
+
+
+
+filexlsx <- "languages v2.xlsx"
+wb <- loadWorkbook(filexlsx)
+hojas <- data.frame(hoja = sheets(wb), stringsAsFactors = F) %>%
+  mutate(hojaok = grepl("^[[:alnum:]]{2}_[[:alnum:]]{2}$", hoja)) %>%
+  filter(hojaok)
+claves <- read.xlsx(filexlsx, "newkeys") %>%
+  pivot_longer(
+    c(
+      "OriginalNew1",
+      "OriginalNew2",
+      "OriginalNew3",
+      "OriginalNew4",
+      "OriginalNew5",
+      "OriginalNew6"
+    )
+  ) %>%
+  filter(!is.na(value)) %>%
+  group_by(Original) %>%
+  arrange(Original, name) %>%
+  summarise(newkey = str_to_lower(paste0(value, collapse = ".")))
+
+for (i in 1:NROW(hojas)){
+  x <- read.xlsx(filexlsx, hojas$hoja[i]) %>%
+    left_join(claves) %>%
+    mutate(Original=coalesce(newkey,Original)) %>%
+    select(-newkey)
+  fileo <- file.path("resultados", paste0(hojas$hoja[i],".txt"))
+  writeUtf8(x, fileo)
+} 
+
+for (i in 1:NROW(claves)){
+  buscar = paste0("trloc(\"",claves$Original[i],"\")")
+  reemplazar = paste0("trloc(\"",claves$newkey[i],"\")")
+  if (i==1){
+    replace.in.file("../ui.R", "resultados/ui.R", buscar, reemplazar)
+    replace.in.file("../server.R", "resultados/server.R", buscar, reemplazar)
+    replace.in.file("../helpers.R", "resultados/helpers.R", buscar, reemplazar)
+  }else{
+    replace.in.file("resultados/ui.R", "resultados/ui.R", buscar, reemplazar)
+    replace.in.file("resultados/server.R", "resultados/server.R", buscar, reemplazar)
+    replace.in.file("resultados/helpers.R", "resultados/helpers.R", buscar, reemplazar)
+  }
+}
+
+
 
 
 
