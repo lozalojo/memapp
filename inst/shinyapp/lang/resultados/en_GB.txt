@@ -12,264 +12,109 @@ options.mem.thresholds.values.7;7/season
 options.mem.thresholds.values.8;8/season
 options.mem.thresholds.values.9;9/season
 options.mem.goodness.optimization.aditive;Aditive
+options.support.advancedfeatures.label;Advanced features
 options.mem.thresholds.values.all;All
-Animated;Animated
+main.surveillance.surveillance.animated;Animated
 options.mem.thresholds.epidemic.arithmeticmean;Arithmetic mean and mean confidence interval
 options.mem.thresholds.epidemic.arithmeticprediction;Arithmetic mean and prediction interval
-Automatic;Automatic
-Average;Average
-Average curve;Average curve
-options.mem.other.averagecurveci.label;Average curve CI.
-options.mem.other.averagecurveci.level;Average curve/Other CI. level
-Average epidemic length;Average epidemic length
-Average epidemic start week;Average epidemic start week
-Baseline;Baseline
-Baseline level;Baseline level
+main.model.optimize.automatic;Automatic
+main.surveillance.surveillance.average;Average
+graphs.averagecurve;Average curve
+main.model.mem.graphs.average;Average curve
+options.mem.other.averagecurve.label;Average curve CI.
+options.mem.other.averageotherci.level;Average curve/Other CI. level
+graphs.averagelength;Average epidemic length
+graphs.averagestart;Average epidemic start week
+graphs.baselinelevel;Baseline level
 ui.calculating;Calculation in progress. This may take a while...
+options.mem.other.centering.label;Centering seasons
 options.language.hint;Change the language of the application
 options.text.main.hint;Change the main title in most graphs
 options.text.xaxis.hint;Change the x-axis label in most graphs
 options.text.yaxis.hint;Change the y-axis label in most graphs
 main.checkdescribe.label;Check & describe
 main.checkdescribe.hint;Check data series, timing and describe the data
+selections.dataset.transformation.smothing.optimum.hint;Check this tickbox if you want SM to chose the optimum smoothing parameter
 selections.thresholds.pre.hint;Check this tickbox if you want to include epidemic thresholds in the graphs.<br>This is a global option that will work on most graphs
 selections.thresholds.intensity.hint;Check this tickbox if you want to include intensity thresholds in the graphs.<br>This  is a global option that will work on most graphs
 selections.thresholds.post.hint;Check this tickbox if you want to include post-epidemic thresholds in the graphs.<br>This  is a global option that will work on most graphs
+selections.dataset.processdata.hint;Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset
+selections.dataset.transformation.loess.positive.hint;Check this tickbox if you want to replace negative values with zeroes
+options.mem.thresholds.epidemic.uset.hint;Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30
 options.mem.thresholds.tails.label.hint;Choose if you want to use one-tailed or two-tailed confidence intervals for thresholds
 selections.surveillance.force.hint;Chose a week to force the start of the epidemic period.<br>The epidemic will start at the week selected and not at the first week over the epidemic threshold
-Clicks;Clicks
+main.model.optimize.manual.clicks;Clicks
 options.graphs.observedline.hint;Color of the line of observed data
 options.graphs.epidemicend.hint;Color of the point of the epidemic end marker
 options.graphs.epidemicstart.hint;Color of the point of the epidemic start marker
 options.graphs.observedpoints.hint;Color of the points of observed data
 options.mem.goodness.validation.cross;Cross
 options.mem.goodness.validation.hint;Cross: Extracts one season and the model is calculated with the remaining seasons.<br>Sequential: Extract a season and the model is calculated with previous seasons only
-Current parameter;Current parameter
-main.checkdescribe.data.label;Data
-selections.dataset.label;Dataset
-Description;Description
+main.model.optimize.automatic.currentparam;Current parameter
+main.checkdescribe.data;Data
+selections.dataset;Dataset
+selections.dataset.dataset.label;Dataset
+app.default;default
+main.checkdescribe.goodness.description;Description
 main.checkdescribe.evolution.detailed;Detailed
+main.checkdescribe.goodness.detailed;Detailed
+main.model.mem.detailed;Detailed
+main.model.optimize.detailed;Detailed
 main.checkdescribe.evolution.duration;Duration
-Duration (lower limit);Duration (lower limit)
-Duration (upper limit);Duration (upper limit)
-End;End
-selections.surveillance.force.label;Epidemic
+graphs.durationlower;Duration (lower limit)
+graphs.durationupper;Duration (upper limit)
+graphs.duration;Duration
+graphs.end;End
+graphs.endcentering;End centering period
+graphs.epidemic;Epidemic
 main.checkdescribe.evolution.epidemicperc;Epidemic %
-Epidemic (missing);Epidemic (missing)
+graphs.epidemicmiss;Epidemic (missing)
 options.graphs.epidemicend.label;Epidemic end
-Epidemic perc.;Epidemic perc.
-Epidemic perc. (lower limit);Epidemic perc. (lower limit)
-Epidemic perc. (upper limit);Epidemic perc. (upper limit)
-Epidemic percentage;Epidemic percentage
+graphs.epidemicpercentage.short;Epidemic perc.
+graphs.epiperclower;Epidemic perc. (lower limit)
+graphs.epipercupper;Epidemic perc. (upper limit)
+graphs.epidemicpercentage;Epidemic percentage
 options.graphs.epidemicstart.label;Epidemic start
-Epidemic thr.;Epidemic thr.
+graphs.prethreshold.short;Epidemic thr.
 options.mem.thresholds.epidemic.label;Epidemic threshold
-Estimators;Estimators
-main.checkdescribe.evolution.label;Evolution
-selections.model.exclude;Exclude
-main.checkdescribe.file.label;File
+main.model.mem.estimators;Estimators
+main.checkdescribe.evolution;Evolution
+selections.model.exclude.label;Exclude
+options.support.experimentalfeatures.label;Experimental features
+main.checkdescribe.file;File
 selections.dataset.transformation.fillmiss;Fill missings
 selections.model.from.hint;First season to include in the model selection
 selections.dataset.firstweek.label;First Week
 selections.dataset.firstweek.hint;First week of the datasets surveillance period
 options.mem.timing.method.fixed;Fixed criterium method
-Force epidemic start;Force epidemic start
-selections.model.from;From
+selections.surveillance.force.label;Force epidemic start
+options.graphs.yaxis0.hint;Force y-axis to start at 0 for all plots
+selections.model.from.label;From
 options.mem.thresholds.epidemic.geometricmean;Geometric mean and mean confidence interval
 options.mem.thresholds.epidemic.geometricprediction;Geometric mean and prediction interval
-Global goodness indicators;Global goodness indicators
-Global goodness intensity;Global goodness intensity
-Global goodness summary;Global goodness summary
-main.model.goodness;Goodness
-options.mem.goodness.label;Goodness & optimize
-options.graphs.label;Graph options
-Graphs;Graphs
-High;High
-High int. thr.;High int. thr.
-High level;High level
-options.mem.thresholds.intensity.high;High lvl
-High thr.;High thr.
-High threshold;High threshold
-selections.dataset.dataset.hint;If the format is able to store different datasets, select the one you want to open
-Indicator;Indicator
-Indicators;Indicators
-Intensity;Intensity
-selections.thresholds.intensity;Intensity thresholds/levels
-options.language.label;Language
-selections.model.to.hint;Last season to include in the model selection
-selections.dataset.lastweek.label;Last Week
-selections.dataset.lastweek.hint;Last week of the datasets surveillance period
-Legend;Legend
-level;level
-Level;Level
-Level of the confidence interval used to calculate the average curve and other intervals;Level of the confidence interval used to calculate the average curve and other intervals
-Level of the confidence interval used to calculate the high threshold;Level of the confidence interval used to calculate the high threshold
-Level of the confidence interval used to calculate the medium threshold;Level of the confidence interval used to calculate the medium threshold
-Level of the confidence interval used to calculate the very high threshold;Level of the confidence interval used to calculate the very high threshold
-options.graphs.levelspalette.label;Levels palette
-selections.loadfile.label;Load file
-selections.dataset.transformation.loess.label;Loess
-Low;Low
-Low level;Low level
-Lower interval;Lower interval
-Lower limit;Lower limit
-options.text.main.label;Main title
-Manual;Manual
-options.mem.goodness.optimization.matthews;Matthews Correlation Coefficient
-Matthews correlation coefficient;Matthews correlation coefficient
-selections.model.seasons.hint;Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons
-Maximum seasons;Maximum seasons
-Mean end;Mean end
-Mean start;Mean start
-options.mem.thresholds.epidemic.medianbootstrap;Median and bootstrap confidence interval
-options.mem.thresholds.epidemic.mediannyblom;Median and Nyblom confidence interval
-Medium;Medium
-Medium int. thr.;Medium int. thr.
-Medium level;Medium level
-options.mem.thresholds.intensity.medium;Medium lvl
-Medium thr.;Medium thr.
-Medium threshold;Medium threshold
-MEM needs at least two seasons;MEM needs at least two seasons
-MEM options;MEM options
-memapp is able to read text, excel, access and R;memapp is able to read MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) and OpenDocument Spreadsheet (ods)
-Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.
-Method for calculating the average curve confidence intervals;Method for calculating the average curve confidence intervals
-Method for calculating the epidemic threshold;Method for calculating the epidemic threshold
-Method for calculating the intensity threshold;Method for calculating the intensity threshold
-options.mem.timing.method.label;Method for timing
-Method to choose the optimum parameter;Method to choose the optimum parameter
-missing;missing
-options.mem.goodness.optimization.mixed;Mixed
-selections.model.label;Model
-Model data;Model data
-Model goodness indicators;Model goodness indicators
-Model goodness intensity;Model goodness intensity
-Model goodness summary;Model goodness summary
-Moving epidemics;Moving epidemics
-options.mem.goodness.optimization.multiplicative;Multiplicative
-options.mem.goodness.optimization.negative;Negative likehood
-Negative predictive value;Negative predictive value
-next;next
-No data seasons;No data seasons
-selections.dataset.transformation.no;No transformation
-Number of columns must be greater than 2;Number of columns must be greater than 2
-options.mem.thresholds.values.hint;Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used
-options.graphs.observedline.label;Observed (line)
-options.graphs.observedpoints.label;Observed (points)
-selections.dataset.transformation.odd;Odd
-Optimization;Optimization
-options.mem.goodness.optimization.label;Optimization method
-main.model.optimize;Optimize
-Optimum parameter;Optimum parameter
-options.mem.timing.method.original;Original method
-options.mem.other.label;Other
-options.mem.other.otherci.label;Other CI.
-options.graphs.thresholdspalette.hint;Palette used to generate color for epidemic and intensity thresholds
-options.graphs.levelspalette.hint;Palette used to generate color for intensity levels
-options.graphs.seasonspalette.hint;Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines
-options.graphs.timingpalette.hint;Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs
-Parameter;Parameter
-options.mem.goodness.optimization.paramrange;Parameter range
-Peak;Peak
-Peak week;Peak week
-options.mem.goodness.optimization.percent;Percent agreement
-Point;Point
-options.mem.goodness.optimization.positive;Positive likehood
-Positive predictive value;Positive predictive value
-Post thr.;Post thr.
-Post-epidemic;Post-epidemic
-Post-epidemic (missing);Post-epidemic (missing)
-Post-epidemic thr.;Post-epidemic thr.
-selections.thresholds.post;Post-epidemic threshold
-Pre-epidemic;Pre-epidemic
-Pre-epidemic (missing);Pre-epidemic (missing)
-Pre-epidemic thr.;Pre-epidemic thr.
-selections.thresholds.pre;Pre-epidemic threshold
-main.procedures.label;Procedures
-Range of possible of values of the slope parameter used by goodness and optimize functions;Range of possible of values of the slope parameter used by goodness and optimize functions
-Results;Results
-Rtools not found;Rtools not found
-openxlsx not found;openxlsx not found
-main.checkdescribe.evolution.scheme;Scheme
-selections.surveillance.season.label;Season
-selections.surveillance.season.hint;Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection
-selections.model.seasons;Seasons
-Seasons in the model;Seasons in the model
-options.graphs.seasonspalette.label;Seasons palette
-options.mem.timing.method.derivative;Second derivative method
-selections.model.exclude.hint;Select any number of seasons to be excluded from the model
-Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard;Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard
-selections.dataset.transformation.hint;Select the transformation to apply to the original data
-Sensitivity;Sensitivity
-options.mem.goodness.validation.sequential;Sequential
-main.checkdescribe.series.label;Series
-options.support.advancedfeatures;Advanced features
-Show advanced features of memapp;Show advanced features of memapp
-options.mem.timing.method.slope;Slope method
-options.mem.timing.slope.label;Slope parameter
-options.mem.timing.slope.hint;Slope parameter used in fixed criterium method
-Specificity;Specificity
-main.checkdescribe.stability.label;Stability
-main.checkdescribe.evolution.start;Start
-Start & end;Start & end
-Start (lower limit);Start (lower limit)
-Start (upper limit);Start (upper limit)
-options.support.issues;Submit issues
-Summary;Summary
-main.model.hint;Summary, graphs, goodness and optimization of the MEM model
-options.support.label;Support
-main.surveillance.label;Surveillance
-main.surveillance.hint;Surveillance tools
-options.mem.thresholds.tails.label;Tails
-options.support.manual;Technical manual
-options.text.label;Text options
-The Moving Epidemic Method Web Application;The Moving Epidemic Method Web Application
-options.mem.thresholds.label;Thresholds
-options.graphs.thresholdspalette.label;Thresholds palette
-options.mem.timing.label;Timing
-options.graphs.timingpalette.label;Timing palette
-selections.model.to;To
-Total seasons;Total seasons
-Transform;Transform
-Two waves (expected);Two waves (expected)
-Two waves (observed);Two waves (observed)
-Upper interval;Upper interval
-Upper limit;Upper limit
-options.mem.goodness.validation;Validation
-Value;Value
-options.mem.thresholds.values.label;Values per season
-Very high;Very high
-Very high int. thr.;Very high int. thr.
-Very high level;Very high level
-options.mem.thresholds.intensity.veryhigh;Very high lvl
-Very high thr.;Very high thr.
-Very high threshold;Very high threshold
-selections.visualize.label;Visualize
-selections.visualize.hint;Visualize different sets of data with a MEM model
-selections.surveillance.week.label;Week
-Week na;Week na
-Week no;Week no
-selections.surveillance.week.hint;Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data
-Weekly data;Weekly data
-options.text.xaxis.label;X-axis
-options.text.yaxis.label;Y-axis
-Youdens Index;Youdens Index
-options.mem.goodness.optimization.youden;Youden's Index
-Zip not found;Zip not found
-options.graphs.yaxis0.label;y-axis starts at 0
-options.graphs.yaxis0.hint;Force y-axis to start at 0 for all plots
-selections.dataset.processdata.label;Process data
-selections.dataset.processdata.hint;Check this tickbox if you want to process input data, rearrange weeks acording to the first/last week selection and join seasons divided in the input dataset
-Log;Log
-MAP curve;MAP curve
-Slope curve;Slope curve
-selections.dataset.wavesdetection.multiple;Multi waves
-options.support.experimentalfeatures;Experimental features
-Show experimental features of memapp;Show experimental features of memapp
-No file or dataset selected;No file or dataset selected
-options.mem.other.centering.label;Centering seasons
-Method for centering seasons to calculate the average curve;Method for centering seasons to calculate the average curve
-options.mem.other.centering.mean;Highest mean duration-weeks period
+app.globalgoodnessindicators;Global goodness indicators
+app.globalgoodnessintensity;Global goodness intensity
+app.globalgoodnesssummary;Global goodness summary
+main.checkdescribe.goodness;Goodness
+options.mem.goodness;Goodness & optimize
+options.graphs;Graph options
+main.checkdescribe.goodness.graphs;Graphs
+main.model.mem.graphs;Graphs
+main.model.goodness.graphs;Graphs
+main.model.optimize.graphs;Graphs
+options.graphs.height.label;Graphs height
+options.graphs.width.label;Graphs width
+options.graphs.height.hint;Height of applications graphs
+graphs.highlevel;High level
+options.mem.thresholds.intensity.high.label;High lvl
+graphs.highthreshold.short;High thr.
+graphs.highthreshold;High threshold
+options.mem.other.centering.10;Highest 10-weeks period
+options.mem.other.centering.11;Highest 11-weeks period
+options.mem.other.centering.12;Highest 12-weeks period
+options.mem.other.centering.13;Highest 13-weeks period
+options.mem.other.centering.14;Highest 14-weeks period
+options.mem.other.centering.15;Highest 15-weeks period
 options.mem.other.centering.1;Highest 1-week period (peak)
 options.mem.other.centering.2;Highest 2-weeks period
 options.mem.other.centering.3;Highest 3-weeks period
@@ -279,66 +124,219 @@ options.mem.other.centering.6;Highest 6-weeks period
 options.mem.other.centering.7;Highest 7-weeks period
 options.mem.other.centering.8;Highest 8-weeks period
 options.mem.other.centering.9;Highest 9-weeks period
-options.mem.other.centering.10;Highest 10-weeks period
-options.mem.other.centering.11;Highest 11-weeks period
-options.mem.other.centering.12;Highest 12-weeks period
-options.mem.other.centering.13;Highest 13-weeks period
-options.mem.other.centering.14;Highest 14-weeks period
-options.mem.other.centering.15;Highest 15-weeks period
-Start centering period;Start centering period
-End centering period;End centering period
+options.mem.other.centering.mean;Highest mean duration-weeks period
+selections.dataset.dataset.hint;If the format is able to store different datasets, select the one you want to open
+graphs.indicator;Indicator
+main.checkdescribe.goodness.indicators;Indicators
+main.checkdescribe.goodness.intensity;Intensity
 options.mem.thresholds.intensity.label;Intensity thresholds
-selections.dataset.wavesdetection.multiple.no;No. waves
-Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it;Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it
-selections.dataset.wavesdetection.multiple.separation;Separation
-Minimum separation between two seasons to be considered different;Minimum separation between two seasons to be considered different
-selections.dataset.transformation.label;Transformation
-Waves;Waves
-Select the number of waves in the original data;Select the number of waves in the original data
-One wave;One wave
-selections.dataset.wavesdetection.one;One wave/season
-selections.dataset.wavesdetection.twoobserved;Two waves/season (observed)
-selections.dataset.wavesdetection.twoexpected;Two waves/season (expected)
-Multiple waves/series;Multiple waves/series
-default;default
-selections.dataset.wavesdetection.label;Waves detection
-selections.dataset.wavesdetection.hint;Select the number of waves in the original data or the algorith to separate diferent waves
-selections.dataset.wavesdetection.twoobserved.minimumprop;Minimum proportion
-Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same;Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same
-selections.dataset.wavesdetection.multiple.param1;Param. 1
-Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic;Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic
-selections.dataset.wavesdetection.multiple.param2;Param. 2
-Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic
-Yes;Yes
-No;No
-options.graphs.reset;Reset
-Show the experimental features tickbox;Show the experimental features tickbox
-Show the advanced features tickbox;Show the advanced features tickbox
-selections.dataset.transformation.loess.span;Loess span
-Loess span parameter;Loess span parameter
-selections.dataset.transformation.smothing.parameter;Smoothing parameter
-Smoothing parameter of the smoothing regression;Smoothing parameter of the smoothing regression
-selections.dataset.transformation.smothing.optimum;Optimum
-MEM Model Summary;MEM Model Summary
-Spline;Spline
-Moving average;Moving average
-MA weeks;MA weeks
-Moving Average weeks;Moving Average weeks
-selections.dataset.transformation.loess.positive;Positive
-selections.dataset.transformation.loess.positive.hint;Check this tickbox if you want to replace negative values with zeroes
-options.mem.thresholds.epidemic.uset;Use t distribution
-options.mem.thresholds.epidemic.uset.hint;Check this tickbox if you want to use t distribution (t-value) instead of normal distribution (z-value) for mean confidence intervals, useful when values less than 30
-selections.dataset.transformation.smothing;Smoothing regression
+selections.thresholds.intensity.label;Intensity thresholds/levels
+options.language.label;Language
+selections.model.to.hint;Last season to include in the model selection
+selections.dataset.lastweek.label;Last Week
+selections.dataset.lastweek.hint;Last week of the datasets surveillance period
+graphs.legend;Legend
+graphs.level;level
+main.checkdescribe.goodness.level;Level
+options.mem.other.averageotherci.hint;Level of the confidence interval used to calculate the average curve and other intervals
+options.mem.thresholds.intensity.high.hint;Level of the confidence interval used to calculate the high threshold
+options.mem.thresholds.intensity.medium.hint;Level of the confidence interval used to calculate the medium threshold
+options.mem.thresholds.intensity.veryhigh.hint;Level of the confidence interval used to calculate the very high threshold
+options.graphs.levelspalette.label;Levels palette
+selections.loadfile;Load file
+selections.dataset.transformation.loess;Loess
+selections.dataset.transformation.loess.span.label;Loess span
+selections.dataset.transformation.loess.span.hint;Loess span parameter
+ui.log;Log
+graphs.lowlevel;Low level
+graphs.lowerinterval;Lower interval
+graphs.lowerlimit;Lower limit
+selections.dataset.transformation.movingaverage.weeks.label;MA weeks
+options.text.main.label;Main title
+main.model.optimize.manual;Manual
+main.checkdescribe.timing.map;MAP curve
+options.mem.goodness.optimization.matthews;Matthews Correlation Coefficient
+graphs.matthews;Matthews correlation coefficient
+selections.model.seasons.hint;Maximum number of seasons to be used in the model.<br>Note that this will probably override the rest options, since it will restrict data to the last number of seasons from the selection already made with From/To/Exclude.<br>For influenza it is not recommended to use more than 10 seasons
+graphs.meanend;Mean end
+graphs.meanstart;Mean start
+options.mem.thresholds.epidemic.medianbootstrap;Median and bootstrap confidence interval
+options.mem.thresholds.epidemic.mediannyblom;Median and Nyblom confidence interval
+graphs.mediumlevel;Medium level
+options.mem.thresholds.intensity.medium.label;Medium lvl
+graphs.mediumthreshold.short;Medium thr.
+graphs.mediumthreshold;Medium threshold
 main.model.mem;MEM
-main.visualize.label;Visualize
+ui.memmodelsummary;MEM Model Summary
+ui.memneedstwo;MEM needs at least two seasons
+options.mem;MEM options
+ui.memreads;memapp is able to read MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) and OpenDocument Spreadsheet (ods)
+options.mem.other.other.hint;Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.
+options.mem.other.average.hint;Method for calculating the average curve confidence intervals
+options.mem.thresholds.epidemic.hint;Method for calculating the epidemic threshold
+options.mem.thresholds.intensity.hint;Method for calculating the intensity threshold
+options.mem.other.centering.hint;Method for centering seasons to calculate the average curve
+options.mem.timing.method.label;Method for timing
+options.mem.goodness.optimization.hint;Method to choose the optimum parameter
+selections.dataset.wavesdetection.twoobserved.minimumprop.label;Minimum proportion
+selections.dataset.wavesdetection.twoobserved.minimumprop.hint;Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same
+selections.dataset.wavesdetection.multiple.separation.hint;Minimum separation between two seasons to be considered different
+graphs.missing;missing
+options.mem.goodness.optimization.mixed;Mixed
+selections.model;Model
 main.model.label;Model
-main.checkdescribe.seasons.label;Seasons
-main.checkdescribe.timing.label;Timing
+app.modeldata;Model data
+app.modelgoodnessindicators;Model goodness indicators
+app.modelgoodnessintensity;Model goodness intensity
+app.modelgoodnesssummary;Model goodness summary
+selections.dataset.transformation.movingaverage;Moving average
+selections.dataset.transformation.movingaverage.weeks.hint;Moving Average weeks
+main.model.mem.graphs.moving;Moving epidemics
+selections.dataset.wavesdetection.multiple.param1.hint;Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic
+selections.dataset.wavesdetection.multiple.param2.hint;Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic
+selections.dataset.wavesdetection.multiple;Multiple waves/series
+options.mem.goodness.optimization.multiplicative;Multiplicative
+options.mem.goodness.optimization.negative;Negative likehood
+graphs.npv;Negative predictive value
+graphs.next;next
+graphs.no;No
+graphs.nodataseasons;No data seasons
+ui.nofile;No file or dataset selected
+selections.dataset.transformation.no;No transformation
+selections.dataset.wavesdetection.multiple.no.label;No. waves
+ui.columnstwo;Number of columns must be greater than 2
+options.mem.thresholds.values.hint;Number of values taken each season for calculate thresholds. If -1, a total of 30 points are used (30/numberofseasons). If 0, all available points are used
+options.graphs.observedline.label;Observed (line)
+options.graphs.observedpoints.label;Observed (points)
+selections.dataset.transformation.odd;Odd
+selections.dataset.wavesdetection.one;One wave/season
+ui.openxlsx;openxlsx not found
+app.optimization;Optimization
+options.mem.goodness.optimization.label;Optimization method
+main.model.optimize;Optimize
+selections.dataset.transformation.smothing.optimum.label;Optimum
+main.model.optimize.automatic.optimumparam;Optimum parameter
+options.mem.timing.method.original;Original method
+options.mem.other;Other
+options.mem.other.other.label;Other CI.
+options.graphs.thresholdspalette.hint;Palette used to generate color for epidemic and intensity thresholds
+options.graphs.levelspalette.hint;Palette used to generate color for intensity levels
+options.graphs.seasonspalette.hint;Palette used to generate the colors of the lines of the series graphs and other graphs with multiple lines
+options.graphs.timingpalette.hint;Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs
+selections.dataset.wavesdetection.multiple.param1.label;Param. 1
+selections.dataset.wavesdetection.multiple.param2.label;Param. 2
+main.model.optimize.automatic.parameter;Parameter
+options.mem.goodness.optimization.paramrange.label;Parameter range
+main.checkdescribe.goodness.detailed.peak;Peak
+main.checkdescribe.goodness.detailed.peakweek;Peak week
+graphs.percent;Percent agreement
+options.mem.goodness.optimization.percent;Percent agreement
+graphs.point;Point
+selections.dataset.transformation.loess.positive.label;Positive
+options.mem.goodness.optimization.positive;Positive likehood
+graphs.ppv;Positive predictive value
+graphs.postthreshold.short;Post thr.
+graphs.postepidemic;Post-epidemic
+graphs.postepidemicmiss;Post-epidemic (missing)
+graphs.postthreshold;Post-epidemic thr.
+selections.thresholds.post.label;Post-epidemic threshold
+graphs.preepidemic;Pre-epidemic
+graphs.preepidemicmiss;Pre-epidemic (missing)
+graphs.prethreshold;Pre-epidemic thr.
+selections.thresholds.pre.label;Pre-epidemic threshold
+main.procedures;Procedures
+selections.dataset.processdata.label;Process data
+options.mem.goodness.optimization.paramrange.hint;Range of possible of values of the slope parameter used by goodness and optimize functions
+options.graphs.reset;Reset
+main.model.optimize.manual.results;Results
+ui.rtools;Rtools not found
+main.checkdescribe.evolution.scheme;Scheme
+selections.surveillance.season.label;Season
+selections.surveillance.season.hint;Season you want to use for surveillance applying the MEM thresholds.<br>This season can be incomplete.<br> It is recommended not to use the surveillance season in the model selection
+main.checkdescribe.seasons;Seasons
+selections.model.seasons.label;Seasons
+graphs.modelseasons;Seasons in the model
+options.graphs.seasonspalette.label;Seasons palette
+options.mem.timing.method.derivative;Second derivative method
+selections.model.exclude.hint;Select any number of seasons to be excluded from the model
+selections.visualize.hint;Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard
+selections.dataset.wavesdetection.hint;Select the number of waves in the original data or the algorith to separate diferent waves
+selections.dataset.transformation.hint;Select the transformation to apply to the original data
+graphs.sensitivity;Sensitivity
+selections.dataset.wavesdetection.multiple.separation.label;Separation
+options.mem.goodness.validation.sequential;Sequential
+main.checkdescribe.series;Series
+options.support.advancedfeatures.hint;Show advanced features of memapp
+options.support.experimentalfeatures.hint;Show experimental features of memapp
+app.showadvancedtickbox;Show the advanced features tickbox
+app.showexperimentaltickbox;Show the experimental features tickbox
+main.checkdescribe.timing.slope;Slope curve
+options.mem.timing.method.slope;Slope method
+options.mem.timing.slope.label;Slope parameter
+options.mem.timing.slope.hint;Slope parameter used in fixed criterium method
+selections.dataset.transformation.smothing.parameter.label;Smoothing parameter
+selections.dataset.transformation.smothing.parameter.hint;Smoothing parameter of the smoothing regression
+selections.dataset.transformation.smothing;Smoothing regression
+graphs.specificity;Specificity
+selections.dataset.transformation.spline;Spline
+main.checkdescribe.stability;Stability
+graphs.start;Start
+main.model.optimize.manual.startend;Start & end
+graphs.startlower;Start (lower limit)
+graphs.startupper;Start (upper limit)
+main.checkdescribe.evolution.start;Start
+graphs.startcentering;Start centering period
+options.support.issues;Submit issues
+main.checkdescribe.goodness.summary;Summary
+main.model.hint;Summary, graphs, goodness and optimization of the MEM model
+options.support;Support
+main.surveillance.label;Surveillance
+selections.surveillance;Surveillance
+main.surveillance.surveillance;Surveillance
+main.surveillance.hint;Surveillance tools
+options.mem.thresholds.tails.label.label;Tails
+options.support.manual;Technical manual
+options.text;Text options
+ui.moving;The Moving Epidemic Method Web Application
+options.mem.thresholds;Thresholds
 main.checkdescribe.evolution.thresholds;Thresholds
-selections.thresholds.label;Thresholds
-options.graphs.width.label;Graphs width
+selections.thresholds;Thresholds
+options.graphs.thresholdspalette.label;Thresholds palette
+main.checkdescribe.timing;Timing
+options.mem.timing;Timing
+options.graphs.timingpalette.label;Timing palette
+selections.model.to.label;To
+selections.dataset.wavesdetection.multiple.no.hint;Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it
+graphs.totalseasons;Total seasons
+selections.dataset.transformation.label;Transformation
+selections.dataset.wavesdetection.twoexpected;Two waves/season (expected)
+selections.dataset.wavesdetection.twoobserved;Two waves/season (observed)
+graphs.upperinterval;Upper interval
+graphs.upperlimit;Upper limit
+options.mem.thresholds.epidemic.uset.label;Use t distribution
+options.mem.goodness.validation.label;Validation
+graphs.value;Value
+options.mem.thresholds.values.label;Values per season
+graphs.veryhighlevel;Very high level
+options.mem.thresholds.intensity.veryhigh.label;Very high lvl
+graphs.veryhighthreshold.short;Very high thr.
+graphs.veryhighthreshold;Very high threshold
+selections.visualize.label;Visualize
+main.visualize.label;Visualize
+main.visualize.hint;Visualize different sets of data with a MEM model
+selections.dataset.wavesdetection.label;Waves detection
+graphs.week;Week
+selections.surveillance.week.label;Week
+main.surveillance.surveillance.week;Week
+app.weekna;Week na
+app.weekno;Week no
+selections.surveillance.week.hint;Week you want to create the surveillance graph for. It can be any week from the first week of the surveillance season to the last one that have data
+graphs.weeklydata;Weekly data
 options.graphs.width.hint;Width of applications graphs
-options.graphs.height.label;Graphs height
-options.graphs.height.hint;Height of applications graphs
-selections.surveillance.label;Surveillance
-selections.dataset.dataset.label;Dataset
+options.text.xaxis.label;X-axis
+options.text.yaxis.label;Y-axis
+options.graphs.yaxis0.label;y-axis starts at 0
+graphs.yes;Yes
+graphs.youden;Youdens Index
+options.mem.goodness.optimization.youden;Youden's Index
+ui.nozip;Zip not found

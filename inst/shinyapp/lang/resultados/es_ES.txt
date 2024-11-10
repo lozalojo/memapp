@@ -12,264 +12,109 @@ options.mem.thresholds.values.7;7/temporada
 options.mem.thresholds.values.8;8/temporada
 options.mem.thresholds.values.9;9/temporada
 options.mem.goodness.optimization.aditive;Aditivo
+options.support.advancedfeatures.label;Características avanzadas
 options.mem.thresholds.values.all;Todos
-Animated;Animación
+main.surveillance.surveillance.animated;Animación
 options.mem.thresholds.epidemic.arithmeticmean;Media aritmética e IC de la media
 options.mem.thresholds.epidemic.arithmeticprediction;Media aritmética e IC de predicción
-Automatic;Automática
-Average;Media
-Average curve;Curva media
-options.mem.other.averagecurveci.label;IC curva media
-options.mem.other.averagecurveci.level;Nivel curva media/otros IC
-Average epidemic length;Duración epidémica media
-Average epidemic start week;Semana de inicio media
-Baseline;Basal
-Baseline level;Nivel basal
+main.model.optimize.automatic;Automática
+main.surveillance.surveillance.average;Media
+graphs.averagecurve;Curva media
+main.model.mem.graphs.average;Curva media
+options.mem.other.averagecurve.label;IC curva media
+options.mem.other.averageotherci.level;Nivel curva media/otros IC
+graphs.averagelength;Duración epidémica media
+graphs.averagestart;Semana de inicio media
+graphs.baselinelevel;Nivel basal
 ui.calculating;Realizando cálculos. Espere, por favor, tardará un rato...
+options.mem.other.centering.label;Centrado de las temporadas
 options.language.hint;Cambia el idioma de la aplicación
 options.text.main.hint;Cambia el título principal de los gráficos
 options.text.xaxis.hint;Cambia la etiqueta del eje X
 options.text.yaxis.hint;Cambia la etiqueta del ejeY
 main.checkdescribe.label;Comprobar y describir
 main.checkdescribe.hint;Comprobar y describir los datos, gráficos de temporadas y series
+selections.dataset.transformation.smothing.optimum.hint;Marca esta opción si quiere que se use el valor óptimo de la regresión
 selections.thresholds.pre.hint;Marque esta casilla si quiere incluir los umbrales epidémicos (y los inicios de epidemia) en los gráficos.<br>Esta opción es global y se aplicará a la mayoría de los gráficos
 selections.thresholds.intensity.hint;Marque esta casilla si quiere incluir los umbrales de intensidad en los gráficos.<br>Esta opción es global y se aplicará a la mayoría de los gráficos
 selections.thresholds.post.hint;Marque esta casilla si quiere incluir los umbrales posepidémicos (y los finales de epidemia) en los gráficos.<br>Esta opción es global y se aplicará a la mayoría de los gráficos
+selections.dataset.processdata.hint;Marca esta casilla si quieres comprobar la numeración de las semanas y temporadas, permitiendo generar un esquema de semanas válido y unir temporadas divididas en dos. No marcar si se quieren usar los datos originales tal y como vienen
+selections.dataset.transformation.loess.positive.hint;Active esta opción si quiere que se reemplacen los valores negativos con ceros
+options.mem.thresholds.epidemic.uset.hint;Marque esta opción para usar la distribución t en lugar de la normal al calcular intervalos para la media. Útil cuando se tienen menos de 30 valores
 options.mem.thresholds.tails.label.hint;Seleccione si quiere usar intervalos de una o de dos colas para los umbrales
 selections.surveillance.force.hint;Seleccione la semana en la que quiere forzar el inicio de la epidemia en el gráfico.<br>La epidemia se iniciará en esa semana y no en la primera que cruce el umbral epidémico
-Clicks;Clics
+main.model.optimize.manual.clicks;Clics
 options.graphs.observedline.hint;Color de la línea de datos observados
 options.graphs.epidemicend.hint;Color del punto que marca el fin de la epidemia
 options.graphs.epidemicstart.hint;Color del punto que marca el inicio de la epidemia
 options.graphs.observedpoints.hint;Color de los puntos de datos observados
 options.mem.goodness.validation.cross;Cruzada
 options.mem.goodness.validation.hint;Cross: Extrae una temporada y el modelo se calcula con el resto.<br>Sequential: Extrae una temporada y el modelo se calcula con las precedentes únicamente
-Current parameter;Parámetro actual
-main.checkdescribe.data.label;Datos
-selections.dataset.label;Datos
-Description;Descripción
+main.model.optimize.automatic.currentparam;Parámetro actual
+main.checkdescribe.data;Datos
+selections.dataset;Datos
+selections.dataset.dataset.label;Datos
+app.default;por defecto
+main.checkdescribe.goodness.description;Descripción
 main.checkdescribe.evolution.detailed;Detallado
+main.checkdescribe.goodness.detailed;Detallado
+main.model.mem.detailed;Detallado
+main.model.optimize.detailed;Detallado
 main.checkdescribe.evolution.duration;Duración
-Duration (lower limit);Duración (límite inf.)
-Duration (upper limit);Duración (límite sup.)
-End;Fin
-selections.surveillance.force.label;Epidemia
+graphs.durationlower;Duración (límite inf.)
+graphs.durationupper;Duración (límite sup.)
+graphs.duration;Duración
+graphs.end;Fin
+graphs.endcentering;Fin periodo de centrado
+graphs.epidemic;Epidemia
 main.checkdescribe.evolution.epidemicperc;Porc. epidémico
-Epidemic (missing);Epidemia (ausentes)
+graphs.epidemicmiss;Epidemia (ausentes)
 options.graphs.epidemicend.label;Fin epidemia
-Epidemic perc.;Porc. epidemico
-Epidemic perc. (lower limit);Porc. epidemico (límite inf.)
-Epidemic perc. (upper limit);Porc. epidemico (límite sup.)
-Epidemic percentage;Porcentaje epidémico
+graphs.epidemicpercentage.short;Porc. epidemico
+graphs.epiperclower;Porc. epidemico (límite inf.)
+graphs.epipercupper;Porc. epidemico (límite sup.)
+graphs.epidemicpercentage;Porcentaje epidémico
 options.graphs.epidemicstart.label;Inicio epidemia
-Epidemic thr.;Umb. epidémico
+graphs.prethreshold.short;Umb. epidémico
 options.mem.thresholds.epidemic.label;Umbral epidémico
-Estimators;Estimadores
-main.checkdescribe.evolution.label;Evolución
-selections.model.exclude;Excluir
-main.checkdescribe.file.label;Fichero
+main.model.mem.estimators;Estimadores
+main.checkdescribe.evolution;Evolución
+selections.model.exclude.label;Excluir
+options.support.experimentalfeatures.label;Características experimentales
+main.checkdescribe.file;Fichero
 selections.dataset.transformation.fillmiss;Rellenar ausentes
 selections.model.from.hint;Primera temporada para incluir en el modelo
 selections.dataset.firstweek.label;Semana inicio
 selections.dataset.firstweek.hint;Primera semana del periodo de vigilancia
 options.mem.timing.method.fixed;Criterio fijo
-Force epidemic start;Forzar inicio epidemia
-selections.model.from;Desde
+selections.surveillance.force.label;Forzar inicio epidemia
+options.graphs.yaxis0.hint;Fuerza que el eje-y comience en el valor 0 en todos los gráficos
+selections.model.from.label;Desde
 options.mem.thresholds.epidemic.geometricmean;Media geométrica e IC de la media
 options.mem.thresholds.epidemic.geometricprediction;Media geométrica e IC de predicción
-Global goodness indicators;Indicadores bondad globales
-Global goodness intensity;Intensidad bondad global
-Global goodness summary;Resumen bondad global
-main.model.goodness;Bondad
-options.mem.goodness.label;Bondad y optimización
-options.graphs.label;Opciones gráficas
-Graphs;Gráficos
-High;Alto
-High int. thr.;Umb. alto
-High level;Nivel alto
-options.mem.thresholds.intensity.high;Nvl alto
-High thr.;Umb. alto
-High threshold;Umbral alto
-selections.dataset.dataset.hint;Si el formato de fichero que está tratando de abrir admite varias tablas de datos, seleccione la que quiere cargar
-Indicator;Indicador
-Indicators;Indicadores
-Intensity;Intensidad
-selections.thresholds.intensity;Umbrales/niveles de intensidad
-options.language.label;Idioma
-selections.model.to.hint;Última temporada para incluir en el modelo
-selections.dataset.lastweek.label;Semana fin
-selections.dataset.lastweek.hint;Última semana del periodo de vigilancia
-Legend;Leyenda
-level;nivel
-Level;Nivel
-Level of the confidence interval used to calculate the average curve and other intervals;Niveles de los intervales de confianza que se usan para calcular la curva media y otros intervalos
-Level of the confidence interval used to calculate the high threshold;Nivel del intervalo de confianza usado para calcular el umbral alto
-Level of the confidence interval used to calculate the medium threshold;Nivel del intervalo de confianza usado para calcular el umbral medio
-Level of the confidence interval used to calculate the very high threshold;Nivel del intervalo de confianza usado para calcular el umbral muy alto
-options.graphs.levelspalette.label;Paleta niveles
-selections.loadfile.label;Abrir fichero
-selections.dataset.transformation.loess.label;Loess
-Low;Bajo
-Low level;Nivel bajo
-Lower interval;Intervalo inferior
-Lower limit;Límite inferior
-options.text.main.label;Título
-Manual;Manual
-options.mem.goodness.optimization.matthews;Coeficiente de Correlación de Matthews
-Matthews correlation coefficient;Coeficiente de correlación de Matthews
-selections.model.seasons.hint;Número máximo de temporadas que se incluirán en el modelo.<br>Tenga en cuenta que el limitar el número de semanas probablemente afecte al resto de opciones ya que se toman las últimas temporadas del periodo determinado por Desde/A/Excluir.<br>Para la gripe no se recomienda usar menos de 10 temporadas
-Maximum seasons;Máximo temporadas
-Mean end;Fin medio
-Mean start;Inicio medio
-options.mem.thresholds.epidemic.medianbootstrap;Mediana e IC remuestreo
-options.mem.thresholds.epidemic.mediannyblom;Mediana e IC método Nyblom
-Medium;Medio
-Medium int. thr.;Umb. medio
-Medium level;Nivel medio
-options.mem.thresholds.intensity.medium;Nvl medio
-Medium thr.;Umb. medio
-Medium threshold;Umbral medio
-MEM needs at least two seasons;MEM necesita al menos dos temporadas
-MEM options;Opciones MEM
-memapp is able to read text, excel, access and R;memapp es capaz de leer ficheros MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) y OpenDocument Spreadsheet (ods)
-Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.;Método de cálculo de otros intervalos de confianza: duración, porcentaje epidémico, inicio medio, etc.
-Method for calculating the average curve confidence intervals;Método de calculo de los IC de la curva media
-Method for calculating the epidemic threshold;Método de cálculo de los umbrales epidémicos
-Method for calculating the intensity threshold;Método de cálculo de los umbrales de intensidad
-options.mem.timing.method.label;Método localización
-Method to choose the optimum parameter;Método para elegir el parámetro óptimo
-missing;ausentes
-options.mem.goodness.optimization.mixed;Mixto
-selections.model.label;Modelizar
-Model data;Modelo
-Model goodness indicators;Indicadores bondad modelo
-Model goodness intensity;Intensidad bondad modelo
-Model goodness summary;Resumen bondad modelo
-Moving epidemics;Epidemias móviles
-options.mem.goodness.optimization.multiplicative;Multiplicativo
-options.mem.goodness.optimization.negative;Verosimilitud -
-Negative predictive value;Valor predictivo negativo
-next;próxima
-No data seasons;Temporadas sin datos
-selections.dataset.transformation.no;Ninguna
-Number of columns must be greater than 2;El número de columnas debe ser mayor que 2
-options.mem.thresholds.values.hint;Número de valores que se toman cada temporada para calcular los umbrales. Si es -1, se toman un total de 30 puntos (por temporada=30/número de temporadas). Si es 0, se toman todos los puntos
-options.graphs.observedline.label;Datos (línea)
-options.graphs.observedpoints.label;Datos (puntos)
-selections.dataset.transformation.odd;Odd
-Optimization;Optimización
-options.mem.goodness.optimization.label;Método optimización
-main.model.optimize;Optimizar
-Optimum parameter;Parámetro óptimo
-options.mem.timing.method.original;Original
-options.mem.other.label;Otros
-options.mem.other.otherci.label;Otros IC
-options.graphs.thresholdspalette.hint;Paleta que se usa para generar los colores de los umbrales epidémicos y de intensidad
-options.graphs.levelspalette.hint;Paleta que se usa para generar los colores de los niveles de intensidad
-options.graphs.seasonspalette.hint;Paleta usada para generar los colores de las líneas del gráfico de series y de otros gráficos en los que intervienen varias líneas
-options.graphs.timingpalette.hint;Paleta usada para generar los colores de los puntos pre, pos y epidémicos en los gráficos de localización
-Parameter;Parámetro
-options.mem.goodness.optimization.paramrange;Rango parámetro
-Peak;Máximo
-Peak week;Semana del máximo
-options.mem.goodness.optimization.percent;Porcentaje de acuerdo
-Point;Punto
-options.mem.goodness.optimization.positive;Verosimilitud +
-Positive predictive value;Valor predictivo positivo
-Post thr.;Umb. pos
-Post-epidemic;Pos-epidemia
-Post-epidemic (missing);Pos-epidemia (ausentes)
-Post-epidemic thr.;Umb. pos-epidémico
-selections.thresholds.post;Umbral pos-epidémico
-Pre-epidemic;Pre-epidemia
-Pre-epidemic (missing);Pre-epidemia (ausentes)
-Pre-epidemic thr.;Umb. pre-epidémico
-selections.thresholds.pre;Umbral pre-epidémico
-main.procedures.label;Procedimientos
-Range of possible of values of the slope parameter used by goodness and optimize functions;Rango de valores que puede tomar el parámetro pendiente y que se usa en las funciones de bondad y optimización
-Results;Resultados
-Rtools not found;No se ha encontrado Rtools
-openxlsx not found;No se ha encontrado openxlsx
-main.checkdescribe.evolution.scheme;Esquema
-selections.surveillance.season.label;Temporada
-selections.surveillance.season.hint;Temporada que quiere usar para la vigilancia, aplicando los umbrales calculados por el MEM.<br>La temporada no tiene por qué estar completa.<br>Se recomienda no incluir la temporada de vigilancia en la creación del modelo
-selections.model.seasons;Temporadas
-Seasons in the model;Temporadas en el modelo
-options.graphs.seasonspalette.label;Paleta temporadas
-options.mem.timing.method.derivative;Segunda derivada
-selections.model.exclude.hint;Temporadas a excluir del modelo
-Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard;Seleccione cualquier número de temporadas para mostrar los gráficos de series, temporadas y localización y para aplicar los umbrales del modelo actualmente seleccionado.<br>Para borrar una temporada de la selección, haga clic en ella y presione la tecla BORRAR
-selections.dataset.transformation.hint;Seleccione qué transformación quiere realizar a los datos
-Sensitivity;Sensibilidad
-options.mem.goodness.validation.sequential;Secuencial
-main.checkdescribe.series.label;Serie
-options.support.advancedfeatures;Características avanzadas
-Show advanced features of memapp;Muestra las opciones avanzadas de la aplicación
-options.mem.timing.method.slope;Pendiente
-options.mem.timing.slope.label;Parametro pendiente
-options.mem.timing.slope.hint;Parámetro pendiente que se usa en el criterio fijo
-Specificity;Especificidad
-main.checkdescribe.stability.label;Estabilidad
-main.checkdescribe.evolution.start;Inicio
-Start & end;Inicio y fin
-Start (lower limit);Inicio (límite inf.)
-Start (upper limit);Inicio (límite sup.)
-options.support.issues;Notificar errores
-Summary;Resumen
-main.model.hint;Resumen, gráficos, bondad y optimización del modelo MEM
-options.support.label;Ayuda
-main.surveillance.label;Vigilar
-main.surveillance.hint;Herramientas para la vigilancia
-options.mem.thresholds.tails.label;Colas
-options.support.manual;Manual técnico
-options.text.label;Opciones de texto
-The Moving Epidemic Method Web Application;Aplicación Web del Método de la Epidemia Móvil
-options.mem.thresholds.label;Umbrales
-options.graphs.thresholdspalette.label;Paleta umbrales
-options.mem.timing.label;Localización
-options.graphs.timingpalette.label;Paleta localización
-selections.model.to;A
-Total seasons;Total temporada
-Transform;Transformación
-Two waves (expected);Dos ondas (esperados)
-Two waves (observed);Dos ondas (observados)
-Upper interval;Intervalo superior
-Upper limit;Límite superior
-options.mem.goodness.validation;Validación
-Value;Valor
-options.mem.thresholds.values.label;Datos temporada
-Very high;Muy alto
-Very high int. thr.;Umb. muy alto
-Very high level;Nivel muy alto
-options.mem.thresholds.intensity.veryhigh;Nvl muy alto
-Very high thr.;Umb. muy alto
-Very high threshold;Umbral muy alto
-selections.visualize.label;Visualizar
-selections.visualize.hint;Visualice diferentes conjuntos de datos con distintos modelos
-selections.surveillance.week.label;Semana
-Week na;Semana no
-Week no;Semana nu
-selections.surveillance.week.hint;Semana para que se quiere crear el gráfico de vigilancia. Puede ser cualquier semana desde la primera semana a la última en la que se tienen datos
-Weekly data;Datos semanales
-options.text.xaxis.label;Eje X
-options.text.yaxis.label;Eje Y
-Youdens Index;Índice de Youden
-options.mem.goodness.optimization.youden;Índice de Youden
-Zip not found;No se ha encontrado zip
-options.graphs.yaxis0.label;Eje-Y comienza en 0
-options.graphs.yaxis0.hint;Fuerza que el eje-y comience en el valor 0 en todos los gráficos
-selections.dataset.processdata.label;Procesar datos
-selections.dataset.processdata.hint;Marca esta casilla si quieres comprobar la numeración de las semanas y temporadas, permitiendo generar un esquema de semanas válido y unir temporadas divididas en dos. No marcar si se quieren usar los datos originales tal y como vienen
-Log;Registro
-MAP curve;Curva PMA
-Slope curve;Curva pendiente
-selections.dataset.wavesdetection.multiple;Múltiples ondas
-options.support.experimentalfeatures;Características experimentales
-Show experimental features of memapp;Muestra las opciones experimentales de la aplicación
-No file or dataset selected;Ningún fichero u hoja de datos seleccionados
-options.mem.other.centering.label;Centrado de las temporadas
-Method for centering seasons to calculate the average curve;Método de centrado de las temporadas para calcular la curva media
-options.mem.other.centering.mean;Mayor periodo de la longitud media en semanas
+app.globalgoodnessindicators;Indicadores bondad globales
+app.globalgoodnessintensity;Intensidad bondad global
+app.globalgoodnesssummary;Resumen bondad global
+main.checkdescribe.goodness;Bondad
+options.mem.goodness;Bondad y optimización
+options.graphs;Opciones gráficas
+main.checkdescribe.goodness.graphs;Gráficos
+main.model.mem.graphs;Gráficos
+main.model.goodness.graphs;Gráficos
+main.model.optimize.graphs;Gráficos
+options.graphs.height.label;Alto gráficos
+options.graphs.width.label;Ancho gráficos
+options.graphs.height.hint;Alto de los gráficos generados por la aplicación
+graphs.highlevel;Nivel alto
+options.mem.thresholds.intensity.high.label;Nvl alto
+graphs.highthreshold.short;Umb. alto
+graphs.highthreshold;Umbral alto
+options.mem.other.centering.10;Mayor periodo de 10 semanas
+options.mem.other.centering.11;Mayor periodo de 11 semanas
+options.mem.other.centering.12;Mayor periodo de 12 semanas
+options.mem.other.centering.13;Mayor periodo de 13 semanas
+options.mem.other.centering.14;Mayor periodo de 14 semanas
+options.mem.other.centering.15;Mayor periodo de 15 semanas
 options.mem.other.centering.1;Mayor periodo de 1 semana (máximo)
 options.mem.other.centering.2;Mayor periodo de 2 semanas
 options.mem.other.centering.3;Mayor periodo de 3 semanas
@@ -279,64 +124,219 @@ options.mem.other.centering.6;Mayor periodo de 6 semanas
 options.mem.other.centering.7;Mayor periodo de 7 semanas
 options.mem.other.centering.8;Mayor periodo de 8 semanas
 options.mem.other.centering.9;Mayor periodo de 9 semanas
-options.mem.other.centering.10;Mayor periodo de 10 semanas
-options.mem.other.centering.11;Mayor periodo de 11 semanas
-options.mem.other.centering.12;Mayor periodo de 12 semanas
-options.mem.other.centering.13;Mayor periodo de 13 semanas
-options.mem.other.centering.14;Mayor periodo de 14 semanas
-options.mem.other.centering.15;Mayor periodo de 15 semanas
-Start centering period;Inicio periodo de centrado
-End centering period;Fin periodo de centrado
+options.mem.other.centering.mean;Mayor periodo de la longitud media en semanas
+selections.dataset.dataset.hint;Si el formato de fichero que está tratando de abrir admite varias tablas de datos, seleccione la que quiere cargar
+graphs.indicator;Indicador
+main.checkdescribe.goodness.indicators;Indicadores
+main.checkdescribe.goodness.intensity;Intensidad
 options.mem.thresholds.intensity.label;Umbrales de intensidad
-selections.dataset.wavesdetection.multiple.no;N. de ondas
-Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it;Número total de ondas del periodo. Póngalo a 0 para dejar que el programa lo determine automáticamente
-selections.dataset.wavesdetection.multiple.separation;Separación
-Minimum separation between two seasons to be considered different;Separación mínima entre dos temporadas para que sean consideradas distintas
-selections.dataset.transformation.label;Transformación
-Waves;Ondas
-Select the number of waves in the original data;Seleccione el número de ondas por temporada en los datos originales
-One wave;Una onda
-selections.dataset.wavesdetection.one;Una onda/temporada
-selections.dataset.wavesdetection.twoobserved;Dos ondas/temporada (observados)
-selections.dataset.wavesdetection.twoexpected;Dos ondas/temporada (esperados)
-Multiple waves/series;Multiples ondas/series
-default;por defecto
-selections.dataset.wavesdetection.label;Detección de ondas
-selections.dataset.wavesdetection.hint;Select the number of waves in the original data or the algorith to separate diferent waves
-selections.dataset.wavesdetection.twoobserved.minimumprop;Proporción mínima
-Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same;Proporción minima que debe tener una de las ondas para que se considere independiente de la otra
-selections.dataset.wavesdetection.multiple.param1;Parám. 1
-Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic;Parámetro 1 del algoritmo de ondas múltiples: cuando se decide que una tasa no pertenece a la onda que se está detectando en cada iteración
-selections.dataset.wavesdetection.multiple.param2;Parám. 2
-Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic;Parámetro 2 del algoritmo de ondas múltiples: cuando una agrupación de ondas no tiene el suficiente volumen para poderse considerar una onda independiente
-Yes;Sí
-No;No
-options.graphs.reset;Reiniciar
-Show the experimental features tickbox;Mostrar opción para habilitar las características experimentales
-Show the advanced features tickbox;Mostrar opción para habilitar las características avanzadas
-selections.dataset.transformation.loess.span;Suavizado Loess
-Loess span parameter;Parámetro de suavizado Loess
-selections.dataset.transformation.smothing.parameter;Parámetro de suavizado
-Smoothing parameter of the smoothing regression;Parámetro de suavizado de la regresión de suavizado
-selections.dataset.transformation.smothing.optimum;Óptimo
-MEM Model Summary;Resumen del modelo MEM
-Spline;Spline
-Moving average;Media móvil
-MA weeks;Semanas MM
-Moving Average weeks;Semanas media móvil
-selections.dataset.transformation.loess.positive;Positivos
-selections.dataset.transformation.loess.positive.hint;Active esta opción si quiere que se reemplacen los valores negativos con ceros
-options.mem.thresholds.epidemic.uset;Usar distribución t
-options.mem.thresholds.epidemic.uset.hint;Marque esta opción para usar la distribución t en lugar de la normal al calcular intervalos para la media. Útil cuando se tienen menos de 30 valores
-selections.dataset.transformation.smothing;Smoothing regression
+selections.thresholds.intensity.label;Umbrales/niveles de intensidad
+options.language.label;Idioma
+selections.model.to.hint;Última temporada para incluir en el modelo
+selections.dataset.lastweek.label;Semana fin
+selections.dataset.lastweek.hint;Última semana del periodo de vigilancia
+graphs.legend;Leyenda
+graphs.level;nivel
+main.checkdescribe.goodness.level;Nivel
+options.mem.other.averageotherci.hint;Niveles de los intervales de confianza que se usan para calcular la curva media y otros intervalos
+options.mem.thresholds.intensity.high.hint;Nivel del intervalo de confianza usado para calcular el umbral alto
+options.mem.thresholds.intensity.medium.hint;Nivel del intervalo de confianza usado para calcular el umbral medio
+options.mem.thresholds.intensity.veryhigh.hint;Nivel del intervalo de confianza usado para calcular el umbral muy alto
+options.graphs.levelspalette.label;Paleta niveles
+selections.loadfile;Abrir fichero
+selections.dataset.transformation.loess;Loess
+selections.dataset.transformation.loess.span.label;Suavizado Loess
+selections.dataset.transformation.loess.span.hint;Parámetro de suavizado Loess
+ui.log;Registro
+graphs.lowlevel;Nivel bajo
+graphs.lowerinterval;Intervalo inferior
+graphs.lowerlimit;Límite inferior
+selections.dataset.transformation.movingaverage.weeks.label;Semanas MM
+options.text.main.label;Título
+main.model.optimize.manual;Manual
+main.checkdescribe.timing.map;Curva PMA
+options.mem.goodness.optimization.matthews;Coeficiente de Correlación de Matthews
+graphs.matthews;Coeficiente de correlación de Matthews
+selections.model.seasons.hint;Número máximo de temporadas que se incluirán en el modelo.<br>Tenga en cuenta que el limitar el número de semanas probablemente afecte al resto de opciones ya que se toman las últimas temporadas del periodo determinado por Desde/A/Excluir.<br>Para la gripe no se recomienda usar menos de 10 temporadas
+graphs.meanend;Fin medio
+graphs.meanstart;Inicio medio
+options.mem.thresholds.epidemic.medianbootstrap;Mediana e IC remuestreo
+options.mem.thresholds.epidemic.mediannyblom;Mediana e IC método Nyblom
+graphs.mediumlevel;Nivel medio
+options.mem.thresholds.intensity.medium.label;Nvl medio
+graphs.mediumthreshold.short;Umb. medio
+graphs.mediumthreshold;Umbral medio
 main.model.mem;MEM
-main.visualize.label;Visualizar
+ui.memmodelsummary;Resumen del modelo MEM
+ui.memneedstwo;MEM necesita al menos dos temporadas
+options.mem;Opciones MEM
+ui.memreads;memapp es capaz de leer ficheros MSExcel(xls, xlsx), MSAccess (mdb, accdb), text (csv, dat, prn, txt), R (rds, rda, rdata), dBase (dbf), SPSS (sav), Stata (dta), SAS (sas7bdat) y OpenDocument Spreadsheet (ods)
+options.mem.other.other.hint;Método de cálculo de otros intervalos de confianza: duración, porcentaje epidémico, inicio medio, etc.
+options.mem.other.average.hint;Método de calculo de los IC de la curva media
+options.mem.thresholds.epidemic.hint;Método de cálculo de los umbrales epidémicos
+options.mem.thresholds.intensity.hint;Método de cálculo de los umbrales de intensidad
+options.mem.other.centering.hint;Método de centrado de las temporadas para calcular la curva media
+options.mem.timing.method.label;Método localización
+options.mem.goodness.optimization.hint;Método para elegir el parámetro óptimo
+selections.dataset.wavesdetection.twoobserved.minimumprop.label;Proporción mínima
+selections.dataset.wavesdetection.twoobserved.minimumprop.hint;Proporción minima que debe tener una de las ondas para que se considere independiente de la otra
+selections.dataset.wavesdetection.multiple.separation.hint;Separación mínima entre dos temporadas para que sean consideradas distintas
+graphs.missing;ausentes
+options.mem.goodness.optimization.mixed;Mixto
+selections.model;Modelizar
 main.model.label;Modelizar
-main.checkdescribe.seasons.label;Temporadas
-main.checkdescribe.timing.label;Localización
+app.modeldata;Modelo
+app.modelgoodnessindicators;Indicadores bondad modelo
+app.modelgoodnessintensity;Intensidad bondad modelo
+app.modelgoodnesssummary;Resumen bondad modelo
+selections.dataset.transformation.movingaverage;Media móvil
+selections.dataset.transformation.movingaverage.weeks.hint;Semanas media móvil
+main.model.mem.graphs.moving;Epidemias móviles
+selections.dataset.wavesdetection.multiple.param1.hint;Parámetro 1 del algoritmo de ondas múltiples: cuando se decide que una tasa no pertenece a la onda que se está detectando en cada iteración
+selections.dataset.wavesdetection.multiple.param2.hint;Parámetro 2 del algoritmo de ondas múltiples: cuando una agrupación de ondas no tiene el suficiente volumen para poderse considerar una onda independiente
+selections.dataset.wavesdetection.multiple;Multiples ondas/series
+options.mem.goodness.optimization.multiplicative;Multiplicativo
+options.mem.goodness.optimization.negative;Verosimilitud -
+graphs.npv;Valor predictivo negativo
+graphs.next;próxima
+graphs.no;No
+graphs.nodataseasons;Temporadas sin datos
+ui.nofile;Ningún fichero u hoja de datos seleccionados
+selections.dataset.transformation.no;Ninguna
+selections.dataset.wavesdetection.multiple.no.label;N. de ondas
+ui.columnstwo;El número de columnas debe ser mayor que 2
+options.mem.thresholds.values.hint;Número de valores que se toman cada temporada para calcular los umbrales. Si es -1, se toman un total de 30 puntos (por temporada=30/número de temporadas). Si es 0, se toman todos los puntos
+options.graphs.observedline.label;Datos (línea)
+options.graphs.observedpoints.label;Datos (puntos)
+selections.dataset.transformation.odd;Odd
+selections.dataset.wavesdetection.one;Una onda/temporada
+ui.openxlsx;No se ha encontrado openxlsx
+app.optimization;Optimización
+options.mem.goodness.optimization.label;Método optimización
+main.model.optimize;Optimizar
+selections.dataset.transformation.smothing.optimum.label;Óptimo
+main.model.optimize.automatic.optimumparam;Parámetro óptimo
+options.mem.timing.method.original;Original
+options.mem.other;Otros
+options.mem.other.other.label;Otros IC
+options.graphs.thresholdspalette.hint;Paleta que se usa para generar los colores de los umbrales epidémicos y de intensidad
+options.graphs.levelspalette.hint;Paleta que se usa para generar los colores de los niveles de intensidad
+options.graphs.seasonspalette.hint;Paleta usada para generar los colores de las líneas del gráfico de series y de otros gráficos en los que intervienen varias líneas
+options.graphs.timingpalette.hint;Paleta usada para generar los colores de los puntos pre, pos y epidémicos en los gráficos de localización
+selections.dataset.wavesdetection.multiple.param1.label;Parám. 1
+selections.dataset.wavesdetection.multiple.param2.label;Parám. 2
+main.model.optimize.automatic.parameter;Parámetro
+options.mem.goodness.optimization.paramrange.label;Rango parámetro
+main.checkdescribe.goodness.detailed.peak;Máximo
+main.checkdescribe.goodness.detailed.peakweek;Semana del máximo
+graphs.percent;Porcentaje de acuerdo
+options.mem.goodness.optimization.percent;Porcentaje de acuerdo
+graphs.point;Punto
+selections.dataset.transformation.loess.positive.label;Positivos
+options.mem.goodness.optimization.positive;Verosimilitud +
+graphs.ppv;Valor predictivo positivo
+graphs.postthreshold.short;Umb. pos
+graphs.postepidemic;Pos-epidemia
+graphs.postepidemicmiss;Pos-epidemia (ausentes)
+graphs.postthreshold;Umb. pos-epidémico
+selections.thresholds.post.label;Umbral pos-epidémico
+graphs.preepidemic;Pre-epidemia
+graphs.preepidemicmiss;Pre-epidemia (ausentes)
+graphs.prethreshold;Umb. pre-epidémico
+selections.thresholds.pre.label;Umbral pre-epidémico
+main.procedures;Procedimientos
+selections.dataset.processdata.label;Procesar datos
+options.mem.goodness.optimization.paramrange.hint;Rango de valores que puede tomar el parámetro pendiente y que se usa en las funciones de bondad y optimización
+options.graphs.reset;Reiniciar
+main.model.optimize.manual.results;Resultados
+ui.rtools;No se ha encontrado Rtools
+main.checkdescribe.evolution.scheme;Esquema
+selections.surveillance.season.label;Temporada
+selections.surveillance.season.hint;Temporada que quiere usar para la vigilancia, aplicando los umbrales calculados por el MEM.<br>La temporada no tiene por qué estar completa.<br>Se recomienda no incluir la temporada de vigilancia en la creación del modelo
+main.checkdescribe.seasons;Temporadas
+selections.model.seasons.label;Temporadas
+graphs.modelseasons;Temporadas en el modelo
+options.graphs.seasonspalette.label;Paleta temporadas
+options.mem.timing.method.derivative;Segunda derivada
+selections.model.exclude.hint;Temporadas a excluir del modelo
+selections.visualize.hint;Seleccione cualquier número de temporadas para mostrar los gráficos de series, temporadas y localización y para aplicar los umbrales del modelo actualmente seleccionado.<br>Para borrar una temporada de la selección, haga clic en ella y presione la tecla BORRAR
+selections.dataset.wavesdetection.hint;Select the number of waves in the original data or the algorith to separate diferent waves
+selections.dataset.transformation.hint;Seleccione qué transformación quiere realizar a los datos
+graphs.sensitivity;Sensibilidad
+selections.dataset.wavesdetection.multiple.separation.label;Separación
+options.mem.goodness.validation.sequential;Secuencial
+main.checkdescribe.series;Serie
+options.support.advancedfeatures.hint;Muestra las opciones avanzadas de la aplicación
+options.support.experimentalfeatures.hint;Muestra las opciones experimentales de la aplicación
+app.showadvancedtickbox;Mostrar opción para habilitar las características avanzadas
+app.showexperimentaltickbox;Mostrar opción para habilitar las características experimentales
+main.checkdescribe.timing.slope;Curva pendiente
+options.mem.timing.method.slope;Pendiente
+options.mem.timing.slope.label;Parametro pendiente
+options.mem.timing.slope.hint;Parámetro pendiente que se usa en el criterio fijo
+selections.dataset.transformation.smothing.parameter.label;Parámetro de suavizado
+selections.dataset.transformation.smothing.parameter.hint;Parámetro de suavizado de la regresión de suavizado
+selections.dataset.transformation.smothing;Smoothing regression
+graphs.specificity;Especificidad
+selections.dataset.transformation.spline;Spline
+main.checkdescribe.stability;Estabilidad
+graphs.start;Inicio
+main.model.optimize.manual.startend;Inicio y fin
+graphs.startlower;Inicio (límite inf.)
+graphs.startupper;Inicio (límite sup.)
+main.checkdescribe.evolution.start;Inicio
+graphs.startcentering;Inicio periodo de centrado
+options.support.issues;Notificar errores
+main.checkdescribe.goodness.summary;Resumen
+main.model.hint;Resumen, gráficos, bondad y optimización del modelo MEM
+options.support;Ayuda
+main.surveillance.label;Vigilar
+selections.surveillance;Vigilar
+main.surveillance.surveillance;Vigilar
+main.surveillance.hint;Herramientas para la vigilancia
+options.mem.thresholds.tails.label.label;Colas
+options.support.manual;Manual técnico
+options.text;Opciones de texto
+ui.moving;Aplicación Web del Método de la Epidemia Móvil
+options.mem.thresholds;Umbrales
 main.checkdescribe.evolution.thresholds;Umbrales
-selections.thresholds.label;Umbrales
-options.graphs.width.label;Ancho gráficos
+selections.thresholds;Umbrales
+options.graphs.thresholdspalette.label;Paleta umbrales
+main.checkdescribe.timing;Localización
+options.mem.timing;Localización
+options.graphs.timingpalette.label;Paleta localización
+selections.model.to.label;A
+selections.dataset.wavesdetection.multiple.no.hint;Número total de ondas del periodo. Póngalo a 0 para dejar que el programa lo determine automáticamente
+graphs.totalseasons;Total temporada
+selections.dataset.transformation.label;Transformación
+selections.dataset.wavesdetection.twoexpected;Dos ondas/temporada (esperados)
+selections.dataset.wavesdetection.twoobserved;Dos ondas/temporada (observados)
+graphs.upperinterval;Intervalo superior
+graphs.upperlimit;Límite superior
+options.mem.thresholds.epidemic.uset.label;Usar distribución t
+options.mem.goodness.validation.label;Validación
+graphs.value;Valor
+options.mem.thresholds.values.label;Datos temporada
+graphs.veryhighlevel;Nivel muy alto
+options.mem.thresholds.intensity.veryhigh.label;Nvl muy alto
+graphs.veryhighthreshold.short;Umb. muy alto
+graphs.veryhighthreshold;Umbral muy alto
+selections.visualize.label;Visualizar
+main.visualize.label;Visualizar
+main.visualize.hint;Visualice diferentes conjuntos de datos con distintos modelos
+selections.dataset.wavesdetection.label;Detección de ondas
+graphs.week;Semana
+selections.surveillance.week.label;Semana
+main.surveillance.surveillance.week;Semana
+app.weekna;Semana no
+app.weekno;Semana nu
+selections.surveillance.week.hint;Semana para que se quiere crear el gráfico de vigilancia. Puede ser cualquier semana desde la primera semana a la última en la que se tienen datos
+graphs.weeklydata;Datos semanales
 options.graphs.width.hint;Ancho de los gráficos generados por la aplicación
-options.graphs.height.label;Alto gráficos
-options.graphs.height.hint;Alto de los gráficos generados por la aplicación
+options.text.xaxis.label;Eje X
+options.text.yaxis.label;Eje Y
+options.graphs.yaxis0.label;Eje-Y comienza en 0
+graphs.yes;Sí
+graphs.youden;Índice de Youden
+options.mem.goodness.optimization.youden;Índice de Youden
+ui.nozip;No se ha encontrado zip

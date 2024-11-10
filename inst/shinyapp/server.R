@@ -3170,7 +3170,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("epidemic", "medium", "high", "veryhigh", "postepidemic")
       datfile.plot <- dataevolution[indicators]
-      names(datfile.plot) <- c(trloc("Pre-epidemic thr."), trloc("Medium int. thr."), trloc("High int. thr."), trloc("Very high int. thr."), trloc("Post-epidemic thr."))
+      names(datfile.plot) <- c(trloc("Pre-epidemic thr."), trloc("Medium thr."), trloc("High thr."), trloc("Very high thr."), trloc("Post-epidemic thr."))
       colors.palette <- generate_palette(
         i.number.series = NCOL(datfile.plot),
         i.colObservedLines = input$colObservedLines,
@@ -3482,7 +3482,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("epidemic", "medium", "high", "veryhigh", "postepidemic")
       datfile.plot <- datastability[indicators]
-      names(datfile.plot) <- c(trloc("Pre-epidemic thr."), trloc("Medium int. thr."), trloc("High int. thr."), trloc("Very high int. thr."), trloc("Post-epidemic thr."))
+      names(datfile.plot) <- c(trloc("Pre-epidemic thr."), trloc("Medium thr."), trloc("High thr."), trloc("Very high thr."), trloc("Post-epidemic thr."))
       colors.palette <- generate_palette(
         i.number.series = NCOL(datfile.plot),
         i.colObservedLines = input$colObservedLines,
@@ -3803,7 +3803,7 @@ shinyServer(function(input, output, session) {
       currentpalette <- generate_palette(i.colThresholds = input$colThresholds, i.colLevels = input$colLevels)
       thr.c <- currentpalette$colThresholds
       lvl.n <- as.character(c(1:5))
-      lvl.t <- c(trloc("Baseline"), trloc("Low"), trloc("Medium"), trloc("High"), trloc("Very high"))
+      lvl.t <- c(trloc("Baseline level"), trloc("Low level"), trloc("Medium level"), trloc("High level"), trloc("Very high level"))
       lvl.c <- currentpalette$colLevels
       peaks.data <- formattable::formattable(temp1, list(
         "Epidemic threshold" = formattable::formatter("span", style = formattable::style(color = thr.c[1], font.weight = "bold")),
@@ -4649,7 +4649,7 @@ shinyServer(function(input, output, session) {
       currentpalette <- generate_palette(i.colThresholds = input$colThresholds, i.colLevels = input$colLevels)
       thr.c <- currentpalette$colThresholds
       lvl.n <- as.character(c(1:5))
-      lvl.t <- c(trloc("Baseline"), trloc("Low"), trloc("Medium"), trloc("High"), trloc("Very high"))
+      lvl.t <- c(trloc("Baseline level"), trloc("Low level"), trloc("Medium level"), trloc("High level"), trloc("Very high level"))
       lvl.c <- currentpalette$colLevels
       peaks.data <- formattable::formattable(temp1, list(
         "Epidemic threshold" = formattable::formatter("span", style = formattable::style(color = thr.c[1], font.weight = "bold")),

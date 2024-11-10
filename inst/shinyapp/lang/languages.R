@@ -58,13 +58,13 @@ xlsxtotxt <- function(){
 
 # input <- "../server.R"
 
-count.in.file <- function(input, output, search, replace){
+count.in.file <- function(input){
   x <- readLines(input, encoding="UTF-8", warn=FALSE)
   y <- str_count(x, "trloc\\(\"[^\"]*\"")
   sum(y)
 }
 
-extract.in.file <- function(input, output, search, replace){
+extract.in.file <- function(input){
   x <- readLines(input, encoding="UTF-8", warn=FALSE)
   re <- "trloc\\(\"([^\"]*)\""
   temp1 <- as.character(str_extract_all(x,re, simplify=T))
@@ -100,21 +100,23 @@ claves <- read.xlsx(filexlsx, "newkeys") %>%
   arrange(Original, name) %>%
   summarise(newkey = str_to_lower(paste0(value, collapse = ".")))
 
-for (i in 1:NROW(claves)){
-  cat(i,"/",NROW(claves),"\t")
-  buscar = paste0("trloc(\"",claves$Original[i],"\")")
-  reemplazar = paste0("trloc(\"",claves$newkey[i],"\")")
-  if (i==1){
-    replace.in.file("../ui.R", "resultados/ui.R", buscar, reemplazar)
-    replace.in.file("../server.R", "resultados/server.R", buscar, reemplazar)
-    replace.in.file("../helpers.R", "resultados/helpers.R", buscar, reemplazar)
-  }else{
-    replace.in.file("resultados/ui.R", "resultados/ui.R", buscar, reemplazar)
-    replace.in.file("resultados/server.R", "resultados/server.R", buscar, reemplazar)
-    replace.in.file("resultados/helpers.R", "resultados/helpers.R", buscar, reemplazar)
-  }
+file.copy("../ui.R", "resultados/ui.R", overwrite=T)
+file.copy("../server.R", "resultados/server.R", overwrite=T)
+file.copy("../helpers.R", "resultados/helpers.R", overwrite=T)
+for (i in 1:NROW(claves)) {
+  cat(i, "/", NROW(claves), "\t")
+  buscar = paste0("trloc(\"", claves$Original[i], "\")")
+  reemplazar = paste0("trloc(\"", claves$newkey[i], "\")")
+  replace.in.file("resultados/ui.R", "resultados/ui.R", buscar, reemplazar)
+  replace.in.file("resultados/server.R",
+                  "resultados/server.R",
+                  buscar,
+                  reemplazar)
+  replace.in.file("resultados/helpers.R",
+                  "resultados/helpers.R",
+                  buscar,
+                  reemplazar)
 }
-
 
 temp1 <- extract.in.file("../server.R")
 temp2 <- claves %>%
@@ -128,13 +130,40 @@ temp5 <- temp3 %>%
   filter(is.na(newkey))
 
 for (i in 1:NROW(hojas)){
-  x <- read.xlsx(filexlsx, hojas$hoja[i]) %>%
-    left_join(claves) %>%
-    mutate(Original=coalesce(newkey,Original)) %>%
-    select(-newkey)
   fileo <- file.path("resultados", paste0(hojas$hoja[i],".txt"))
-  writeUtf8(x, fileo)
+  temp1 <- read.xlsx(filexlsx, hojas$hoja[i]) %>%
+    filter(!is.na(Original)) %>%
+    left_join(claves, by = join_by(Original))
+  temp2 <- temp1 %>%
+    filter(is.na(newkey))
+  if (NROW(temp2)>0){
+    cat(hojas$hoja[i],"\tError\n")
+    print(temp2)
+  }else{
+    temp3 <- temp1 %>%
+      select(Original=newkey,Translated) %>%
+      distinct()
+    temp4 <- temp3 %>%
+      group_by(Original) %>%
+      summarise(ene=n()) %>%
+      filter(ene>1) %>%
+      left_join(temp3,by = join_by(Original))
+    if (NROW(temp4)>0){
+      cat(hojas$hoja[i],"\tError\n")
+      print(temp4)
+    }else{
+      cat(hojas$hoja[i],"\tOk\n")
+      writeUtf8(temp3, fileo)
+    }
+  }
 } 
 
+temp1a <- count.in.file("../ui.R")
+temp1b <- count.in.file("resultados/ui.R")
+temp2a <- count.in.file("../server.R")
+temp2b <- count.in.file("resultados/server.R")
+temp3a <- count.in.file("../helpers.R")
+temp3b <- count.in.file("resultados/helpers.R")
 
-
+temp4 <- extract.in.file("resultados/server.R")
+write.xlsx(temp4, "errores.xlsx")
