@@ -340,3 +340,5 @@ ui.nofile;Ningún fichero u hoja de datos seleccionados
 ui.nozip;No se ha encontrado zip
 ui.openxlsx;No se ha encontrado openxlsx
 ui.rtools;No se ha encontrado Rtools
+options.language.default.label;Por defecto
+options.language.default.hint;Hacer el actual el idioma por defecto de la aplicación

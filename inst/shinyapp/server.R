@@ -2608,6 +2608,13 @@ shinyServer(function(input, output, session) {
     cat("observeEvent/resetuiMEMoptions> end\n")
   })
 
+  observeEvent(input$makeLangDefault, {
+    cat("observeEvent/makeLangDefault> begin\n")
+    cat("observeEvent/makeLangDefault> Setting new default language\n")
+    set.default.language(input$language)
+    cat("observeEvent/makeLangDefault> end\n")
+  })
+  
   #####################################
   ### DEFINING TABS STRUCTURE
   #####################################
@@ -6839,6 +6846,12 @@ shinyServer(function(input, output, session) {
     popify(
       h4(trloc("options.language.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")),
       title = trloc("options.language.label"), content = trloc("options.language.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+    )
+  })
+
+  output$uiLanguageDefault <- renderUI({
+    popify(
+      title = trloc("options.language.default.label"), content = trloc("options.language.default.hint"), placement = "rigth", actionButton("makeLangDefault", trloc("options.language.default.label"))
     )
   })
 

@@ -340,3 +340,5 @@ ui.nofile;No file or dataset selected
 ui.nozip;Zip not found
 ui.openxlsx;openxlsx not found
 ui.rtools;Rtools not found
+options.language.default.label;Make default
+options.language.default.hint;Set current language to app default

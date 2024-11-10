@@ -1502,6 +1502,31 @@ build.languages <- function() {
   cat("function/build.languages> end\n")
 }
 
+set.default.language <- function(i.lang) {
+  cat("function/set.default.language> begin\n")
+  default.fil <- paste0(translation.dir(), "/defaultlanguage.txt")
+  default.language <- i.lang
+  langs <- get.languages()
+  if (!(default.language %in% langs$filename)) default.language <- "en_GB"
+  writeLines(default.language, default.fil)
+  cat(paste0("function/set.default.language> Default language written to: ", default.language, "\n"))
+  cat("function/set.default.language> end\n")
+}
+
+get.default.language <- function() {
+  cat("function/get.default.language> begin\n")
+  default.fil <- paste0(translation.dir(), "/defaultlanguage.txt")
+  default.language <- readLines(default.fil, 1, warn=F)
+  langs <- get.languages()
+  if (!(default.language %in% langs$filename)) default.language <- "en_GB"
+  cat(paste0("function/get.default.language> Default language is: ", default.language, "\n"))
+  cat("function/get.default.language> end\n")
+  default.language
+}
+
+# set.default.language("fr_FR")
+# get.default.language()
+
 get.r.versions <- function() {
   list(
     r = as.character(R.version$version.string),
