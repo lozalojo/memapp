@@ -56,7 +56,28 @@ xlsxtotxt <- function(){
 # txttoxlsx()
 # xlsxtotxt()
 
+# input <- "../server.R"
 
+count.in.file <- function(input, output, search, replace){
+  x <- readLines(input, encoding="UTF-8", warn=FALSE)
+  y <- str_count(x, "trloc\\(\"[^\"]*\"")
+  sum(y)
+}
+
+extract.in.file <- function(input, output, search, replace){
+  x <- readLines(input, encoding="UTF-8", warn=FALSE)
+  re <- "trloc\\(\"([^\"]*)\""
+  temp1 <- as.character(str_extract_all(x,re, simplify=T))
+  temp2 <- gsub(re,"\\1",temp1[temp1!=""])
+  y <- data.frame(clave=temp2, stringsAsFactors = F) %>%
+    group_by(clave) %>%
+    summarise(veces=n()) %>%
+    ungroup() %>%
+    arrange(clave)
+  y
+}
+
+# temp1 <- count.in.file("../server.R")
 
 filexlsx <- "languages v2.xlsx"
 wb <- loadWorkbook(filexlsx)
@@ -79,16 +100,8 @@ claves <- read.xlsx(filexlsx, "newkeys") %>%
   arrange(Original, name) %>%
   summarise(newkey = str_to_lower(paste0(value, collapse = ".")))
 
-for (i in 1:NROW(hojas)){
-  x <- read.xlsx(filexlsx, hojas$hoja[i]) %>%
-    left_join(claves) %>%
-    mutate(Original=coalesce(newkey,Original)) %>%
-    select(-newkey)
-  fileo <- file.path("resultados", paste0(hojas$hoja[i],".txt"))
-  writeUtf8(x, fileo)
-} 
-
 for (i in 1:NROW(claves)){
+  cat(i,"/",NROW(claves),"\t")
   buscar = paste0("trloc(\"",claves$Original[i],"\")")
   reemplazar = paste0("trloc(\"",claves$newkey[i],"\")")
   if (i==1){
@@ -103,7 +116,25 @@ for (i in 1:NROW(claves)){
 }
 
 
+temp1 <- extract.in.file("../server.R")
+temp2 <- claves %>%
+  select(clave=Original, newkey)
+temp3 <- temp1 %>%
+  full_join(temp2)
+temp4 <- temp3 %>%
+  filter(is.na(veces)) %>%
+  arrange(newkey)
+temp5 <- temp3 %>%
+  filter(is.na(newkey))
 
+for (i in 1:NROW(hojas)){
+  x <- read.xlsx(filexlsx, hojas$hoja[i]) %>%
+    left_join(claves) %>%
+    mutate(Original=coalesce(newkey,Original)) %>%
+    select(-newkey)
+  fileo <- file.path("resultados", paste0(hojas$hoja[i],".txt"))
+  writeUtf8(x, fileo)
+} 
 
 
 

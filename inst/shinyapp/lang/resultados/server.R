@@ -219,8 +219,8 @@ shinyServer(function(input, output, session) {
       }
       labels <- c(
         names(data.full),
-        paste(names(data.full), " (", trloc("missing"), ")", sep = ""),
-        trloc(c("Epidemic thr.", "Medium thr.", "High thr.", "Very high thr.", "Post thr."))
+        paste(names(data.full), " (", trloc("graphs.missing"), ")", sep = ""),
+        c(trloc("graphs.prethreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("graphs.postthreshold"))
       )
       haspoints <- c(rep(F, NCOL(data.full)), rep(T, NCOL(data.full)), F, F, F, F, F)
       haslines <- c(rep(T, NCOL(data.full)), rep(F, NCOL(data.full)), T, T, T, T, T)
@@ -287,11 +287,11 @@ shinyServer(function(input, output, session) {
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 0.5) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
-        scale_shape_manual(values = shapes.s, name = trloc("Legend"), labels = labels.s) +
-        scale_color_manual(values = colors.s, name = trloc("Legend"), labels = labels.s) +
-        scale_fill_manual(values = fills.s, name = trloc("Legend"), labels = labels.s) +
-        scale_size_manual(values = sizes.s, name = trloc("Legend"), labels = labels.s) +
-        scale_linetype_manual(values = linetypes.s, name = trloc("Legend"), labels = labels.s) +
+        scale_shape_manual(values = shapes.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_color_manual(values = colors.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_fill_manual(values = fills.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_size_manual(values = sizes.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_linetype_manual(values = linetypes.s, name = trloc("graphs.legend"), labels = labels.s) +
         scale_x_continuous(breaks = axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks = axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -467,7 +467,7 @@ shinyServer(function(input, output, session) {
         }
       }
 
-      labels <- trloc(c("Weekly data", "Pre-epidemic", "Pre-epidemic (missing)", "Epidemic", "Epidemic (missing)", "Post-epidemic", "Post-epidemic (missing)", "Epidemic thr.", "Medium thr.", "High thr.", "Very high thr.", "Post thr."))
+      labels <- c(trloc("graphs.weeklydata"), trloc("graphs.preepidemic"), trloc("graphs.preepidemicmiss"), trloc("graphs.epidemic"), trloc("graphs.epidemicmiss"), trloc("graphs.postepidemic"), trloc("graphs.postepidemicmiss"), trloc("graphs.prethreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("graphs.postthreshold"))
       haspoints <- c(F, T, T, T, T, T, T, F, F, F, F, F)
       haslines <- c(T, F, F, F, F, F, F, T, T, T, T, T)
       shapes <- c(21, 21, 24, 21, 24, 21, 24, NA, NA, NA, NA, NA)
@@ -574,11 +574,11 @@ shinyServer(function(input, output, session) {
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 0.5) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
-        scale_shape_manual(values = shapes.s, name = trloc("Legend"), labels = labels.s) +
-        scale_color_manual(values = colors.s, name = trloc("Legend"), labels = labels.s) +
-        scale_fill_manual(values = fills.s, name = trloc("Legend"), labels = labels.s) +
-        scale_size_manual(values = sizes.s, name = trloc("Legend"), labels = labels.s) +
-        scale_linetype_manual(values = linetypes.s, name = trloc("Legend"), labels = labels.s) +
+        scale_shape_manual(values = shapes.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_color_manual(values = colors.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_fill_manual(values = fills.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_size_manual(values = sizes.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_linetype_manual(values = linetypes.s, name = trloc("graphs.legend"), labels = labels.s) +
         scale_x_continuous(breaks = axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks = axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -778,7 +778,7 @@ shinyServer(function(input, output, session) {
       intensidades.3 <- array(dim = c(semanas, 3))
       intensidades <- rbind(intensidades.1, intensidades.2, intensidades.3)[1:semanas, ]
 
-      labels <- trloc(c(names(i.data), "Epidemic thr.", "Medium thr.", "High thr.", "Very high thr.", "Post thr.", "Start", "End"))
+      labels <- c(trloc(names(i.data)), trloc("graphs.prethreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("graphs.postthreshold"), trloc("graphs.start"), trloc("graphs.end"))
       haspoints <- c(T, F, F, F, F, F, T, T)
       haslines <- c(T, T, T, T, T, T, F, F)
       shapes <- c(21, NA, NA, NA, NA, NA, 21, 21)
@@ -844,11 +844,11 @@ shinyServer(function(input, output, session) {
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 1.2) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
-        scale_shape_manual(values = shapes.s, name = trloc("Legend"), labels = labels.s) +
-        scale_color_manual(values = colors.s, name = trloc("Legend"), labels = labels.s) +
-        scale_fill_manual(values = fills.s, name = trloc("Legend"), labels = labels.s) +
-        scale_size_manual(values = sizes.s, name = trloc("Legend"), labels = labels.s) +
-        scale_linetype_manual(values = linetypes.s, name = trloc("Legend"), labels = labels.s) +
+        scale_shape_manual(values = shapes.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_color_manual(values = colors.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_fill_manual(values = fills.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_size_manual(values = sizes.s, name = trloc("graphs.legend"), labels = labels.s) +
+        scale_linetype_manual(values = linetypes.s, name = trloc("graphs.legend"), labels = labels.s) +
         scale_x_continuous(breaks = axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks = axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -918,11 +918,11 @@ shinyServer(function(input, output, session) {
       gplot <- ggplot(dgrafgg) +
         geom_line(aes(x = num, y = value, group = variable, color = variable, linetype = variable), size = i.linesize) +
         geom_point(aes(x = num, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
-        scale_shape_manual(values = i.shapes, name = trloc("Legend"), labels = labels) +
-        scale_color_manual(values = i.colors, name = trloc("Legend"), labels = labels) +
-        scale_fill_manual(values = i.fills, name = trloc("Legend"), labels = labels) +
-        scale_size_manual(values = i.sizes, name = trloc("Legend"), labels = labels) +
-        scale_linetype_manual(values = i.linetypes, name = trloc("Legend"), labels = labels) +
+        scale_shape_manual(values = i.shapes, name = trloc("graphs.legend"), labels = labels) +
+        scale_color_manual(values = i.colors, name = trloc("graphs.legend"), labels = labels) +
+        scale_fill_manual(values = i.fills, name = trloc("graphs.legend"), labels = labels) +
+        scale_size_manual(values = i.sizes, name = trloc("graphs.legend"), labels = labels) +
+        scale_linetype_manual(values = i.linetypes, name = trloc("graphs.legend"), labels = labels) +
         scale_x_continuous(breaks = axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks = axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
         labs(title = i.textMain, x = i.textX, y = i.textY) +
@@ -1313,7 +1313,6 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = graph.file,
             contentType = "image/png",
-            width = as.numeric(input$dwidth),
             width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
             alt = "No image found"
           )
@@ -1384,7 +1383,6 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = graph.file,
             contentType = "image/png",
-            width = as.numeric(input$dwidth),
             width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
             alt = "No image found"
           )
@@ -1825,11 +1823,11 @@ shinyServer(function(input, output, session) {
                 column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               ),
               fluidRow(
-                column(1, h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(1, h4(trloc("main.checkdescribe.timing.map"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
                 column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_map"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               ),
               fluidRow(
-                column(1, h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(1, h4(trloc("main.checkdescribe.timing.slope"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
                 column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_slope"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               )
             )
@@ -1896,7 +1894,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -1939,7 +1937,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -1983,7 +1981,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -1999,11 +1997,11 @@ shinyServer(function(input, output, session) {
                 column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               ),
               fluidRow(
-                column(1, h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(1, h4(trloc("main.checkdescribe.timing.map"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
                 column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_map"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               ),
               fluidRow(
-                column(1, h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(1, h4(trloc("main.checkdescribe.timing.slope"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
                 column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_slope"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               )
             )
@@ -2070,7 +2068,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -2114,7 +2112,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -2158,7 +2156,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -2200,11 +2198,11 @@ shinyServer(function(input, output, session) {
                 column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               ),
               fluidRow(
-                column(1, h4(trloc("MAP curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(1, h4(trloc("main.checkdescribe.timing.map"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
                 column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_map"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               ),
               fluidRow(
-                column(1, h4(trloc("Slope curve"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(1, h4(trloc("main.checkdescribe.timing.slope"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
                 column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_slope"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
               )
             )
@@ -2271,7 +2269,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -2315,7 +2313,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -2359,7 +2357,7 @@ shinyServer(function(input, output, session) {
               zfix <- NULL
             } else {
               z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+              zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
           zfix
@@ -2406,9 +2404,9 @@ shinyServer(function(input, output, session) {
         output[[paste0("tbmOptimizeM_", as.character(s), "_table")]] <- renderTable({
           if (NROW(values$clickdata) > 0) {
             etwo <- extract.two(values$clickdata, "weekno", "season")
-            etwo <- merge(etwo, data.frame(id.tail = c(1, 2), point = trloc(c("Start", "End")), stringsAsFactors = F), by = "id.tail")
+            etwo <- merge(etwo, data.frame(id.tail = c(1, 2), point = c(trloc("graphs.start"), trloc("graphs.end")), stringsAsFactors = F), by = "id.tail")
             etwo2 <- subset(etwo, etwo$season == as.character(s))[c("season", "weekno", "point", paste0(as.character(s), "_fixed"))]
-            names(etwo2)[1:3] <- trloc(c("Season", "Week", "Point"))
+            names(etwo2)[1:3] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"), trloc("graphs.point"))
             names(etwo2)[4] <- as.character(s)
           } else {
             etwo2 <- data.frame(message = "No data")
@@ -2432,7 +2430,6 @@ shinyServer(function(input, output, session) {
           gfile <- list(
             src = imgfile,
             contentType = "image/png",
-            width = as.numeric(input$dwidth),
             width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
             alt = "No image found"
           )
@@ -2627,11 +2624,11 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbdData_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbdData_c", "csv"))
@@ -2642,7 +2639,7 @@ shinyServer(function(input, output, session) {
           tabPanel(trloc("main.checkdescribe.timing.label"), uiOutput("tbdTiming")),
           tabPanel(trloc("main.checkdescribe.evolution.label"), uiOutput("tbdEvolution")),
           tabPanel(trloc("main.checkdescribe.stability.label"), uiOutput("tbdStability")),
-          tabPanel(trloc("main.model.goodness"), uiOutput("tbdGoodness"))
+          tabPanel(trloc("main.checkdescribe.goodness"), uiOutput("tbdGoodness"))
         )
       } else {
         # tabsetPanel(tabPanel(trloc("main.checkdescribe.file.label"), verbatimTextOutput("tbdFile")),
@@ -2658,11 +2655,11 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbdData_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbdData_c", "csv"))
@@ -2701,13 +2698,13 @@ shinyServer(function(input, output, session) {
     readdata <- read_data()
     datfile <- readdata$datasetread
     if (is.null(datfile)) {
-      cat(trloc("No file or dataset selected"), "\n", sep = "")
-      cat(trloc("Log"), ":\n\t", sep = "")
+      cat(trloc("ui.nofile"), "\n", sep = "")
+      cat(trloc("ui.log"), ":\n\t", sep = "")
       cat(gsub("\n", "\n\t", readdata$datalog, fixed = T), sep = "")
     } else {
       cat(trloc("main.checkdescribe.file.label"), ":\n\t", infile$name, "\n", sep = "")
       cat(trloc("selections.dataset.label"), ":\n\t", indataset, "\n", sep = "")
-      cat(trloc("Log"), ":\n\t", sep = "")
+      cat(trloc("ui.log"), ":\n\t", sep = "")
       cat(gsub("\n", "\n\t", readdata$datalog, fixed = T), sep = "")
     }
   })
@@ -2781,7 +2778,7 @@ shinyServer(function(input, output, session) {
         if (length(selectedcolumns) > 0) {
           export.mydata(
             i.data = datfile[selectedcolumns], i.file = file,
-            i.sheet = substring(trloc("main.checkdescribe.data.label"), 1, 32), i.rownames = trloc("Week no"), i.format = "xlsx"
+            i.sheet = substring(trloc("main.checkdescribe.data.label"), 1, 32), i.rownames = trloc("app.weekno"), i.format = "xlsx"
           )
         }
       }
@@ -2801,7 +2798,7 @@ shinyServer(function(input, output, session) {
         if (length(selectedcolumns) > 0) {
           export.mydata(
             i.data = datfile[selectedcolumns], i.file = file,
-            i.sheet = substring(trloc("main.checkdescribe.data.label"), 1, 32), i.rownames = trloc("Week no"), i.format = "csv"
+            i.sheet = substring(trloc("main.checkdescribe.data.label"), 1, 32), i.rownames = trloc("app.weekno"), i.format = "csv"
           )
         }
       }
@@ -2864,7 +2861,7 @@ shinyServer(function(input, output, session) {
           zfix <- NULL
         } else {
           z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
     }
@@ -2932,7 +2929,7 @@ shinyServer(function(input, output, session) {
           zfix <- NULL
         } else {
           z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
     }
@@ -2990,11 +2987,11 @@ shinyServer(function(input, output, session) {
               if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdEdetailed_x", "xlsx")
               } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdEdetailed_c", "csv"))
@@ -3012,7 +3009,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("durationll", "duration", "durationul")
       datfile.plot <- dataevolution[indicators]
-      names(datfile.plot) <- trloc(c("Lower limit", "Duration", "Upper limit"))
+      names(datfile.plot) <- c(trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
       colors.palette <- generate_palette(
         i.number.series = 3,
@@ -3066,7 +3063,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("startll", "start", "startul")
       datfile.plot <- dataevolution[indicators]
-      names(datfile.plot) <- trloc(c("Lower limit", "Start", "Upper limit"))
+      names(datfile.plot) <- c(trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
       colors.palette <- generate_palette(
         i.number.series = 3,
@@ -3121,7 +3118,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("percentagell", "percentage", "percentageul")
       datfile.plot <- dataevolution[indicators]
-      names(datfile.plot) <- trloc(c("Lower limit", "Epidemic percentage", "Upper limit"))
+      names(datfile.plot) <- c(trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"))
       # by inserting \n instead of /, the fixplotly function assign twice the space for the x-axis labs
       colors.palette <- generate_palette(
         i.number.series = 3,
@@ -3173,7 +3170,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("epidemic", "medium", "high", "veryhigh", "postepidemic")
       datfile.plot <- dataevolution[indicators]
-      names(datfile.plot) <- trloc(c("Pre-epidemic thr.", "Medium int. thr.", "High int. thr.", "Very high int. thr.", "Post-epidemic thr."))
+      names(datfile.plot) <- c(trloc("graphs.prethreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("graphs.postthreshold"))
       colors.palette <- generate_palette(
         i.number.series = NCOL(datfile.plot),
         i.colObservedLines = input$colObservedLines,
@@ -3224,12 +3221,12 @@ shinyServer(function(input, output, session) {
       datashow <- NULL
     } else {
       temp1 <- dataevolution$evolution.seasons
-      if (row.names(temp1)[NROW(temp1)] == "next") row.names(temp1)[NROW(temp1)] <- trloc("next")
+      if (row.names(temp1)[NROW(temp1)] == "next") row.names(temp1)[NROW(temp1)] <- trloc("graphs.next")
       datashow <- formattable::formattable(temp1, apply(
         temp1, 2,
         function(noxneeded) formattable::formatter("span",
             style = x ~ formattable::style(color = ifelse(x, "green", "red")),
-            x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, trloc("Yes"), trloc("No")))
+            x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, trloc("graphs.yes"), trloc("graphs.no")))
           )
       ))
     }
@@ -3242,8 +3239,8 @@ shinyServer(function(input, output, session) {
       datashow <- NULL
     } else {
       datashow <- format(round(dataevolution$evolution.data, 2), nsmall = 2)
-      if (row.names(datashow)[NROW(datashow)] == "next") row.names(datashow)[NROW(datashow)] <- trloc("next")
-      names(datashow) <- trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      if (row.names(datashow)[NROW(datashow)] == "next") row.names(datashow)[NROW(datashow)] <- trloc("graphs.next")
+      names(datashow) <- c(trloc("main.checkdescribe.seasons.label"), trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"), trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"), trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"), trloc("graphs.prethreshold"), trloc("graphs.postthreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"))
     }
     datashow
   },
@@ -3257,8 +3254,8 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dataevolution <- data_evolution()
       datashow <- dataevolution$evolution.data
-      if (row.names(datashow)[NROW(datashow)] == "next") row.names(datashow)[NROW(datashow)] <- trloc("next")
-      names(datashow) <- trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      if (row.names(datashow)[NROW(datashow)] == "next") row.names(datashow)[NROW(datashow)] <- trloc("graphs.next")
+      names(datashow) <- c(trloc("main.checkdescribe.seasons.label"), trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"), trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"), trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"), trloc("graphs.prethreshold"), trloc("graphs.postthreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"))
       if (!is.null(dataevolution)) {
         export.mydata(
           i.data = datashow, i.file = file,
@@ -3276,8 +3273,8 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dataevolution <- data_evolution()
       datashow <- dataevolution$evolution.data
-      if (row.names(datashow)[NROW(datashow)] == "next") row.names(datashow)[NROW(datashow)] <- trloc("next")
-      names(datashow) <- trloc(c("Seasons", "Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      if (row.names(datashow)[NROW(datashow)] == "next") row.names(datashow)[NROW(datashow)] <- trloc("graphs.next")
+      names(datashow) <- c(trloc("main.checkdescribe.seasons.label"), trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"), trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"), trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"), trloc("graphs.prethreshold"), trloc("graphs.postthreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"))
       if (!is.null(dataevolution)) {
         export.mydata(
           i.data = datashow, i.file = file,
@@ -3310,11 +3307,11 @@ shinyServer(function(input, output, session) {
               if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdSdetailed_x", "xlsx")
               } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdSdetailed_c", "csv"))
@@ -3331,7 +3328,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("durationll", "duration", "durationul")
       datfile.plot <- datastability[indicators]
-      names(datfile.plot) <- trloc(c("Lower limit", "Duration", "Upper limit"))
+      names(datfile.plot) <- c(trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"))
       colors.palette <- generate_palette(
         i.number.series = 3,
         i.colObservedLines = input$colObservedLines,
@@ -3383,7 +3380,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("startll", "start", "startul")
       datfile.plot <- datastability[indicators]
-      names(datfile.plot) <- trloc(c("Lower limit", "Start", "Upper limit"))
+      names(datfile.plot) <- c(trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"))
       colors.palette <- generate_palette(
         i.number.series = 3,
         i.colObservedLines = input$colObservedLines,
@@ -3435,7 +3432,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("percentagell", "percentage", "percentageul")
       datfile.plot <- datastability[indicators]
-      names(datfile.plot) <- trloc(c("Lower limit", "Epidemic percentage", "Upper limit"))
+      names(datfile.plot) <- c(trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"))
       colors.palette <- generate_palette(
         i.number.series = 3,
         i.colObservedLines = input$colObservedLines,
@@ -3485,7 +3482,7 @@ shinyServer(function(input, output, session) {
     } else {
       indicators <- c("epidemic", "medium", "high", "veryhigh", "postepidemic")
       datfile.plot <- datastability[indicators]
-      names(datfile.plot) <- trloc(c("Pre-epidemic thr.", "Medium int. thr.", "High int. thr.", "Very high int. thr.", "Post-epidemic thr."))
+      names(datfile.plot) <- c(trloc("graphs.prethreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("graphs.postthreshold"))
       colors.palette <- generate_palette(
         i.number.series = NCOL(datfile.plot),
         i.colObservedLines = input$colObservedLines,
@@ -3538,7 +3535,7 @@ shinyServer(function(input, output, session) {
         temp1, 2,
         function(noxneeded) formattable::formatter("span",
             style = x ~ formattable::style(color = ifelse(x, "green", "red")),
-            x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, trloc("Yes"), trloc("No")))
+            x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, trloc("graphs.yes"), trloc("graphs.no")))
           )
       ))
     }
@@ -3551,7 +3548,7 @@ shinyServer(function(input, output, session) {
       datashow <- NULL
     } else {
       datashow <- format(round(datastability$stability.data, 2), nsmall = 2)
-      names(datashow) <- trloc(c("Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      names(datashow) <- c(trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"), trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"), trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"), trloc("graphs.prethreshold"), trloc("graphs.postthreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"))
     }
     datashow
   },
@@ -3565,7 +3562,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datastability <- data_stability()
       datashow <- datastability$stability.data
-      names(datashow) <- trloc(c("Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      names(datashow) <- c(trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"), trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"), trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"), trloc("graphs.prethreshold"), trloc("graphs.postthreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"))
       if (!is.null(datastability)) {
         export.mydata(
           i.data = datashow, i.file = file,
@@ -3583,7 +3580,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       datastability <- data_stability()
       datashow <- datastability$stability.data
-      names(datashow) <- trloc(c("Duration (lower limit)", "Duration", "Duration (upper limit)", "Start (lower limit)", "Start", "Start (upper limit)", "Epidemic perc. (lower limit)", "Epidemic perc.", "Epidemic perc. (upper limit)", "Epidemic thr.", "Post-epidemic thr.", "Medium thr.", "High thr.", "Very high thr."))
+      names(datashow) <- c(trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"), trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"), trloc("graphs.epiperclower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epipercupper"), trloc("graphs.prethreshold"), trloc("graphs.postthreshold"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"))
       if (!is.null(datastability)) {
         export.mydata(
           i.data = datashow, i.file = file,
@@ -3602,9 +3599,9 @@ shinyServer(function(input, output, session) {
     }
     else {
       tabsetPanel(
-        tabPanel(trloc("Indicators"), uiOutput("tbdGoodnessIndicators")),
+        tabPanel(trloc("main.checkdescribe.goodness.indicators"), uiOutput("tbdGoodnessIndicators")),
         tabPanel(
-          trloc("Summary"),
+          trloc("main.checkdescribe.goodness.summary"),
           formattable::formattableOutput("tbdGoodnessSummary"),
           fluidRow(
             column(8),
@@ -3613,20 +3610,20 @@ shinyServer(function(input, output, session) {
               if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdGoodnessSummary_x", "xlsx")
               } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdGoodnessSummary_c", "csv"))
           )
         ),
-        tabPanel(trloc("Graphs"), uiOutput("tbdGoodnessGraphs")),
-        tabPanel(trloc("Intensity"), uiOutput("tbdGoodnessIntensity")),
+        tabPanel(trloc("main.checkdescribe.goodness.graphs"), uiOutput("tbdGoodnessGraphs")),
+        tabPanel(trloc("main.checkdescribe.goodness.intensity"), uiOutput("tbdGoodnessIntensity")),
         tabPanel(
-          trloc("main.checkdescribe.evolution.detailed"),
+          trloc("main.checkdescribe.goodness.detailed"),
           formattable::formattableOutput("tbdGoodnessDetailed"),
           fluidRow(
             column(8),
@@ -3635,11 +3632,11 @@ shinyServer(function(input, output, session) {
               if (zip.present() & openxlsx.present()) {
                 downloadButton("tbdGoodnessDetailed_x", "xlsx")
               } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbdGoodnessDetailed_c", "csv"))
@@ -3655,25 +3652,25 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       # fluidRow(
-      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
+      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
         ),
         fluidRow(
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
         )
       )
     }
@@ -3694,10 +3691,10 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Youdens Index" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
       ), digits = 2, format = "f")
-      names(good.table) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
-      names(attr(good.table, "formattable")$format[[1]]) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+      names(good.table) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
+      names(attr(good.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
     } else {
-      temp1 <- data.frame(Error = trloc("Number of columns must be greater than 2"))
+      temp1 <- data.frame(Error = trloc("ui.columnstwo"))
       good.table <- formattable::formattable(temp1)
     }
     good.table
@@ -3713,10 +3710,10 @@ shinyServer(function(input, output, session) {
         temp1 <- as.data.frame(good$validity.data)
         temp1$Total <- good$results
         temp1 <- as.data.frame(t(temp1))[c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")]
-        names(temp1) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+        names(temp1) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Global goodness summary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
+          i.sheet = substring(trloc("app.globalgoodnesssummary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
         )
       }
     },
@@ -3733,10 +3730,10 @@ shinyServer(function(input, output, session) {
         temp1 <- as.data.frame(good$validity.data)
         temp1$Total <- good$results
         temp1 <- as.data.frame(t(temp1))[c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")]
-        names(temp1) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+        names(temp1) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Global goodness summary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
+          i.sheet = substring(trloc("app.globalgoodnesssummary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
         )
       }
     },
@@ -3806,7 +3803,7 @@ shinyServer(function(input, output, session) {
       currentpalette <- generate_palette(i.colThresholds = input$colThresholds, i.colLevels = input$colLevels)
       thr.c <- currentpalette$colThresholds
       lvl.n <- as.character(c(1:5))
-      lvl.t <- trloc(c("Baseline", "Low", "Medium", "High", "Very high"))
+      lvl.t <- c(trloc("graphs.baseline"), trloc("graphs.lowlevel"), trloc("graphs.mediumlevel"), trloc("graphs.highlevel"), trloc("graphs.veryhighlevel"))
       lvl.c <- currentpalette$colLevels
       peaks.data <- formattable::formattable(temp1, list(
         "Epidemic threshold" = formattable::formatter("span", style = formattable::style(color = thr.c[1], font.weight = "bold")),
@@ -3816,10 +3813,10 @@ shinyServer(function(input, output, session) {
         "Level" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x), "grey", ifelse(x == lvl.n[1], lvl.c[1], ifelse(x == lvl.n[2], lvl.c[2], ifelse(x == lvl.n[3], lvl.c[3], ifelse(x == lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
         "Description" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x), "grey", ifelse(x == lvl.t[1], lvl.c[1], ifelse(x == lvl.t[2], lvl.c[2], ifelse(x == lvl.t[3], lvl.c[3], ifelse(x == lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold"))
       ), digits = 2, format = "f")
-      names(peaks.data) <- trloc(c("Peak", "Peak week", "Epidemic threshold", "Medium threshold", "High threshold", "Very high threshold", "Level", "Description"))
-      names(attr(peaks.data, "formattable")$format[[1]]) <- trloc(c("Epidemic threshold", "Medium threshold", "High threshold", "Very high threshold", "Level", "Description"))
+      names(peaks.data) <- c(trloc("main.checkdescribe.goodness.detailed.peak"), trloc("main.checkdescribe.goodness.detailed.peakweek"), trloc("options.mem.thresholds.epidemic.label"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("main.checkdescribe.goodness.level"), trloc("main.checkdescribe.goodness.description"))
+      names(attr(peaks.data, "formattable")$format[[1]]) <- c(trloc("options.mem.thresholds.epidemic.label"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("main.checkdescribe.goodness.level"), trloc("main.checkdescribe.goodness.description"))
     } else {
-      temp1 <- data.frame(Error = trloc("Number of columns must be greater than 2"))
+      temp1 <- data.frame(Error = trloc("ui.columnstwo"))
       peaks.data <- formattable::formattable(temp1)
     }
     peaks.data
@@ -3838,7 +3835,7 @@ shinyServer(function(input, output, session) {
         names(temp1) <- trloc(names(temp1))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Global goodness intensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
+          i.sheet = substring(trloc("app.globalgoodnessintensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
         )
       }
     },
@@ -3858,7 +3855,7 @@ shinyServer(function(input, output, session) {
         names(temp1) <- trloc(names(temp1))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Global goodness intensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
+          i.sheet = substring(trloc("app.globalgoodnessintensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
         )
       }
     },
@@ -3905,11 +3902,11 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmData_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmData_c", "csv"))
@@ -3919,7 +3916,7 @@ shinyServer(function(input, output, session) {
           tabPanel(trloc("main.checkdescribe.series.label"), plotlyOutput("tbmSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
           tabPanel(trloc("main.checkdescribe.timing.label"), uiOutput("tbmTiming")),
           tabPanel(trloc("main.model.mem"), uiOutput("tbmMem")),
-          tabPanel(trloc("main.model.goodness"), uiOutput("tbmGoodness")),
+          tabPanel(trloc("main.checkdescribe.goodness"), uiOutput("tbmGoodness")),
           tabPanel(trloc("main.model.optimize"), uiOutput("tbmOptimize"))
         )
       } else {
@@ -3934,11 +3931,11 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmData_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmData_c", "csv"))
@@ -3948,7 +3945,7 @@ shinyServer(function(input, output, session) {
           tabPanel(trloc("main.checkdescribe.series.label"), plotlyOutput("tbmSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
           tabPanel(trloc("main.checkdescribe.timing.label"), uiOutput("tbmTiming")),
           tabPanel(trloc("main.model.mem"), uiOutput("tbmMem")),
-          tabPanel(trloc("main.model.goodness"), uiOutput("tbmGoodness")),
+          tabPanel(trloc("main.checkdescribe.goodness"), uiOutput("tbmGoodness")),
           tabPanel(trloc("main.model.optimize"), uiOutput("tbmOptimizeA"))
         )
       }
@@ -3976,7 +3973,7 @@ shinyServer(function(input, output, session) {
       if (!is.null(datamodel)) {
         export.mydata(
           i.data = datamodel$param.data, i.file = file,
-          i.sheet = substring(trloc("Model data"), 1, 32), i.rownames = trloc("Week no"), i.format = "xlsx"
+          i.sheet = substring(trloc("app.modeldata"), 1, 32), i.rownames = trloc("app.weekno"), i.format = "xlsx"
         )
       }
     },
@@ -3992,7 +3989,7 @@ shinyServer(function(input, output, session) {
       if (!is.null(datamodel)) {
         export.mydata(
           i.data = datamodel$param.data, i.file = file,
-          i.sheet = substring(trloc("Model data"), 1, 32), i.rownames = trloc("Week no"), i.format = "csv"
+          i.sheet = substring(trloc("app.modeldata"), 1, 32), i.rownames = trloc("app.weekno"), i.format = "csv"
         )
       }
     },
@@ -4049,7 +4046,7 @@ shinyServer(function(input, output, session) {
         zfix <- NULL
       } else {
         z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
     zfix
@@ -4111,7 +4108,7 @@ shinyServer(function(input, output, session) {
         zfix <- NULL
       } else {
         z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
     zfix
@@ -4143,9 +4140,9 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("Estimators"), uiOutput("tbmMemSummary")),
-        tabPanel(trloc("main.checkdescribe.evolution.detailed"), verbatimTextOutput("tbmMemOutput")),
-        tabPanel(trloc("Graphs"), uiOutput("tbmMemGraph"))
+        tabPanel(trloc("main.model.mem.estimators"), uiOutput("tbmMemSummary")),
+        tabPanel(trloc("main.model.mem.detailed"), verbatimTextOutput("tbmMemOutput")),
+        tabPanel(trloc("main.model.mem.graphs"), uiOutput("tbmMemGraph"))
       )
     }
   })
@@ -4158,30 +4155,30 @@ shinyServer(function(input, output, session) {
     } else {
       # fluidPage(
       #   fluidRow(
-      #     valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
-      #     valueBox(datamodel$ci.start[2,2], trloc("Average epidemic start week"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
-      #     valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), trloc("Average epidemic length"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
-      #     valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), trloc("Epidemic percentage"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue")
+      #     valueBox(datamodel$n.seasons, trloc("graphs.modelseasons"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
+      #     valueBox(datamodel$ci.start[2,2], trloc("graphs.averagestart"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
+      #     valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), trloc("graphs.averagelength"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
+      #     valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), trloc("graphs.epidemicpercentage"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue")
       #   ),
       #   fluidRow(
       #     valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), trloc("options.mem.thresholds.epidemic.label"), icon = icon("fas fa-thermometer-empty"), width=3, color="green"),
-      #     valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), trloc("Medium threshold"), icon = icon("fas fa-thermometer-quarter"), width=3, color="yellow"),
-      #     valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), trloc("High threshold"), icon = icon("fas fa-thermometer-half"), width=3, color="orange"),
-      #     valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), trloc("Very high threshold"), icon = icon("fas fa-thermometer-three-quarters"), width=3, color="red")
+      #     valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), trloc("graphs.mediumthreshold"), icon = icon("fas fa-thermometer-quarter"), width=3, color="yellow"),
+      #     valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), trloc("graphs.highthreshold"), icon = icon("fas fa-thermometer-half"), width=3, color="orange"),
+      #     valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), trloc("graphs.veryhighthreshold"), icon = icon("fas fa-thermometer-three-quarters"), width=3, color="red")
       #   )
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(datamodel$n.seasons, trloc("Seasons in the model"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
-          column(width = 3, shinydashboard::valueBox(datamodel$ci.start[2, 2], trloc("Average epidemic start week"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$ci.length[1, 2], 2), nsmall = 1), trloc("Average epidemic length"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
-          column(width = 3, shinydashboard::valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall = 1), "%"), trloc("Epidemic percentage"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue"))
+          column(width = 3, shinydashboard::valueBox(datamodel$n.seasons, trloc("graphs.modelseasons"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
+          column(width = 3, shinydashboard::valueBox(datamodel$ci.start[2, 2], trloc("graphs.averagestart"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$ci.length[1, 2], 2), nsmall = 1), trloc("graphs.averagelength"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
+          column(width = 3, shinydashboard::valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall = 1), "%"), trloc("graphs.epidemicpercentage"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue"))
         ),
         fluidRow(
           column(width = 3, shinydashboard::valueBox(format(round(datamodel$pre.post.intervals[1, 3], 2), nsmall = 1), trloc("options.mem.thresholds.epidemic.label"), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[1, 4], 2), nsmall = 1), trloc("Medium threshold"), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[2, 4], 2), nsmall = 1), trloc("High threshold"), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[3, 4], 2), nsmall = 1), trloc("Very high threshold"), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[1, 4], 2), nsmall = 1), trloc("graphs.mediumthreshold"), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[2, 4], 2), nsmall = 1), trloc("graphs.highthreshold"), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[3, 4], 2), nsmall = 1), trloc("graphs.veryhighthreshold"), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
         )
       )
     }
@@ -4197,12 +4194,12 @@ shinyServer(function(input, output, session) {
     if (!is.null(datfile.plot)) {
       cat(trloc("main.checkdescribe.file.label"), ":\n\t", infile$name, "\n", sep = "")
       cat(trloc("selections.dataset.label"), ":\n\t", indataset, "\n", sep = "")
-      cat(trloc("Log"), ":\n", sep = "")
+      cat(trloc("ui.log"), ":\n", sep = "")
       writeLines(paste("\t", capture.output(cat(readdata$datalog, sep = "")), sep = ""))
-      cat(trloc("MEM Model Summary"), ":\n", sep = "")
+      cat(trloc("ui.memmodelsummary"), ":\n", sep = "")
       writeLines(paste("\t", capture.output(summary(datamodel)), sep = ""))
     } else {
-      war.text <- as.data.frame(error = trloc("MEM needs at least two seasons"))
+      war.text <- as.data.frame(error = trloc("ui.memneedstwo"))
       names(war.text) <- NULL
       print(noquote(war.text), row.names = FALSE)
     }
@@ -4215,8 +4212,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("Moving epidemics"), plotlyOutput("tbmMemGraphMoving", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("Average curve"), plotlyOutput("tbmMemGraphAverage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+        tabPanel(trloc("main.model.mem.graphs.moving"), plotlyOutput("tbmMemGraphMoving", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+        tabPanel(trloc("main.model.mem.graphs.average"), plotlyOutput("tbmMemGraphAverage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
       )
     }
   })
@@ -4232,7 +4229,7 @@ shinyServer(function(input, output, session) {
       datfile.plot <- data.frame(datamodel$moving.epidemics, row.names = rownames(datamodel$param.data))
       names(datfile.plot) <- names(datamodel$param.data)
       datfile.plot$dummy <- datamodel$typ.curve[, 2]
-      names(datfile.plot)[names(datfile.plot) == "dummy"] <- trloc("Average curve")
+      names(datfile.plot)[names(datfile.plot) == "dummy"] <- trloc("graphs.averagecurve")
       colors.palette <- generate_palette(
         i.number.series = NCOL(datfile.plot),
         i.colObservedLines = input$colObservedLines,
@@ -4276,11 +4273,11 @@ shinyServer(function(input, output, session) {
       } else {
         p0 <- p$plot +
           geom_point(
-            x = datamodel$mean.start, y = datfile.plot[datamodel$mean.start, trloc("Average curve")],
+            x = datamodel$mean.start, y = datfile.plot[datamodel$mean.start, trloc("graphs.averagecurve")],
             color = colors.palette$colEpidemicStart, size = 2, fill = colors.palette$colEpidemicStart, shape = 21
           ) +
           geom_point(
-            x = datamodel$mean.start + datamodel$mean.length - 1, y = datfile.plot[datamodel$mean.start + datamodel$mean.length - 1, trloc("Average curve")],
+            x = datamodel$mean.start + datamodel$mean.length - 1, y = datfile.plot[datamodel$mean.start + datamodel$mean.length - 1, trloc("graphs.averagecurve")],
             color = colors.palette$colEpidemicStop, size = 2, fill = colors.palette$colEpidemicStop, shape = 21
           ) +
           geom_vline(
@@ -4296,14 +4293,14 @@ shinyServer(function(input, output, session) {
         z$x$data[[NCOL(datfile.plot)]]$line$width <- 2 * z$x$data[[NCOL(datfile.plot)]]$line$width
         z$x$data[[NCOL(datfile.plot)]]$line$dash <- "dot"
         # Rename name and text for vertical lines I've just added
-        z$x$data[[2 * length(p$labels) + 1]]$name <- trloc("Mean start")
-        z$x$data[[2 * length(p$labels) + 2]]$name <- trloc("Mean end")
-        z$x$data[[2 * length(p$labels) + 3]]$name <- trloc("Start centering period")
-        z$x$data[[2 * length(p$labels) + 4]]$name <- trloc("End centering period")
-        z$x$data[[2 * length(p$labels) + 1]]$text <- paste(trloc("Mean start"), ": ", rownames(datfile.plot)[datamodel$mean.start], sep = "")
-        z$x$data[[2 * length(p$labels) + 2]]$text <- paste(trloc("Mean end"), ": ", rownames(datfile.plot)[datamodel$mean.start + datamodel$mean.length - 1], sep = "")
-        z$x$data[[2 * length(p$labels) + 3]]$text <- paste(trloc("Start centering period"), ": ", rownames(datfile.plot)[datamodel$centered.start], sep = "")
-        z$x$data[[2 * length(p$labels) + 4]]$text <- paste(trloc("End centering period"), ": ", rownames(datfile.plot)[datamodel$centered.start + datamodel$centered.length - 1], sep = "")
+        z$x$data[[2 * length(p$labels) + 1]]$name <- trloc("graphs.meanstart")
+        z$x$data[[2 * length(p$labels) + 2]]$name <- trloc("graphs.meanend")
+        z$x$data[[2 * length(p$labels) + 3]]$name <- trloc("graphs.startcentering")
+        z$x$data[[2 * length(p$labels) + 4]]$name <- trloc("graphs.endcentering")
+        z$x$data[[2 * length(p$labels) + 1]]$text <- paste(trloc("graphs.meanstart"), ": ", rownames(datfile.plot)[datamodel$mean.start], sep = "")
+        z$x$data[[2 * length(p$labels) + 2]]$text <- paste(trloc("graphs.meanend"), ": ", rownames(datfile.plot)[datamodel$mean.start + datamodel$mean.length - 1], sep = "")
+        z$x$data[[2 * length(p$labels) + 3]]$text <- paste(trloc("graphs.startcentering"), ": ", rownames(datfile.plot)[datamodel$centered.start], sep = "")
+        z$x$data[[2 * length(p$labels) + 4]]$text <- paste(trloc("graphs.endcentering"), ": ", rownames(datfile.plot)[datamodel$centered.start + datamodel$centered.length - 1], sep = "")
 
         # And I need to rearrange the order of the z list for fixplotly to work
         names(z$x$data) <- as.character(1:(2 * length(p$labels) + 4))
@@ -4311,10 +4308,10 @@ shinyServer(function(input, output, session) {
         names(z$x$data) <- NULL
         zfix <- fixplotly(
           z,
-          c(p$labels, trloc(c("Mean start", "Mean end", "Start centering period", "End centering period"))),
+          c(p$labels, c(trloc("graphs.meanstart"), trloc("graphs.meanend"), trloc("graphs.startcentering"), trloc("graphs.endcentering"))),
           c(p$haslines, F, F, T, T),
           c(p$haspoints, T, T, F, F),
-          trloc("selections.surveillance.week.label"), "value", p$weeklabels
+          trloc("graphs.week"), "value", p$weeklabels
         )
       }
     }
@@ -4370,7 +4367,7 @@ shinyServer(function(input, output, session) {
         zfix <- NULL
       } else {
         z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
     zfix
@@ -4384,9 +4381,9 @@ shinyServer(function(input, output, session) {
     } else {
       if (as.logical(input$advanced)) {
         tabsetPanel(
-          tabPanel(trloc("Indicators"), uiOutput("tbmGoodnessIndicators")),
+          tabPanel(trloc("main.checkdescribe.goodness.indicators"), uiOutput("tbmGoodnessIndicators")),
           tabPanel(
-            trloc("Summary"),
+            trloc("main.checkdescribe.goodness.summary"),
             formattable::formattableOutput("tbmGoodnessSummary"),
             fluidRow(
               column(8),
@@ -4395,20 +4392,20 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessSummary_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessSummary_c", "csv"))
             )
           ),
-          tabPanel(trloc("Graphs"), uiOutput("tbmGoodnessGraphs")),
-          tabPanel(trloc("Intensity"), uiOutput("tbmGoodnessIntensity")),
+          tabPanel(trloc("main.model.goodness.graphs"), uiOutput("tbmGoodnessGraphs")),
+          tabPanel(trloc("main.checkdescribe.goodness.intensity"), uiOutput("tbmGoodnessIntensity")),
           tabPanel(
-            trloc("main.checkdescribe.evolution.detailed"),
+            trloc("main.checkdescribe.goodness.detailed"),
             formattable::formattableOutput("tbmGoodnessDetailed"),
             fluidRow(
               column(8),
@@ -4417,11 +4414,11 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessDetailed_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessDetailed_c", "csv"))
@@ -4430,9 +4427,9 @@ shinyServer(function(input, output, session) {
         )
       } else {
         tabsetPanel(
-          tabPanel(trloc("Indicators"), uiOutput("tbmGoodnessIndicators")),
+          tabPanel(trloc("main.checkdescribe.goodness.indicators"), uiOutput("tbmGoodnessIndicators")),
           tabPanel(
-            trloc("Summary"),
+            trloc("main.checkdescribe.goodness.summary"),
             formattable::formattableOutput("tbmGoodnessSummary"),
             fluidRow(
               column(8),
@@ -4441,19 +4438,19 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessSummary_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessSummary_c", "csv"))
             )
           ),
-          tabPanel(trloc("Intensity"), uiOutput("tbmGoodnessIntensity")),
+          tabPanel(trloc("main.checkdescribe.goodness.intensity"), uiOutput("tbmGoodnessIntensity")),
           tabPanel(
-            trloc("main.checkdescribe.evolution.detailed"),
+            trloc("main.checkdescribe.goodness.detailed"),
             formattable::formattableOutput("tbmGoodnessDetailed"),
             fluidRow(
               column(8),
@@ -4462,11 +4459,11 @@ shinyServer(function(input, output, session) {
                 if (zip.present() & openxlsx.present()) {
                   downloadButton("tbmGoodnessDetailed_x", "xlsx")
                 } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
                 } else if (.Platform$OS.type == "unix") {
-                  shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                  shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
                 }
               ),
               column(2, downloadButton("tbmGoodnessDetailed_c", "csv"))
@@ -4483,25 +4480,25 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       # fluidRow(
-      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
+      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Specificity"], 2), nsmall = 2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Positive predictive value"], 2), nsmall = 2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(good$results["Negative predictive value"], 2), nsmall = 2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
         ),
         fluidRow(
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Percent agreement"], 2), nsmall = 2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall = 2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(good$results["Youdens Index"], 2), nsmall = 2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
         )
       )
     }
@@ -4522,10 +4519,10 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Youdens Index" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
       ), digits = 2, format = "f")
-      names(good.table) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
-      names(attr(good.table, "formattable")$format[[1]]) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+      names(good.table) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
+      names(attr(good.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
     } else {
-      temp1 <- data.frame(Error = trloc("Number of columns must be greater than 2"))
+      temp1 <- data.frame(Error = trloc("ui.columnstwo"))
       good.table <- formattable::formattable(temp1)
     }
     good.table
@@ -4541,10 +4538,10 @@ shinyServer(function(input, output, session) {
         temp1 <- as.data.frame(good$validity.data)
         temp1$Total <- good$results
         temp1 <- as.data.frame(t(temp1))[c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")]
-        names(temp1) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+        names(temp1) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Model goodness summary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
+          i.sheet = substring(trloc("app.modelgoodnesssummary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
         )
       }
     },
@@ -4561,10 +4558,10 @@ shinyServer(function(input, output, session) {
         temp1 <- as.data.frame(good$validity.data)
         temp1$Total <- good$results
         temp1 <- as.data.frame(t(temp1))[c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")]
-        names(temp1) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+        names(temp1) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Model goodness summary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
+          i.sheet = substring(trloc("app.modelgoodnesssummary"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
         )
       }
     },
@@ -4652,7 +4649,7 @@ shinyServer(function(input, output, session) {
       currentpalette <- generate_palette(i.colThresholds = input$colThresholds, i.colLevels = input$colLevels)
       thr.c <- currentpalette$colThresholds
       lvl.n <- as.character(c(1:5))
-      lvl.t <- trloc(c("Baseline", "Low", "Medium", "High", "Very high"))
+      lvl.t <- c(trloc("graphs.baseline"), trloc("graphs.lowlevel"), trloc("graphs.mediumlevel"), trloc("graphs.highlevel"), trloc("graphs.veryhighlevel"))
       lvl.c <- currentpalette$colLevels
       peaks.data <- formattable::formattable(temp1, list(
         "Epidemic threshold" = formattable::formatter("span", style = formattable::style(color = thr.c[1], font.weight = "bold")),
@@ -4662,10 +4659,10 @@ shinyServer(function(input, output, session) {
         "Level" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x), "grey", ifelse(x == lvl.n[1], lvl.c[1], ifelse(x == lvl.n[2], lvl.c[2], ifelse(x == lvl.n[3], lvl.c[3], ifelse(x == lvl.n[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold")),
         "Description" = formattable::formatter("span", style = x ~ formattable::style(color = ifelse(is.na(x), "grey", ifelse(x == lvl.t[1], lvl.c[1], ifelse(x == lvl.t[2], lvl.c[2], ifelse(x == lvl.t[3], lvl.c[3], ifelse(x == lvl.t[4], lvl.c[4], lvl.c[5]))))), font.weight = "bold"))
       ), digits = 2, format = "f")
-      names(peaks.data) <- trloc(c("Peak", "Peak week", "Epidemic threshold", "Medium threshold", "High threshold", "Very high threshold", "Level", "Description"))
-      names(attr(peaks.data, "formattable")$format[[1]]) <- trloc(c("Epidemic threshold", "Medium threshold", "High threshold", "Very high threshold", "Level", "Description"))
+      names(peaks.data) <- c(trloc("main.checkdescribe.goodness.detailed.peak"), trloc("main.checkdescribe.goodness.detailed.peakweek"), trloc("options.mem.thresholds.epidemic.label"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("main.checkdescribe.goodness.level"), trloc("main.checkdescribe.goodness.description"))
+      names(attr(peaks.data, "formattable")$format[[1]]) <- c(trloc("options.mem.thresholds.epidemic.label"), trloc("graphs.mediumthreshold"), trloc("graphs.highthreshold"), trloc("graphs.veryhighthreshold"), trloc("main.checkdescribe.goodness.level"), trloc("main.checkdescribe.goodness.description"))
     } else {
-      temp1 <- data.frame(Error = trloc("Number of columns must be greater than 2"))
+      temp1 <- data.frame(Error = trloc("ui.columnstwo"))
       peaks.data <- formattable::formattable(temp1)
     }
     peaks.data
@@ -4684,7 +4681,7 @@ shinyServer(function(input, output, session) {
         names(temp1) <- trloc(names(temp1))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Model goodness intensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
+          i.sheet = substring(trloc("app.modelgoodnessintensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "xlsx"
         )
       }
     },
@@ -4703,7 +4700,7 @@ shinyServer(function(input, output, session) {
         names(temp1) <- trloc(names(temp1))
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Model goodness intensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
+          i.sheet = substring(trloc("app.modelgoodnessintensity"), 1, 32), i.rownames = trloc("selections.surveillance.season.label"), i.format = "csv"
         )
       }
     },
@@ -4717,8 +4714,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("Manual"), uiOutput("tbmOptimizeM")),
-        tabPanel(trloc("Automatic"), uiOutput("tbmOptimizeA"))
+        tabPanel(trloc("main.model.optimize.manual"), uiOutput("tbmOptimizeM")),
+        tabPanel(trloc("main.model.optimize.automatic"), uiOutput("tbmOptimizeA"))
       )
     }
   })
@@ -4740,9 +4737,9 @@ shinyServer(function(input, output, session) {
               call("tabPanel", s, call("uiOutput", outputId = paste0("tbmOptimizeM_", as.character(s))))
             }),
             list(
-              tabPanel(trloc("Start & end"), tableOutput("tbmOptimizeMstartend")),
-              tabPanel(trloc("Clicks"), tableOutput("tbmOptimizeMclicks")),
-              tabPanel(trloc("Results"), uiOutput("tbmOptimizeMresults"))
+              tabPanel(trloc("main.model.optimize.manual.startend"), tableOutput("tbmOptimizeMstartend")),
+              tabPanel(trloc("main.model.optimize.manual.clicks"), tableOutput("tbmOptimizeMclicks")),
+              tabPanel(trloc("main.model.optimize.manual.results"), uiOutput("tbmOptimizeMresults"))
             )
           )
         )
@@ -4755,12 +4752,12 @@ shinyServer(function(input, output, session) {
     datfile.plot <- datamodel$param.data
     if (NROW(values$clickdata) > 0) {
       etwo <- extract.two(values$clickdata, "weekno", "season")
-      etwo <- merge(etwo, data.frame(id.tail = c(1, 2), point = trloc(c("Start", "End")), stringsAsFactors = F), by = "id.tail")
+      etwo <- merge(etwo, data.frame(id.tail = c(1, 2), point = c(trloc("graphs.start"), trloc("graphs.end")), stringsAsFactors = F), by = "id.tail")
       optr <- subset(etwo, etwo$season %in% names(datfile.plot))[c("season", "weekna", "point", paste0(names(datfile.plot), "_fixed"))]
       optr <- optr %>%
         dplyr::arrange(season, desc(point)) %>%
         as.data.frame()
-      names(optr)[1:3] <- trloc(c("Season", "Week", "Point"))
+      names(optr)[1:3] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"), trloc("graphs.point"))
       names(optr)[4:(NCOL(datfile.plot) + 3)] <- names(datfile.plot)
     } else {
       optr <- NULL
@@ -4778,7 +4775,7 @@ shinyServer(function(input, output, session) {
         dplyr::arrange(season, weekno) %>%
         select(-weekno)
       as.data.frame
-      names(optr)[1:2] <- trloc(c("Season", "Week"))
+      names(optr)[1:2] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"))
       names(optr)[3:(NCOL(datfile.plot) + 2)] <- names(datfile.plot)
     } else {
       optr <- NULL
@@ -5004,7 +5001,6 @@ shinyServer(function(input, output, session) {
               gfile <- list(
                 src = imgfile,
                 contentType = "image/png",
-                width = as.numeric(input$dwidth),
                 width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
                 alt = "No image found"
               )
@@ -5035,61 +5031,21 @@ shinyServer(function(input, output, session) {
             i.min.seasons = 3
           )$results
 
-          # fluidRow(
-          #   fluidRow(
-          #     valueBox(format(round(optim["Sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-          #     valueBox(format(round(optim["Specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-          #     valueBox(format(round(optim["Positive predictive value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-          #     valueBox(format(round(optim["Negative predictive value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow")
-          #   ),
-          #   fluidRow(
-          #     valueBox(format(round(optim["Percent agreement"], 2), nsmall=2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-          #     valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-          #     valueBox(format(round(optim["Youdens Index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-          #     valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width=3, color="red"),
-          #     valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width=3, color="olive")
-          #   ),
-          #   fluidRow(
-          #     formattable::renderFormattable({
-          #       if(!is.null(optimum.by.inspection.output$insp.data)){
-          #         temp1 <- optimum.by.inspection.output$insp.data
-          #         temp1<-temp1[c("value","sensitivity","specificity","positive.predictive.value","negative.predictive.value","percent.agreement","matthews.correlation.coefficient","youdens.index")]
-          #         names(temp1)<-c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index")
-          #         rownames(temp1)<-NULL
-          #         opt.table<-formattable::formattable(temp1, list(
-          #           "Sensitivity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-          #           "Specificity" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-          #           "Positive predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-          #           "Negative predictive value" = fixed_color_bar(color="#FFBBFF",fixedWidth = 100, alpha=0.5),
-          #           "Percent agreement" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-          #           "Matthews correlation coefficient" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5),
-          #           "Youdens Index" = fixed_color_bar(color="#A5DBEB",fixedWidth = 100, alpha=0.5)
-          #         ), digits = 2, format = "f")
-          #         names(opt.table)<-trloc(c("Parameter","Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
-          #         names(attr(opt.table, "formattable")$format[[1]])<-trloc(c("Sensitivity","Specificity","Positive predictive value","Negative predictive value","Percent agreement","Matthews correlation coefficient","Youdens Index"))
-          #       }else{
-          #         temp1<-data.frame(Error=trloc("Number of columns must be greater than 2"),row.names = NULL)
-          #         opt.table<-formattable::formattable(temp1)
-          #       }
-          #       opt.table
-          #     })
-          #   )
-          # )
           fluidPage(
             fluidRow(
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Positive predictive value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Negative predictive value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Specificity"], 2), nsmall = 2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Positive predictive value"], 2), nsmall = 2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+              column(width = 3, shinydashboard::valueBox(format(round(optim["Negative predictive value"], 2), nsmall = 2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
             ),
             fluidRow(
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Percent agreement"], 2), nsmall = 2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Youdens Index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
+              column(width = 4, shinydashboard::valueBox(format(round(optim["Percent agreement"], 2), nsmall = 2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+              column(width = 4, shinydashboard::valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall = 2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+              column(width = 4, shinydashboard::valueBox(format(round(optim["Youdens Index"], 2), nsmall = 2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
             ),
             fluidRow(
-              column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
-              column(width = 6, shinydashboard::valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive"))
+              column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("main.model.optimize.automatic.currentparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
+              column(width = 6, shinydashboard::valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("main.model.optimize.automatic.optimumparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive"))
             ),
             fluidRow(
               column(width = 12, formattable::renderFormattable({
@@ -5107,10 +5063,10 @@ shinyServer(function(input, output, session) {
                     "Matthews correlation coefficient" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
                     "Youdens Index" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
                   ), digits = 2, format = "f")
-                  names(opt.table) <- trloc(c("Parameter", "Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
-                  names(attr(opt.table, "formattable")$format[[1]]) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+                  names(opt.table) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
+                  names(attr(opt.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
                 } else {
-                  temp1 <- data.frame(Error = trloc("Number of columns must be greater than 2"), row.names = NULL)
+                  temp1 <- data.frame(Error = trloc("ui.columnstwo"), row.names = NULL)
                   opt.table <- formattable::formattable(temp1)
                 }
                 opt.table
@@ -5129,9 +5085,9 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("Indicators"), uiOutput("tbmOptimizeASummary")),
+        tabPanel(trloc("main.checkdescribe.goodness.indicators"), uiOutput("tbmOptimizeASummary")),
         tabPanel(
-          trloc("main.checkdescribe.evolution.detailed"),
+          trloc("main.model.optimize.detailed"),
           formattable::formattableOutput("tbmOptimizeADetail"),
           fluidRow(
             column(8),
@@ -5140,17 +5096,17 @@ shinyServer(function(input, output, session) {
               if (zip.present() & openxlsx.present()) {
                 downloadButton("tbmOptimizeADetail_x", "xlsx")
               } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbmOptimizeADetail_c", "csv"))
           )
         ),
-        tabPanel(trloc("Graphs"), plotlyOutput("tbmOptimizeAGraph", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+        tabPanel(trloc("main.model.optimize.graphs"), plotlyOutput("tbmOptimizeAGraph", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
       )
     }
   })
@@ -5163,31 +5119,31 @@ shinyServer(function(input, output, session) {
       doptim <- dataoptim$roc.data
       optim <- doptim[doptim$value == as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), ]
       # fluidRow(
-      #   valueBox(format(round(optim["sensitivity"], 2), nsmall=2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["specificity"], 2), nsmall=2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(optim["youdens.index"], 2), nsmall=2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(input$param, 2), nsmall=1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width=3, color="red"),
-      #   valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width=3, color="olive")
+      #   valueBox(format(round(optim["sensitivity"], 2), nsmall=2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["specificity"], 2), nsmall=2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["positive.predictive.value"], 2), nsmall=2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["negative.predictive.value"], 2), nsmall=2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
+      #   valueBox(format(round(optim["percent.agreement"], 2), nsmall=2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall=2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(optim["youdens.index"], 2), nsmall=2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
+      #   valueBox(format(round(input$param, 2), nsmall=1), trloc("main.model.optimize.automatic.currentparam"), icon = icon("fas fa-heartbeat"), width=3, color="red"),
+      #   valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall=1), trloc("main.model.optimize.automatic.optimumparam"), icon = icon("fas fa-heartbeat"), width=3, color="olive")
       # )
       fluidPage(
         fluidRow(
-          column(width = 3, shinydashboard::valueBox(format(round(optim["sensitivity"], 2), nsmall = 2), trloc("Sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(optim["specificity"], 2), nsmall = 2), trloc("Specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(optim["positive.predictive.value"], 2), nsmall = 2), trloc("Positive predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(optim["negative.predictive.value"], 2), nsmall = 2), trloc("Negative predictive value"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
+          column(width = 3, shinydashboard::valueBox(format(round(optim["sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(optim["specificity"], 2), nsmall = 2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(optim["positive.predictive.value"], 2), nsmall = 2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+          column(width = 3, shinydashboard::valueBox(format(round(optim["negative.predictive.value"], 2), nsmall = 2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
         ),
         fluidRow(
-          column(width = 4, shinydashboard::valueBox(format(round(optim["percent.agreement"], 2), nsmall = 2), trloc("options.mem.goodness.optimization.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall = 2), trloc("Matthews correlation coefficient"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-          column(width = 4, shinydashboard::valueBox(format(round(optim["youdens.index"], 2), nsmall = 2), trloc("Youdens Index"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
+          column(width = 4, shinydashboard::valueBox(format(round(optim["percent.agreement"], 2), nsmall = 2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(optim["matthews.correlation.coefficient"], 2), nsmall = 2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+          column(width = 4, shinydashboard::valueBox(format(round(optim["youdens.index"], 2), nsmall = 2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
         ),
         fluidRow(
-          column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("Current parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
-          column(width = 6, shinydashboard::valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("Optimum parameter"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive"))
+          column(width = 6, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("main.model.optimize.automatic.currentparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
+          column(width = 6, shinydashboard::valueBox(format(round(as.numeric(dataoptim$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("main.model.optimize.automatic.optimumparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive"))
         )
       )
     }
@@ -5208,10 +5164,10 @@ shinyServer(function(input, output, session) {
         "Matthews correlation coefficient" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Youdens Index" = fixed_color_bar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
       ), digits = 2, format = "f")
-      names(roca.table) <- trloc(c("Parameter", "Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
-      names(attr(roca.table, "formattable")$format[[1]]) <- trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+      names(roca.table) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
+      names(attr(roca.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
     } else {
-      temp1 <- data.frame(Error = trloc("Number of columns must be greater than 2"), row.names = NULL)
+      temp1 <- data.frame(Error = trloc("ui.columnstwo"), row.names = NULL)
       roca.table <- formattable::formattable(temp1)
     }
     roca.table
@@ -5225,11 +5181,11 @@ shinyServer(function(input, output, session) {
       dataoptim <- data_optim()
       if (!is.null(dataoptim)) {
         temp1 <- dataoptim$roc.data[c("value", "sensitivity", "specificity", "positive.predictive.value", "negative.predictive.value", "percent.agreement", "matthews.correlation.coefficient", "youdens.index")]
-        names(temp1) <- trloc(c("Parameter", "Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+        names(temp1) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
         rownames(temp1) <- NULL
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Optimization"), 1, 32), i.rownames = NA, i.format = "xlsx"
+          i.sheet = substring(trloc("app.optimization"), 1, 32), i.rownames = NA, i.format = "xlsx"
         )
       }
     },
@@ -5244,11 +5200,11 @@ shinyServer(function(input, output, session) {
       dataoptim <- data_optim()
       if (!is.null(dataoptim)) {
         temp1 <- dataoptim$roc.data[c("value", "sensitivity", "specificity", "positive.predictive.value", "negative.predictive.value", "percent.agreement", "matthews.correlation.coefficient", "youdens.index")]
-        names(temp1) <- trloc(c("Parameter", "Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index"))
+        names(temp1) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
         rownames(temp1) <- NULL
         export.mydata(
           i.data = temp1, i.file = file,
-          i.sheet = substring(trloc("Optimization"), 1, 32), i.rownames = NA, i.format = "csv"
+          i.sheet = substring(trloc("app.optimization"), 1, 32), i.rownames = NA, i.format = "csv"
         )
       }
     },
@@ -5261,7 +5217,7 @@ shinyServer(function(input, output, session) {
       z <- NULL
     } else {
       dgraf <- subset(dataoptim$roc.data, select = c("value", "sensitivity", "specificity", "positive.predictive.value", "negative.predictive.value", "percent.agreement", "matthews.correlation.coefficient", "youdens.index"))
-      names(dgraf) <- c("Parameter", trloc(c("Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")))
+      names(dgraf) <- c("Parameter", c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden")))
       dgrafgg <- dgraf %>% tidyr::gather(Indicator, Value, -Parameter)
       dgrafgg$Indicator <- factor(dgrafgg$Indicator, levels = names(dgraf)[-1], labels = names(dgraf)[-1])
 
@@ -5279,20 +5235,20 @@ shinyServer(function(input, output, session) {
       axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 10, seq(0.1, 10, 0.1), T, F)
       axis.x.range <- axis.x.otick$range
       axis.x.ticks <- axis.x.otick$tickmarks
-      axis.x.labels <- axis.x.otick$tickmarks
+      axis.x.labels <- round(axis.x.otick$tickmarks, 1)
 
       axis.y.range.original <- c(0, 1)
       axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10)
       axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
       axis.y.ticks <- axis.y.otick$tickmarks
-      axis.y.labels <- axis.y.otick$tickmarks
+      axis.y.labels <- round(axis.y.otick$tickmarks, 1)
       dgrafgg$Value <- round(dgrafgg$Value, 2)
       p <- ggplot(dgrafgg, aes(x = Parameter, y = Value, color = Indicator)) +
         geom_line() +
         geom_point() +
         scale_x_continuous(breaks = axis.x.ticks, limits = axis.x.range, labels = axis.x.labels) +
         scale_y_continuous(breaks = axis.y.ticks, limits = axis.y.range, labels = axis.y.labels) +
-        scale_color_manual(values = colors.palette$colSeasons, name = trloc("Indicator")) +
+        scale_color_manual(values = colors.palette$colSeasons, name = trloc("graphs.indicator")) +
         labs(title = input$textMain, x = input$textX, y = input$textY) +
         theme_light() +
         theme(plot.title = element_text(hjust = 0.5))
@@ -5300,9 +5256,9 @@ shinyServer(function(input, output, session) {
       z <- ggplotly(p, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
       # fix popup values
       for (i in 1:length(z$x$data)) {
-        z$x$data[[i]]$text <- gsub("Parameter", trloc("Parameter"), z$x$data[[i]]$text, fixed = T)
-        z$x$data[[i]]$text <- gsub("Value", trloc("Value"), z$x$data[[i]]$text, fixed = T)
-        z$x$data[[i]]$text <- gsub("Indicator", trloc("Indicator"), z$x$data[[i]]$text, fixed = T)
+        z$x$data[[i]]$text <- gsub("Parameter", trloc("main.model.optimize.automatic.parameter"), z$x$data[[i]]$text, fixed = T)
+        z$x$data[[i]]$text <- gsub("Value", trloc("graphs.value"), z$x$data[[i]]$text, fixed = T)
+        z$x$data[[i]]$text <- gsub("Indicator", trloc("graphs.indicator"), z$x$data[[i]]$text, fixed = T)
       }
     }
     z
@@ -5320,7 +5276,7 @@ shinyServer(function(input, output, session) {
     } else {
       tabsetPanel(
         tabPanel(trloc("main.checkdescribe.data.label"), DT::dataTableOutput("tbsData")),
-        tabPanel(trloc("main.surveillance.label"), uiOutput("tbsSurveillance"))
+        tabPanel(trloc("main.surveillance.surveillance"), uiOutput("tbsSurveillance"))
       )
     }
   })
@@ -5363,16 +5319,16 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("selections.surveillance.week.label"), plotlyOutput("tbsSurveillanceWeek", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+        tabPanel(trloc("main.surveillance.surveillance.week"), plotlyOutput("tbsSurveillanceWeek", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
         if (animationmethod < 4) {
-          tabPanel(trloc("Animated"), imageOutput("tbsSurveillanceAnimated"))
+          tabPanel(trloc("main.surveillance.surveillance.animated"), imageOutput("tbsSurveillanceAnimated"))
         } else {
           cat("animation package + GraphicsMagick or ImageMagic or magick package needed for this function to work. Please install it.
 ")
-          tabPanel(trloc("Animated"), tableOutput("tbsSurveillanceAnimated_nomagick"))
+          tabPanel(trloc("main.surveillance.surveillance.animated"), tableOutput("tbsSurveillanceAnimated_nomagick"))
         },
         tabPanel(
-          trloc("Average"),
+          trloc("main.surveillance.surveillance.average"),
           plotlyOutput("tbsSurveillanceAverage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)),
           fluidRow(
             column(8),
@@ -5381,11 +5337,11 @@ shinyServer(function(input, output, session) {
               if (zip.present() & openxlsx.present()) {
                 downloadButton("tbsSurveillanceAverage_x", "xlsx")
               } else if (!openxlsx.present()) {
-                shiny::actionButton(inputId = "noopenxlsx", label = trloc("openxlsx not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noopenxlsx", label = trloc("ui.openxlsx"), icon = icon("fas fa-file-excel"))
               } else if (.Platform$OS.type == "windows") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Rtools not found"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.rtools"), icon = icon("fas fa-file-excel"), onclick = "window.open('https://cran.rstudio.com/bin/windows/Rtools/', '_blank')")
               } else if (.Platform$OS.type == "unix") {
-                shiny::actionButton(inputId = "noziplink", label = trloc("Zip not found"), icon = icon("fas fa-file-excel"))
+                shiny::actionButton(inputId = "noziplink", label = trloc("ui.nozip"), icon = icon("fas fa-file-excel"))
               }
             ),
             column(2, downloadButton("tbsSurveillanceAverage_c", "csv"))
@@ -5461,7 +5417,7 @@ shinyServer(function(input, output, session) {
         zfix <- NULL
       } else {
         z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+        zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
     zfix
@@ -5575,7 +5531,6 @@ shinyServer(function(input, output, session) {
       outdistAnimated <- list(
         src = imgfilegif,
         contentType = "image/gif",
-        width = as.numeric(input$dwidth),
         width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
         alt = "This is alternate text"
       )
@@ -5620,7 +5575,7 @@ shinyServer(function(input, output, session) {
         datfile.plot <- data.frame(datfile[input$SelectSurveillance], datamodel$typ.curve)
         survweek <- (1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
         datfile.plot[-(1:survweek), 1] <- NA
-        names(datfile.plot) <- c(input$SelectSurveillance, trloc(c("Lower interval", "Average curve", "Upper interval")))
+        names(datfile.plot) <- c(input$SelectSurveillance, c(trloc("graphs.lowerinterval"), trloc("graphs.averagecurve"), trloc("graphs.upperinterval")))
         colors.palette <- generate_palette(
           i.number.series = 3,
           i.colObservedLines = input$colObservedLines,
@@ -5663,7 +5618,7 @@ shinyServer(function(input, output, session) {
           zfix <- NULL
         } else {
           z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
     }
@@ -5700,7 +5655,7 @@ shinyServer(function(input, output, session) {
             datfile.plot <- data.frame(datfile[input$SelectSurveillance], datamodel$typ.curve)
             survweek <- (1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
             datfile.plot[-(1:survweek), 1] <- NA
-            names(datfile.plot) <- c(input$SelectSurveillance, trloc(c("Lower interval", "Average curve", "Upper interval")))
+            names(datfile.plot) <- c(input$SelectSurveillance, c(trloc("graphs.lowerinterval"), trloc("graphs.averagecurve"), trloc("graphs.upperinterval")))
             colors.palette <- generate_palette(
               i.number.series = 3,
               i.colObservedLines = input$colObservedLines,
@@ -5751,7 +5706,7 @@ shinyServer(function(input, output, session) {
               names(temp2) <- trloc(names(temp2))
               export.mydata(
                 i.data = temp2, i.file = file,
-                i.sheet = substring(trloc("Average curve"), 1, 32), i.rownames = trloc("Week no"), i.format = "xlsx"
+                i.sheet = substring(trloc("graphs.averagecurve"), 1, 32), i.rownames = trloc("app.weekno"), i.format = "xlsx"
               )
             }
           }
@@ -5791,7 +5746,7 @@ shinyServer(function(input, output, session) {
             datfile.plot <- data.frame(datfile[input$SelectSurveillance], datamodel$typ.curve)
             survweek <- (1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
             datfile.plot[-(1:survweek), 1] <- NA
-            names(datfile.plot) <- c(input$SelectSurveillance, trloc(c("Lower interval", "Average curve", "Upper interval")))
+            names(datfile.plot) <- c(input$SelectSurveillance, c(trloc("graphs.lowerinterval"), trloc("graphs.averagecurve"), trloc("graphs.upperinterval")))
             colors.palette <- generate_palette(
               i.number.series = 3,
               i.colObservedLines = input$colObservedLines,
@@ -5841,7 +5796,7 @@ shinyServer(function(input, output, session) {
               names(temp2) <- trloc(names(temp2))
               export.mydata(
                 i.data = temp2, i.file = file,
-                i.sheet = substring(trloc("Average curve"), 1, 32), i.rownames = trloc("Week no"), i.format = "csv"
+                i.sheet = substring(trloc("graphs.averagecurve"), 1, 32), i.rownames = trloc("app.weekno"), i.format = "csv"
               )
             }
           }
@@ -5985,7 +5940,7 @@ shinyServer(function(input, output, session) {
           zfix <- NULL
         } else {
           z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
     }
@@ -6067,7 +6022,7 @@ shinyServer(function(input, output, session) {
           zfix <- NULL
         } else {
           z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
-          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("selections.surveillance.week.label"), "value", p$weeklabels)
+          zfix <- fixplotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
     }
@@ -6098,7 +6053,7 @@ shinyServer(function(input, output, session) {
   output$uifile <- renderUI({
     popify(
       fileInput("file", label = h4(trloc("selections.loadfile.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), accept = c("csv", "dat", "prn", "txt", "xls", "xlsx", "mdb", "accdb", "rdata")),
-      title = trloc("selections.loadfile.label"), content = trloc("memapp is able to read text, excel, access and R"), placement = "right", trigger = "focus", options = list(container = "body")
+      title = trloc("selections.loadfile.label"), content = trloc("ui.memreads"), placement = "right", trigger = "focus", options = list(container = "body")
     )
   })
 
@@ -6145,7 +6100,7 @@ shinyServer(function(input, output, session) {
 
   output$uitransformation <- renderUI({
     transformation.list <- list("No transformation" = 1, "Odd" = 2, "Fill missings" = 3, "Smoothing regression" = 4, "Loess" = 5, "Spline" = 6, "Moving average" = 7)
-    names(transformation.list) <- trloc(c("No transformation", "Odd", "Fill missings", "Smoothing regression", "Loess", "Spline", "Moving average"))
+    names(transformation.list) <- c(trloc("selections.dataset.transformation.no"), trloc("selections.dataset.transformation.odd"), trloc("selections.dataset.transformation.fillmiss"), trloc("selections.dataset.transformation.smothing"), trloc("selections.dataset.transformation.loess.label"), trloc("selections.dataset.transformation.spline"), trloc("selections.dataset.transformation.movingaverage"))
     fluidRow(
       popify(
         selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.label")), size = 1, selectize = FALSE, choices = transformation.list, selected = default.values$transformation),
@@ -6154,48 +6109,48 @@ shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.transformation == 5 & input.advanced",
         popify(
-          sliderInput("loesspan", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.loess.span")), min = default.values$loesspan$min, max = default.values$loesspan$max, value = default.values$loesspan$value, step = default.values$loesspan$step),
-          title = trloc("selections.dataset.transformation.loess.span"), content = trloc("Loess span parameter"), placement = "right", trigger = "focus", options = list(container = "body")
+          sliderInput("loesspan", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.loess.span.label")), min = default.values$loesspan$min, max = default.values$loesspan$max, value = default.values$loesspan$value, step = default.values$loesspan$step),
+          title = trloc("selections.dataset.transformation.loess.span.label"), content = trloc("selections.dataset.transformation.loess.span.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
         condition = "input.transformation == 7 & input.advanced",
         popify(
-          sliderInput("movavgweeks", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("MA weeks")), min = default.values$movavgweeks$min, max = default.values$movavgweeks$max, value = default.values$movavgweeks$value, step = default.values$movavgweeks$step),
-          title = trloc("MA weeks"), content = trloc("Moving Average weeks"), placement = "right", trigger = "focus", options = list(container = "body")
+          sliderInput("movavgweeks", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.movingaverage.weeks.label")), min = default.values$movavgweeks$min, max = default.values$movavgweeks$max, value = default.values$movavgweeks$value, step = default.values$movavgweeks$step),
+          title = trloc("selections.dataset.transformation.movingaverage.weeks.label"), content = trloc("selections.dataset.transformation.movingaverage.weeks.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
         condition = "input.transformation == 4 & input.advanced",
         popify(
-          # checkboxInput("smregressionoptimum", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.smothing.optimum")), value = default.values$smregressionoptimum)
+          # checkboxInput("smregressionoptimum", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.smothing.optimum.label")), value = default.values$smregressionoptimum)
           shinyWidgets::prettyCheckbox(
             inputId = "smregressionoptimum",
-            label = trloc("selections.dataset.transformation.smothing.optimum"),
+            label = trloc("selections.dataset.transformation.smothing.optimum.label"),
             value = default.values$smregressionoptimum,
             shape = "curve"
           ),
-          title = trloc("selections.dataset.transformation.smothing.optimum"), content = trloc("Check this tickbox if you want SM to chose the optimum smoothing parameter"), placement = "right", trigger = "focus", options = list(container = "body")
+          title = trloc("selections.dataset.transformation.smothing.optimum.label"), content = trloc("selections.dataset.transformation.smothing.optimum.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
         condition = "input.transformation == 4 & input.advanced & !input.smregressionoptimum",
         popify(
-          sliderInput("smregressionsmoothing", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.smothing.parameter")), min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, value = default.values$smregressionsmoothing$value, step = default.values$smregressionsmoothing$step),
-          title = trloc("selections.dataset.transformation.smothing.parameter"), content = trloc("Smoothing parameter of the smoothing regression"), placement = "right", trigger = "focus", options = list(container = "body")
+          sliderInput("smregressionsmoothing", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.smothing.parameter.label")), min = default.values$smregressionsmoothing$min, max = default.values$smregressionsmoothing$max, value = default.values$smregressionsmoothing$value, step = default.values$smregressionsmoothing$step),
+          title = trloc("selections.dataset.transformation.smothing.parameter.label"), content = trloc("selections.dataset.transformation.smothing.parameter.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
         condition = "(input.transformation == 5 | input.transformation == 6) & input.advanced",
         popify(
-          # checkboxInput("transfpositive", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.loess.positive")), value = default.values$transfpositive)
+          # checkboxInput("transfpositive", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.loess.positive.label")), value = default.values$transfpositive)
           shinyWidgets::prettyCheckbox(
             inputId = "transfpositive",
-            label = trloc("selections.dataset.transformation.loess.positive"),
+            label = trloc("selections.dataset.transformation.loess.positive.label"),
             value = default.values$transfpositive,
             shape = "curve"
           ),
-          title = trloc("selections.dataset.transformation.loess.positive"), content = trloc("selections.dataset.transformation.loess.positive.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+          title = trloc("selections.dataset.transformation.loess.positive.label"), content = trloc("selections.dataset.transformation.loess.positive.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       )
     )
@@ -6204,13 +6159,11 @@ shinyServer(function(input, output, session) {
   output$uiwaves <- renderUI({
     if (as.logical(input$experimental)) {
       waves.list <- list("One wave/season" = 1, "Two waves/season (observed)" = 2, "Two waves/season (expected)" = 3, "Multiple waves/series" = 4)
-      names(waves.list) <- trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
+      names(waves.list) <- c(trloc("selections.dataset.wavesdetection.one"), trloc("selections.dataset.wavesdetection.twoobserved"), trloc("selections.dataset.wavesdetection.twoexpected"), trloc("selections.dataset.wavesdetection.multiple"))
     } else {
       waves.list <- list("One wave/season" = 1, "Two waves/season (observed)" = 2, "Two waves/season (expected)" = 3)
-      names(waves.list) <- trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)"))
+      names(waves.list) <- c(trloc("selections.dataset.wavesdetection.one"), trloc("selections.dataset.wavesdetection.twoobserved"), trloc("selections.dataset.wavesdetection.twoexpected"))
     }
-    # waves.list<-list("One wave/season"=1, "Two waves/season (observed)"=2, "Two waves/season (expected)"=3, "Multiple waves/series"=4)
-    # names(waves.list)<-trloc(c("One wave/season", "Two waves/season (observed)", "Two waves/season (expected)", "Multiple waves/series"))
     fluidRow(
       popify(
         selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.label")), size = 1, selectize = FALSE, choices = waves.list, selected = default.values$waves),
@@ -6219,8 +6172,8 @@ shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
         popify(
-          sliderInput("twowavesproportion", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.twoobserved.minimumprop")), min = default.values$twowavesproportion$min, max = default.values$twowavesproportion$max, value = default.values$twowavesproportion$value, step = default.values$twowavesproportion$step),
-          title = trloc("selections.dataset.wavesdetection.twoobserved.minimumprop"), content = trloc("Minimum proportion of one of the waves to be considered as different from the other one, otherwise, both waves are considered to be the same"), placement = "right", trigger = "focus", options = list(container = "body")
+          sliderInput("twowavesproportion", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.twoobserved.minimumprop.label")), min = default.values$twowavesproportion$min, max = default.values$twowavesproportion$max, value = default.values$twowavesproportion$value, step = default.values$twowavesproportion$step),
+          title = trloc("selections.dataset.wavesdetection.twoobserved.minimumprop.label"), content = trloc("selections.dataset.wavesdetection.twoobserved.minimumprop.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
@@ -6230,14 +6183,14 @@ shinyServer(function(input, output, session) {
             6,
             popify(
               numericInput("numberwaves", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.multiple.no")), value = default.values$numberwaves$value, min = default.values$numberwaves$min, max = default.values$numberwaves$max, step = default.values$numberwaves$step),
-              title = trloc("selections.dataset.wavesdetection.multiple.no"), content = trloc("Total number of waves of the whole dataset, set it to 0 if you want the program to autodetect it"), placement = "right", trigger = "focus", options = list(container = "body")
+              title = trloc("selections.dataset.wavesdetection.multiple.no"), content = trloc("selections.dataset.wavesdetection.multiple.no.hint"), placement = "right", trigger = "focus", options = list(container = "body")
             )
           ),
           column(
             6,
             popify(
               numericInput("wavesseparation", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.multiple.separation")), value = default.values$wavesseparation$value, min = default.values$wavesseparation$min, max = default.values$wavesseparation$max, step = default.values$wavesseparation$step),
-              title = trloc("selections.dataset.wavesdetection.multiple.separation"), content = trloc("Minimum separation between two seasons to be considered different"), placement = "right", trigger = "focus", options = list(container = "body")
+              title = trloc("selections.dataset.wavesdetection.multiple.separation"), content = trloc("selections.dataset.wavesdetection.multiple.separation.hint"), placement = "right", trigger = "focus", options = list(container = "body")
             )
           )
         ),
@@ -6246,14 +6199,14 @@ shinyServer(function(input, output, session) {
             6,
             popify(
               numericInput("wavesparam1", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.multiple.param1")), value = default.values$wavesparam1$value, min = default.values$wavesparam1$min, max = default.values$wavesparam1$max, step = default.values$wavesparam1$step),
-              title = trloc("selections.dataset.wavesdetection.multiple.param1"), content = trloc("Multiple waves algorith parameter 1: when a rate is decided not to belong to an epidemic"), placement = "right", trigger = "focus", options = list(container = "body")
+              title = trloc("selections.dataset.wavesdetection.multiple.param1"), content = trloc("selections.dataset.wavesdetection.multiple.param1.hint"), placement = "right", trigger = "focus", options = list(container = "body")
             )
           ),
           column(
             6,
             popify(
               numericInput("wavesparam2", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.multiple.param2")), value = default.values$wavesparam2$value, min = default.values$wavesparam2$min, max = default.values$wavesparam2$max, step = default.values$wavesparam2$step),
-              title = trloc("selections.dataset.wavesdetection.multiple.param2"), content = trloc("Multiple waves algorith parameter 2: when a set of rates is decided not to form an independent epidemic"), placement = "right", trigger = "focus", options = list(container = "body")
+              title = trloc("selections.dataset.wavesdetection.multiple.param2"), content = trloc("selections.dataset.wavesdetection.multiple.param2.hint"), placement = "right", trigger = "focus", options = list(container = "body")
             )
           )
         )
@@ -6315,7 +6268,7 @@ shinyServer(function(input, output, session) {
         ),
         column(6, offset = 0, style = "padding:0px;", popify(
           numericInput("SelectMaximum", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.model.seasons")), 10, min = 2, max = NA, step = 1),
-          title = trloc("Maximum seasons"), content = trloc("selections.model.seasons.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+          title = trloc("selections.model.seasons"), content = trloc("selections.model.seasons.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         ))
       )
     )
@@ -6327,11 +6280,11 @@ shinyServer(function(input, output, session) {
   #                         selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.surveillance.season.label")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
   #                         , title = trloc("selections.surveillance.season.label"), content = trloc("selections.surveillance.season.hint"), placement = "right", trigger = 'focus', options = list(container = "body")),
   #                       popify(
-  #                         selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.surveillance.week.label")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
-  #                         , title = trloc("selections.surveillance.week.label"), content = trloc("selections.surveillance.week.hint"), placement = "right", trigger = 'focus', options = list(container = "body")),
+  #                         selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("graphs.week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
+  #                         , title = trloc("graphs.week"), content = trloc("selections.surveillance.week.hint"), placement = "right", trigger = 'focus', options = list(container = "body")),
   #                       popify(
-  #                         selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Force epidemic start")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
-  #                         , title = trloc("Force epidemic start"), content = trloc("selections.surveillance.force.hint"), placement = "right", trigger = 'focus', options = list(container = "body"))
+  #                         selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.surveillance.force.label")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
+  #                         , title = trloc("selections.surveillance.force.label"), content = trloc("selections.surveillance.force.hint"), placement = "right", trigger = 'focus', options = list(container = "body"))
   #   )
   # })
 
@@ -6351,7 +6304,7 @@ shinyServer(function(input, output, session) {
         )),
         column(6, offset = 0, style = "padding:0px;", popify(
           selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.surveillance.force.label")), size = 1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = ""),
-          title = trloc("Force epidemic start"), content = trloc("selections.surveillance.force.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+          title = trloc("selections.surveillance.force.label"), content = trloc("selections.surveillance.force.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         ))
       )
     )
@@ -6367,7 +6320,7 @@ shinyServer(function(input, output, session) {
           label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("main.checkdescribe.seasons.label")),
           choices = getSeasons(), multiple = TRUE, selected = NULL
         ),
-        title = trloc("main.checkdescribe.seasons.label"), content = trloc("Select any number of seasons to display series, seasons and timing graphs and to apply thresholds from the current model.<br>To delete a season click on it and press delete on your keyboard"), placement = "right", trigger = "focus", options = list(container = "body")
+        title = trloc("main.checkdescribe.seasons.label"), content = trloc("selections.visualize.hint"), placement = "right", trigger = "focus", options = list(container = "body")
       )
     )
   })
@@ -6430,17 +6383,17 @@ shinyServer(function(input, output, session) {
           ", 500
         ))
       ),
-      titlePanel(h1(trloc("The Moving Epidemic Method Web Application")))
+      titlePanel(h1(trloc("ui.moving")))
     )
   })
 
   output$uiProcedures <- renderUI({
     tabBox(
-      title = h3(trloc("main.procedures.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "800px",
+      title = h3(trloc("main.procedures"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "800px",
       tabPanel(h4(trloc("main.checkdescribe.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.checkdescribe.hint"), uiOutput("tbData")),
-      tabPanel(h4(trloc("selections.model.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.model.hint"), uiOutput("tbModel")),
+      tabPanel(h4(trloc("main.model.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.model.hint"), uiOutput("tbModel")),
       tabPanel(h4(trloc("main.surveillance.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.surveillance.hint"), uiOutput("tbSurveillance")),
-      tabPanel(h4(trloc("main.visualize.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("selections.visualize.hint"), uiOutput("tbVisualize"))
+      tabPanel(h4(trloc("main.visualize.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.visualize.hint"), uiOutput("tbVisualize"))
     )
   })
 
@@ -6479,9 +6432,9 @@ shinyServer(function(input, output, session) {
 
   output$uiGraphoptions <- renderUI({
     colObservedLines.list <- as.list(c("default", colors()))
-    names(colObservedLines.list) <- c(trloc("default"), colors())
+    names(colObservedLines.list) <- c(trloc("app.default"), colors())
     colThresholds.list <- as.list(c("default", rownames(brewer.pal.info), colors()))
-    names(colThresholds.list) <- c(trloc("default"), rownames(brewer.pal.info), colors())
+    names(colThresholds.list) <- c(trloc("app.default"), rownames(brewer.pal.info), colors())
     dropdown(
       shinydashboard::box(
         title = p(trloc("options.graphs.label"), actionButton("resetuiGraphoptions", trloc("options.graphs.reset"))),
@@ -6562,26 +6515,23 @@ shinyServer(function(input, output, session) {
 
   output$uiMEMoptions <- renderUI({
     method.list <- list("Original method" = 1, "Fixed criterium method" = 2, "Slope method" = 3, "Second derivative method" = 4)
-    names(method.list) <- trloc(c("Original method", "Fixed criterium method", "Slope method", "Second derivative method"))
+    names(method.list) <- c(trloc("options.mem.timing.method.original"), trloc("options.mem.timing.method.fixed"), trloc("options.mem.timing.method.slope"), trloc("options.mem.timing.method.derivative"))
     nvalues.list <- list("30 in total" = -1, "All" = 0, "1/season" = 1, "2/season" = 2, "3/season" = 3, "4/season" = 4, "5/season" = 5, "6/season" = 6, "7/season" = 7, "8/season" = 8, "9/season" = 9, "10/season" = 10)
-    names(nvalues.list) <- trloc(c("30 in total", "All", "1/season", "2/season", "3/season", "4/season", "5/season", "6/season", "7/season", "8/season", "9/season", "10/season"))
+    names(nvalues.list) <- c(trloc("options.mem.thresholds.values.30"), trloc("options.mem.thresholds.values.all"), trloc("options.mem.thresholds.values.1"), trloc("options.mem.thresholds.values.2"), trloc("options.mem.thresholds.values.3"), trloc("options.mem.thresholds.values.4"), trloc("options.mem.thresholds.values.5"), trloc("options.mem.thresholds.values.6"), trloc("options.mem.thresholds.values.7"), trloc("options.mem.thresholds.values.8"), trloc("options.mem.thresholds.values.9"), trloc("options.mem.thresholds.values.10"))
     validation.list <- list("Cross" = "cross", "Sequential" = "sequential")
-    names(validation.list) <- trloc(c("Cross", "Sequential"))
+    names(validation.list) <- c(trloc("options.mem.goodness.validation.cross"), trloc("options.mem.goodness.validation.sequential"))
     optimmethod.list <- list("Positive likehood" = "pos.likehood", "Negative likehood" = "neg.likehood", "Aditive" = "aditive", "Multiplicative" = "multiplicative", "Mixed" = "mixed", "Percent agreement" = "percent", "Matthews Correlation Coefficient" = "matthews", "Youden's Index" = "youden")
-    names(optimmethod.list) <- trloc(c("Positive likehood", "Negative likehood", "Aditive", "Multiplicative", "Mixed", "Percent agreement", "Matthews Correlation Coefficient", "Youden's Index"))
+    names(optimmethod.list) <- c(trloc("options.mem.goodness.optimization.positive"), trloc("options.mem.goodness.optimization.negative"), trloc("options.mem.goodness.optimization.aditive"), trloc("options.mem.goodness.optimization.multiplicative"), trloc("options.mem.goodness.optimization.mixed"), trloc("options.mem.goodness.optimization.percent"), trloc("options.mem.goodness.optimization.matthews"), trloc("options.mem.goodness.optimization.youden"))
     type.list <- list("Arithmetic mean and mean confidence interval" = 1, "Geometric mean and mean confidence interval" = 2, "Median and Nyblom confidence interval" = 3, "Median and bootstrap confidence interval" = 4, "Arithmetic mean and point confidence interval" = 5, "Geometric mean and point confidence interval" = 6)
-    names(type.list) <- trloc(c("Arithmetic mean and mean confidence interval", "Geometric mean and mean confidence interval", "Median and Nyblom confidence interval", "Median and bootstrap confidence interval", "Arithmetic mean and point confidence interval", "Geometric mean and point confidence interval"))
+    names(type.list) <- c(trloc("options.mem.thresholds.epidemic.arithmeticmean"), trloc("options.mem.thresholds.epidemic.geometricmean"), trloc("options.mem.thresholds.epidemic.mediannyblom"), trloc("options.mem.thresholds.epidemic.medianbootstrap"), trloc("options.mem.thresholds.epidemic.arithmeticprediction"), trloc("options.mem.thresholds.epidemic.geometricprediction"))
     centering.list <- list(
       "Highest mean duration-weeks period" = -1, "Highest 1-week period (peak)" = 1, "Highest 2-weeks period" = 2, "Highest 3-weeks period" = 3, "Highest 4-weeks period" = 4, "Highest 5-weeks period" = 5, "Highest 6-weeks period" = 6, "Highest 7-weeks period" = 7,
       "Highest 8-weeks period" = 8, "Highest 9-weeks period" = 9, "Highest 10-weeks period" = 10, "Highest 11-weekss period" = 11, "Highest 12-weeks period" = 12, "Highest 13-weeks period" = 13, "Highest 14-weeks period" = 14, "Highest 15-weeks period" = 15
     )
-    names(centering.list) <- trloc(c(
-      "Highest mean duration-weeks period", "Highest 1-week period (peak)", "Highest 2-weeks period", "Highest 3-weeks period", "Highest 4-weeks period", "Highest 5-weeks period", "Highest 6-weeks period", "Highest 7-weeks period",
-      "Highest 8-weeks period", "Highest 9-weeks period", "Highest 10-weeks period", "Highest 11-weeks period", "Highest 12-weeks period", "Highest 13-weeks period", "Highest 14-weeks period", "Highest 15-weeks period"
-    ))
+    names(centering.list) <- c(trloc("options.mem.other.centering.mean"), trloc("options.mem.other.centering.1"), trloc("options.mem.other.centering.2"), trloc("options.mem.other.centering.3"), trloc("options.mem.other.centering.4"), trloc("options.mem.other.centering.5"), trloc("options.mem.other.centering.6"), trloc("options.mem.other.centering.7"), trloc("options.mem.other.centering.8"), trloc("options.mem.other.centering.9"), trloc("options.mem.other.centering.10"), trloc("options.mem.other.centering.11"), trloc("options.mem.other.centering.12"), trloc("options.mem.other.centering.13"), trloc("options.mem.other.centering.14"), trloc("options.mem.other.centering.15"))
     dropdown(
       shinydashboard::box(
-        title = p(trloc("MEM options"), actionButton("resetuiMEMoptions", label = trloc("options.graphs.reset"))),
+        title = p(trloc("options.mem"), actionButton("resetuiMEMoptions", label = trloc("options.graphs.reset"))),
         status = "danger", solidHeader = FALSE, width = 12, background = "navy", collapsible = TRUE, collapsed = FALSE,
         h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.mem.timing.label")),
         fluidRow(
@@ -6626,19 +6576,19 @@ shinyServer(function(input, output, session) {
         fluidRow(
           column(6, offset = 0, popify(
             selectInput("typethreshold", h6(trloc("options.mem.thresholds.epidemic.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default.values$typethreshold),
-            title = trloc("options.mem.thresholds.epidemic.label"), content = trloc("Method for calculating the epidemic threshold"), placement = "left", trigger = "focus", options = list(container = "body")
+            title = trloc("options.mem.thresholds.epidemic.label"), content = trloc("options.mem.thresholds.epidemic.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           )),
           column(6, offset = 0, popify(
             selectInput("typeintensity", h6(trloc("options.mem.thresholds.intensity.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default.values$typeintensity),
-            title = trloc("options.mem.thresholds.intensity.label"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = "focus", options = list(container = "body")
+            title = trloc("options.mem.thresholds.intensity.label"), content = trloc("options.mem.thresholds.intensity.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           ))
         ),
         # popify(
         #   selectInput("typethreshold", h6(trloc("options.mem.thresholds.epidemic.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typethreshold)
-        #   , title = trloc("options.mem.thresholds.epidemic.label"), content = trloc("Method for calculating the epidemic threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
+        #   , title = trloc("options.mem.thresholds.epidemic.label"), content = trloc("options.mem.thresholds.epidemic.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
         # popify(
         #   selectInput("typeintensity", h6(trloc("options.mem.thresholds.intensity.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typeintensity)
-        #   , title = trloc("options.mem.thresholds.intensity.label"), content = trloc("Method for calculating the intensity threshold"), placement = "left", trigger = 'focus', options = list(container = "body")),
+        #   , title = trloc("options.mem.thresholds.intensity.label"), content = trloc("options.mem.thresholds.intensity.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
 		conditionalPanel(
         condition = "input.advanced",
         fluidRow(
@@ -6663,21 +6613,21 @@ shinyServer(function(input, output, session) {
             4,
             popify(
               numericInput("levelintensitym", h6(trloc("options.mem.thresholds.intensity.medium"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelintensitym$value, min = default.values$levelintensitym$min, max = default.values$levelintensitym$max, step = default.values$levelintensitym$step),
-              title = trloc("options.mem.thresholds.intensity.medium"), content = trloc("Level of the confidence interval used to calculate the medium threshold"), placement = "left", trigger = "focus", options = list(container = "body")
+              title = trloc("options.mem.thresholds.intensity.medium"), content = trloc("options.mem.thresholds.intensity.medium.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           ),
           column(
             4,
             popify(
               numericInput("levelintensityh", h6(trloc("options.mem.thresholds.intensity.high"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelintensityh$value, min = default.values$levelintensityh$min, max = default.values$levelintensityh$max, step = default.values$levelintensityh$step),
-              title = trloc("options.mem.thresholds.intensity.high"), content = trloc("Level of the confidence interval used to calculate the high threshold"), placement = "left", trigger = "focus", options = list(container = "body")
+              title = trloc("options.mem.thresholds.intensity.high"), content = trloc("options.mem.thresholds.intensity.high.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           ),
           column(
             4,
             popify(
               numericInput("levelintensityv", h6(trloc("options.mem.thresholds.intensity.veryhigh"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelintensityv$value, min = default.values$levelintensityv$min, max = default.values$levelintensityv$max, step = default.values$levelintensityv$step),
-              title = trloc("options.mem.thresholds.intensity.veryhigh"), content = trloc("Level of the confidence interval used to calculate the very high threshold"), placement = "left", trigger = "focus", options = list(container = "body")
+              title = trloc("options.mem.thresholds.intensity.veryhigh"), content = trloc("options.mem.thresholds.intensity.veryhigh.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           )
         ),
@@ -6686,63 +6636,63 @@ shinyServer(function(input, output, session) {
           column(
             6,
             popify(
-              selectInput("validation", h6(trloc("options.mem.goodness.validation"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size = 1, selectize = FALSE, selected = default.values$validation),
-              title = trloc("options.mem.goodness.validation"), content = trloc("options.mem.goodness.validation.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+              selectInput("validation", h6(trloc("options.mem.goodness.validation.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = validation.list, size = 1, selectize = FALSE, selected = default.values$validation),
+              title = trloc("options.mem.goodness.validation.label"), content = trloc("options.mem.goodness.validation.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           ),
           column(
             6,
             popify(
               selectInput("optimmethod", h6(trloc("options.mem.goodness.optimization.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = optimmethod.list, size = 1, selectize = FALSE, selected = default.values$optimmethod),
-              title = trloc("options.mem.goodness.optimization.label"), content = trloc("Method to choose the optimum parameter"), placement = "left", trigger = "focus", options = list(container = "body")
+              title = trloc("options.mem.goodness.optimization.label"), content = trloc("options.mem.goodness.optimization.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           )
         ),
         popify(
           sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.mem.goodness.optimization.paramrange")), value = default.values$paramrange$value, min = default.values$paramrange$min, max = default.values$paramrange$max, step = default.values$paramrange$step),
-          title = trloc("options.mem.goodness.optimization.paramrange"), content = trloc("Range of possible of values of the slope parameter used by goodness and optimize functions"), placement = "left", trigger = "focus", options = list(container = "body")
+          title = trloc("options.mem.goodness.optimization.paramrange"), content = trloc("options.mem.goodness.optimization.paramrange.hint"), placement = "left", trigger = "focus", options = list(container = "body")
         ),
         h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.mem.other.label")),
         fluidRow(
           column(6, offset = 0, popify(
-            selectInput("typecurve", h6(trloc("options.mem.other.averagecurveci.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default.values$typecurve),
-            title = trloc("options.mem.other.averagecurveci.label"), content = trloc("Method for calculating the average curve confidence intervals"), placement = "left", trigger = "focus", options = list(container = "body")
+            selectInput("typecurve", h6(trloc("options.mem.other.averagecurve.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default.values$typecurve),
+            title = trloc("options.mem.other.averagecurve.label"), content = trloc("options.mem.other.average.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           )),
           column(6, offset = 0, popify(
-            selectInput("typeother", h6(trloc("options.mem.other.otherci.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default.values$typeother),
-            title = trloc("options.mem.other.otherci.label"), content = trloc("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = "focus", options = list(container = "body")
+            selectInput("typeother", h6(trloc("options.mem.other.other.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default.values$typeother),
+            title = trloc("options.mem.other.other.label"), content = trloc("options.mem.other.other.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           ))
         ),
         fluidRow(
           column(4, offset = 0, popify(
-            numericInput("levelaveragecurve", h6(trloc("options.mem.other.averagecurveci.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelaveragecurve$value, min = default.values$levelaveragecurve$min, max = default.values$levelaveragecurve$max, step = default.values$levelaveragecurve$step),
-            title = trloc("options.mem.other.averagecurveci.level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = "focus", options = list(container = "body")
+            numericInput("levelaveragecurve", h6(trloc("options.mem.other.averageotherci.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelaveragecurve$value, min = default.values$levelaveragecurve$min, max = default.values$levelaveragecurve$max, step = default.values$levelaveragecurve$step),
+            title = trloc("options.mem.other.averageotherci.level"), content = trloc("options.mem.other.averageotherci.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           )),
           column(8, offset = 0, conditionalPanel(
             condition = "input.advanced",
             popify(
               selectInput("centering", h6(trloc("options.mem.other.centering.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size = 1, selectize = FALSE, selected = default.values$centering),
-              title = trloc("options.mem.other.centering.label"), content = trloc("Method for centering seasons to calculate the average curve"), placement = "left", trigger = "focus", options = list(container = "body")
+              title = trloc("options.mem.other.centering.label"), content = trloc("options.mem.other.centering.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           ))
         )
         # popify(
-        #   selectInput("typecurve", h6(trloc("options.mem.other.averagecurveci.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typecurve)
-        #   , title = trloc("options.mem.other.averagecurveci.label"), content = trloc("Method for calculating the average curve confidence intervals"), placement = "left", trigger = 'focus', options = list(container = "body")),
+        #   selectInput("typecurve", h6(trloc("options.mem.other.averagecurve.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typecurve)
+        #   , title = trloc("options.mem.other.averagecurve.label"), content = trloc("options.mem.other.average.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
         # popify(
-        #   selectInput("typeother", h6(trloc("options.mem.other.otherci.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typeother)
-        #   , title = trloc("options.mem.other.otherci.label"), content = trloc("Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc."), placement = "left", trigger = 'focus', options = list(container = "body")),
+        #   selectInput("typeother", h6(trloc("options.mem.other.other.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default.values$typeother)
+        #   , title = trloc("options.mem.other.other.label"), content = trloc("options.mem.other.other.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
         # popify(
-        #   numericInput("levelaveragecurve", h6(trloc("options.mem.other.averagecurveci.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelaveragecurve$value, min = default.values$levelaveragecurve$min, max = default.values$levelaveragecurve$max, step=default.values$levelaveragecurve$step)
-        #   , title = trloc("options.mem.other.averagecurveci.level"), content = trloc("Level of the confidence interval used to calculate the average curve and other intervals"), placement = "left", trigger = 'focus', options = list(container = "body")),
+        #   numericInput("levelaveragecurve", h6(trloc("options.mem.other.averageotherci.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default.values$levelaveragecurve$value, min = default.values$levelaveragecurve$min, max = default.values$levelaveragecurve$max, step=default.values$levelaveragecurve$step)
+        #   , title = trloc("options.mem.other.averageotherci.level"), content = trloc("options.mem.other.averageotherci.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
         # conditionalPanel(condition = "input.advanced",
         #                  popify(
         #                    selectInput("centering", h6(trloc("options.mem.other.centering.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size=1, selectize = FALSE, selected =  default.values$centering)
-        #                    , title = trloc("options.mem.other.centering.label"), content = trloc("Method for centering seasons to calculate the average curve"), placement = "left", trigger = 'focus', options = list(container = "body"))
+        #                    , title = trloc("options.mem.other.centering.label"), content = trloc("options.mem.other.centering.hint"), placement = "left", trigger = 'focus', options = list(container = "body"))
         # )
       ),
       circle = TRUE,
-      tooltip = tooltipOptions(placement = "left", title = trloc("MEM options"), html = TRUE),
+      tooltip = tooltipOptions(placement = "left", title = trloc("options.mem"), html = TRUE),
       margin = "0px",
       style = "minimal",
       icon = icon("fas fa-cogs"),
@@ -6769,49 +6719,47 @@ shinyServer(function(input, output, session) {
 		conditionalPanel(condition = "!input.experimental",h5(a(trloc("options.support.manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true", target = "_blank"))),
         h5(a(trloc("options.support.issues"), href = "https://github.com/lozalojo/memapp/issues", target = "_blank")),
         hidden(popify(
-          # checkboxInput("showadvanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the advanced features tickbox")), value = default.values$showadvanced)
+          # checkboxInput("showadvanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("app.showadvancedtickbox")), value = default.values$showadvanced)
           shinyWidgets::prettyCheckbox(
             inputId = "showadvanced",
-            label = trloc("Show the advanced features tickbox"),
+            label = trloc("app.showadvancedtickbox"),
             value = default.values$showadvanced,
             shape = "curve"
           ),
-          title = trloc("Show the advanced features tickbox"), content = trloc("Show the advanced features tickbox"), placement = "left", trigger = "focus", options = list(container = "body")
+          title = trloc("app.showadvancedtickbox"), content = trloc("app.showadvancedtickbox"), placement = "left", trigger = "focus", options = list(container = "body")
         )),
         conditionalPanel(
           condition = "input.showadvanced",
         popify(
-          # checkboxInput("advanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show advanced features")), value = default.values$advanced)
           shinyWidgets::prettyCheckbox(
             inputId = "advanced",
             label = trloc("options.support.advancedfeatures"),
             value = default.values$advanced,
             shape = "curve"
           ),
-          title = trloc("Show advanced features"), content = trloc("Show advanced features of memapp"), placement = "left", trigger = "focus", options = list(container = "body")
+          title = trloc("options.support.advancedfeatures.hint"), content = trloc("options.support.advancedfeatures.hint"), placement = "left", trigger = "focus", options = list(container = "body")
         )
         ),
         hidden(popify(
-          # checkboxInput("showexperimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show the experimental features tickbox")), value = default.values$showexperimental)
+          # checkboxInput("showexperimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("app.showexperimentaltickbox")), value = default.values$showexperimental)
           shinyWidgets::prettyCheckbox(
             inputId = "showexperimental",
-            label = trloc("Show the experimental features tickbox"),
+            label = trloc("app.showexperimentaltickbox"),
             value = default.values$showexperimental,
             shape = "curve"
           ),
-          title = trloc("Show the experimental features tickbox"), content = trloc("Show the experimental features tickbox"), placement = "left", trigger = "focus", options = list(container = "body")
+          title = trloc("app.showexperimentaltickbox"), content = trloc("app.showexperimentaltickbox"), placement = "left", trigger = "focus", options = list(container = "body")
         )),
         conditionalPanel(
           condition = "input.showexperimental",
           popify(
-            # checkboxInput("experimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("Show experimental features")), value = default.values$experimental)
             shinyWidgets::prettyCheckbox(
               inputId = "experimental",
               label = trloc("options.support.experimentalfeatures"),
               value = default.values$experimental,
               shape = "curve"
             ),
-            title = trloc("Show experimental features"), content = trloc("Show experimental features of memapp"), placement = "left", trigger = "focus", options = list(container = "body")
+            title = trloc("options.support.experimentalfeatures.hint"), content = trloc("options.support.experimentalfeatures.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           )
         )
       ),
