@@ -142,7 +142,8 @@ for (i in 1:NROW(hojas)){
   }else{
     temp3 <- temp1 %>%
       select(Original=newkey,Translated) %>%
-      distinct()
+      distinct() %>%
+      arrange(Original)
     temp4 <- temp3 %>%
       group_by(Original) %>%
       summarise(ene=n()) %>%
