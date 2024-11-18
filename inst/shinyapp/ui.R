@@ -129,7 +129,9 @@ shinyUI(
           dropdown(shinydashboard::box(
             title = "", solidHeader = TRUE, status = "warning", width = 12,
             uiOutput("uiLanguage"),
-            selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
+            #selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
+            selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = get.default.language()),
+			uiOutput("uiLanguageDefault")
           ),
           circle = TRUE,
           tooltip = tooltipOptions(placement = "left", title = "Language", html = TRUE),
