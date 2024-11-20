@@ -3,14 +3,14 @@
 #####################################
 
 generatePalette <- function(i.number.series = NA,
-                             i.colObservedLines = NULL,
-                             i.colObservedPoints = NULL,
-                             i.colEpidemicStart = NULL,
-                             i.colEpidemicStop = NULL,
-                             i.colThresholds = NULL,
-                             i.colLevels = NULL,
-                             i.colSeasons = NULL,
-                             i.colEpidemic = NULL) {
+                            i.colObservedLines = NULL,
+                            i.colObservedPoints = NULL,
+                            i.colEpidemicStart = NULL,
+                            i.colEpidemicStop = NULL,
+                            i.colThresholds = NULL,
+                            i.colLevels = NULL,
+                            i.colSeasons = NULL,
+                            i.colEpidemic = NULL) {
   params.default <- list(
     colObservedLines = "#808080",
     colObservedPoints = "#000000",
@@ -74,10 +74,10 @@ generatePalette <- function(i.number.series = NA,
 }
 
 importData <- function(i.file,
-                      i.file.name = NA,
-                      i.dataset = NA,
-                      i.range.x = NA,
-                      i.process.data = T) {
+                       i.file.name = NA,
+                       i.dataset = NA,
+                       i.range.x = NA,
+                       i.process.data = TRUE) {
   datalog <- character()
   if (!file.exists(i.file)) {
     datasets <- NULL
@@ -162,8 +162,8 @@ importData <- function(i.file,
       rm("temp2")
     } else if (fileextension == "ods") {
       temp2 <- importDataOds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
-	  datalog <- paste0(datalog, temp2$datalog)
-	  datasets <- temp2$datasets
+      datalog <- paste0(datalog, temp2$datalog)
+      datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
@@ -194,8 +194,8 @@ importData <- function(i.file,
     }
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
-    seasons <- data.frame(column = names(datasetread), stringsAsFactors = F) %>%
-      tidyr::extract(column, into = c("anioi", "aniof", "aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove = F)
+    seasons <- data.frame(column = names(datasetread), stringsAsFactors = FALSE) %>%
+      tidyr::extract(column, into = c("anioi", "aniof", "aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove = FALSE)
     seasons[is.na(seasons)] <- ""
     seasons$aniof[seasons$aniof == ""] <- seasons$anioi[seasons$aniof == ""]
     seasonsname <- seasons$anioi
@@ -216,7 +216,7 @@ importData <- function(i.file,
       datasetread <- NULL
     } else if (i.process.data) {
       # Delete all columns with only 0s and NAs
-      zerocols <- apply(datasetread, 2, function(x) sum(x, na.rm = T) == 0)
+      zerocols <- apply(datasetread, 2, function(x) sum(x, na.rm = TRUE) == 0)
       if (any(zerocols)) {
         datalog <- paste0(datalog, "Note: removing 0-only columns: ", paste0(names(datasetread)[zerocols], collapse = "; "), "\n")
         cat("read_data> Note: removing 0-only columns:", paste0(names(datasetread)[zerocols], collapse = ";"), "\n")
@@ -250,7 +250,7 @@ importDataExcel <- function(i.file,
                             i.dataset = NA,
                             i.range.x = NA) {
   datalog <- character()
-  if (!("readxl" %in% rownames(installed.packages()))){
+  if (!("readxl" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -274,14 +274,14 @@ importDataExcel <- function(i.file,
       fileextension <- tolower(temp1[1, 3])
     }
     filenameextension <- paste(filename, fileextension, sep = ".")
-    if (fileextension=="xlsx"){
+    if (fileextension == "xlsx") {
       datalog <- paste0(datalog, "Excel 2007+ file detected: ", filenameextension, "\n")
       cat("read_data> Excel 2007+ file detected: ", filenameextension, "\n", sep = "")
-    }else if (fileextension=="xls"){
+    } else if (fileextension == "xls") {
       datalog <- paste0(datalog, "Excel 97-2003 file detected: ", filenameextension, "\n")
-      cat("read_data> Excel 97-2003 file detected: ", filenameextension, "\n", sep = "")      
+      cat("read_data> Excel 97-2003 file detected: ", filenameextension, "\n", sep = "")
     }
-    i.file.xls <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = paste0(".",fileextension))
+    i.file.xls <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = paste0(".", fileextension))
     file.copy(i.file, i.file.xls)
     datasets <- readxl::excel_sheets(i.file.xls)
     n.datasets <- length(datasets)
@@ -296,7 +296,7 @@ importDataExcel <- function(i.file,
     } else {
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
-      datasetread <- as.data.frame(readxl::read_excel(i.file.xls, sheet = i.dataset, col_types = "numeric"), stringsAsFactors = F)
+      datasetread <- as.data.frame(readxl::read_excel(i.file.xls, sheet = i.dataset, col_types = "numeric"), stringsAsFactors = FALSE)
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
@@ -353,55 +353,55 @@ importDataAccess <- function(i.file,
     datalog <- paste0(datalog, "Access file detected: ", filenameextension, "\n")
     cat("read_data> Access file detected: ", filenameextension, "\n", sep = "")
     if (.Platform$OS.type == "windows") {
-	if (!("RODBC" %in% rownames(installed.packages()))){
-    datasets <- NULL
-    datasetread <- NULL
-    dataweeks <- NULL
-    datalog <- paste0(datalog, "Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
-    cat("read_data> Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
-  } else {
-        connectstring <- paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=", i.file, sep = "")
-      channel <- odbcDriverConnect(connectstring)
-      datasets <- subset(sqlTables(channel), TABLE_TYPE != "SYSTEM TABLE")[, "TABLE_NAME"]
-      n.datasets <- length(datasets)
-      if (is.na(i.dataset)) {
+      if (!("RODBC" %in% rownames(installed.packages()))) {
+        datasets <- NULL
         datasetread <- NULL
         dataweeks <- NULL
-      } else if (!(i.dataset %in% datasets)) {
-        datasetread <- NULL
-        dataweeks <- NULL
-        datalog <- paste0(datalog, "Warning: Table ", i.dataset, " not found\n")
-        cat("read_data> Warning: Table ", i.dataset, " not found\n")
+        datalog <- paste0(datalog, "Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
+        cat("read_data> Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
       } else {
-        datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
-        cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
-        datasetread <- sqlFetch(channel, i.dataset, rownames = T)
-        # Remove na lines
-        nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
-        if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
-        # Detect format year, week, rate
-        columnsn <- tolower(names(datasetread))
-        if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
-          datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-          cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
-          names(datasetread) <- tolower(names(datasetread))
-          datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        connectstring <- paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=", i.file, sep = "")
+        channel <- odbcDriverConnect(connectstring)
+        datasets <- subset(sqlTables(channel), TABLE_TYPE != "SYSTEM TABLE")[, "TABLE_NAME"]
+        n.datasets <- length(datasets)
+        if (is.na(i.dataset)) {
+          datasetread <- NULL
+          dataweeks <- NULL
+        } else if (!(i.dataset %in% datasets)) {
+          datasetread <- NULL
+          dataweeks <- NULL
+          datalog <- paste0(datalog, "Warning: Table ", i.dataset, " not found\n")
+          cat("read_data> Warning: Table ", i.dataset, " not found\n")
         } else {
-          if (all(datasetread[, 1] %in% 1:53)) {
-            rownames(datasetread) <- as.character(datasetread[, 1])
-            datasetread <- datasetread[-1]
-            datalog <- paste0(datalog, "Note: First column is the week name\n")
-            cat("read_data> Note: First column is the week name\n")
+          datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
+          cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
+          datasetread <- sqlFetch(channel, i.dataset, rownames = TRUE)
+          # Remove na lines
+          nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+          if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+          # Detect format year, week, rate
+          columnsn <- tolower(names(datasetread))
+          if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+            datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+            cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+            names(datasetread) <- tolower(names(datasetread))
+            datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
           } else {
-            rownames(datasetread) <- seq_len(NROW(datasetread))
+            if (all(datasetread[, 1] %in% 1:53)) {
+              rownames(datasetread) <- as.character(datasetread[, 1])
+              datasetread <- datasetread[-1]
+              datalog <- paste0(datalog, "Note: First column is the week name\n")
+              cat("read_data> Note: First column is the week name\n")
+            } else {
+              rownames(datasetread) <- seq_len(NROW(datasetread))
+            }
           }
+          dataweeks <- as.numeric(row.names(datasetread))
+          datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
+          cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
         }
-        dataweeks <- as.numeric(row.names(datasetread))
-        datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
-        cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
+        odbcCloseAll()
       }
-      odbcCloseAll()
-  }
     } else if (.Platform$OS.type == "unix") {
       # check if mdbtools is installed
       if (!mdbtoolsPresent()) {
@@ -448,8 +448,8 @@ importDataAccess <- function(i.file,
           mysep <- separators[which.max(stringr::str_count(firstline, separators))]
           restlines <- paste(readLines(filecsv, encoding = myencoding)[-1], collapse = "")
           decimals <- c(".", ",")
-          mydec <- decimals[which.max(stringr::str_count(gsub(mysep, "", restlines, fixed = T), stringr::fixed(decimals)))]
-          datasetread <- read.delim(filecsv, header = T, sep = mysep, dec = mydec, row.names = NULL, fill = T, colClasses = "numeric", as.is = T, encoding = myencoding)
+          mydec <- decimals[which.max(stringr::str_count(gsub(mysep, "", restlines, fixed = TRUE), stringr::fixed(decimals)))]
+          datasetread <- read.delim(filecsv, header = TRUE, sep = mysep, dec = mydec, row.names = NULL, fill = TRUE, colClasses = "numeric", as.is = TRUE, encoding = myencoding)
           names(datasetread) <- vnames
           # Remove na lines
           nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
@@ -539,11 +539,11 @@ importDataText <- function(i.file,
       mysep <- separators[which.max(str_count(firstline, separators))]
       restlines <- paste(readLines(i.file, encoding = myencoding)[-1], collapse = "")
       decimals <- c(".", ",")
-      mydec <- decimals[which.max(str_count(gsub(mysep, "", restlines, fixed = T), fixed(decimals)))]
+      mydec <- decimals[which.max(str_count(gsub(mysep, "", restlines, fixed = TRUE), fixed(decimals)))]
       datalog <- paste0(datalog, "Separator is ", mysep, "\tDecimal point is ", mydec, "\n")
       cat("read_data> Separator is ", mysep, "\tDecimal point is ", mydec, "\n", sep = "")
-      temp1 <- as.character(read.delim(i.file, header = F, sep = mysep, nrows = 1, colClasses = "character", as.is = T, encoding = myencoding))
-      datasetread <- read.delim(i.file, header = T, sep = mysep, dec = mydec, row.names = NULL, fill = T, colClasses = "numeric", as.is = T, encoding = myencoding)
+      temp1 <- as.character(read.delim(i.file, header = FALSE, sep = mysep, nrows = 1, colClasses = "character", as.is = TRUE, encoding = myencoding))
+      datasetread <- read.delim(i.file, header = TRUE, sep = mysep, dec = mydec, row.names = NULL, fill = TRUE, colClasses = "numeric", as.is = TRUE, encoding = myencoding)
       names(datasetread) <- temp1
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
@@ -717,7 +717,7 @@ importDataDbf <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("foreign" %in% rownames(installed.packages()))){
+  if (!("foreign" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -791,7 +791,7 @@ importDataSav <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("foreign" %in% rownames(installed.packages()))){
+  if (!("foreign" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -831,7 +831,7 @@ importDataSav <- function(i.file,
     } else {
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
-      datasetread <- foreign::read.spss(i.file, to.data.frame = T)
+      datasetread <- foreign::read.spss(i.file, to.data.frame = TRUE)
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
@@ -865,7 +865,7 @@ importDataDta <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("foreign" %in% rownames(installed.packages()))){
+  if (!("foreign" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -939,7 +939,7 @@ importDataSas <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("haven" %in% rownames(installed.packages()))){
+  if (!("haven" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -980,7 +980,7 @@ importDataSas <- function(i.file,
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
       datasetread <- as.data.frame(haven::read_sas(i.file))
-      for (i in 1:NCOL(datasetread)) names(datasetread)[i] <- attr(datasetread[[i]], "label")
+      for (i in seq_len(NCOL(datasetread))) names(datasetread)[i] <- attr(datasetread[[i]], "label")
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
@@ -1014,7 +1014,7 @@ importDataOds <- function(i.file,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("readODS" %in% rownames(installed.packages()))){
+  if (!("readODS" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -1085,7 +1085,7 @@ importDataOds <- function(i.file,
 
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 
-selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "", i.pandemic = T, i.seasons = NA) {
+selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "", i.pandemic = TRUE, i.seasons = NA) {
   if (is.null(i.from)) i.from <- ""
   if (is.null(i.to)) i.to <- ""
   if (is.na(i.from)) i.from <- ""
@@ -1093,13 +1093,13 @@ selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "",
 
   indexes <- 1:length(i.names)
   toinclude <- indexes[i.names %in% i.include]
-  if (!(i.from == "") & (i.from %in% i.names)) from <- grep(i.from, i.names, fixed = T) else from <- 1
-  if (!(i.to == "") & (i.to %in% i.names)) to <- grep(i.to, i.names, fixed = T) else to <- length(i.names)
+  if (!(i.from == "") & (i.from %in% i.names)) from <- grep(i.from, i.names, fixed = TRUE) else from <- 1
+  if (!(i.to == "") & (i.to %in% i.names)) to <- grep(i.to, i.names, fixed = TRUE) else to <- length(i.names)
   if (to < from) to <- from
   if (length(i.names) > 1) {
-    seasons <- data.frame(i.names, matrix(stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"), nrow = length(i.names), byrow = F)[, -1], stringsAsFactors = F)
+    seasons <- data.frame(i.names, matrix(stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"), nrow = length(i.names), byrow = FALSE)[, -1], stringsAsFactors = FALSE)
   } else {
-    seasons <- data.frame(t(c(i.names, stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])), stringsAsFactors = F)
+    seasons <- data.frame(t(c(i.names, stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])), stringsAsFactors = FALSE)
   }
   names(seasons) <- c("season.original", "anioi", "aniof", "aniow")
   seasons[is.na(seasons)] <- ""
@@ -1108,7 +1108,7 @@ selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "",
   seasonsname[seasons$aniof != ""] <- paste(seasonsname[seasons$aniof != ""], seasons$aniof[seasons$aniof != ""], sep = "/")
   seasonsname[seasons$aniow != ""] <- paste(seasonsname[seasons$aniow != ""], "(", seasons$aniow[seasons$aniow != ""], ")", sep = "")
   seasons$season <- seasonsname
-  pandemic <- grep("2009", seasons$anioi, fixed = T)
+  pandemic <- grep("2009", seasons$anioi, fixed = TRUE)
   indexes <- from:to
   if (!is.null(i.pandemic)) if (!i.pandemic & length(pandemic) > 0) indexes <- indexes[pandemic != indexes]
   if (length(indexes) > 0) {
@@ -1120,40 +1120,6 @@ selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "",
   return(indexes)
 }
 
-# Find tickmarks for a given range of the y-axis that best fit an optimal number of tickmarks
-# you decide. f.i: what if i want to have a graph with 8 tickmarks in a range of 34 to 345
-
-# Note: I've included this function in mem package
-
-# optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
-#                             i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
-#                             i.include.min=F,i.include.max=F){
-#   # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
-#   if (i.include.min) dif0<-i.min else dif0<-0
-#   e.min=i.min-dif0
-#   e.max=i.max-dif0
-#   ticks.min<-floor(e.min/i.valid.ticks)
-#   ticks.max<-ceiling(e.max/i.valid.ticks)
-#   ticks.maxmin<-ticks.max-ticks.min+1
-#   n.valid.ticks<-length(i.valid.ticks)
-#   posicion.ticks<-(1:n.valid.ticks)[min(abs(ticks.maxmin-i.number.ticks))==abs(ticks.maxmin-i.number.ticks)][1]
-#   ini<-(ticks.min*i.valid.ticks)[posicion.ticks]+dif0
-#   fin<-(ticks.max*i.valid.ticks)[posicion.ticks]+dif0
-#   salto<-i.valid.ticks[posicion.ticks]
-#   # Tickmarks
-#   tickmarks<-seq(ini,fin,salto)
-#   # Number of ticks
-#   numero.ticks<-length(tickmarks)
-#   if (i.include.max) {
-#     fin<-i.max
-#     tickmarks[numero.ticks] <- i.max
-#   }
-#   # Rank
-#   range.y<-c(ini,fin)
-#   # Returning
-#   return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
-# }
-
 # Fix plotly graphs
 
 fixPlotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i.weeklabels) {
@@ -1163,14 +1129,14 @@ fixPlotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i
     return(i.plotly)
   }
   # Show all labels
-  for (i in 1:nlists) i.plotly$x$data[[i]]$showlegend <- T
+  for (i in 1:nlists) i.plotly$x$data[[i]]$showlegend <- TRUE
   # Fix x.axis labels
   a <- strsplit(as.character(i.plotly$x$layout$xaxis$ticktext), "\\\n")
   a.len <- max(sapply(a, length))
   a.corrected <- lapply(a, function(x) {
     c(x, rep("", a.len - length(x)))
   })
-  divideit <- matrix(unlist(a.corrected), nrow = length(i.plotly$x$layout$xaxis$ticktext), byrow = T)
+  divideit <- matrix(unlist(a.corrected), nrow = length(i.plotly$x$layout$xaxis$ticktext), byrow = TRUE)
   i.plotly$x$layout$margin$b <- (NCOL(divideit)) * i.plotly$x$layout$margin$b
   i.plotly$x$layout$xaxis$ticktext <- apply(divideit, 1, paste, collapse = "<br />")
   # Fix labels names
@@ -1179,7 +1145,7 @@ fixPlotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i
   # Fix text to showup
   for (i in 1:nlists) {
     if (length(grep(i.yname, i.plotly$x$data[[i]]$text)) > 0) {
-      dividetext <- matrix(unlist(strsplit(i.plotly$x$data[[i]]$text, "<br>|<br />")), nrow = length(i.plotly$x$data[[i]]$text), byrow = T)
+      dividetext <- matrix(unlist(strsplit(i.plotly$x$data[[i]]$text, "<br>|<br />")), nrow = length(i.plotly$x$data[[i]]$text), byrow = TRUE)
       i.plotly$x$data[[i]]$text <- paste(i.xname, ": ", i.weeklabels, "<br />", sub(i.yname, i.labels[sequ[i]], dividetext[, 2]), sep = "")
     }
   }
@@ -1198,7 +1164,7 @@ fixPlotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i
   nopal <- !i.points & i.lines
   index.nopal <- (1:nlabels)[nopal]
   toremove <- c(index.pandl + nlabels, index.panol, index.nopal + nlabels)
-  toremove <- toremove[order(toremove, decreasing = T)]
+  toremove <- toremove[order(toremove, decreasing = TRUE)]
   # in reverse order, since removing changes order
   for (i in 1:length(toremove)) i.plotly$x$data[[toremove[i]]] <- NULL
   if (.Platform$OS.type == "windows") i.plotly <- fixlatin(i.plotly)
@@ -1214,7 +1180,8 @@ fixlatin <- function(i.plotly) {
 }
 
 fixedColorBar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, ...) {
-  formattable::formatter("span", style = function(x) ifelse(is.na(x),
+  formattable::formatter("span", style = function(x) {
+    ifelse(is.na(x),
       formattable::style(color = "white"),
       formattable::style(
         display = "inline-block",
@@ -1222,10 +1189,11 @@ fixedColorBar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, ..
         `border-radius` = "4px",
         `padding-right` = "2px",
         `background-color` = formattable::csscolor(addAlphaColor(color, alpha)),
-        width = paste(fixedWidth * formattable::proportion(x, na.rm = T), "px", sep = ""),
+        width = paste(fixedWidth * formattable::proportion(x, na.rm = TRUE), "px", sep = ""),
         ...
       )
-    ))
+    )
+  })
 }
 
 addAlphaColor <- function(col, alpha = 1) {
@@ -1315,7 +1283,7 @@ extractPfe <- function(i.file) {
   if (is.na(i.file)) {
     extractPfe.output <- NULL
   } else {
-    temp1 <- gsub("\\", "/", i.file, fixed = T)
+    temp1 <- gsub("\\", "/", i.file, fixed = TRUE)
     temp2 <- stringr::str_match(temp1, "^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
     temp2[is.na(temp2)] <- ""
     extractPfe.output <- list()
@@ -1334,8 +1302,8 @@ zipPresent <- function() file.exists(Sys.getenv("R_ZIPCMD"))
 
 mdbtoolsPresent <- function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
 
-openxlsxPresent <- function(){
-	"openxlsx" %in% rownames(installed.packages())
+openxlsxPresent <- function() {
+  "openxlsx" %in% rownames(installed.packages())
 }
 
 # check what animation method has to be used
@@ -1345,11 +1313,11 @@ animationMethod <- function() {
   if (.Platform$OS.type == "windows") {
     cat("function/animationMethod> Windows system detected\n")
     path.env <- tolower(Sys.getenv("PATH"))
-    if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, fixed = T)) {
+    if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, fixed = TRUE)) {
       # GraphicsMagick program + animation package
       cat("function/animationMethod> GraphicsMagick+animation detected. Using animation package\n")
       animationMethod <- 1
-    } else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, fixed = T)) {
+    } else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, fixed = TRUE)) {
       # ImageMagick program + animation package
       cat("function/animationMethod> ImageMagick+animation detected. Using animation package\n")
       animationMethod <- 2
@@ -1391,7 +1359,7 @@ animationMethod <- function() {
 
 tailOrder <- function(i.data, i.n, i.order) {
   res <- tail(i.data, n = i.n)
-  res <- res[order(res[,i.order]), ]
+  res <- res[order(res[, i.order]), ]
   res$id.tail <- seq_len(NROW(res))
   res
 }
@@ -1415,7 +1383,7 @@ manualDir <- function() {
 }
 
 getLanguages <- function() {
-  langfiles <- data.frame(filename = tools::file_path_sans_ext(list.files(translationDir(), ".*\\.txt")), stringsAsFactors = F)
+  langfiles <- data.frame(filename = tools::file_path_sans_ext(list.files(translationDir(), ".*\\.txt")), stringsAsFactors = FALSE)
   locales <- readLocales()
   languages <- dplyr::inner_join(locales, langfiles, by = "filename")
   # fix for linux locales
@@ -1429,10 +1397,10 @@ getLanguages <- function() {
 }
 
 readLocales <- function() {
-  locales <- utils::read.delim(paste0(translationDir(), "/localestable.txt"), header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T) %>%
+  locales <- utils::read.delim(paste0(translationDir(), "/localestable.txt"), header = TRUE, sep = ";", row.names = NULL, fill = TRUE, colClasses = "character", as.is = TRUE) %>%
     tidyr::extract(filename,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
-      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
+      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = FALSE
     ) %>%
     select(-v1, -v2, -v3) %>%
     dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
@@ -1444,10 +1412,10 @@ readLocales <- function() {
 }
 
 getLinuxLocales <- function() {
-  locales <- data.frame(localelinux = system("locale -a ", intern = TRUE), stringsAsFactors = F) %>%
+  locales <- data.frame(localelinux = system("locale -a ", intern = TRUE), stringsAsFactors = FALSE) %>%
     tidyr::extract(localelinux,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
-      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
+      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = FALSE
     ) %>%
     select(-v1, -v2, -v3) %>%
     dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
@@ -1470,13 +1438,13 @@ readLanguage <- function(i.filename) {
   langs <- getLanguages()
   lfile <- paste0(translationDir(), "/", i.filename, ".txt")
   if (file.exists(lfile)) {
-    lines <- paste(readLines(lfile, n = -1, warn = F), collapse = "")
+    lines <- paste(readLines(lfile, n = -1, warn = FALSE), collapse = "")
     if (stringi::stri_enc_isascii(lines)) {
       myencoding <- "ASCII"
     } else {
       myencoding <- stringi::stri_enc_detect(lines)[[1]]$`Encoding`[1]
     }
-    translation <- utils::read.delim(lfile, header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T, encoding = myencoding)
+    translation <- utils::read.delim(lfile, header = TRUE, sep = ";", row.names = NULL, fill = TRUE, colClasses = "character", as.is = TRUE, encoding = myencoding)
     names(translation) <- c("original", "translated")
     translation$filename <- i.filename
   } else {
@@ -1516,7 +1484,7 @@ setLanguage <- function(i.lang) {
 getLanguage <- function() {
   cat("function/getLanguage> begin\n")
   default.fil <- paste0(translationDir(), "/defaultlanguage.txt")
-  default.language <- readLines(default.fil, 1, warn=F)
+  default.language <- readLines(default.fil, 1, warn = FALSE)
   langs <- getLanguages()
   if (!(default.language %in% langs$filename)) default.language <- "en_GB"
   cat(paste0("function/getLanguage> Default language is: ", default.language, "\n"))
