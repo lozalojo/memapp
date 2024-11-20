@@ -18,11 +18,11 @@ source("helpers.R")
 
 cat("preparation> begin\n")
 cat("preparation> creating translation file\n")
-build.languages()
-languages <- get.languages()
-languages.list <- as.list(languages$filename)
-names(languages.list) <- languages$lang_name
-running.versions <- get.r.versions()
+buildLanguages()
+languages <- getLanguages()
+languages_list <- as.list(languages$filename)
+names(languages_list) <- languages$lang_name
+running_versions <- getVersions()
 
 shinyUI(
   dashboardPage(
@@ -35,7 +35,7 @@ shinyUI(
     # so we can pass such elements instead of dropdownMenus
     header = dashboardHeader(
       title = "MEM dashboard",
-      tags$li(paste(running.versions$r, "/", running.versions$platform, ", memapp ", running.versions$memapp, ", mem ", running.versions$mem, " - code under GPLv2 at", sep = ""),
+      tags$li(paste(running_versions$r, "/", running_versions$platform, ", memapp ", running_versions$memapp, ", mem ", running_versions$mem, " - code under GPLv2 at", sep = ""),
         class = "dropdown"
       ),
       tags$li(a(
@@ -129,8 +129,8 @@ shinyUI(
           dropdown(shinydashboard::box(
             title = "", solidHeader = TRUE, status = "warning", width = 12,
             uiOutput("uiLanguage"),
-            #selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = "en_GB")
-            selectInput("language", label = "", choices = languages.list, size = 1, selectize = FALSE, selected = get.default.language()),
+            #selectInput("language", label = "", choices = languages_list, size = 1, selectize = FALSE, selected = "en_GB")
+            selectInput("language", label = "", choices = languages_list, size = 1, selectize = FALSE, selected = getLanguage()),
 			uiOutput("uiLanguageDefault")
           ),
           circle = TRUE,

@@ -25,8 +25,10 @@ graphs.epidemic;Эпидемический
 graphs.epidemicmiss;Эпидемический (данные отсутствуют)
 graphs.epidemicpercentage;Эпидемический процент
 graphs.epidemicpercentage.short;Эпидемический процент
-graphs.epiperclower;Эпидемический процент (нижняя граница)
-graphs.epipercupper;Эпидемический процент (верхняя граница)
+graphs.epidemicpercentagelower;Эпидемический процент (нижняя граница)
+graphs.epidemicpercentagelower.short;Эпидемический процент (нижняя граница)
+graphs.epidemicpercentageupper;Эпидемический процент (верхняя граница)
+graphs.epidemicpercentageupper.short;Эпидемический процент (верхняя граница)
 graphs.highlevel;Высокий уровень
 graphs.highthreshold;Высокое пороговое значение
 graphs.highthreshold.short;Высокое пороговое значение

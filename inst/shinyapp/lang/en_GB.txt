@@ -25,8 +25,10 @@ graphs.epidemic;Epidemic
 graphs.epidemicmiss;Epidemic (missing)
 graphs.epidemicpercentage;Epidemic percentage
 graphs.epidemicpercentage.short;Epidemic perc.
-graphs.epiperclower;Epidemic perc. (lower limit)
-graphs.epipercupper;Epidemic perc. (upper limit)
+graphs.epidemicpercentagelower;Epidemic percentage (lower limit)
+graphs.epidemicpercentagelower.short;Epidemic perc. (lower limit)
+graphs.epidemicpercentageupper;Epidemic percentage (upper limit)
+graphs.epidemicpercentageupper.short;Epidemic perc. (upper limit)
 graphs.highlevel;High level
 graphs.highthreshold;High threshold
 graphs.highthreshold.short;High thr.
@@ -342,3 +344,5 @@ ui.openxlsx;openxlsx not found
 ui.rtools;Rtools not found
 options.language.default.label;Make default
 options.language.default.hint;Set current language to app default
+main.model.optimize.apply.hint;Apply optimum parameter to current model
+main.model.optimize.apply.label;Apply

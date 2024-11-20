@@ -2,7 +2,7 @@
 ### CUSTOM FUNCTIONS
 #####################################
 
-generate_palette <- function(i.number.series = NA,
+generatePalette <- function(i.number.series = NA,
                              i.colObservedLines = NULL,
                              i.colObservedPoints = NULL,
                              i.colEpidemicStart = NULL,
@@ -73,7 +73,7 @@ generate_palette <- function(i.number.series = NA,
   colors.final
 }
 
-read.data <- function(i.file,
+importData <- function(i.file,
                       i.file.name = NA,
                       i.dataset = NA,
                       i.range.x = NA,
@@ -98,70 +98,70 @@ read.data <- function(i.file,
     }
     filenameextension <- paste(filename, fileextension, sep = ".")
     if (fileextension %in% c("xls", "xlsx")) {
-      temp2 <- read.data.excel(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataExcel(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("mdb", "accdb")) {
-      temp2 <- read.data.access(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataAccess(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("csv", "dat", "prn", "txt")) {
-      temp2 <- read.data.text(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataText(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("rds")) {
-      temp2 <- read.data.rds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataRds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("rda", "rdata")) {
-      temp2 <- read.data.rdata(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataRdata(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("dbf")) {
-      temp2 <- read.data.dbf(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataDbf(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("sav")) {
-      temp2 <- read.data.sav(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataSav(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("dta")) {
-      temp2 <- read.data.dta(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataDta(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("sas7bdat")) {
-      temp2 <- read.data.sas(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataSas(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension == "ods") {
-      temp2 <- read.data.ods(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataOds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
 	  datalog <- paste0(datalog, temp2$datalog)
 	  datasets <- temp2$datasets
       datasetread <- temp2$datasetread
@@ -245,7 +245,7 @@ read.data <- function(i.file,
   readdata
 }
 
-read.data.excel <- function(i.file,
+importDataExcel <- function(i.file,
                             i.file.name = NA,
                             i.dataset = NA,
                             i.range.x = NA) {
@@ -327,7 +327,7 @@ read.data.excel <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.access <- function(i.file,
+importDataAccess <- function(i.file,
                              i.file.name = NA,
                              i.dataset = NA,
                              i.range.x = NA) {
@@ -404,7 +404,7 @@ read.data.access <- function(i.file,
   }
     } else if (.Platform$OS.type == "unix") {
       # check if mdbtools is installed
-      if (!mdbtools.present()) {
+      if (!mdbtoolsPresent()) {
         datasets <- NULL
         datasetread <- NULL
         dataweeks <- NULL
@@ -487,7 +487,7 @@ read.data.access <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.text <- function(i.file,
+importDataText <- function(i.file,
                            i.file.name = NA,
                            i.dataset = NA,
                            i.range.x = NA) {
@@ -573,7 +573,7 @@ read.data.text <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.rds <- function(i.file,
+importDataRds <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -641,7 +641,7 @@ read.data.rds <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.rdata <- function(i.file,
+importDataRdata <- function(i.file,
                             i.file.name = NA,
                             i.dataset = NA,
                             i.range.x = NA) {
@@ -712,7 +712,7 @@ read.data.rdata <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.dbf <- function(i.file,
+importDataDbf <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -786,7 +786,7 @@ read.data.dbf <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.sav <- function(i.file,
+importDataSav <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -860,7 +860,7 @@ read.data.sav <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.dta <- function(i.file,
+importDataDta <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -934,7 +934,7 @@ read.data.dta <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.sas <- function(i.file,
+importDataSas <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -1009,7 +1009,7 @@ read.data.sas <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.ods <- function(i.file,
+importDataOds <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -1085,7 +1085,7 @@ read.data.ods <- function(i.file,
 
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 
-select.columns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "", i.pandemic = T, i.seasons = NA) {
+selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "", i.pandemic = T, i.seasons = NA) {
   if (is.null(i.from)) i.from <- ""
   if (is.null(i.to)) i.to <- ""
   if (is.na(i.from)) i.from <- ""
@@ -1156,7 +1156,7 @@ select.columns <- function(i.names, i.from, i.to, i.exclude = "", i.include = ""
 
 # Fix plotly graphs
 
-fixplotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i.weeklabels) {
+fixPlotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i.weeklabels) {
   nlabels <- length(i.labels)
   nlists <- length(i.plotly$x$data)
   if (nlists != 2 * nlabels) {
@@ -1213,7 +1213,7 @@ fixlatin <- function(i.plotly) {
   o.plotly
 }
 
-fixed_color_bar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, ...) {
+fixedColorBar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, ...) {
   formattable::formatter("span", style = function(x) ifelse(is.na(x),
       formattable::style(color = "white"),
       formattable::style(
@@ -1221,21 +1221,21 @@ fixed_color_bar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, 
         direction = "rtl",
         `border-radius` = "4px",
         `padding-right` = "2px",
-        `background-color` = formattable::csscolor(add.alpha.to.color(color, alpha)),
+        `background-color` = formattable::csscolor(addAlphaColor(color, alpha)),
         width = paste(fixedWidth * formattable::proportion(x, na.rm = T), "px", sep = ""),
         ...
       )
     ))
 }
 
-add.alpha.to.color <- function(col, alpha = 1) {
+addAlphaColor <- function(col, alpha = 1) {
   if (missing(col)) stop("Please provide a vector of colours.")
   apply(sapply(col, col2rgb) / 255, 2, function(x) rgb(x[1], x[2], x[3], alpha = alpha))
 }
 
 # export functions
 
-export.mydata <- function(i.data, i.file, i.sheet = NA, i.rownames = NA, i.format = "xlsx") {
+exportData <- function(i.data, i.file, i.sheet = NA, i.rownames = NA, i.format = "xlsx") {
   if (is.na(i.sheet)) i.sheet <- "data"
   if (!is.na(i.rownames)) {
     i.data$dummy <- row.names(i.data)
@@ -1260,7 +1260,7 @@ export.mydata <- function(i.data, i.file, i.sheet = NA, i.rownames = NA, i.forma
 
 # Configure a zip extractor in the system, required for openxlsx saving, it is installed with Rtools
 
-set.rzip <- function() {
+setRzip <- function() {
   cat("function/setupzip> begin\n")
   if (.Platform$OS.type == "windows") {
     cat("function/setupzip> Windows system detected\n")
@@ -1311,125 +1311,125 @@ set.rzip <- function() {
 
 # extract path, filename and extension
 
-extract.pfe <- function(i.file) {
+extractPfe <- function(i.file) {
   if (is.na(i.file)) {
-    extract.pfe.output <- NULL
+    extractPfe.output <- NULL
   } else {
     temp1 <- gsub("\\", "/", i.file, fixed = T)
     temp2 <- stringr::str_match(temp1, "^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
     temp2[is.na(temp2)] <- ""
-    extract.pfe.output <- list()
-    extract.pfe.output$param.file <- temp2[1, 1]
-    if (substring(temp2[1, 2], nchar(temp2[1, 2]), nchar(temp2[1, 2])) == "/") extract.pfe.output$path <- substring(temp2[1, 2], 1, nchar(temp2[1, 2]) - 1) else extract.pfe.output$path <- temp2[1, 2]
-    extract.pfe.output$name <- temp2[1, 3]
-    extract.pfe.output$extension <- temp2[1, 5]
+    extractPfe.output <- list()
+    extractPfe.output$param.file <- temp2[1, 1]
+    if (substring(temp2[1, 2], nchar(temp2[1, 2]), nchar(temp2[1, 2])) == "/") extractPfe.output$path <- substring(temp2[1, 2], 1, nchar(temp2[1, 2]) - 1) else extractPfe.output$path <- temp2[1, 2]
+    extractPfe.output$name <- temp2[1, 3]
+    extractPfe.output$extension <- temp2[1, 5]
   }
   rm("temp1", "temp2")
-  extract.pfe.output
+  extractPfe.output
 }
 
 # check if a zip extractor is installed
 
-zip.present <- function() file.exists(Sys.getenv("R_ZIPCMD"))
+zipPresent <- function() file.exists(Sys.getenv("R_ZIPCMD"))
 
-mdbtools.present <- function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
+mdbtoolsPresent <- function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
 
-openxlsx.present <- function(){
+openxlsxPresent <- function(){
 	"openxlsx" %in% rownames(installed.packages())
 }
 
 # check what animation method has to be used
 
-animation.method <- function() {
-  cat("function/animation.method> begin\n")
+animationMethod <- function() {
+  cat("function/animationMethod> begin\n")
   if (.Platform$OS.type == "windows") {
-    cat("function/animation.method> Windows system detected\n")
+    cat("function/animationMethod> Windows system detected\n")
     path.env <- tolower(Sys.getenv("PATH"))
     if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, fixed = T)) {
       # GraphicsMagick program + animation package
-      cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
-      animation.method <- 1
+      cat("function/animationMethod> GraphicsMagick+animation detected. Using animation package\n")
+      animationMethod <- 1
     } else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, fixed = T)) {
       # ImageMagick program + animation package
-      cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
-      animation.method <- 2
+      cat("function/animationMethod> ImageMagick+animation detected. Using animation package\n")
+      animationMethod <- 2
     } else if ("magick" %in% rownames(installed.packages())) {
       # magick package
-      cat("function/animation.method> magick detected. Using magick package\n")
-      animation.method <- 3
+      cat("function/animationMethod> magick detected. Using magick package\n")
+      animationMethod <- 3
     } else {
-      cat("function/animation.method> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
-      animation.method <- 4
+      cat("function/animationMethod> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      animationMethod <- 4
     }
   } else if (.Platform$OS.type == "unix") {
-    cat("function/animation.method> *nix system detected\n")
+    cat("function/animationMethod> *nix system detected\n")
     if ("animation" %in% rownames(installed.packages()) & (file.exists("/usr/bin/gm") | file.exists("/usr/local/bin/gm"))) {
       # GraphicsMagick program + animation package
-      cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
-      animation.method <- 1
+      cat("function/animationMethod> GraphicsMagick+animation detected. Using animation package\n")
+      animationMethod <- 1
     } else if ("animation" %in% rownames(installed.packages()) & (file.exists("/usr/bin/convert") | file.exists("/usr/local/bin/convert"))) {
       # ImageMagick program + animation package
-      cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
-      animation.method <- 2
+      cat("function/animationMethod> ImageMagick+animation detected. Using animation package\n")
+      animationMethod <- 2
     } else if ("magick" %in% rownames(installed.packages())) {
       # magick package
-      cat("function/animation.method> magick detected. Using magick package\n")
-      animation.method <- 3
+      cat("function/animationMethod> magick detected. Using magick package\n")
+      animationMethod <- 3
     } else {
-      cat("function/animation.method> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
-      animation.method <- 4
+      cat("function/animationMethod> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      animationMethod <- 4
     }
   } else {
-    cat("function/animation.method> No windows or *nix system detected\n")
-    animation.method <- 4
+    cat("function/animationMethod> No windows or *nix system detected\n")
+    animationMethod <- 4
   }
-  cat("function/animation.method> end\n")
-  return(animation.method)
+  cat("function/animationMethod> end\n")
+  return(animationMethod)
 }
 
 # functions for the optimize plots
 
-tail.order <- function(i.data, i.n, i.order) {
+tailOrder <- function(i.data, i.n, i.order) {
   res <- tail(i.data, n = i.n)
   res <- res[order(res[,i.order]), ]
   res$id.tail <- 1:NROW(res)
   res
 }
 
-extract.two <- function(i.data, i.order, i.column) {
+extractTwo <- function(i.data, i.order, i.column) {
   data <- i.data
-  results <- do.call("rbind", by(data, data[i.column], tail.order, i.n = 2, i.order = i.order))
+  results <- do.call("rbind", by(data, data[i.column], tailOrder, i.n = 2, i.order = i.order))
   return(results)
 }
 
 # locale funcions
 
-translation.dir <- function() {
+translationDir <- function() {
   translation.loc <- c("lang", "inst/shinyapp/lang", file.path(.libPaths(), "/memapp/shinyapp/lang"))
   utils::head(translation.loc[dir.exists(translation.loc)], 1)
 }
 
-manual.dir <- function() {
+manualDir <- function() {
   manual.loc <- c("manual", "inst/manual", file.path(.libPaths(), "/memapp/manual"))
   utils::head(manual.loc[dir.exists(manual.loc)], 1)
 }
 
-get.languages <- function() {
-  langfiles <- data.frame(filename = tools::file_path_sans_ext(list.files(translation.dir(), ".*\\.txt")), stringsAsFactors = F)
-  locales <- read.locales.table()
+getLanguages <- function() {
+  langfiles <- data.frame(filename = tools::file_path_sans_ext(list.files(translationDir(), ".*\\.txt")), stringsAsFactors = F)
+  locales <- readLocales()
   languages <- dplyr::inner_join(locales, langfiles, by = "filename")
   # fix for linux locales
   if (.Platform$OS.type == "unix") {
     languages <- languages %>%
       select(-localelinux) %>%
-      left_join(select(get.linux.locales(), -encoding), by = c("language.iso_639_1", "country.iso_3166")) %>%
+      left_join(select(getLinuxLocales(), -encoding), by = c("language.iso_639_1", "country.iso_3166")) %>%
       mutate(localelinux = if_else(is.na(localelinux), "", localelinux))
   }
   languages
 }
 
-read.locales.table <- function() {
-  locales <- utils::read.delim(paste0(translation.dir(), "/localestable.txt"), header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T) %>%
+readLocales <- function() {
+  locales <- utils::read.delim(paste0(translationDir(), "/localestable.txt"), header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T) %>%
     tidyr::extract(filename,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
       "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
@@ -1443,7 +1443,7 @@ read.locales.table <- function() {
     )
 }
 
-get.linux.locales <- function() {
+getLinuxLocales <- function() {
   locales <- data.frame(localelinux = system("locale -a ", intern = TRUE), stringsAsFactors = F) %>%
     tidyr::extract(localelinux,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
@@ -1466,9 +1466,9 @@ get.linux.locales <- function() {
 }
 
 
-read.language <- function(i.filename) {
-  langs <- get.languages()
-  lfile <- paste0(translation.dir(), "/", i.filename, ".txt")
+readLanguage <- function(i.filename) {
+  langs <- getLanguages()
+  lfile <- paste0(translationDir(), "/", i.filename, ".txt")
   if (file.exists(lfile)) {
     lines <- paste(readLines(lfile, n = -1, warn = F), collapse = "")
     if (stringi::stri_enc_isascii(lines)) {
@@ -1485,49 +1485,49 @@ read.language <- function(i.filename) {
   translation
 }
 
-build.languages <- function() {
-  cat("function/build.languages> begin\n")
-  translation.fil <- paste0(translation.dir(), "/translation.bin")
-  langs <- get.languages()
-  cat("function/build.languages> List of available languages:\n", paste0(paste0(langs$filename, "\t", langs$lang_name), collapse = "\n"), "\n")
-  translationContent <- do.call(rbind, lapply(langs$filename, function(x) read.language(x)))
+buildLanguages <- function() {
+  cat("function/buildLanguages> begin\n")
+  translation.fil <- paste0(translationDir(), "/translation.bin")
+  langs <- getLanguages()
+  cat("function/buildLanguages> List of available languages:\n", paste0(paste0(langs$filename, "\t", langs$lang_name), collapse = "\n"), "\n")
+  translationContent <- do.call(rbind, lapply(langs$filename, function(x) readLanguage(x)))
   # To avoid R cmd check as for original, lang, translated as dplyr:select accept verbatim variable as input (not character)
   original <- filename <- translated <- NULL
   translation <- translationContent %>%
     dplyr::select(original, filename, translated) %>%
     tidyr::spread(filename, translated, drop = FALSE, fill = NA)
   save(translation, file = translation.fil)
-  cat(paste0("function/build.languages> Translation file saved to: ", tools::file_path_as_absolute(translation.fil), " (", NROW(translation), " items)"), "\n")
-  cat("function/build.languages> Language file built\n")
-  cat("function/build.languages> end\n")
+  cat(paste0("function/buildLanguages> Translation file saved to: ", tools::file_path_as_absolute(translation.fil), " (", NROW(translation), " items)"), "\n")
+  cat("function/buildLanguages> Language file built\n")
+  cat("function/buildLanguages> end\n")
 }
 
-set.default.language <- function(i.lang) {
-  cat("function/set.default.language> begin\n")
-  default.fil <- paste0(translation.dir(), "/defaultlanguage.txt")
+setLanguage <- function(i.lang) {
+  cat("function/setLanguage> begin\n")
+  default.fil <- paste0(translationDir(), "/defaultlanguage.txt")
   default.language <- i.lang
-  langs <- get.languages()
+  langs <- getLanguages()
   if (!(default.language %in% langs$filename)) default.language <- "en_GB"
   writeLines(default.language, default.fil)
-  cat(paste0("function/set.default.language> Default language written to: ", default.language, "\n"))
-  cat("function/set.default.language> end\n")
+  cat(paste0("function/setLanguage> Default language written to: ", default.language, "\n"))
+  cat("function/setLanguage> end\n")
 }
 
-get.default.language <- function() {
-  cat("function/get.default.language> begin\n")
-  default.fil <- paste0(translation.dir(), "/defaultlanguage.txt")
+getLanguage <- function() {
+  cat("function/getLanguage> begin\n")
+  default.fil <- paste0(translationDir(), "/defaultlanguage.txt")
   default.language <- readLines(default.fil, 1, warn=F)
-  langs <- get.languages()
+  langs <- getLanguages()
   if (!(default.language %in% langs$filename)) default.language <- "en_GB"
-  cat(paste0("function/get.default.language> Default language is: ", default.language, "\n"))
-  cat("function/get.default.language> end\n")
+  cat(paste0("function/getLanguage> Default language is: ", default.language, "\n"))
+  cat("function/getLanguage> end\n")
   default.language
 }
 
-# set.default.language("fr_FR")
-# get.default.language()
+# setLanguage("fr_FR")
+# getLanguage()
 
-get.r.versions <- function() {
+getVersions <- function() {
   list(
     r = as.character(R.version$version.string),
     platform = as.character(R.version$platform),

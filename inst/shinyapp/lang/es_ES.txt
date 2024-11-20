@@ -25,8 +25,10 @@ graphs.epidemic;Epidemia
 graphs.epidemicmiss;Epidemia (ausentes)
 graphs.epidemicpercentage;Porcentaje epidémico
 graphs.epidemicpercentage.short;Porc. epidemico
-graphs.epiperclower;Porc. epidemico (límite inf.)
-graphs.epipercupper;Porc. epidemico (límite sup.)
+graphs.epidemicpercentagelower;Porcentaje epidémico (límite inf.)
+graphs.epidemicpercentagelower.short;Porc. epidemico (límite inf.)
+graphs.epidemicpercentageupper;Porcentaje epidémico (límite sup.)
+graphs.epidemicpercentageupper.short;Porc. epidemico (límite sup.)
 graphs.highlevel;Nivel alto
 graphs.highthreshold;Umbral alto
 graphs.highthreshold.short;Umb. alto
@@ -342,3 +344,5 @@ ui.openxlsx;No se ha encontrado openxlsx
 ui.rtools;No se ha encontrado Rtools
 options.language.default.label;Por defecto
 options.language.default.hint;Hacer el actual el idioma por defecto de la aplicación
+main.model.optimize.apply.hint;Usar como parámetro ventana el óptimo obtenido
+main.model.optimize.apply.label;Aplicar
