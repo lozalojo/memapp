@@ -315,7 +315,7 @@ importDataExcel <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -393,7 +393,7 @@ importDataAccess <- function(i.file,
             datalog <- paste0(datalog, "Note: First column is the week name\n")
             cat("read_data> Note: First column is the week name\n")
           } else {
-            rownames(datasetread) <- 1:NROW(datasetread)
+            rownames(datasetread) <- seq_len(NROW(datasetread))
           }
         }
         dataweeks <- as.numeric(row.names(datasetread))
@@ -468,7 +468,7 @@ importDataAccess <- function(i.file,
               datalog <- paste0(datalog, "Note: First column is the week name\n")
               cat("read_data> Note: First column is the week name\n")
             } else {
-              rownames(datasetread) <- 1:NROW(datasetread)
+              rownames(datasetread) <- seq_len(NROW(datasetread))
             }
           }
           dataweeks <- as.numeric(row.names(datasetread))
@@ -562,7 +562,7 @@ importDataText <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -630,7 +630,7 @@ importDataRds <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else if (!all(as.numeric(rownames(datasetread)) %in% 1:53)) {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -701,7 +701,7 @@ importDataRdata <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else if (!all(as.numeric(rownames(datasetread)) %in% 1:53)) {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -775,7 +775,7 @@ importDataDbf <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -849,7 +849,7 @@ importDataSav <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -923,7 +923,7 @@ importDataDta <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -998,7 +998,7 @@ importDataSas <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -1072,7 +1072,7 @@ importDataOds <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -1392,7 +1392,7 @@ animationMethod <- function() {
 tailOrder <- function(i.data, i.n, i.order) {
   res <- tail(i.data, n = i.n)
   res <- res[order(res[,i.order]), ]
-  res$id.tail <- 1:NROW(res)
+  res$id.tail <- seq_len(NROW(res))
   res
 }
 
