@@ -179,10 +179,6 @@ options.mem.goodness.validation.hint;Croisé: Extrait une saison et le modèle e
 options.mem.goodness.validation.label;Validation
 options.mem.goodness.validation.sequential;Séquentiel
 options.mem.other;Autre
-options.mem.other.average.hint;Méthode de calcul des intervalles de confiance de la courbe moyenne
-options.mem.other.averagecurve.label;IC de la courbe moyenne
-options.mem.other.averageotherci.hint;Niveau de l’intervalle de confiance utilisé pour calculer la courbe moyenne et autres intervalles
-options.mem.other.averageotherci.level;Courbe moyenne/Autre IC
 options.mem.other.centering.1;Highest 1-week period (peak)
 options.mem.other.centering.10;Highest 10-weeks period
 options.mem.other.centering.11;Highest 11-weeks period
@@ -201,8 +197,6 @@ options.mem.other.centering.9;Highest 9-weeks period
 options.mem.other.centering.hint;Method for centering seasons to calculate the average curve
 options.mem.other.centering.label;Centering seasons
 options.mem.other.centering.mean;Highest mean duration-weeks period
-options.mem.other.other.hint;Méthode pour calculer d’autres intervalles de confiance: durée, pourcentage épidémique, début de l’épidémie, etc.
-options.mem.other.other.label;Autre IC.
 options.mem.thresholds;Seuils
 options.mem.thresholds.epidemic.arithmeticmean;Moyenne arithmétique et IC moyen
 options.mem.thresholds.epidemic.arithmeticprediction;Moyenne arithmétique et IC ponctuel
@@ -337,3 +331,11 @@ ui.nofile;No file or dataset selected
 ui.nozip;Zip non trouvé
 ui.openxlsx;openxlsx non trouvé
 ui.rtools;Rtools non trouvé
+options.mem.other.typeaveragecurve.hint;Méthode de calcul des intervalles de confiance de la courbe moyenne
+options.mem.other.typeaveragecurve.label;IC de la courbe moyenne
+options.mem.other.levelaveragecurve.hint;Niveau de l’intervalle de confiance utilisé pour calculer la courbe moyenne
+options.mem.other.levelaveragecurve.level;Courbe moyenne
+options.mem.other.typeother.hint;Méthode pour calculer d’autres intervalles de confiance: durée, pourcentage épidémique, début de l’épidémie, etc.
+options.mem.other.typeother.label;Autre IC.
+options.mem.other.levelother.hint;Niveau de l’intervalle de confiance utilisé pour calculer autres intervalles
+options.mem.other.levelother.level;Autre IC

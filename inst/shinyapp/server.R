@@ -42,9 +42,10 @@ shinyServer(function(input, output, session) {
     validation = "cross",
     optimmethod = "matthews",
     paramrange = list(value = c(1, 5), min = 0.1, max = 10, step = 0.1),
-    typecurve = 2,
+    typeaveragecurve = 2,
     typeother = 3,
     levelaveragecurve = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
+    levelother = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
     centering = -1,
     showadvanced = TRUE,
     advanced = FALSE,
@@ -1159,10 +1160,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -1180,10 +1181,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -1223,10 +1224,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
@@ -1291,10 +1292,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
@@ -1356,10 +1357,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
           i.n.max = as.numeric(input$nvalues),
           i.goodness.method = as.character(input$validation)
@@ -1388,10 +1389,10 @@ shinyServer(function(input, output, session) {
         i.type.intensity = as.numeric(input$typeintensity),
         i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
         i.tails.intensity = as.numeric(input$ntails),
-        i.type.curve = as.numeric(input$typecurve),
+        i.type.curve = as.numeric(input$typeaveragecurve),
         i.level.curve = as.numeric(input$levelaveragecurve) / 100,
         i.type.other = as.numeric(input$typeother),
-        i.level.other = as.numeric(input$levelaveragecurve) / 100,
+        i.level.other = as.numeric(input$levelother) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
         i.n.max = as.numeric(input$nvalues)
@@ -1417,10 +1418,10 @@ shinyServer(function(input, output, session) {
         i.type.intensity = as.numeric(input$typeintensity),
         i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
         i.tails.intensity = as.numeric(input$ntails),
-        i.type.curve = as.numeric(input$typecurve),
+        i.type.curve = as.numeric(input$typeaveragecurve),
         i.level.curve = as.numeric(input$levelaveragecurve) / 100,
         i.type.other = as.numeric(input$typeother),
-        i.level.other = as.numeric(input$levelaveragecurve) / 100,
+        i.level.other = as.numeric(input$levelother) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
         i.n.max = as.numeric(input$nvalues)
@@ -1718,10 +1719,12 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "validation", selected = default_values$validation)
     updateSelectInput(session, "optimmethod", selected = default_values$optimmethod)
     updateSliderInput(session, "paramrange", value = default_values$paramrange$value, min = default_values$paramrange$min, max = default_values$paramrange$max, step = default_values$paramrange$step)
-    updateSelectInput(session, "typecurve", selected = default_values$typecurve)
+    updateSelectInput(session, "typeaveragecurve", selected = default_values$typeaveragecurve)
     updateSelectInput(session, "typeother", selected = default_values$typeother)
     updateNumericInput(session, "levelaveragecurve", value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step = default_values$levelaveragecurve$step)
+    updateNumericInput(session, "levelother", value = default_values$levelother$value, min = default_values$levelother$min, max = default_values$levelother$max, step = default_values$levelother$step)
     updateSelectInput(session, "centering", selected = default_values$centering)
+    updateMaterialSwitch(session, "usetdistribution", value = default_values$usetdistribution)
     cat("observeEvent/dataset> end\n")
   })
 
@@ -1794,10 +1797,10 @@ shinyServer(function(input, output, session) {
               i.type.intensity = as.numeric(input$typeintensity),
               i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
               i.tails.intensity = as.numeric(input$ntails),
-              i.type.curve = as.numeric(input$typecurve),
+              i.type.curve = as.numeric(input$typeaveragecurve),
               i.level.curve = as.numeric(input$levelaveragecurve) / 100,
               i.type.other = as.numeric(input$typeother),
-              i.level.other = as.numeric(input$levelaveragecurve) / 100,
+              i.level.other = as.numeric(input$levelother) / 100,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
               i.centering = as.numeric(input$centering),
@@ -1966,10 +1969,10 @@ shinyServer(function(input, output, session) {
               i.type.intensity = as.numeric(input$typeintensity),
               i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
               i.tails.intensity = as.numeric(input$ntails),
-              i.type.curve = as.numeric(input$typecurve),
+              i.type.curve = as.numeric(input$typeaveragecurve),
               i.level.curve = as.numeric(input$levelaveragecurve) / 100,
               i.type.other = as.numeric(input$typeother),
-              i.level.other = as.numeric(input$levelaveragecurve) / 100,
+              i.level.other = as.numeric(input$levelother) / 100,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
               i.centering = as.numeric(input$centering),
@@ -2165,10 +2168,10 @@ shinyServer(function(input, output, session) {
               i.type.intensity = as.numeric(input$typeintensity),
               i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
               i.tails.intensity = as.numeric(input$ntails),
-              i.type.curve = as.numeric(input$typecurve),
+              i.type.curve = as.numeric(input$typeaveragecurve),
               i.level.curve = as.numeric(input$levelaveragecurve) / 100,
               i.type.other = as.numeric(input$typeother),
-              i.level.other = as.numeric(input$levelaveragecurve) / 100,
+              i.level.other = as.numeric(input$levelother) / 100,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
               i.centering = as.numeric(input$centering),
@@ -2501,9 +2504,10 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "validation", selected = default_values$validation)
     updateSelectInput(session, "optimmethod", selected = default_values$optimmethod)
     updateSliderInput(session, "paramrange", value = default_values$paramrange$value, min = default_values$paramrange$min, max = default_values$paramrange$max, step = default_values$paramrange$step)
-    updateSelectInput(session, "typecurve", selected = default_values$typecurve)
+    updateSelectInput(session, "typeaveragecurve", selected = default_values$typeaveragecurve)
     updateSelectInput(session, "typeother", selected = default_values$typeother)
     updateNumericInput(session, "levelaveragecurve", value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step = default_values$levelaveragecurve$step)
+    updateNumericInput(session, "levelother", value = default_values$levelother$value, min = default_values$levelother$min, max = default_values$levelother$max, step = default_values$levelother$step)
     updateSelectInput(session, "centering", selected = default_values$centering)
     updateMaterialSwitch(session, "usetdistribution", value = default_values$usetdistribution)
     cat("observeEvent/resetuiMEMoptions> end\n")
@@ -2770,10 +2774,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -2837,10 +2841,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -3961,10 +3965,10 @@ shinyServer(function(input, output, session) {
         i.type.intensity = as.numeric(input$typeintensity),
         i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
         i.tails.intensity = as.numeric(input$ntails),
-        i.type.curve = as.numeric(input$typecurve),
+        i.type.curve = as.numeric(input$typeaveragecurve),
         i.level.curve = as.numeric(input$levelaveragecurve) / 100,
         i.type.other = as.numeric(input$typeother),
-        i.level.other = as.numeric(input$levelaveragecurve) / 100,
+        i.level.other = as.numeric(input$levelother) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
         i.centering = as.numeric(input$centering),
@@ -4022,10 +4026,10 @@ shinyServer(function(input, output, session) {
         i.type.intensity = as.numeric(input$typeintensity),
         i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
         i.tails.intensity = as.numeric(input$ntails),
-        i.type.curve = as.numeric(input$typecurve),
+        i.type.curve = as.numeric(input$typeaveragecurve),
         i.level.curve = as.numeric(input$levelaveragecurve) / 100,
         i.type.other = as.numeric(input$typeother),
-        i.level.other = as.numeric(input$levelaveragecurve) / 100,
+        i.level.other = as.numeric(input$levelother) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
         i.centering = as.numeric(input$centering),
@@ -4173,10 +4177,10 @@ shinyServer(function(input, output, session) {
         i.type.intensity = as.numeric(input$typeintensity),
         i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
         i.tails.intensity = as.numeric(input$ntails),
-        i.type.curve = as.numeric(input$typecurve),
+        i.type.curve = as.numeric(input$typeaveragecurve),
         i.level.curve = as.numeric(input$levelaveragecurve) / 100,
         i.type.other = as.numeric(input$typeother),
-        i.level.other = as.numeric(input$levelaveragecurve) / 100,
+        i.level.other = as.numeric(input$levelother) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
         i.centering = as.numeric(input$centering),
@@ -4934,10 +4938,10 @@ shinyServer(function(input, output, session) {
             i.type.intensity = as.numeric(input$typeintensity),
             i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
             i.tails.intensity = as.numeric(input$ntails),
-            i.type.curve = as.numeric(input$typecurve),
+            i.type.curve = as.numeric(input$typeaveragecurve),
             i.level.curve = as.numeric(input$levelaveragecurve) / 100,
             i.type.other = as.numeric(input$typeother),
-            i.level.other = as.numeric(input$levelaveragecurve) / 100,
+            i.level.other = as.numeric(input$levelother) / 100,
             i.method = as.numeric(input$method),
             i.param = as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]),
             i.n.max = as.numeric(input$nvalues),
@@ -5516,10 +5520,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -5596,10 +5600,10 @@ shinyServer(function(input, output, session) {
               i.type.intensity = as.numeric(input$typeintensity),
               i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
               i.tails.intensity = as.numeric(input$ntails),
-              i.type.curve = as.numeric(input$typecurve),
+              i.type.curve = as.numeric(input$typeaveragecurve),
               i.level.curve = as.numeric(input$levelaveragecurve) / 100,
               i.type.other = as.numeric(input$typeother),
-              i.level.other = as.numeric(input$levelaveragecurve) / 100,
+              i.level.other = as.numeric(input$levelother) / 100,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
               i.centering = as.numeric(input$centering),
@@ -5694,10 +5698,10 @@ shinyServer(function(input, output, session) {
               i.type.intensity = as.numeric(input$typeintensity),
               i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
               i.tails.intensity = as.numeric(input$ntails),
-              i.type.curve = as.numeric(input$typecurve),
+              i.type.curve = as.numeric(input$typeaveragecurve),
               i.level.curve = as.numeric(input$levelaveragecurve) / 100,
               i.type.other = as.numeric(input$typeother),
-              i.level.other = as.numeric(input$levelaveragecurve) / 100,
+              i.level.other = as.numeric(input$levelother) / 100,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
               i.centering = as.numeric(input$centering),
@@ -5853,10 +5857,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -5934,10 +5938,10 @@ shinyServer(function(input, output, session) {
           i.type.intensity = as.numeric(input$typeintensity),
           i.level.intensity = as.numeric(c(input$levelintensitym, input$levelintensityh, input$levelintensityv)) / 100,
           i.tails.intensity = as.numeric(input$ntails),
-          i.type.curve = as.numeric(input$typecurve),
+          i.type.curve = as.numeric(input$typeaveragecurve),
           i.level.curve = as.numeric(input$levelaveragecurve) / 100,
           i.type.other = as.numeric(input$typeother),
-          i.level.other = as.numeric(input$levelaveragecurve) / 100,
+          i.level.other = as.numeric(input$levelother) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
           i.centering = as.numeric(input$centering),
@@ -6305,17 +6309,30 @@ shinyServer(function(input, output, session) {
       shinydashboard::box(
         title = p(trloc("options.text"), actionButton("resetuiTextoptions", trloc("options.graphs.reset"))),
         status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = FALSE,
-        popify(
-          textInput("textMain", label = h6(trloc("options.text.main.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("options.text.main.label")),
-          title = trloc("options.text.main.label"), content = trloc("options.text.main.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+        fluidRow(
+          column(
+            12,
+            popify(
+              textInput("textMain", label = h6(trloc("options.text.main.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("options.text.main.label")),
+              title = trloc("options.text.main.label"), content = trloc("options.text.main.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
         ),
-        popify(
-          textInput("textY", label = h6(trloc("options.text.yaxis.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("options.text.yaxis.label")),
-          title = trloc("options.text.yaxis.label"), content = trloc("options.text.yaxis.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          textInput("textX", label = h6(trloc("options.text.xaxis.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("options.text.xaxis.label")),
-          title = trloc("options.text.xaxis.label"), content = trloc("options.text.xaxis.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+        fluidRow(
+          column(
+            6,
+            popify(
+              textInput("textY", label = h6(trloc("options.text.yaxis.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("options.text.yaxis.label")),
+              title = trloc("options.text.yaxis.label"), content = trloc("options.text.yaxis.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          ),
+          column(
+            6,
+            popify(
+              textInput("textX", label = h6(trloc("options.text.xaxis.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = trloc("options.text.xaxis.label")),
+              title = trloc("options.text.xaxis.label"), content = trloc("options.text.xaxis.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
         )
       ),
       circle = TRUE,
@@ -6342,46 +6359,83 @@ shinyServer(function(input, output, session) {
       shinydashboard::box(
         title = p(trloc("options.graphs"), actionButton("resetuiGraphoptions", trloc("options.graphs.reset"))),
         status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = FALSE,
-        popify(
-          selectInput("colObservedLines", h6(trloc("options.graphs.observedline.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colObservedLines),
-          title = trloc("options.graphs.observedline.label"), content = trloc("options.graphs.observedline.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colObservedPoints", h6(trloc("options.graphs.observedpoints.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colObservedPoints),
-          title = trloc("options.graphs.observedpoints.label"), content = trloc("options.graphs.observedpoints.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colEpidemicStart", h6(trloc("options.graphs.epidemicstart.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colEpidemicStart),
-          title = trloc("options.graphs.epidemicstart.label"), content = trloc("options.graphs.epidemicstart.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colEpidemicStop", h6(trloc("options.graphs.epidemicend.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colEpidemicStop),
-          title = trloc("options.graphs.epidemicend.label"), content = trloc("options.graphs.epidemicend.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colThresholds", h6(trloc("options.graphs.thresholdspalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colThresholds),
-          title = trloc("options.graphs.thresholdspalette.label"), content = trloc("options.graphs.thresholdspalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colLevels", h6(trloc("options.graphs.levelspalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colLevels),
-          title = trloc("options.graphs.levelspalette.label"), content = trloc("options.graphs.levelspalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colSeasons", h6(trloc("options.graphs.seasonspalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colSeasons),
-          title = trloc("options.graphs.seasonspalette.label"), content = trloc("options.graphs.seasonspalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          selectInput("colEpidemic", h6(trloc("options.graphs.timingpalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colEpidemic),
-          title = trloc("options.graphs.timingpalette.label"), content = trloc("options.graphs.timingpalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-        ),
-        popify(
-          shinyWidgets::prettyCheckbox(
-            inputId = "yaxis0",
-            label = trloc("options.graphs.yaxis0.label"),
-            value = default_values$yaxis0,
-            shape = "curve"
+        fluidRow(
+          column(
+            6,
+            popify(
+              selectInput("colObservedLines", h6(trloc("options.graphs.observedline.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colObservedLines),
+              title = trloc("options.graphs.observedline.label"), content = trloc("options.graphs.observedline.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
           ),
-          title = trloc("options.graphs.yaxis0.label"), content = trloc("options.graphs.yaxis0.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+          column(
+            6,
+            popify(
+              selectInput("colObservedPoints", h6(trloc("options.graphs.observedpoints.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colObservedPoints),
+              title = trloc("options.graphs.observedpoints.label"), content = trloc("options.graphs.observedpoints.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            6,
+            popify(
+              selectInput("colEpidemicStart", h6(trloc("options.graphs.epidemicstart.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colEpidemicStart),
+              title = trloc("options.graphs.epidemicstart.label"), content = trloc("options.graphs.epidemicstart.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          ),
+          column(
+            6,
+            popify(
+              selectInput("colEpidemicStop", h6(trloc("options.graphs.epidemicend.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colObservedLines.list, size = 1, selectize = FALSE, selected = default_values$colEpidemicStop),
+              title = trloc("options.graphs.epidemicend.label"), content = trloc("options.graphs.epidemicend.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            6,
+            popify(
+              selectInput("colThresholds", h6(trloc("options.graphs.thresholdspalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colThresholds),
+              title = trloc("options.graphs.thresholdspalette.label"), content = trloc("options.graphs.thresholdspalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          ),
+          column(
+            6,
+            popify(
+              selectInput("colLevels", h6(trloc("options.graphs.levelspalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colLevels),
+              title = trloc("options.graphs.levelspalette.label"), content = trloc("options.graphs.levelspalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            6,
+            popify(
+              selectInput("colSeasons", h6(trloc("options.graphs.seasonspalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colSeasons),
+              title = trloc("options.graphs.seasonspalette.label"), content = trloc("options.graphs.seasonspalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          ),
+          column(
+            6,
+            popify(
+              selectInput("colEpidemic", h6(trloc("options.graphs.timingpalette.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = colThresholds.list, size = 1, selectize = FALSE, selected = default_values$colEpidemic),
+              title = trloc("options.graphs.timingpalette.label"), content = trloc("options.graphs.timingpalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            12,
+            popify(
+              shinyWidgets::prettyCheckbox(
+                inputId = "yaxis0",
+                label = trloc("options.graphs.yaxis0.label"),
+                value = default_values$yaxis0,
+                shape = "curve"
+              ),
+              title = trloc("options.graphs.yaxis0.label"), content = trloc("options.graphs.yaxis0.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            )
+          )
         ),
         fluidRow(
           column(
@@ -6547,20 +6601,26 @@ shinyServer(function(input, output, session) {
         h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.mem.other")),
         fluidRow(
           column(6, offset = 0, popify(
-            selectInput("typecurve", h6(trloc("options.mem.other.averagecurve.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default_values$typecurve),
-            title = trloc("options.mem.other.averagecurve.label"), content = trloc("options.mem.other.average.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            selectInput("typeaveragecurve", h6(trloc("options.mem.other.typeaveragecurve.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default_values$typeaveragecurve),
+            title = trloc("options.mem.other.typeaveragecurve.label"), content = trloc("options.mem.other.typeaveragecurve.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           )),
           column(6, offset = 0, popify(
-            selectInput("typeother", h6(trloc("options.mem.other.other.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default_values$typeother),
-            title = trloc("options.mem.other.other.label"), content = trloc("options.mem.other.other.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+            selectInput("typeother", h6(trloc("options.mem.other.typeother.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size = 1, selectize = FALSE, selected = default_values$typeother),
+            title = trloc("options.mem.other.typeother.label"), content = trloc("options.mem.other.typeother.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           ))
         ),
         fluidRow(
-          column(4, offset = 0, popify(
-            numericInput("levelaveragecurve", h6(trloc("options.mem.other.averageotherci.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step = default_values$levelaveragecurve$step),
-            title = trloc("options.mem.other.averageotherci.level"), content = trloc("options.mem.other.averageotherci.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+          column(6, offset = 0, popify(
+            numericInput("levelaveragecurve", h6(trloc("options.mem.other.levelaveragecurve.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step = default_values$levelaveragecurve$step),
+            title = trloc("options.mem.other.levelaveragecurve.level"), content = trloc("options.mem.other.levelaveragecurve.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           )),
-          column(8, offset = 0, conditionalPanel(
+          column(6, offset = 0, popify(
+            numericInput("levelother", h6(trloc("options.mem.other.levelother.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$levelother$value, min = default_values$levelother$min, max = default_values$levelother$max, step = default_values$levelother$step),
+            title = trloc("options.mem.other.levelother.level"), content = trloc("options.mem.other.levelother.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+          ))
+        ),
+        fluidRow(
+          column(12, offset = 0, conditionalPanel(
             condition = "input.advanced",
             popify(
               selectInput("centering", h6(trloc("options.mem.other.centering.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size = 1, selectize = FALSE, selected = default_values$centering),
