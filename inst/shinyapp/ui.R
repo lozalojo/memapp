@@ -135,7 +135,7 @@ shinyUI(
             shinydashboard::box(
               title = "", solidHeader = TRUE, status = "warning", width = 12,
               uiOutput("uiLanguage"),
-              selectInput("language", label = "", choices = languages_list, size = 1, selectize = FALSE, selected = getLanguage()),
+              selectInput("language", label = "", choices = languages_list, size = 1, selectize = FALSE, selected = defaultLanguage()),
               uiOutput("uiLanguageDefault")
             ),
             circle = TRUE,

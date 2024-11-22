@@ -20,9 +20,6 @@ shinyServer(function(input, output, session) {
   )
 
   default_values <- list(
-    # textMain = "Main title",
-    # textY = "Y-axis",
-    # textX = "X-axis",
     colObservedLines = "default",
     colObservedPoints = "default",
     colEpidemicStart = "default",
@@ -78,17 +75,6 @@ shinyServer(function(input, output, session) {
   ### SERVER-SIDE FUNCTIONS
   #####################################
 
-  # trloc <- function(i.text, i.trans = FALSE) {
-  #   txtres <- as.character(sapply(i.text, function(s) {
-  #     o.text <- tail(translation[translation$original == s, input$language])
-  #     if (NROW(o.text) != 1) o.text <- s
-  #     if (is.na(o.text)) o.text <- s
-  #     o.text
-  #   }, USE.NAMES = FALSE))
-  #   if (i.trans) txtres <- stringi::stri_trans_general(txtres, "Latin-ASCII")
-  #   txtres
-  # }
-
   trloc <- function(i.text, i.trans = FALSE) {
     txtres <- as.character(sapply(i.text, function(s) {
       o.text.en <- tail(translation[translation$original == s, "en_GB"])
@@ -124,7 +110,7 @@ shinyServer(function(input, output, session) {
       p <- NULL
     } else {
       if (any(is.na(i.colSeasons))) i.colSeasons <- colorRampPalette(RColorBrewer::brewer.pal(max(3, min(8, NCOL(i.data))), "Accent"))(NCOL(i.data))
-      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x) != 2) i.range.x <- c(min(as.numeric(rownames(i.data)[1:(min(3, NROW(i.data)))])), max(as.numeric(rownames(i.data)[(max(1, NROW(i.data) - 2)):NROW(i.data)])))
+      if (any(is.na(i.range.x)) || any(!is.numeric(i.range.x)) | length(i.range.x) != 2) i.range.x <- c(min(as.numeric(rownames(i.data)[seq_len(min(3, NROW(i.data)))])), max(as.numeric(rownames(i.data)[(max(1, NROW(i.data) - 2)):NROW(i.data)])))
       if (i.range.x[1] < 1) i.range.x[1] <- 1
       if (i.range.x[1] > 52) i.range.x[1] <- 52
       if (i.range.x[2] < 1) i.range.x[2] <- 1
@@ -136,9 +122,9 @@ shinyServer(function(input, output, session) {
       week.l <- i.range.x[2]
       last.week <- 52
       if (week.f > week.l) {
-        i.range.x.values <- data.frame(week.lab = c(week.f:last.week, 1:week.l), week.no = 1:(last.week - week.f + 1 + week.l))
+        i.range.x.values <- data.frame(week.lab = c(week.f:last.week, seq_len(week.l)), week.no = seq_len(last.week - week.f + 1 + week.l))
       } else {
-        i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = 1:(week.l - week.f + 1))
+        i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = seq_len(week.l - week.f + 1))
       }
 
       if (NCOL(i.data) > 1) {
@@ -254,12 +240,12 @@ shinyServer(function(input, output, session) {
         post = epidemic[2]
       )
       names(dgraf) <- labels
-      dgraf$week <- 1:NROW(dgraf)
+      dgraf$week <- seq_len(NROW(dgraf))
 
       dgrafgg <- dgraf %>% tidyr::gather(variable, value, -week)
       dgrafgg$variable <- factor(dgrafgg$variable, levels = labels, labels = labels)
 
-      selected.indicators <- (1:(2 * NCOL(data.full)))[apply(dgraf[1:(2 * NCOL(data.full))], 2, function(x) !all(is.na(x)))]
+      selected.indicators <- (seq_len(2 * NCOL(data.full)))[apply(dgraf[seq_len(2 * NCOL(data.full))], 2, function(x) !all(is.na(x)))]
       if (i.pre.epidemic) selected.indicators <- c(selected.indicators, 2 * NCOL(data.full) + 1)
       if (i.post.epidemic) selected.indicators <- c(selected.indicators, 2 * NCOL(data.full) + 5)
       if (i.intensity) selected.indicators <- c(selected.indicators, 2 * NCOL(data.full) + 2:4)
@@ -278,7 +264,7 @@ shinyServer(function(input, output, session) {
 
       # Calculate ticks for x
       axis.x.range.original <- range(i.range.x.values$week.no)
-      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], i.tickmarks, 1:axis.x.range.original[2], TRUE, TRUE)
+      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], i.tickmarks, seq_len(axis.x.range.original[2]), TRUE, TRUE)
       axis.x.range <- axis.x.otick$range
       axis.x.ticks <- axis.x.otick$tickmarks
       axis.x.labels <- i.range.x.values$week.lab[axis.x.otick$tickmarks]
@@ -343,10 +329,10 @@ shinyServer(function(input, output, session) {
       p <- NULL
     } else {
       # Range x fix
-      i.cutoff.original <- min(as.numeric(rownames(i.data)[1:(min(3, NROW(i.data)))]))
+      i.cutoff.original <- min(as.numeric(rownames(i.data)[seq_len(min(3, NROW(i.data)))]))
       if (i.cutoff.original < 1) i.cutoff.original <- 1
       if (i.cutoff.original > 52) i.cutoff.original <- 52
-      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x) != 2) i.range.x <- c(min(as.numeric(rownames(i.data)[1:(min(3, NROW(i.data)))])), max(as.numeric(rownames(i.data)[(max(1, NROW(i.data) - 2)):NROW(i.data)])))
+      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x) != 2) i.range.x <- c(min(as.numeric(rownames(i.data)[seq_len(min(3, NROW(i.data)))])), max(as.numeric(rownames(i.data)[(max(1, NROW(i.data) - 2)):NROW(i.data)])))
       if (i.range.x[1] < 1) i.range.x[1] <- 1
       if (i.range.x[1] > 52) i.range.x[1] <- 52
       if (i.range.x[2] < 1) i.range.x[2] <- 1
@@ -357,9 +343,9 @@ shinyServer(function(input, output, session) {
       week.l <- i.range.x[2]
       last.week <- 52
       if (week.f > week.l) {
-        i.range.x.values <- data.frame(week.lab = c(week.f:last.week, 1:week.l), week.no = 1:(last.week - week.f + 1 + week.l))
+        i.range.x.values <- data.frame(week.lab = c(week.f:last.week, seq_len(week.l)), week.no = seq_len(last.week - week.f + 1 + week.l))
       } else {
-        i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = 1:(week.l - week.f + 1))
+        i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = seq_len(week.l - week.f + 1))
       }
 
       if (NCOL(i.data) > 1) {
@@ -513,7 +499,7 @@ shinyServer(function(input, output, session) {
       dgraf$posr[data.y.indexes != 3] <- NA
       dgraf$posm[data.y.indexes != 3] <- NA
       names(dgraf) <- labels
-      dgraf$week <- 1:NROW(dgraf)
+      dgraf$week <- seq_len(NROW(dgraf))
 
       dgrafgg <- dgraf %>% tidyr::gather(variable, value, -week)
       dgrafgg$variable <- factor(dgrafgg$variable, levels = labels, labels = labels)
@@ -542,10 +528,10 @@ shinyServer(function(input, output, session) {
       linetypes.s <- linetypes[selected.indicators]
 
       # Calculate ticks for x
-      data.x <- 1:NROW(data.orig)
+      data.x <- seq_len(NROW(data.orig))
       axis.x.range <- range(data.x)
       temp1 <- range(i.range.x.values$week.no)
-      temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks / NCOL(i.data)), 1:temp1[2], TRUE, FALSE)
+      temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], floor(i.tickmarks / NCOL(i.data)), seq_len(temp1[2]), TRUE, FALSE)
       temp3 <- floor(mean(i.range.x.values$week.no))
       # Ticks for the weeks
       axis.x.ticks.1 <- data.x[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
@@ -565,9 +551,6 @@ shinyServer(function(input, output, session) {
       temp5[axis.x.ticks %in% axis.x.ticks.2] <- axis.x.labels2
       # And paste both parts
       axis.x.labels <- paste(temp4, temp5, sep = "\n")
-      # axis.x.labels2<-data.orig$season[data.orig$week %in% i.range.x.values$week.lab[temp2$tickmarks]]
-      # axis.x.labels2[axis.x.labels1!=i.range.x.values$week.lab[temp2$tickmarks][floor(temp2$number/2+1)]]<-""
-      # axis.x.labels<-paste(axis.x.labels1,axis.x.labels2,sep="\n")
       if (i.replace.x.cr) axis.x.labels <- gsub("/", "\n", axis.x.labels)
       # This is not to print a tickmark when there is only a season label, tickmarks are only for weeks
       axis.x.tickmarks <- rep(NA, length(axis.x.ticks))
@@ -654,9 +637,9 @@ shinyServer(function(input, output, session) {
       if (week.f == week.l) week.l <- week.l - 1
       last.week <- 52
       if (week.f > week.l) {
-        i.range.x.values <- data.frame(week.lab = c(week.f:last.week, 1:week.l), week.no = 1:(last.week - week.f + 1 + week.l))
+        i.range.x.values <- data.frame(week.lab = c(week.f:last.week, seq_len(week.l)), week.no = seq_len(last.week - week.f + 1 + week.l))
       } else {
-        i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = 1:(week.l - week.f + 1))
+        i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = seq_len(week.l - week.f + 1))
       }
 
       if (length(i.epidemic.thr) != 2) {
@@ -680,10 +663,10 @@ shinyServer(function(input, output, session) {
       } else {
         esquema.temporadas.2 <- min(esquema.temporadas.1, i.range.x[1])
         esquema.temporadas.3 <- max(1, i.range.x[2])
-        esquema.temporadas.4 <- c(esquema.temporadas.2:esquema.temporadas.1, 1:esquema.temporadas.3)
+        esquema.temporadas.4 <- c(esquema.temporadas.2:esquema.temporadas.1, seq_len(esquema.temporadas.3))
       }
       semanas <- length(esquema.temporadas.4)
-      esquema.semanas <- data.frame(numero.semana = 1:semanas, nombre.semana = esquema.temporadas.4)
+      esquema.semanas <- data.frame(numero.semana = seq_len(semanas), nombre.semana = esquema.temporadas.4)
 
       # Acomodamos i.data al esquema
       current.season <- i.data
@@ -696,10 +679,10 @@ shinyServer(function(input, output, session) {
 
       # limitamos a la semana del informe (i.week.report)
       if (!is.na(i.week.report) & any(i.week.report == as.numeric(esquema.semanas$nombre.semana))) {
-        semana.report <- ((1:semanas)[i.week.report == as.numeric(esquema.semanas$nombre.semana)])[1]
+        semana.report <- ((seq_len(semanas))[i.week.report == as.numeric(esquema.semanas$nombre.semana)])[1]
         if (!is.na(semana.report) & semana.report < semanas) current.season$rates[(semana.report + 1):semanas] <- NA
       } else {
-        if (all(is.na(current.season$rates))) semana.report <- semanas else semana.report <- max((1:semanas)[!is.na(current.season$rates)], na.rm = TRUE)
+        if (all(is.na(current.season$rates))) semana.report <- semanas else semana.report <- max((seq_len(semanas))[!is.na(current.season$rates)], na.rm = TRUE)
       }
 
       # Preparacion de datos necesarios
@@ -708,8 +691,8 @@ shinyServer(function(input, output, session) {
       duracion.media <- i.mean.length
 
       # Si el inicio forzado de la epidemia es posterior a la semana del informe, quitamos
-      if (!is.na(i.force.start)) semana.inicio.forzado <- ((1:semanas)[i.force.start == as.numeric(esquema.semanas$nombre.semana)])[1] else semana.inicio.forzado <- NA
-      if (any(current.season$rates > umbral.pre, na.rm = TRUE)) semana.inicio.real <- min((1:semanas)[current.season$rates > umbral.pre], na.rm = TRUE) else semana.inicio.real <- NA
+      if (!is.na(i.force.start)) semana.inicio.forzado <- ((seq_len(semanas))[i.force.start == as.numeric(esquema.semanas$nombre.semana)])[1] else semana.inicio.forzado <- NA
+      if (any(current.season$rates > umbral.pre, na.rm = TRUE)) semana.inicio.real <- min((seq_len(semanas))[current.season$rates > umbral.pre], na.rm = TRUE) else semana.inicio.real <- NA
       if (!is.na(semana.inicio.forzado)) {
         if (semana.inicio.forzado > semana.report) semana.inicio.forzado <- NA
       }
@@ -730,7 +713,7 @@ shinyServer(function(input, output, session) {
           if (semana.fin > semanas) semana.fin <- NA
         } else {
           punto.de.busqueda <- max(semana.inicio, semana.inicio.real, week.peak, na.rm = TRUE)
-          semana.fin.1 <- (1:semanas)[current.season$rates < umbral.pos & punto.de.busqueda < (1:semanas)]
+          semana.fin.1 <- (seq_len(semanas))[current.season$rates < umbral.pos & punto.de.busqueda < (seq_len(semanas))]
           if (any(semana.fin.1, na.rm = TRUE)) semana.fin <- min(semana.fin.1, na.rm = TRUE) else semana.fin <- NA
         }
       } else {
@@ -788,10 +771,10 @@ shinyServer(function(input, output, session) {
         pre.umbrales.3 <- rep(NA, semanas)
         post.umbrales.3 <- rep(NA, semanas)
       }
-      pre.umbrales <- c(pre.umbrales.1, pre.umbrales.2, pre.umbrales.3)[1:semanas]
-      post.umbrales <- c(post.umbrales.1, post.umbrales.2, post.umbrales.3)[1:semanas]
+      pre.umbrales <- c(pre.umbrales.1, pre.umbrales.2, pre.umbrales.3)[seq_len(semanas)]
+      post.umbrales <- c(post.umbrales.1, post.umbrales.2, post.umbrales.3)[seq_len(semanas)]
       intensidades.3 <- array(dim = c(semanas, 3))
-      intensidades <- rbind(intensidades.1, intensidades.2, intensidades.3)[1:semanas, ]
+      intensidades <- rbind(intensidades.1, intensidades.2, intensidades.3)[seq_len(semanas), ]
       labels <- c(names(i.data), trloc("graphs.prethreshold.short"), trloc("graphs.mediumthreshold.short"), trloc("graphs.highthreshold.short"), trloc("graphs.veryhighthreshold.short"), trloc("graphs.postthreshold.short"), trloc("graphs.start"), trloc("graphs.end"))
       haspoints <- c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE)
       haslines <- c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
@@ -807,7 +790,7 @@ shinyServer(function(input, output, session) {
       if (!is.na(semana.inicio)) dgraf$start[semana.inicio] <- current.season$rates[semana.inicio]
       if (!is.na(semana.fin)) dgraf$end[semana.fin] <- current.season$rates[semana.fin]
       names(dgraf) <- labels
-      dgraf$week <- 1:semanas
+      dgraf$week <- seq_len(semanas)
 
       dgrafgg <- dgraf %>% tidyr::gather(variable, value, -week)
       dgrafgg$variable <- factor(dgrafgg$variable, levels = labels, labels = labels)
@@ -835,7 +818,7 @@ shinyServer(function(input, output, session) {
       # Calculate values if we want to place 20 tickmarks in the graph in the x-axis.
 
       axis.x.range.original <- c(1, semanas)
-      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, 1:axis.x.range.original[2], TRUE, TRUE)
+      axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 20, seq_len(axis.x.range.original[2]), TRUE, TRUE)
       axis.x.range <- axis.x.otick$range
       axis.x.values <- as.numeric(current.season$numero.semana)
       axis.x.ticks <- axis.x.otick$tickmarks
@@ -895,14 +878,14 @@ shinyServer(function(input, output, session) {
     } else {
       dgraf <- i.data
       labels <- names(dgraf)
-      dgraf$num <- 1:NROW(dgraf)
+      dgraf$num <- seq_len(NROW(dgraf))
 
       dgrafgg <- dgraf %>% tidyr::gather(variable, value, -num)
       dgrafgg$variable <- factor(dgrafgg$variable, levels = labels, labels = labels)
 
       # Calculate ticks for x
       axis.x.range <- c(1, NROW(dgraf))
-      axis.x.ticks <- 1:NROW(dgraf)
+      axis.x.ticks <- seq_len(NROW(dgraf))
       axis.x.labels <- rownames(dgraf)
       if (i.replace.x.cr) axis.x.labels <- gsub("/", "\n", axis.x.labels)
       # Range y fix
@@ -922,7 +905,7 @@ shinyServer(function(input, output, session) {
       } else {
         axis.y.range.original <- c(1, length(i.range.y.labels))
         axis.y.otick <- mem:::optimal.tickmarks(axis.y.range.original[1], axis.y.range.original[2], 10,
-          i.valid.ticks = 1:(length(i.range.y.labels)), i.include.min = TRUE, i.include.max = TRUE
+          i.valid.ticks = seq_len(length(i.range.y.labels)), i.include.min = TRUE, i.include.max = TRUE
         )
         axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
         axis.y.ticks <- axis.y.otick$tickmarks
@@ -953,7 +936,6 @@ shinyServer(function(input, output, session) {
                       i.textY = "",
                       i.method = 2,
                       i.param = 2.8,
-                      # i.centering = -1,
                       i.colObservedLines = "#808080",
                       i.colObservedPoints = "#000000",
                       i.colOptimum = "#FF0000",
@@ -962,7 +944,6 @@ shinyServer(function(input, output, session) {
       p <- NULL
     } else {
       timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
-      # dgrafgg<-as.data.frame(rbind(c(0,0),timdata$map.curve[,c(1,2)]))
       dgrafgg <- as.data.frame(timdata$map.curve[, c(1, 2)])
       names(dgrafgg) <- c("weeks", "map")
       # Calculate ticks for x
@@ -1002,7 +983,6 @@ shinyServer(function(input, output, session) {
                         i.textY = "",
                         i.method = 2,
                         i.param = 2.8,
-                        # i.centering = -1,
                         i.colObservedLines = "#808080",
                         i.colObservedPoints = "#000000",
                         i.colOptimum = "#FF0000",
@@ -1013,23 +993,10 @@ shinyServer(function(input, output, session) {
     } else {
       if (i.method == 1) {
         timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
-        # x<-c(0, timdata$map.curve[,1])
-        # y<-c(0, timdata$map.curve[,2])
-        # y.d<-diff(y)
-        # x.d<-x[2:length(x)]
-        # y.s<-mem:::suavizado(y.d)
-        # x.n<-mem:::normalizar(x.d)
-        # y.n<-mem:::normalizar(y.s)
-        # u<-(x.n-y.n)/sqrt(2)
-        # v<-sqrt(x.n^2+y.n^2-u^2)
-        # optimo<-which.min(v)
-        # resultados<-timdata$map.curve[timdata$map.curve[,1]==optimo,]
-        # cat("Old: ",timdata$optimum.map[1],"\tNew: ",optimo,"\n")
-        # dgrafgg<-data.frame(weeks=x.d, slope=y.s)
         dgrafgg <- timdata$slope.curve
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = 1:5, i.include.min = TRUE, i.include.max = TRUE)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = seq_len(5), i.include.min = TRUE, i.include.max = TRUE)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -1064,7 +1031,7 @@ shinyServer(function(input, output, session) {
         dgrafgg <- timdata$slope.curve
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = 1:5, i.include.min = TRUE, i.include.max = TRUE)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = seq_len(5), i.include.min = TRUE, i.include.max = TRUE)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -1074,7 +1041,6 @@ shinyServer(function(input, output, session) {
         axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks
-        # x.opt<-timdata$optimum.map[1]
         x.opt <- timdata$optimum.map[1]
         y.opt <- dgrafgg$slope[dgrafgg$week == x.opt]
         dgrafgg$slope <- round(dgrafgg$slope, 2)
@@ -1097,7 +1063,7 @@ shinyServer(function(input, output, session) {
         pendiente <- timdata$slope.threshold
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = 1:5, i.include.min = TRUE, i.include.max = TRUE)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = seq_len(5), i.include.min = TRUE, i.include.max = TRUE)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -1107,7 +1073,6 @@ shinyServer(function(input, output, session) {
         axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks
-        # x.opt<-timdata$optimum.map[1]
         x.opt <- timdata$optimum.map[1]
         y.opt <- dgrafgg$slope[dgrafgg$week == x.opt]
         b <- diff(range(dgrafgg$slope)) / diff(range(dgrafgg$weeks))
@@ -1130,26 +1095,10 @@ shinyServer(function(input, output, session) {
         p <- list(plot = gplot, gdata = dgrafgg)
       } else if (i.method == 4) {
         timdata <- memtiming(i.data, i.method = i.method, i.param = i.param)
-        # x<-timdata$map.curve[,1]
-        # y<-timdata$map.curve[,2]
-        # y.s<-loess(y~x)$fitted
-        # y.d<-diff(y.s)
-        # y.d2<-diff(y.d)
-        # x.d2<- 1:(length(y.d2))
-        # y.d2.s<-sign(y.d2)
-        # cambio.signo<-abs(diff(y.d2.s))
-        # if (any(cambio.signo!=0)){
-        #   optimo<-1 + which.max(cambio.signo)
-        # }else{
-        #   optimo<-1 + length(cambio.signo)
-        # }
-        # resultados<-timdata$map.curve[timdata$map.curve[,1]==optimo,]
-        # dgrafgg<-data.frame(weeks=x.d2, slope=y.d2)
         dgrafgg <- timdata$slope.curve
-        # cat("Old: ",timdata$optimum.map[1],"\tNew: ",optimo,"\n")
         # Calculate ticks for x
         axis.x.range.original <- range(dgrafgg$weeks)
-        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = 1:5, i.include.min = TRUE, i.include.max = TRUE)
+        axis.x.otick <- mem:::optimal.tickmarks(axis.x.range.original[1], axis.x.range.original[2], 15, i.valid.ticks = seq_len(5), i.include.min = TRUE, i.include.max = TRUE)
         axis.x.range <- axis.x.otick$range
         axis.x.ticks <- axis.x.otick$tickmarks
         axis.x.labels <- axis.x.otick$tickmarks
@@ -1159,7 +1108,6 @@ shinyServer(function(input, output, session) {
         axis.y.range <- axis.y.otick$range + diff(range(axis.y.otick$range)) * 0.025 * c(-1, 1)
         axis.y.ticks <- axis.y.otick$tickmarks
         axis.y.labels <- axis.y.otick$tickmarks
-        # x.opt<-timdata$optimum.map[1]
         x.opt <- timdata$optimum.map[1]
         y.opt <- dgrafgg$slope[dgrafgg$week == x.opt]
         dgrafgg$slope <- round(dgrafgg$slope, 2)
@@ -1281,7 +1229,6 @@ shinyServer(function(input, output, session) {
           i.level.other = as.numeric(input$levelaveragecurve) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
-          # i.centering=as.numeric(input$centering),
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
           i.n.max = as.numeric(input$nvalues),
           i.goodness.method = as.character(input$validation)
@@ -1290,8 +1237,8 @@ shinyServer(function(input, output, session) {
     }
     # Update goodness graphs tabs
     no.seasons <- NCOL(good$param.data)
-    if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- 1:no.seasons
-    nu.seasons <- (1:no.seasons)[se.seasons]
+    if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- seq_len(no.seasons)
+    nu.seasons <- (seq_len(no.seasons))[se.seasons]
     na.seasons <- (names(good$param.data))[se.seasons]
     lapply(data.frame(rbind(nu.seasons, na.seasons)), function(s) {
       output[[paste0("tbmGoodnessGraphs_", as.character(s[2]))]] <- renderImage({
@@ -1350,7 +1297,6 @@ shinyServer(function(input, output, session) {
           i.level.other = as.numeric(input$levelaveragecurve) / 100,
           i.method = as.numeric(input$method),
           i.param = as.numeric(input$param),
-          # i.centering=as.numeric(input$centering),
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
           i.n.max = as.numeric(input$nvalues),
           i.goodness.method = as.character(input$validation),
@@ -1360,8 +1306,8 @@ shinyServer(function(input, output, session) {
     }
     # Update goodness graphs tabs
     no.seasons <- NCOL(good$param.data)
-    if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- 1:no.seasons
-    nu.seasons <- (1:no.seasons)[se.seasons]
+    if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- seq_len(no.seasons)
+    nu.seasons <- (seq_len(no.seasons))[se.seasons]
     na.seasons <- (names(good$param.data))[se.seasons]
     lapply(data.frame(rbind(nu.seasons, na.seasons)), function(s) {
       output[[paste0("tbdGoodnessGraphs_", as.character(s[2]))]] <- renderImage({
@@ -1448,7 +1394,6 @@ shinyServer(function(input, output, session) {
         i.level.other = as.numeric(input$levelaveragecurve) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
-        # i.centering=as.numeric(input$centering),
         i.n.max = as.numeric(input$nvalues)
       )
     }
@@ -1478,7 +1423,6 @@ shinyServer(function(input, output, session) {
         i.level.other = as.numeric(input$levelaveragecurve) / 100,
         i.method = as.numeric(input$method),
         i.param = as.numeric(input$param),
-        # i.centering=as.numeric(input$centering),
         i.n.max = as.numeric(input$nvalues)
       )
     }
@@ -1588,12 +1532,6 @@ shinyServer(function(input, output, session) {
           # by the algorithm) and then consequently read_data changes and reset the information
           # shown at Model. So if I use multiple and change the i.param then it is reset the
           # Model selection, which I do not want it to happen.
-          # temp1 <- mem:::transformseries.multiple(datasetread, i.waves=as.numeric(input$numberwaves),
-          #                                         i.min.separation=as.numeric(input$wavesseparation),
-          #                                         i.param.1=as.numeric(input$wavesparam1),
-          #                                         i.param.2=as.numeric(input$wavesparam2),
-          #                                         i.method=as.numeric(input$method),
-          #                                         i.param=as.numeric(input$param))
           # Calcular el número de puntos que se toman
           temp1 <- mem:::transformseries.multiple(datasetread,
             i.waves = as.numeric(input$numberwaves),
@@ -1685,13 +1623,11 @@ shinyServer(function(input, output, session) {
     cat("observe/urlquery> searching for advanced features URL parameter\n")
     if (!is.null(query[["advanced"]])) {
       cat("observe/urlquery> setting advanced features to ", query[["advanced"]], "\n")
-      # updateCheckboxInput(session, "advanced", value = as.logical(query[['advanced']]))
       updatePrettyCheckbox(session, "advanced", value = as.logical(query[["advanced"]]))
     }
     cat("observe/urlquery> searching for experimental features URL parameter\n")
     if (!is.null(query[["experimental"]])) {
       cat("observe/urlquery> setting experimental features to ", query[["experimental"]], "\n")
-      # updateCheckboxInput(session, "experimental", value = as.logical(query[['experimental']]))
       updatePrettyCheckbox(session, "experimental", value = as.logical(query[["experimental"]]))
     }
     cat("observe/urlquery> searching for language URL parameter\n")
@@ -1732,13 +1668,9 @@ shinyServer(function(input, output, session) {
     lang <- input$language
     cat("observeEvent/dataset> begin\n")
     cat("observeEvent/dataset> setting to default values\n")
-    # updateCheckboxInput(session, "processdata", value = default_values$processdata)
     updateMaterialSwitch(session, "processdata", value = default_values$processdata)
-    # updateCheckboxInput(session, "preepidemicthr", value = default_values$preepidemicthr)
     updatePrettyCheckbox(session, "preepidemicthr", value = default_values$preepidemicthr)
-    # updateCheckboxInput(session, "postepidemicthr", value = default_values$postepidemicthr)
     updatePrettyCheckbox(session, "postepidemicthr", value = default_values$postepidemicthr)
-    # updateCheckboxInput(session, "intensitythr", value = default_values$intensitythr)
     updatePrettyCheckbox(session, "intensitythr", value = default_values$intensitythr)
     updateSelectInput(session, "transformation", selected = default_values$transformation)
     updatePickerInput(session, "SelectSeasons", selected = NULL)
@@ -1769,7 +1701,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "colLevels", selected = default_values$colLevels)
     updateSelectInput(session, "colSeasons", selected = default_values$colSeasons)
     updateSelectInput(session, "colEpidemic", selected = default_values$colEpidemic)
-    # updateCheckboxInput(session, "yaxis0", value = default_values$yaxis0)
     updatePrettyCheckbox(session, "yaxis0", value = default_values$yaxis0)
     updateNumericInput(session, "dwidth", value = default_values$dwidth)
     updateNumericInput(session, "dheight", value = default_values$dheight)
@@ -1915,7 +1846,6 @@ shinyServer(function(input, output, session) {
               i.textY = input$textY,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
-              # i.centering=as.numeric(input$centering),
               i.colObservedLines = colors.palette$colObservedLines,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colOptimum = colors.palette$colEpidemicStart,
@@ -1958,7 +1888,6 @@ shinyServer(function(input, output, session) {
               i.textY = input$textY,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
-              # i.centering=as.numeric(input$centering),
               i.colObservedLines = colors.palette$colObservedLines,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colOptimum = colors.palette$colEpidemicStart,
@@ -2090,7 +2019,6 @@ shinyServer(function(input, output, session) {
               i.textY = input$textY,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
-              # i.centering=as.numeric(input$centering),
               i.colObservedLines = colors.palette$colObservedLines,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colOptimum = colors.palette$colEpidemicStart,
@@ -2133,7 +2061,6 @@ shinyServer(function(input, output, session) {
               i.textY = input$textY,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
-              # i.centering=as.numeric(input$centering),
               i.colObservedLines = colors.palette$colObservedLines,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colOptimum = colors.palette$colEpidemicStart,
@@ -2161,7 +2088,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(moddata)) {
       cat("observeEvent/data_model> updating timing plots... updating global variables\n")
       modseasons <- names(moddata)
-      plotdata <- cbind(data.frame(weekno = 1:NROW(moddata), weekna = rownames(moddata), stringsAsFactors = FALSE), moddata)
+      plotdata <- cbind(data.frame(weekno = seq_len(NROW(moddata)), weekna = rownames(moddata), stringsAsFactors = FALSE), moddata)
       epidata <- datamodel$data
       names(epidata) <- paste0(names(epidata), "_fixed")
       epidata$weekna <- rownames(epidata)
@@ -2291,7 +2218,6 @@ shinyServer(function(input, output, session) {
               i.textY = input$textY,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
-              # i.centering=as.numeric(input$centering),
               i.colObservedLines = colors.palette$colObservedLines,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colOptimum = colors.palette$colEpidemicStart,
@@ -2334,7 +2260,6 @@ shinyServer(function(input, output, session) {
               i.textY = input$textY,
               i.method = as.numeric(input$method),
               i.param = as.numeric(input$param),
-              # i.centering=as.numeric(input$centering),
               i.colObservedLines = colors.palette$colObservedLines,
               i.colObservedPoints = colors.palette$colObservedPoints,
               i.colOptimum = colors.palette$colEpidemicStart,
@@ -2394,7 +2319,7 @@ shinyServer(function(input, output, session) {
             etwo <- extractTwo(values$clickdata, "weekno", "season")
             etwo <- merge(etwo, data.frame(id.tail = c(1, 2), point = c(trloc("graphs.start"), trloc("graphs.end")), stringsAsFactors = FALSE), by = "id.tail")
             etwo2 <- subset(etwo, etwo$season == as.character(s))[c("season", "weekno", "point", paste0(as.character(s), "_fixed"))]
-            names(etwo2)[1:3] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"), trloc("graphs.point"))
+            names(etwo2)[seq_len(3)] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"), trloc("graphs.point"))
             names(etwo2)[4] <- as.character(s)
           } else {
             etwo2 <- data.frame(message = "No data")
@@ -2428,10 +2353,10 @@ shinyServer(function(input, output, session) {
       lapply(modseasons, function(s) {
         output[[paste0("tbmOptimizeM_", as.character(s), "_plot")]] <- renderPlot({
           if (as.character(s) %in% names(values$origdata)) {
-            i.cutoff.original <- min(as.numeric(values$origdata$weekna[1:(min(3, NROW(values$origdata)))]))
+            i.cutoff.original <- min(as.numeric(values$origdata$weekna[seq_len(min(3, NROW(values$origdata)))]))
             if (i.cutoff.original < 1) i.cutoff.original <- 1
             if (i.cutoff.original > 52) i.cutoff.original <- 52
-            i.range.x <- c(min(as.numeric(values$origdata$weekna[1:(min(3, NROW(values$origdata)))])), max(as.numeric(values$origdata$weekna[(max(1, NROW(values$origdata) - 2)):NROW(values$origdata)])))
+            i.range.x <- c(min(as.numeric(values$origdata$weekna[seq_len(min(3, NROW(values$origdata)))])), max(as.numeric(values$origdata$weekna[(max(1, NROW(values$origdata) - 2)):NROW(values$origdata)])))
             if (i.range.x[1] < 1) i.range.x[1] <- 1
             if (i.range.x[1] > 52) i.range.x[1] <- 52
             if (i.range.x[2] < 1) i.range.x[2] <- 1
@@ -2442,15 +2367,15 @@ shinyServer(function(input, output, session) {
             week.l <- i.range.x[2]
             last.week <- 52
             if (week.f > week.l) {
-              i.range.x.values <- data.frame(week.lab = c(week.f:last.week, 1:week.l), week.no = 1:(last.week - week.f + 1 + week.l))
+              i.range.x.values <- data.frame(week.lab = c(week.f:last.week, seq_len(week.l)), week.no = seq_len(last.week - week.f + 1 + week.l))
             } else {
-              i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = 1:(week.l - week.f + 1))
+              i.range.x.values <- data.frame(week.lab = week.f:week.l, week.no = seq_len(week.l - week.f + 1))
             }
             # Calculate ticks for x
             data.x <- values$origdata$weekno
             axis.x.range <- range(data.x)
             temp1 <- range(i.range.x.values$week.no)
-            temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], 30, 1:temp1[2], TRUE, TRUE)
+            temp2 <- mem:::optimal.tickmarks(temp1[1], temp1[2], 30, seq_len(temp1[2]), TRUE, TRUE)
             axis.x.ticks <- data.x[values$origdata$weekna %in% i.range.x.values$week.lab[temp2$tickmarks]]
             axis.x.labels <- values$origdata$weekna[values$origdata$weekna %in% i.range.x.values$week.lab[temp2$tickmarks]]
             rm("temp1", "temp2")
@@ -2610,11 +2535,9 @@ shinyServer(function(input, output, session) {
     readdata <- read_data()
     datfile <- readdata$datasetread
     if (is.null(datfile)) {
-      # tabsetPanel(tabPanel(trloc("main.checkdescribe.file"), verbatimTextOutput("tbdFile")))
       tabsetPanel(tabPanel(trloc("main.checkdescribe.file"), uiOutput("tbdFile")))
     } else {
       if (as.logical(input$advanced)) {
-        # tabsetPanel(tabPanel(trloc("main.checkdescribe.file"), verbatimTextOutput("tbdFile")),
         tabsetPanel(
           tabPanel(trloc("main.checkdescribe.file"), uiOutput("tbdFile")),
           tabPanel(
@@ -3109,7 +3032,7 @@ shinyServer(function(input, output, session) {
           rownames(datfile.plot)
         )
         # fix to replace relative to absolute weeks
-        for (i in 1:3) zfix$x$data[[i]]$text <- paste(trloc("selections.surveillance.season.label"), ": ", rownames(datfile.plot), "<br />", names(datfile.plot)[i], ": ", rownames(datfile)[datfile.plot[, i]], sep = "")
+        for (i in seq_len(3)) zfix$x$data[[i]]$text <- paste(trloc("selections.surveillance.season.label"), ": ", rownames(datfile.plot), "<br />", names(datfile.plot)[i], ": ", rownames(datfile)[datfile.plot[, i]], sep = "")
       }
     }
     zfix
@@ -3426,7 +3349,7 @@ shinyServer(function(input, output, session) {
           rownames(datfile.plot)
         )
         # fix to replace relative to absolute weeks
-        for (i in 1:3) zfix$x$data[[i]]$text <- paste(trloc("main.checkdescribe.seasons"), ": ", rownames(datfile.plot), "<br />", names(datfile.plot)[i], ": ", rownames(datfile)[datfile.plot[, i]], sep = "")
+        for (i in seq_len(3)) zfix$x$data[[i]]$text <- paste(trloc("main.checkdescribe.seasons"), ": ", rownames(datfile.plot), "<br />", names(datfile.plot)[i], ": ", rownames(datfile)[datfile.plot[, i]], sep = "")
       }
     }
     zfix
@@ -3660,15 +3583,6 @@ shinyServer(function(input, output, session) {
     if (is.null(good)) {
       return(NULL)
     } else {
-      # fluidRow(
-      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
-      # )
       fluidPage(
         fluidRow(
           column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
@@ -3791,7 +3705,6 @@ shinyServer(function(input, output, session) {
     if (!is.null(good)) {
       temp1 <- good$peaks.data
       temp1$Level <- as.character(temp1$Level)
-      # temp1$Description <- trloc(temp1$Description)
       temp1$Description[temp1$Description == "Baseline"] <- trloc("graphs.baselinelevel")
       temp1$Description[temp1$Description == "Low"] <- trloc("graphs.lowlevel")
       temp1$Description[temp1$Description == "Medium"] <- trloc("graphs.mediumlevel")
@@ -3799,7 +3712,7 @@ shinyServer(function(input, output, session) {
       temp1$Description[temp1$Description == "Very high"] <- trloc("graphs.veryhighlevel")
       currentpalette <- generatePalette(i.colThresholds = input$colThresholds, i.colLevels = input$colLevels)
       thr.c <- currentpalette$colThresholds
-      lvl.n <- as.character(c(1:5))
+      lvl.n <- as.character(c(seq_len(5)))
       lvl.t <- c(trloc("graphs.baselinelevel"), trloc("graphs.lowlevel"), trloc("graphs.mediumlevel"), trloc("graphs.highlevel"), trloc("graphs.veryhighlevel"))
       lvl.c <- currentpalette$colLevels
       peaks.data <- formattable::formattable(temp1, list(
@@ -3828,13 +3741,11 @@ shinyServer(function(input, output, session) {
       if (!is.null(good)) {
         temp1 <- good$peaks.data
         temp1$Level <- as.character(temp1$Level)
-        # temp1$Description <- trloc(temp1$Description)
         temp1$Description[temp1$Description == "Baseline"] <- trloc("graphs.baselinelevel")
         temp1$Description[temp1$Description == "Low"] <- trloc("graphs.lowlevel")
         temp1$Description[temp1$Description == "Medium"] <- trloc("graphs.mediumlevel")
         temp1$Description[temp1$Description == "High"] <- trloc("graphs.highlevel")
         temp1$Description[temp1$Description == "Very high"] <- trloc("graphs.veryhighlevel")
-        # names(temp1) <- trloc(names(temp1))
         names(temp1)[names(temp1) == "Peak"] <- trloc("main.checkdescribe.goodness.detailed.peak")
         names(temp1)[names(temp1) == "Peak week"] <- trloc("main.checkdescribe.goodness.detailed.peakweek")
         names(temp1)[names(temp1) == "Epidemic threshold"] <- trloc("options.mem.thresholds.epidemic.label")
@@ -3861,13 +3772,11 @@ shinyServer(function(input, output, session) {
       if (!is.null(good)) {
         temp1 <- good$peaks.data
         temp1$Level <- as.character(temp1$Level)
-        # temp1$Description <- trloc(temp1$Description)
         temp1$Description[temp1$Description == "Baseline"] <- trloc("graphs.baselinelevel")
         temp1$Description[temp1$Description == "Low"] <- trloc("graphs.lowlevel")
         temp1$Description[temp1$Description == "Medium"] <- trloc("graphs.mediumlevel")
         temp1$Description[temp1$Description == "High"] <- trloc("graphs.highlevel")
         temp1$Description[temp1$Description == "Very high"] <- trloc("graphs.veryhighlevel")
-        # names(temp1) <- trloc(names(temp1))
         names(temp1)[names(temp1) == "Peak"] <- trloc("main.checkdescribe.goodness.detailed.peak")
         names(temp1)[names(temp1) == "Peak week"] <- trloc("main.checkdescribe.goodness.detailed.peakweek")
         names(temp1)[names(temp1) == "Epidemic threshold"] <- trloc("options.mem.thresholds.epidemic.label")
@@ -3891,8 +3800,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       no.seasons <- NCOL(good$param.data)
-      if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- 1:no.seasons
-      nu.seasons <- (1:no.seasons)[se.seasons]
+      if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- seq_len(no.seasons)
+      nu.seasons <- (seq_len(no.seasons))[se.seasons]
       na.seasons <- (names(good$param.data))[se.seasons]
       do.call(
         tabsetPanel,
@@ -4177,20 +4086,6 @@ shinyServer(function(input, output, session) {
     if (is.null(datfile.plot)) {
       return(NULL)
     } else {
-      # fluidPage(
-      #   fluidRow(
-      #     valueBox(datamodel$n.seasons, trloc("graphs.modelseasons"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
-      #     valueBox(datamodel$ci.start[2,2], trloc("graphs.averagestart"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
-      #     valueBox(format(round(datamodel$ci.length[1,2], 2), nsmall=1), trloc("graphs.averagelength"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue"),
-      #     valueBox(paste0(format(round(datamodel$ci.percent[2], 2), nsmall=1), "%"), trloc("graphs.epidemicpercentage"), icon = icon("fas fa-heartbeat"), width=3, color="light-blue")
-      #   ),
-      #   fluidRow(
-      #     valueBox(format(round(datamodel$pre.post.intervals[1,3], 2), nsmall=1), trloc("options.mem.thresholds.epidemic.label"), icon = icon("fas fa-thermometer-empty"), width=3, color="green"),
-      #     valueBox(format(round(datamodel$epi.intervals[1,4], 2), nsmall=1), trloc("graphs.mediumthreshold"), icon = icon("fas fa-thermometer-quarter"), width=3, color="yellow"),
-      #     valueBox(format(round(datamodel$epi.intervals[2,4], 2), nsmall=1), trloc("graphs.highthreshold"), icon = icon("fas fa-thermometer-half"), width=3, color="orange"),
-      #     valueBox(format(round(datamodel$epi.intervals[3,4], 2), nsmall=1), trloc("graphs.veryhighthreshold"), icon = icon("fas fa-thermometer-three-quarters"), width=3, color="red")
-      #   )
-      # )
       fluidPage(
         fluidRow(
           column(width = 3, shinydashboard::valueBox(datamodel$n.seasons, trloc("graphs.modelseasons"), icon = icon("fas fa-heartbeat"), width = 12, color = "light-blue")),
@@ -4327,8 +4222,8 @@ shinyServer(function(input, output, session) {
         z$x$data[[2 * length(p$labels) + 4]]$text <- paste(trloc("graphs.endcentering"), ": ", rownames(datfile.plot)[datamodel$centered.start + datamodel$centered.length - 1], sep = "")
 
         # And I need to rearrange the order of the z list for fixPlotly to work
-        names(z$x$data) <- as.character(1:(2 * length(p$labels) + 4))
-        z$x$data <- z$x$data[as.character(c(1:length(p$labels), 2 * length(p$labels) + 1:4, (length(p$labels) + 1):(2 * length(p$labels)), 2 * length(p$labels) + 1:4))]
+        names(z$x$data) <- as.character(seq_len(2 * length(p$labels) + 4))
+        z$x$data <- z$x$data[as.character(c(seq_len(length(p$labels)), 2 * length(p$labels) + seq_len(4), (length(p$labels) + 1):(2 * length(p$labels)), 2 * length(p$labels) + seq_len(4)))]
         names(z$x$data) <- NULL
         zfix <- fixPlotly(
           z,
@@ -4503,15 +4398,6 @@ shinyServer(function(input, output, session) {
     if (is.null(good)) {
       return(NULL)
     } else {
-      # fluidRow(
-      #   valueBox(format(round(good$results["Sensitivity"], 2), nsmall=2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Specificity"], 2), nsmall=2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Positive predictive value"], 2), nsmall=2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Negative predictive value"], 2), nsmall=2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width=3, color="yellow"),
-      #   valueBox(format(round(good$results["Percent agreement"], 2), nsmall=2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Matthews correlation coefficient"], 2), nsmall=2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width=3, color="aqua"),
-      #   valueBox(format(round(good$results["Youdens Index"], 2), nsmall=2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width=3, color="aqua")
-      # )
       fluidPage(
         fluidRow(
           column(width = 3, shinydashboard::valueBox(format(round(good$results["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
@@ -4598,8 +4484,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       no.seasons <- NCOL(good$param.data)
-      if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- 1:no.seasons
-      nu.seasons <- (1:no.seasons)[se.seasons]
+      if (good$param.goodness.method == "sequential") se.seasons <- 3:no.seasons else se.seasons <- seq_len(no.seasons)
+      nu.seasons <- (seq_len(no.seasons))[se.seasons]
       na.seasons <- (names(good$param.data))[se.seasons]
       do.call(
         tabsetPanel,
@@ -4652,7 +4538,6 @@ shinyServer(function(input, output, session) {
     if (!is.null(good)) {
       temp1 <- good$peaks.data
       temp1$Level <- as.character(temp1$Level)
-      # temp1$Description <- trloc(temp1$Description)
       temp1$Description[temp1$Description == "Baseline"] <- trloc("graphs.baselinelevel")
       temp1$Description[temp1$Description == "Low"] <- trloc("graphs.lowlevel")
       temp1$Description[temp1$Description == "Medium"] <- trloc("graphs.mediumlevel")
@@ -4660,7 +4545,7 @@ shinyServer(function(input, output, session) {
       temp1$Description[temp1$Description == "Very high"] <- trloc("graphs.veryhighlevel")
       currentpalette <- generatePalette(i.colThresholds = input$colThresholds, i.colLevels = input$colLevels)
       thr.c <- currentpalette$colThresholds
-      lvl.n <- as.character(c(1:5))
+      lvl.n <- as.character(c(seq_len(5)))
       lvl.t <- c(trloc("graphs.baselinelevel"), trloc("graphs.lowlevel"), trloc("graphs.mediumlevel"), trloc("graphs.highlevel"), trloc("graphs.veryhighlevel"))
       lvl.c <- currentpalette$colLevels
       peaks.data <- formattable::formattable(temp1, list(
@@ -4689,13 +4574,11 @@ shinyServer(function(input, output, session) {
       if (!is.null(good)) {
         temp1 <- good$peaks.data
         temp1$Level <- as.character(temp1$Level)
-        # temp1$Description <- trloc(temp1$Description)
         temp1$Description[temp1$Description == "Baseline"] <- trloc("graphs.baselinelevel")
         temp1$Description[temp1$Description == "Low"] <- trloc("graphs.lowlevel")
         temp1$Description[temp1$Description == "Medium"] <- trloc("graphs.mediumlevel")
         temp1$Description[temp1$Description == "High"] <- trloc("graphs.highlevel")
         temp1$Description[temp1$Description == "Very high"] <- trloc("graphs.veryhighlevel")
-        # names(temp1) <- trloc(names(temp1))
         names(temp1)[names(temp1) == "Peak"] <- trloc("main.checkdescribe.goodness.detailed.peak")
         names(temp1)[names(temp1) == "Peak week"] <- trloc("main.checkdescribe.goodness.detailed.peakweek")
         names(temp1)[names(temp1) == "Epidemic threshold"] <- trloc("options.mem.thresholds.epidemic.label")
@@ -4721,13 +4604,11 @@ shinyServer(function(input, output, session) {
       if (!is.null(good)) {
         temp1 <- good$peaks.data
         temp1$Level <- as.character(temp1$Level)
-        # temp1$Description <- trloc(temp1$Description)
         temp1$Description[temp1$Description == "Baseline"] <- trloc("graphs.baselinelevel")
         temp1$Description[temp1$Description == "Low"] <- trloc("graphs.lowlevel")
         temp1$Description[temp1$Description == "Medium"] <- trloc("graphs.mediumlevel")
         temp1$Description[temp1$Description == "High"] <- trloc("graphs.highlevel")
         temp1$Description[temp1$Description == "Very high"] <- trloc("graphs.veryhighlevel")
-        # names(temp1) <- trloc(names(temp1))
         names(temp1)[names(temp1) == "Peak"] <- trloc("main.checkdescribe.goodness.detailed.peak")
         names(temp1)[names(temp1) == "Peak week"] <- trloc("main.checkdescribe.goodness.detailed.peakweek")
         names(temp1)[names(temp1) == "Epidemic threshold"] <- trloc("options.mem.thresholds.epidemic.label")
@@ -4795,7 +4676,7 @@ shinyServer(function(input, output, session) {
       optr <- optr %>%
         dplyr::arrange(season, desc(point)) %>%
         as.data.frame()
-      names(optr)[1:3] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"), trloc("graphs.point"))
+      names(optr)[seq_len(3)] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"), trloc("graphs.point"))
       names(optr)[4:(NCOL(datfile.plot) + 3)] <- names(datfile.plot)
     } else {
       optr <- NULL
@@ -4813,7 +4694,7 @@ shinyServer(function(input, output, session) {
         dplyr::arrange(season, weekno) %>%
         select(-weekno)
       as.data.frame
-      names(optr)[1:2] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"))
+      names(optr)[seq_len(2)] <- c(trloc("selections.surveillance.season.label"), trloc("graphs.week"))
       names(optr)[3:(NCOL(datfile.plot) + 2)] <- names(datfile.plot)
     } else {
       optr <- NULL
@@ -4850,16 +4731,16 @@ shinyServer(function(input, output, session) {
           anios <- dim(i.data)[2]
           nombre.semana <- rownames(i.data)
           nombre.anios <- colnames(i.data)
-          numero.semana <- 1:semanas
+          numero.semana <- seq_len(semanas)
           n.values <- length(i.param.values)
 
           i.timing.1 <- array(dim = c(anios, 2))
           resultados.i <- array(
             dim = c(anios, 15, n.values),
-            dimnames = list(year = nombre.anios, indicator = LETTERS[1:15], parameter = i.param.values)
+            dimnames = list(year = nombre.anios, indicator = LETTERS[seq_len(15)], parameter = i.param.values)
           )
 
-          for (i in 1:anios) {
+          for (i in seq_len(anios)) {
             cur <- i.data[i]
             itsnotok <- TRUE
             i.timing.1.1 <- etwo$weekno[etwo$season == nombre.anios[i] & etwo$id.tail == 1]
@@ -4867,7 +4748,7 @@ shinyServer(function(input, output, session) {
             i.timing.1.i <- c(i.timing.1.1, i.timing.1.2)
             i.timing.1[i, ] <- i.timing.1.i
             curva.map <- mem:::calcular.map(as.vector(as.matrix(cur)))
-            for (j in 1:n.values) {
+            for (j in seq_len(n.values)) {
               i.param.deteccion <- i.param.values[j]
               i.param.deteccion.label <- format(round(i.param.deteccion, 1), digits = 3, nsmall = 1)
               i.timing.2 <- mem:::calcular.optimo(curva.map, 2, i.param.deteccion)$resultados[4:5]
@@ -5001,7 +4882,7 @@ shinyServer(function(input, output, session) {
 
             all.graph.names <- data.frame()
 
-            for (i in 1:anios) {
+            for (i in seq_len(anios)) {
               graph.title <- nombre.anios[i]
 
               all.graph.names <- rbind(all.graph.names, data.frame(season = graph.title, file = paste0(i.output, "/", graph.name, " - ", i, ".png"), stringsAsFactors = FALSE))
@@ -5059,7 +4940,6 @@ shinyServer(function(input, output, session) {
             i.level.other = as.numeric(input$levelaveragecurve) / 100,
             i.method = as.numeric(input$method),
             i.param = as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]),
-            # i.centering=as.numeric(input$centering),
             i.n.max = as.numeric(input$nvalues),
             i.calculation.method = "default",
             i.goodness.method = as.character(input$validation),
@@ -5287,7 +5167,7 @@ shinyServer(function(input, output, session) {
 
       z <- ggplotly(p, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
       # fix popup values
-      for (i in 1:length(z$x$data)) {
+      for (i in seq_len(length(z$x$data))) {
         z$x$data[[i]]$text <- gsub("Parameter", trloc("main.model.optimize.automatic.parameter"), z$x$data[[i]]$text, fixed = TRUE)
         z$x$data[[i]]$text <- gsub("Value", trloc("graphs.value"), z$x$data[[i]]$text, fixed = TRUE)
         z$x$data[[i]]$text <- gsub("Indicator", trloc("graphs.indicator"), z$x$data[[i]]$text, fixed = TRUE)
@@ -5493,7 +5373,7 @@ shinyServer(function(input, output, session) {
         if (as.logical(input$preepidemicthr)) max.y <- max(max.y, e.thr[1], na.rm = TRUE)
         if (as.logical(input$postepidemicthr)) max.y <- max(max.y, e.thr[2], na.rm = TRUE)
         if (as.logical(input$intensitythr)) max.y <- max(max.y, i.thr, na.rm = TRUE)
-        n.surveillance.week <- min((1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)])
+        n.surveillance.week <- min((seq_len(NROW(datfile)))[SurveillanceWeek == rownames(datfile)])
         colors.palette <- generatePalette(
           i.number.series = NA,
           i.colObservedLines = input$colObservedLines,
@@ -5507,7 +5387,7 @@ shinyServer(function(input, output, session) {
         cat("animated gif> begin\n")
         cat("animated gif> creating the frames\n")
         plot.list <- list()
-        for (i in 1:n.surveillance.week) {
+        for (i in seq_len(n.surveillance.week)) {
           p <- plotSurveillance(
             i.data = datfile.plot,
             i.week.report = rownames(datfile)[i],
@@ -5537,20 +5417,20 @@ shinyServer(function(input, output, session) {
           cat("animated gif> using animation package with GraphicsMagic\n")
           requireNamespace("animation", quietly = TRUE)
           cat(paste0("animated gif> creating\t\t", imgfilegif, "\n"))
-          animation::saveGIF(for (i in 1:n.surveillance.week) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(input$dwidth), ani.height = as.numeric(input$dheight), loop = TRUE, convert = "gm convert")
+          animation::saveGIF(for (i in seq_len(n.surveillance.week)) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(input$dwidth), ani.height = as.numeric(input$dheight), loop = TRUE, convert = "gm convert")
           cat(paste0("animated gif> saving\t\t", imgfilegif, "\n"))
           cat("animated gif> end\n")
         } else if (animationmethod == 2) {
           cat("animated gif> using animation package with ImageMagic\n")
           requireNamespace("animation", quietly = TRUE)
           cat(paste0("animated gif> creating\t\t", imgfilegif, "\n"))
-          animation::saveGIF(for (i in 1:n.surveillance.week) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(input$dwidth), ani.height = as.numeric(input$dheight), loop = TRUE)
+          animation::saveGIF(for (i in seq_len(n.surveillance.week)) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(input$dwidth), ani.height = as.numeric(input$dheight), loop = TRUE)
           cat(paste0("animated gif> saving\t\t", imgfilegif, "\n"))
           cat("animated gif> end\n")
         } else if (animationmethod == 3) {
           cat("animated gif> using magick package\n")
           requireNamespace("magick", quietly = TRUE)
-          for (i in 1:n.surveillance.week) {
+          for (i in seq_len(n.surveillance.week)) {
             imgfile <- paste(tempdir(), "/animatedplot_", i, ".png", sep = "")
             ggsave(imgfile, plot = plot.list[[i]], width = 8, height = 6, dpi = 150)
             if (i == 1) imgfilem <- magick::image_read(imgfile) else imgfilem <- c(imgfilem, magick::image_read(imgfile))
@@ -5609,8 +5489,8 @@ shinyServer(function(input, output, session) {
         e.thr <- datamodel$epidemic.thresholds
         i.thr <- datamodel$intensity.thresholds
         datfile.plot <- data.frame(datfile[input$SelectSurveillance], datamodel$typ.curve)
-        survweek <- (1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
-        datfile.plot[-(1:survweek), 1] <- NA
+        survweek <- (seq_len(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
+        datfile.plot[-(seq_len(survweek)), 1] <- NA
         names(datfile.plot) <- c(input$SelectSurveillance, c(trloc("graphs.lowerinterval"), trloc("graphs.averagecurve"), trloc("graphs.upperinterval")))
         colors.palette <- generatePalette(
           i.number.series = 3,
@@ -5689,8 +5569,8 @@ shinyServer(function(input, output, session) {
             e.thr <- datamodel$epidemic.thresholds
             i.thr <- datamodel$intensity.thresholds
             datfile.plot <- data.frame(datfile[input$SelectSurveillance], datamodel$typ.curve)
-            survweek <- (1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
-            datfile.plot[-(1:survweek), 1] <- NA
+            survweek <- (seq_len(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
+            datfile.plot[-(seq_len(survweek)), 1] <- NA
             names(datfile.plot) <- c(input$SelectSurveillance, c(trloc("graphs.lowerinterval"), trloc("graphs.averagecurve"), trloc("graphs.upperinterval")))
             colors.palette <- generatePalette(
               i.number.series = 3,
@@ -5739,7 +5619,6 @@ shinyServer(function(input, output, session) {
               temp2 <- temp2[order(temp2$week), p$labels]
               row.names(temp2) <- p$weeklabels
               temp2$week <- NULL
-              # names(temp2) <- trloc(names(temp2))
               names(temp2)[names(temp2) == "Week no"] <- trloc("app.weekno")
               names(temp2)[names(temp2) == "Lower interval"] <- trloc("graphs.lowerinterval")
               names(temp2)[names(temp2) == "Average curve"] <- trloc("graphs.averagecurve")
@@ -5788,8 +5667,8 @@ shinyServer(function(input, output, session) {
             e.thr <- datamodel$epidemic.thresholds
             i.thr <- datamodel$intensity.thresholds
             datfile.plot <- data.frame(datfile[input$SelectSurveillance], datamodel$typ.curve)
-            survweek <- (1:(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
-            datfile.plot[-(1:survweek), 1] <- NA
+            survweek <- (seq_len(NROW(datfile)))[SurveillanceWeek == rownames(datfile)]
+            datfile.plot[-(seq_len(survweek)), 1] <- NA
             names(datfile.plot) <- c(input$SelectSurveillance, c(trloc("graphs.lowerinterval"), trloc("graphs.averagecurve"), trloc("graphs.upperinterval")))
             colors.palette <- generatePalette(
               i.number.series = 3,
@@ -5837,7 +5716,6 @@ shinyServer(function(input, output, session) {
               temp2 <- temp2[order(temp2$week), p$labels]
               row.names(temp2) <- p$weeklabels
               temp2$week <- NULL
-              # names(temp2) <- trloc(names(temp2))
               names(temp2)[names(temp2) == "Week no"] <- trloc("app.weekno")
               names(temp2)[names(temp2) == "Lower interval"] <- trloc("graphs.lowerinterval")
               names(temp2)[names(temp2) == "Average curve"] <- trloc("graphs.averagecurve")
@@ -6116,8 +5994,6 @@ shinyServer(function(input, output, session) {
       fluidRow(
         column(12, offset = 0, style = "padding:0px;", uiOutput("uidata"))
       ),
-      # uiOutput("uifirstWeek"),
-      # uiOutput("uilastWeek"),
       fluidRow(
         column(6, offset = 0, style = "padding:0px;", uiOutput("uifirstWeek")),
         column(6, offset = 0, style = "padding:0px;", uiOutput("uilastWeek"))
@@ -6176,7 +6052,6 @@ shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "input.transformation == 4 & input.advanced",
         popify(
-          # checkboxInput("smregressionoptimum", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.smothing.optimum.label")), value = default_values$smregressionoptimum)
           shinyWidgets::prettyCheckbox(
             inputId = "smregressionoptimum",
             label = trloc("selections.dataset.transformation.smothing.optimum.label"),
@@ -6196,7 +6071,6 @@ shinyServer(function(input, output, session) {
       conditionalPanel(
         condition = "(input.transformation == 5 | input.transformation == 6) & input.advanced",
         popify(
-          # checkboxInput("transfpositive", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.loess.positive.label")), value = default_values$transfpositive)
           shinyWidgets::prettyCheckbox(
             inputId = "transfpositive",
             label = trloc("selections.dataset.transformation.loess.positive.label"),
@@ -6268,15 +6142,6 @@ shinyServer(function(input, output, session) {
   })
 
   output$uiprocess <- renderUI({
-    # popify(
-    #   checkboxInput("processdata", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.processdata.label")), value = default_values$processdata)
-    #   , title = trloc("selections.dataset.processdata.label"), content = trloc("selections.dataset.processdata.hint"), placement = "right", trigger = 'focus', options = list(container = "body"))
-    # popify(
-    #   shinyWidgets::prettyCheckbox(inputId = "processdata",
-    #                                label = trloc("selections.dataset.processdata.label"),
-    #                                value = default_values$processdata,
-    #                                shape = "curve")
-    #   , title = trloc("selections.dataset.processdata.label"), content = trloc("selections.dataset.processdata.hint"), placement = "right", trigger = 'focus', options = list(container = "body"))
     popify(
       shinyWidgets::materialSwitch(
         inputId = "processdata",
@@ -6305,9 +6170,6 @@ shinyServer(function(input, output, session) {
       fluidRow(
         column(6,
           offset = 0, style = "padding:0px;",
-          # popify(
-          #   selectInput('SelectExclude', h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.model.exclude.label")), multiple = TRUE, choices = getSeasons(), selected=NULL)
-          #   , title = trloc("selections.model.exclude.label"), content = trloc("selections.model.exclude.hint"), placement = "right", trigger = 'focus', options = list(container = "body")),
           popify(
             shinyWidgets::pickerInput(
               inputId = "SelectExclude",
@@ -6326,20 +6188,6 @@ shinyServer(function(input, output, session) {
       )
     )
   })
-
-  # output$uiSurveillance = renderUI({
-  #   shinydashboard::box(title=trloc("main.surveillance.label"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed=TRUE,
-  #                       popify(
-  #                         selectInput("SelectSurveillance", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.surveillance.season.label")), size=1, selectize = FALSE, choices = getSeasons(), selected = tail(getSeasons(),1))
-  #                         , title = trloc("selections.surveillance.season.label"), content = trloc("selections.surveillance.season.hint"), placement = "right", trigger = 'focus', options = list(container = "body")),
-  #                       popify(
-  #                         selectInput("SelectSurveillanceWeek", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("graphs.week")), size=1, selectize = FALSE, choices = getWeeksFiltered(), selected = tail(getWeeksFiltered(),1))
-  #                         , title = trloc("graphs.week"), content = trloc("selections.surveillance.week.hint"), placement = "right", trigger = 'focus', options = list(container = "body")),
-  #                       popify(
-  #                         selectInput("SelectSurveillanceForceEpidemic", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.surveillance.force.label")), size=1, selectize = FALSE, choices = c("", getWeeksFiltered()), select = "")
-  #                         , title = trloc("selections.surveillance.force.label"), content = trloc("selections.surveillance.force.hint"), placement = "right", trigger = 'focus', options = list(container = "body"))
-  #   )
-  # })
 
   output$uiSurveillance <- renderUI({
     shinydashboard::box(
@@ -6367,7 +6215,6 @@ shinyServer(function(input, output, session) {
     shinydashboard::box(
       title = trloc("selections.visualize.label"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = TRUE,
       popify(
-        # selectInput('SelectSeasons', h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("main.checkdescribe.seasons")), choices = getSeasons(), multiple = TRUE, selected=NULL)
         shinyWidgets::pickerInput(
           inputId = "SelectSeasons",
           label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("main.checkdescribe.seasons")),
@@ -6382,7 +6229,6 @@ shinyServer(function(input, output, session) {
     shinydashboard::box(
       title = trloc("selections.thresholds"), status = "primary", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = TRUE,
       popify(
-        # checkboxInput("preepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.thresholds.pre.label")), value = TRUE)
         shinyWidgets::prettyCheckbox(
           inputId = "preepidemicthr",
           label = trloc("selections.thresholds.pre.label"),
@@ -6392,7 +6238,6 @@ shinyServer(function(input, output, session) {
         title = trloc("selections.thresholds.pre.label"), content = trloc("selections.thresholds.pre.hint"), placement = "right", trigger = "focus", options = list(container = "body")
       ),
       popify(
-        # checkboxInput("postepidemicthr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.thresholds.post.label")), value = FALSE)
         shinyWidgets::prettyCheckbox(
           inputId = "postepidemicthr",
           label = trloc("selections.thresholds.post.label"),
@@ -6402,7 +6247,6 @@ shinyServer(function(input, output, session) {
         title = trloc("selections.thresholds.post.label"), content = trloc("selections.thresholds.post.hint"), placement = "right", trigger = "focus", options = list(container = "body")
       ),
       popify(
-        # checkboxInput("intensitythr", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.thresholds.intensity.label")), value = TRUE)
         shinyWidgets::prettyCheckbox(
           inputId = "intensitythr",
           label = trloc("selections.thresholds.intensity.label"),
@@ -6525,7 +6369,6 @@ shinyServer(function(input, output, session) {
           title = trloc("options.graphs.timingpalette.label"), content = trloc("options.graphs.timingpalette.hint"), placement = "left", trigger = "focus", options = list(container = "body")
         ),
         popify(
-          # checkboxInput("yaxis0", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.graphs.yaxis0.label")), value = default_values$yaxis0)
           shinyWidgets::prettyCheckbox(
             inputId = "yaxis0",
             label = trloc("options.graphs.yaxis0.label"),
@@ -6633,12 +6476,6 @@ shinyServer(function(input, output, session) {
             title = trloc("options.mem.thresholds.intensity.label"), content = trloc("options.mem.thresholds.intensity.hint"), placement = "left", trigger = "focus", options = list(container = "body")
           ))
         ),
-        # popify(
-        #   selectInput("typethreshold", h6(trloc("options.mem.thresholds.epidemic.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default_values$typethreshold)
-        #   , title = trloc("options.mem.thresholds.epidemic.label"), content = trloc("options.mem.thresholds.epidemic.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
-        # popify(
-        #   selectInput("typeintensity", h6(trloc("options.mem.thresholds.intensity.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default_values$typeintensity)
-        #   , title = trloc("options.mem.thresholds.intensity.label"), content = trloc("options.mem.thresholds.intensity.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
         conditionalPanel(
           condition = "input.advanced",
           fluidRow(
@@ -6725,20 +6562,6 @@ shinyServer(function(input, output, session) {
             )
           ))
         )
-        # popify(
-        #   selectInput("typecurve", h6(trloc("options.mem.other.averagecurve.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default_values$typecurve)
-        #   , title = trloc("options.mem.other.averagecurve.label"), content = trloc("options.mem.other.average.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
-        # popify(
-        #   selectInput("typeother", h6(trloc("options.mem.other.other.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = type.list, size=1, selectize = FALSE, selected = default_values$typeother)
-        #   , title = trloc("options.mem.other.other.label"), content = trloc("options.mem.other.other.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
-        # popify(
-        #   numericInput("levelaveragecurve", h6(trloc("options.mem.other.averageotherci.level"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step=default_values$levelaveragecurve$step)
-        #   , title = trloc("options.mem.other.averageotherci.level"), content = trloc("options.mem.other.averageotherci.hint"), placement = "left", trigger = 'focus', options = list(container = "body")),
-        # conditionalPanel(condition = "input.advanced",
-        #                  popify(
-        #                    selectInput("centering", h6(trloc("options.mem.other.centering.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), choices = centering.list, size=1, selectize = FALSE, selected =  default_values$centering)
-        #                    , title = trloc("options.mem.other.centering.label"), content = trloc("options.mem.other.centering.hint"), placement = "left", trigger = 'focus', options = list(container = "body"))
-        # )
       ),
       circle = TRUE,
       tooltip = tooltipOptions(placement = "left", title = trloc("options.mem"), html = TRUE),
@@ -6756,19 +6579,14 @@ shinyServer(function(input, output, session) {
   })
 
   output$uiSupport <- renderUI({
-    # manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/","technicalmanual.pdf","?raw=true")
-    # manuallocation <- paste0("https://github.com/lozalojo/memapp/blob/assets/",ifelse(input$experimental,"technicalmanualdev.pdf","technicalmanual.pdf"),"?raw=true")
-    # cat("---\n",manuallocation,"\n---\n")
     dropdown(
       shinydashboard::box(
         shinyjs::useShinyjs(),
         title = trloc("options.support"), status = "info", solidHeader = TRUE, width = 12, background = "black", collapsible = TRUE, collapsed = FALSE,
-        # h5(a(trloc("options.support.manual"), href = manuallocation, target = "_blank")),
         conditionalPanel(condition = "input.experimental", h5(a(trloc("options.support.manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanualdev.pdf?raw=true", target = "_blank"))),
         conditionalPanel(condition = "!input.experimental", h5(a(trloc("options.support.manual"), href = "https://github.com/lozalojo/memapp/blob/assets/technicalmanual.pdf?raw=true", target = "_blank"))),
         h5(a(trloc("options.support.issues"), href = "https://github.com/lozalojo/memapp/issues", target = "_blank")),
         hidden(popify(
-          # checkboxInput("showadvanced", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("app.showadvancedtickbox")), value = default_values$showadvanced)
           shinyWidgets::prettyCheckbox(
             inputId = "showadvanced",
             label = trloc("app.showadvancedtickbox"),
@@ -6790,7 +6608,6 @@ shinyServer(function(input, output, session) {
           )
         ),
         hidden(popify(
-          # checkboxInput("showexperimental", label = h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("app.showexperimentaltickbox")), value = default_values$showexperimental)
           shinyWidgets::prettyCheckbox(
             inputId = "showexperimental",
             label = trloc("app.showexperimentaltickbox"),
