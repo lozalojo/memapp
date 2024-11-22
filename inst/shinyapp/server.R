@@ -50,7 +50,7 @@ shinyServer(function(input, output, session) {
     advanced = FALSE,
     showexperimental = TRUE,
     experimental = FALSE,
-    processdata = TRUE,
+    processdata = FALSE,
     usetdistribution = FALSE,
     preepidemicthr = TRUE,
     postepidemicthr = FALSE,
@@ -1449,7 +1449,7 @@ shinyServer(function(input, output, session) {
       datalog <- paste0(datalog, "No file\n")
       cat("reactive/read_data> Warning: No file\n")
     } else if (is.null(indataset)) {
-      temp1 <- importData(i.file = infile$datapath, i.file.name = inname, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
+      temp1 <- importData(i.file = infile$datapath, i.file.name = inname, i.range.x = i.range.x, i.process.data = TRUE)
       datasets <- temp1$datasets
       datasetread <- temp1$datasetread
       datalog <- paste0(datalog, temp1$datalog)
@@ -1457,7 +1457,7 @@ shinyServer(function(input, output, session) {
       datalog <- paste0(datalog, "No dataset\n")
       cat("reactive/read_data> Warning: No dataset\n")
     } else if (indataset == "") {
-      temp1 <- importData(i.file = infile$datapath, i.file.name = inname, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
+      temp1 <- importData(i.file = infile$datapath, i.file.name = inname, i.range.x = i.range.x, i.process.data = TRUE)
       datasets <- temp1$datasets
       datasetread <- temp1$datasetread
       datalog <- paste0(datalog, temp1$datalog)
@@ -1467,7 +1467,7 @@ shinyServer(function(input, output, session) {
     } else {
       datalog <- paste0(datalog, "Note: reading original data\n")
       cat("reactive/read_data> Note: reading original data\n")
-      temp2 <- importData(i.file = infile$datapath, i.file.name = inname, i.dataset = indataset, i.range.x = i.range.x, i.process.data = as.logical(input$processdata))
+      temp2 <- importData(i.file = infile$datapath, i.file.name = inname, i.dataset = indataset, i.range.x = i.range.x, i.process.data = TRUE)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       datalog <- paste0(datalog, temp2$datalog)
@@ -6031,26 +6031,29 @@ shinyServer(function(input, output, session) {
     transformation.list <- list("No transformation" = 1, "Odd" = 2, "Fill missings" = 3, "Smoothing regression" = 4, "Loess" = 5, "Spline" = 6, "Moving average" = 7)
     names(transformation.list) <- c(trloc("selections.dataset.transformation.no"), trloc("selections.dataset.transformation.odd"), trloc("selections.dataset.transformation.fillmiss"), trloc("selections.dataset.transformation.smothing"), trloc("selections.dataset.transformation.loess"), trloc("selections.dataset.transformation.spline"), trloc("selections.dataset.transformation.movingaverage"))
     fluidRow(
-      popify(
-        selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.label")), size = 1, selectize = FALSE, choices = transformation.list, selected = default_values$transformation),
-        title = trloc("selections.dataset.transformation.label"), content = trloc("selections.dataset.transformation.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+      conditionalPanel(
+        condition = "input.processdata",
+        popify(
+          selectInput("transformation", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.label")), size = 1, selectize = FALSE, choices = transformation.list, selected = default_values$transformation),
+          title = trloc("selections.dataset.transformation.label"), content = trloc("selections.dataset.transformation.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+        )
       ),
       conditionalPanel(
-        condition = "input.transformation == 5 & input.advanced",
+        condition = "input.transformation == 5 & input.advanced & input.processdata",
         popify(
           sliderInput("loesspan", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.loess.span.label")), min = default_values$loesspan$min, max = default_values$loesspan$max, value = default_values$loesspan$value, step = default_values$loesspan$step),
           title = trloc("selections.dataset.transformation.loess.span.label"), content = trloc("selections.dataset.transformation.loess.span.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
-        condition = "input.transformation == 7 & input.advanced",
+        condition = "input.transformation == 7 & input.advanced & input.processdata",
         popify(
           sliderInput("movavgweeks", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.movingaverage.weeks.label")), min = default_values$movavgweeks$min, max = default_values$movavgweeks$max, value = default_values$movavgweeks$value, step = default_values$movavgweeks$step),
           title = trloc("selections.dataset.transformation.movingaverage.weeks.label"), content = trloc("selections.dataset.transformation.movingaverage.weeks.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
-        condition = "input.transformation == 4 & input.advanced",
+        condition = "input.transformation == 4 & input.advanced & input.processdata",
         popify(
           shinyWidgets::prettyCheckbox(
             inputId = "smregressionoptimum",
@@ -6062,14 +6065,14 @@ shinyServer(function(input, output, session) {
         )
       ),
       conditionalPanel(
-        condition = "input.transformation == 4 & input.advanced & !input.smregressionoptimum",
+        condition = "input.transformation == 4 & input.advanced & !input.smregressionoptimum & input.processdata",
         popify(
           sliderInput("smregressionsmoothing", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.transformation.smothing.parameter.label")), min = default_values$smregressionsmoothing$min, max = default_values$smregressionsmoothing$max, value = default_values$smregressionsmoothing$value, step = default_values$smregressionsmoothing$step),
           title = trloc("selections.dataset.transformation.smothing.parameter.label"), content = trloc("selections.dataset.transformation.smothing.parameter.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
-        condition = "(input.transformation == 5 | input.transformation == 6) & input.advanced",
+        condition = "(input.transformation == 5 | input.transformation == 6) & input.advanced & input.processdata",
         popify(
           shinyWidgets::prettyCheckbox(
             inputId = "transfpositive",
@@ -6092,19 +6095,22 @@ shinyServer(function(input, output, session) {
       names(waves.list) <- c(trloc("selections.dataset.wavesdetection.one"), trloc("selections.dataset.wavesdetection.twoobserved"), trloc("selections.dataset.wavesdetection.twoexpected"))
     }
     fluidRow(
-      popify(
-        selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.label")), size = 1, selectize = FALSE, choices = waves.list, selected = default_values$waves),
-        title = trloc("selections.dataset.wavesdetection.label"), content = trloc("selections.dataset.wavesdetection.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+      conditionalPanel(
+        condition = "input.processdata",
+        popify(
+          selectInput("waves", h5(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.label")), size = 1, selectize = FALSE, choices = waves.list, selected = default_values$waves),
+          title = trloc("selections.dataset.wavesdetection.label"), content = trloc("selections.dataset.wavesdetection.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+        )
       ),
       conditionalPanel(
-        condition = "(input.waves == 2 | input.waves == 3) & input.advanced",
+        condition = "(input.waves == 2 | input.waves == 3) & input.advanced & input.processdata",
         popify(
           sliderInput("twowavesproportion", h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("selections.dataset.wavesdetection.twoobserved.minimumprop.label")), min = default_values$twowavesproportion$min, max = default_values$twowavesproportion$max, value = default_values$twowavesproportion$value, step = default_values$twowavesproportion$step),
           title = trloc("selections.dataset.wavesdetection.twoobserved.minimumprop.label"), content = trloc("selections.dataset.wavesdetection.twoobserved.minimumprop.hint"), placement = "right", trigger = "focus", options = list(container = "body")
         )
       ),
       conditionalPanel(
-        condition = "input.waves == 4 & input.experimental & input.advanced",
+        condition = "input.waves == 4 & input.experimental & input.advanced & input.processdata",
         fluidRow(
           column(
             6,
