@@ -53,9 +53,10 @@ shinyServer(function(input, output, session) {
     experimental = FALSE,
     processdata = FALSE,
     usetdistribution = FALSE,
-    preepidemicthr = TRUE,
+    preepidemicthr = FALSE,
     postepidemicthr = FALSE,
-    intensitythr = TRUE,
+    intensitythr = FALSE,
+    plottiming = FALSE,
     transformation = 1,
     loesspan = list(min = 0.05, max = 1, value = 0.50, step = 0.05),
     movavgweeks = list(min = 1, max = 5, value = 3, step = 1),
@@ -471,7 +472,7 @@ shinyServer(function(input, output, session) {
       }
 
       labels <- c(trloc("graphs.weeklydata"), trloc("graphs.preepidemic"), trloc("graphs.preepidemicmiss"), trloc("graphs.epidemic"), trloc("graphs.epidemicmiss"), trloc("graphs.postepidemic"), trloc("graphs.postepidemicmiss"), trloc("graphs.prethreshold.short"), trloc("graphs.mediumthreshold.short"), trloc("graphs.highthreshold.short"), trloc("graphs.veryhighthreshold.short"), trloc("graphs.postthreshold.short"))
-      haspoints <- c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
+      haspoints <- c(ifelse(i.plot.timing,FALSE, TRUE), TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
       haslines <- c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE)
       shapes <- c(21, 21, 24, 21, 24, 21, 24, NA, NA, NA, NA, NA)
       colors <- c(rep(i.colObservedLines, 7), i.colThresholds)
@@ -527,7 +528,6 @@ shinyServer(function(input, output, session) {
       fills.s <- fills[selected.indicators]
       sizes.s <- sizes[selected.indicators]
       linetypes.s <- linetypes[selected.indicators]
-
       # Calculate ticks for x
       data.x <- seq_len(NROW(data.orig))
       axis.x.range <- range(data.x)
@@ -571,6 +571,7 @@ shinyServer(function(input, output, session) {
       axis.y.ticks <- axis.y.otick$tickmarks
       axis.y.labels <- axis.y.otick$tickmarks
       dgrafgg.s$value <- round(dgrafgg.s$value, 2)
+
       gplot <- ggplot(dgrafgg.s) +
         geom_line(aes(x = week, y = value, group = variable, color = variable, linetype = variable), size = 0.5) +
         geom_point(aes(x = week, y = value, group = variable, color = variable, size = variable, fill = variable, shape = variable), color = "#ffffff", stroke = 0.1) +
@@ -1673,6 +1674,7 @@ shinyServer(function(input, output, session) {
     updatePrettyCheckbox(session, "preepidemicthr", value = default_values$preepidemicthr)
     updatePrettyCheckbox(session, "postepidemicthr", value = default_values$postepidemicthr)
     updatePrettyCheckbox(session, "intensitythr", value = default_values$intensitythr)
+    updatePrettyCheckbox(session, "plottiming", value = default_values$plottiming)
     updateSelectInput(session, "transformation", selected = default_values$transformation)
     updatePickerInput(session, "SelectSeasons", selected = NULL)
     updatePickerInput(session, "SelectExclude", selected = NULL)
@@ -2824,7 +2826,7 @@ shinyServer(function(input, output, session) {
         )
         p <- plotSeries(
           i.data = datfile.plot,
-          i.plot.timing = TRUE,
+          i.plot.timing = as.logical(input$plottiming),
           i.range.x = NA,
           i.pre.epidemic = as.logical(input$preepidemicthr),
           i.post.epidemic = as.logical(input$postepidemicthr),
@@ -4009,7 +4011,7 @@ shinyServer(function(input, output, session) {
       )
       p <- plotSeries(
         i.data = datfile.plot,
-        i.plot.timing = TRUE,
+        i.plot.timing = as.logical(input$plottiming),
         i.range.x = NA,
         i.pre.epidemic = as.logical(input$preepidemicthr),
         i.post.epidemic = as.logical(input$postepidemicthr),
@@ -5921,7 +5923,7 @@ shinyServer(function(input, output, session) {
         )
         p <- plotSeries(
           i.data = datfile.plot,
-          i.plot.timing = TRUE,
+          i.plot.timing = as.logical(input$plottiming),
           i.range.x = NA,
           i.pre.epidemic = as.logical(input$preepidemicthr),
           i.post.epidemic = as.logical(input$postepidemicthr),
@@ -6264,6 +6266,15 @@ shinyServer(function(input, output, session) {
           shape = "curve"
         ),
         title = trloc("selections.thresholds.intensity.label"), content = trloc("selections.thresholds.intensity.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+      ),
+      popify(
+        shinyWidgets::prettyCheckbox(
+          inputId = "plottiming",
+          label = trloc("selections.timing.label"),
+          value = default_values$intensitythr,
+          shape = "curve"
+        ),
+        title = trloc("selections.timing.label"), content = trloc("selections.timing.hint"), placement = "right", trigger = "focus", options = list(container = "body")
       )
     )
   })

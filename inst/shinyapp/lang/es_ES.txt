@@ -348,3 +348,5 @@ options.mem.other.typeother.hint;Método de cálculo de otros intervalos de conf
 options.mem.other.typeother.label;IC otros
 options.mem.other.levelother.hint;Niveles de los intervales de confianza que se usan para calcular otros intervalos
 options.mem.other.levelother.level;Nivel otros
+selections.timing.label;Localización
+selections.timing.hint;Mostrar la localización de la epidemia en los gráficos

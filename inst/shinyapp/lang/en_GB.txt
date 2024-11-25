@@ -348,3 +348,5 @@ options.mem.other.typeother.hint;Method for calculating other confidence interva
 options.mem.other.typeother.label;Other CI.
 options.mem.other.levelother.hint;Level of the confidence interval used to calculate other intervals
 options.mem.other.levelother.level;Other level
+selections.timing.label;Timing
+selections.timing.hint;Plot timing in graphs
