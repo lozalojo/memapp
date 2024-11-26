@@ -25,8 +25,10 @@ graphs.epidemic;Эпидемический
 graphs.epidemicmiss;Эпидемический (данные отсутствуют)
 graphs.epidemicpercentage;Эпидемический процент
 graphs.epidemicpercentage.short;Эпидемический процент
-graphs.epiperclower;Эпидемический процент (нижняя граница)
-graphs.epipercupper;Эпидемический процент (верхняя граница)
+graphs.epidemicpercentagelower;Эпидемический процент (нижняя граница)
+graphs.epidemicpercentagelower.short;Эпидемический процент (нижняя граница)
+graphs.epidemicpercentageupper;Эпидемический процент (верхняя граница)
+graphs.epidemicpercentageupper.short;Эпидемический процент (верхняя граница)
 graphs.highlevel;Высокий уровень
 graphs.highthreshold;Высокое пороговое значение
 graphs.highthreshold.short;Высокое пороговое значение
@@ -173,10 +175,6 @@ options.mem.goodness.validation.hint;Перекрестная: исключен�
 options.mem.goodness.validation.label;Валидация
 options.mem.goodness.validation.sequential;Последовательный
 options.mem.other;Другие
-options.mem.other.average.hint;Метод для расчета средних значений доверительных интервалов кривой
-options.mem.other.averagecurve.label;ДИ для средней кривой
-options.mem.other.averageotherci.hint;Уровень доверительного интервала, используемый для расчета средней кривой и других интервалов
-options.mem.other.averageotherci.level;Уровень ДИ для средней кривой/других ДИ
 options.mem.other.centering.1;Наибольший 1-недельный период (пик)
 options.mem.other.centering.10;Наибольший 10-недельный период
 options.mem.other.centering.11;Наибольший 11-недельный период
@@ -195,8 +193,6 @@ options.mem.other.centering.9;Наибольший 9-недельный пери
 options.mem.other.centering.hint;Метод центрирования сезонов для расчета средней кривой
 options.mem.other.centering.label;Центрирование сезонов
 options.mem.other.centering.mean;Наибольшая средняя продолжительность периода в неделях
-options.mem.other.other.hint;Метод для расчета других доверительных интервалов: продолжительности, эпидемического процентного показателя, начала эпидемии и т.д.
-options.mem.other.other.label;Другие ДИ
 options.mem.thresholds;Пороги
 options.mem.thresholds.epidemic.arithmeticmean;Арифметическое среднее и доверительный интервал для среднего
 options.mem.thresholds.epidemic.arithmeticprediction;Арифметическое среднее и точечный доверительный интервал
@@ -330,3 +326,9 @@ ui.nofile;Файл или набор данных не обнаружены
 ui.nozip;Архив не обнаружен
 ui.openxlsx;openxlsx не обнаружены
 ui.rtools;R-инструменты не обнаружены
+options.mem.other.typeaveragecurve.hint;Метод для расчета средних значений доверительных интервалов кривой
+options.mem.other.typeaveragecurve.label;ДИ для средней кривой
+options.mem.other.levelaveragecurve.hint;Уровень доверительного интервала, используемый для расчета средней кривой и других интервалов
+options.mem.other.levelaveragecurve.level;Уровень ДИ для средней кривой/других ДИ
+options.mem.other.typeother.hint;Метод для расчета других доверительных интервалов: продолжительности, эпидемического процентного показателя, начала эпидемии и т.д.
+options.mem.other.typeother.label;Другие ДИ

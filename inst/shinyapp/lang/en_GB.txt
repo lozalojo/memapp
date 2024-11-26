@@ -25,8 +25,10 @@ graphs.epidemic;Epidemic
 graphs.epidemicmiss;Epidemic (missing)
 graphs.epidemicpercentage;Epidemic percentage
 graphs.epidemicpercentage.short;Epidemic perc.
-graphs.epiperclower;Epidemic perc. (lower limit)
-graphs.epipercupper;Epidemic perc. (upper limit)
+graphs.epidemicpercentagelower;Epidemic percentage (lower limit)
+graphs.epidemicpercentagelower.short;Epidemic perc. (lower limit)
+graphs.epidemicpercentageupper;Epidemic percentage (upper limit)
+graphs.epidemicpercentageupper.short;Epidemic perc. (upper limit)
 graphs.highlevel;High level
 graphs.highthreshold;High threshold
 graphs.highthreshold.short;High thr.
@@ -177,10 +179,6 @@ options.mem.goodness.validation.hint;Cross: Extracts one season and the model is
 options.mem.goodness.validation.label;Validation
 options.mem.goodness.validation.sequential;Sequential
 options.mem.other;Other
-options.mem.other.average.hint;Method for calculating the average curve confidence intervals
-options.mem.other.averagecurve.label;Average curve CI.
-options.mem.other.averageotherci.hint;Level of the confidence interval used to calculate the average curve and other intervals
-options.mem.other.averageotherci.level;Average curve/Other CI. level
 options.mem.other.centering.1;Highest 1-week period (peak)
 options.mem.other.centering.10;Highest 10-weeks period
 options.mem.other.centering.11;Highest 11-weeks period
@@ -199,8 +197,6 @@ options.mem.other.centering.9;Highest 9-weeks period
 options.mem.other.centering.hint;Method for centering seasons to calculate the average curve
 options.mem.other.centering.label;Centering seasons
 options.mem.other.centering.mean;Highest mean duration-weeks period
-options.mem.other.other.hint;Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.
-options.mem.other.other.label;Other CI.
 options.mem.thresholds;Thresholds
 options.mem.thresholds.epidemic.arithmeticmean;Arithmetic mean and mean confidence interval
 options.mem.thresholds.epidemic.arithmeticprediction;Arithmetic mean and prediction interval
@@ -342,3 +338,15 @@ ui.openxlsx;openxlsx not found
 ui.rtools;Rtools not found
 options.language.default.label;Make default
 options.language.default.hint;Set current language to app default
+main.model.optimize.apply.hint;Apply optimum parameter to current model
+main.model.optimize.apply.label;Apply
+options.mem.other.typeaveragecurve.hint;Method for calculating the average curve confidence intervals
+options.mem.other.typeaveragecurve.label;Average curve CI.
+options.mem.other.levelaveragecurve.hint;Level of the confidence interval used to calculate the average curve
+options.mem.other.levelaveragecurve.level;Average curve level
+options.mem.other.typeother.hint;Method for calculating other confidence intervals: duration, epidemic percentage, epidemic start, etc.
+options.mem.other.typeother.label;Other CI.
+options.mem.other.levelother.hint;Level of the confidence interval used to calculate other intervals
+options.mem.other.levelother.level;Other level
+selections.timing.label;Timing
+selections.timing.hint;Plot timing in graphs

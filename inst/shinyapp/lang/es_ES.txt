@@ -25,8 +25,10 @@ graphs.epidemic;Epidemia
 graphs.epidemicmiss;Epidemia (ausentes)
 graphs.epidemicpercentage;Porcentaje epidémico
 graphs.epidemicpercentage.short;Porc. epidemico
-graphs.epiperclower;Porc. epidemico (límite inf.)
-graphs.epipercupper;Porc. epidemico (límite sup.)
+graphs.epidemicpercentagelower;Porcentaje epidémico (límite inf.)
+graphs.epidemicpercentagelower.short;Porc. epidemico (límite inf.)
+graphs.epidemicpercentageupper;Porcentaje epidémico (límite sup.)
+graphs.epidemicpercentageupper.short;Porc. epidemico (límite sup.)
 graphs.highlevel;Nivel alto
 graphs.highthreshold;Umbral alto
 graphs.highthreshold.short;Umb. alto
@@ -177,10 +179,6 @@ options.mem.goodness.validation.hint;Cross: Extrae una temporada y el modelo se 
 options.mem.goodness.validation.label;Validación
 options.mem.goodness.validation.sequential;Secuencial
 options.mem.other;Otros
-options.mem.other.average.hint;Método de calculo de los IC de la curva media
-options.mem.other.averagecurve.label;IC curva media
-options.mem.other.averageotherci.hint;Niveles de los intervales de confianza que se usan para calcular la curva media y otros intervalos
-options.mem.other.averageotherci.level;Nivel curva media/otros IC
 options.mem.other.centering.1;Mayor periodo de 1 semana (máximo)
 options.mem.other.centering.10;Mayor periodo de 10 semanas
 options.mem.other.centering.11;Mayor periodo de 11 semanas
@@ -199,8 +197,6 @@ options.mem.other.centering.9;Mayor periodo de 9 semanas
 options.mem.other.centering.hint;Método de centrado de las temporadas para calcular la curva media
 options.mem.other.centering.label;Centrado de las temporadas
 options.mem.other.centering.mean;Mayor periodo de la longitud media en semanas
-options.mem.other.other.hint;Método de cálculo de otros intervalos de confianza: duración, porcentaje epidémico, inicio medio, etc.
-options.mem.other.other.label;Otros IC
 options.mem.thresholds;Umbrales
 options.mem.thresholds.epidemic.arithmeticmean;Media aritmética e IC de la media
 options.mem.thresholds.epidemic.arithmeticprediction;Media aritmética e IC de predicción
@@ -342,3 +338,15 @@ ui.openxlsx;No se ha encontrado openxlsx
 ui.rtools;No se ha encontrado Rtools
 options.language.default.label;Por defecto
 options.language.default.hint;Hacer el actual el idioma por defecto de la aplicación
+main.model.optimize.apply.hint;Usar como parámetro ventana el óptimo obtenido
+main.model.optimize.apply.label;Aplicar
+options.mem.other.typeaveragecurve.hint;Método de calculo de los IC de la curva media
+options.mem.other.typeaveragecurve.label;IC curva media
+options.mem.other.levelaveragecurve.hint;Niveles de los intervales de confianza que se usan para calcular la curva media
+options.mem.other.levelaveragecurve.level;Nivel curva media
+options.mem.other.typeother.hint;Método de cálculo de otros intervalos de confianza: duración, porcentaje epidémico, inicio medio, etc.
+options.mem.other.typeother.label;IC otros
+options.mem.other.levelother.hint;Niveles de los intervales de confianza que se usan para calcular otros intervalos
+options.mem.other.levelother.level;Nivel otros
+selections.timing.label;Localización
+selections.timing.hint;Mostrar la localización de la epidemia en los gráficos

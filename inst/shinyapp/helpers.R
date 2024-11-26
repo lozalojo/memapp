@@ -2,15 +2,15 @@
 ### CUSTOM FUNCTIONS
 #####################################
 
-generate_palette <- function(i.number.series = NA,
-                             i.colObservedLines = NULL,
-                             i.colObservedPoints = NULL,
-                             i.colEpidemicStart = NULL,
-                             i.colEpidemicStop = NULL,
-                             i.colThresholds = NULL,
-                             i.colLevels = NULL,
-                             i.colSeasons = NULL,
-                             i.colEpidemic = NULL) {
+generatePalette <- function(i.number.series = NA,
+                            i.colObservedLines = NULL,
+                            i.colObservedPoints = NULL,
+                            i.colEpidemicStart = NULL,
+                            i.colEpidemicStop = NULL,
+                            i.colThresholds = NULL,
+                            i.colLevels = NULL,
+                            i.colSeasons = NULL,
+                            i.colEpidemic = NULL) {
   params.default <- list(
     colObservedLines = "#808080",
     colObservedPoints = "#000000",
@@ -73,11 +73,11 @@ generate_palette <- function(i.number.series = NA,
   colors.final
 }
 
-read.data <- function(i.file,
-                      i.file.name = NA,
-                      i.dataset = NA,
-                      i.range.x = NA,
-                      i.process.data = T) {
+importData <- function(i.file,
+                       i.file.name = NA,
+                       i.dataset = NA,
+                       i.range.x = NA,
+                       i.process.data = TRUE) {
   datalog <- character()
   if (!file.exists(i.file)) {
     datasets <- NULL
@@ -98,72 +98,72 @@ read.data <- function(i.file,
     }
     filenameextension <- paste(filename, fileextension, sep = ".")
     if (fileextension %in% c("xls", "xlsx")) {
-      temp2 <- read.data.excel(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataExcel(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("mdb", "accdb")) {
-      temp2 <- read.data.access(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataAccess(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("csv", "dat", "prn", "txt")) {
-      temp2 <- read.data.text(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataText(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("rds")) {
-      temp2 <- read.data.rds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataRds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("rda", "rdata")) {
-      temp2 <- read.data.rdata(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataRdata(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("dbf")) {
-      temp2 <- read.data.dbf(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataDbf(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("sav")) {
-      temp2 <- read.data.sav(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataSav(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("dta")) {
-      temp2 <- read.data.dta(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataDta(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension %in% c("sas7bdat")) {
-      temp2 <- read.data.sas(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      temp2 <- importDataSas(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
       datalog <- paste0(datalog, temp2$datalog)
       datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
     } else if (fileextension == "ods") {
-      temp2 <- read.data.ods(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
-	  datalog <- paste0(datalog, temp2$datalog)
-	  datasets <- temp2$datasets
+      temp2 <- importDataOds(i.file, filenameextension, i.dataset, i.range.x = i.range.x)
+      datalog <- paste0(datalog, temp2$datalog)
+      datasets <- temp2$datasets
       datasetread <- temp2$datasetread
       dataweeks <- temp2$dataweeks
       rm("temp2")
@@ -194,8 +194,8 @@ read.data <- function(i.file,
     }
     rm("nonnumericcolumns")
     # dealing with season start and end, extracts information from rownames and gets season start/end
-    seasons <- data.frame(column = names(datasetread), stringsAsFactors = F) %>%
-      tidyr::extract(column, into = c("anioi", "aniof", "aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove = F)
+    seasons <- data.frame(column = names(datasetread), stringsAsFactors = FALSE) %>%
+      tidyr::extract(column, into = c("anioi", "aniof", "aniow"), "^[^\\d]*(\\d{4})(?:[^\\d]*(\\d{4}))?(?:[^\\d]*(\\d{1,}))?[^\\d]*$", remove = FALSE)
     seasons[is.na(seasons)] <- ""
     seasons$aniof[seasons$aniof == ""] <- seasons$anioi[seasons$aniof == ""]
     seasonsname <- seasons$anioi
@@ -216,7 +216,7 @@ read.data <- function(i.file,
       datasetread <- NULL
     } else if (i.process.data) {
       # Delete all columns with only 0s and NAs
-      zerocols <- apply(datasetread, 2, function(x) sum(x, na.rm = T) == 0)
+      zerocols <- apply(datasetread, 2, function(x) sum(x, na.rm = TRUE) == 0)
       if (any(zerocols)) {
         datalog <- paste0(datalog, "Note: removing 0-only columns: ", paste0(names(datasetread)[zerocols], collapse = "; "), "\n")
         cat("read_data> Note: removing 0-only columns:", paste0(names(datasetread)[zerocols], collapse = ";"), "\n")
@@ -226,7 +226,7 @@ read.data <- function(i.file,
       # This (i.range.x<-NA) is in case i implement the "week range option" to select the surveillance
       # period, if i implement it, i only have to substitute i.range.x for input$somethinstart/end
       i.cutoff.original <- min(as.numeric(rownames(datasetread)[1:(min(3, NROW(datasetread)))]))
-      if (any(is.na(i.range.x)) | !is.numeric(i.range.x) | length(i.range.x) != 2) i.range.x <- c(min(as.numeric(rownames(datasetread)[1:(min(3, NROW(datasetread)))])), max(as.numeric(rownames(datasetread)[(max(1, NROW(datasetread) - 2)):NROW(datasetread)])))
+      if (any(is.na(i.range.x)) || any(!is.numeric(i.range.x)) || length(i.range.x) != 2) i.range.x <- c(min(as.numeric(rownames(datasetread)[1:(min(3, NROW(datasetread)))])), max(as.numeric(rownames(datasetread)[(max(1, NROW(datasetread) - 2)):NROW(datasetread)])))
       if (i.range.x[1] < 1) i.range.x[1] <- 1
       if (i.range.x[1] > 52) i.range.x[1] <- 52
       if (i.range.x[2] < 1) i.range.x[2] <- 1
@@ -245,12 +245,12 @@ read.data <- function(i.file,
   readdata
 }
 
-read.data.excel <- function(i.file,
+importDataExcel <- function(i.file,
                             i.file.name = NA,
                             i.dataset = NA,
                             i.range.x = NA) {
   datalog <- character()
-  if (!("readxl" %in% rownames(installed.packages()))){
+  if (!("readxl" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -274,14 +274,14 @@ read.data.excel <- function(i.file,
       fileextension <- tolower(temp1[1, 3])
     }
     filenameextension <- paste(filename, fileextension, sep = ".")
-    if (fileextension=="xlsx"){
+    if (fileextension == "xlsx") {
       datalog <- paste0(datalog, "Excel 2007+ file detected: ", filenameextension, "\n")
       cat("read_data> Excel 2007+ file detected: ", filenameextension, "\n", sep = "")
-    }else if (fileextension=="xls"){
+    } else if (fileextension == "xls") {
       datalog <- paste0(datalog, "Excel 97-2003 file detected: ", filenameextension, "\n")
-      cat("read_data> Excel 97-2003 file detected: ", filenameextension, "\n", sep = "")      
+      cat("read_data> Excel 97-2003 file detected: ", filenameextension, "\n", sep = "")
     }
-    i.file.xls <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = paste0(".",fileextension))
+    i.file.xls <- tempfile(pattern = "file", tmpdir = tempdir(), fileext = paste0(".", fileextension))
     file.copy(i.file, i.file.xls)
     datasets <- readxl::excel_sheets(i.file.xls)
     n.datasets <- length(datasets)
@@ -296,13 +296,13 @@ read.data.excel <- function(i.file,
     } else {
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
-      datasetread <- as.data.frame(readxl::read_excel(i.file.xls, sheet = i.dataset, col_types = "numeric"), stringsAsFactors = F)
+      datasetread <- as.data.frame(readxl::read_excel(i.file.xls, sheet = i.dataset, col_types = "numeric"), stringsAsFactors = FALSE)
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -315,7 +315,7 @@ read.data.excel <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -327,7 +327,7 @@ read.data.excel <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.access <- function(i.file,
+importDataAccess <- function(i.file,
                              i.file.name = NA,
                              i.dataset = NA,
                              i.range.x = NA) {
@@ -353,58 +353,58 @@ read.data.access <- function(i.file,
     datalog <- paste0(datalog, "Access file detected: ", filenameextension, "\n")
     cat("read_data> Access file detected: ", filenameextension, "\n", sep = "")
     if (.Platform$OS.type == "windows") {
-	if (!("RODBC" %in% rownames(installed.packages()))){
-    datasets <- NULL
-    datasetread <- NULL
-    dataweeks <- NULL
-    datalog <- paste0(datalog, "Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
-    cat("read_data> Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
-  } else {
-        connectstring <- paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=", i.file, sep = "")
-      channel <- odbcDriverConnect(connectstring)
-      datasets <- subset(sqlTables(channel), TABLE_TYPE != "SYSTEM TABLE")[, "TABLE_NAME"]
-      n.datasets <- length(datasets)
-      if (is.na(i.dataset)) {
+      if (!("RODBC" %in% rownames(installed.packages()))) {
+        datasets <- NULL
         datasetread <- NULL
         dataweeks <- NULL
-      } else if (!(i.dataset %in% datasets)) {
-        datasetread <- NULL
-        dataweeks <- NULL
-        datalog <- paste0(datalog, "Warning: Table ", i.dataset, " not found\n")
-        cat("read_data> Warning: Table ", i.dataset, " not found\n")
+        datalog <- paste0(datalog, "Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
+        cat("read_data> Warning: RODBC package not found, please install it to import MSAccess (mdb, accdb) files\n")
       } else {
-        datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
-        cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
-        datasetread <- sqlFetch(channel, i.dataset, rownames = T)
-        # Remove na lines
-        nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
-        if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
-        # Detect format year, week, rate
-        columnsn <- tolower(names(datasetread))
-        if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
-          datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-          cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
-          names(datasetread) <- tolower(names(datasetread))
-          datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        connectstring <- paste("Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=", i.file, sep = "")
+        channel <- odbcDriverConnect(connectstring)
+        datasets <- subset(sqlTables(channel), TABLE_TYPE != "SYSTEM TABLE")[, "TABLE_NAME"]
+        n.datasets <- length(datasets)
+        if (is.na(i.dataset)) {
+          datasetread <- NULL
+          dataweeks <- NULL
+        } else if (!(i.dataset %in% datasets)) {
+          datasetread <- NULL
+          dataweeks <- NULL
+          datalog <- paste0(datalog, "Warning: Table ", i.dataset, " not found\n")
+          cat("read_data> Warning: Table ", i.dataset, " not found\n")
         } else {
-          if (all(datasetread[, 1] %in% 1:53)) {
-            rownames(datasetread) <- as.character(datasetread[, 1])
-            datasetread <- datasetread[-1]
-            datalog <- paste0(datalog, "Note: First column is the week name\n")
-            cat("read_data> Note: First column is the week name\n")
+          datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n")
+          cat("read_data> Number of datasets: ", n.datasets, "\tReading table: ", i.dataset, "\n", sep = "")
+          datasetread <- sqlFetch(channel, i.dataset, rownames = TRUE)
+          # Remove na lines
+          nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
+          if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+          # Detect format year, week, rate
+          columnsn <- tolower(names(datasetread))
+          if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
+            datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
+            cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+            names(datasetread) <- tolower(names(datasetread))
+            datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
           } else {
-            rownames(datasetread) <- 1:NROW(datasetread)
+            if (all(datasetread[, 1] %in% 1:53)) {
+              rownames(datasetread) <- as.character(datasetread[, 1])
+              datasetread <- datasetread[-1]
+              datalog <- paste0(datalog, "Note: First column is the week name\n")
+              cat("read_data> Note: First column is the week name\n")
+            } else {
+              rownames(datasetread) <- seq_len(NROW(datasetread))
+            }
           }
+          dataweeks <- as.numeric(row.names(datasetread))
+          datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
+          cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
         }
-        dataweeks <- as.numeric(row.names(datasetread))
-        datalog <- paste0(datalog, "Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n")
-        cat("read_data> Read ", NROW(datasetread), " rows and ", NCOL(datasetread), " columns\n", sep = "")
+        odbcCloseAll()
       }
-      odbcCloseAll()
-  }
     } else if (.Platform$OS.type == "unix") {
       # check if mdbtools is installed
-      if (!mdbtools.present()) {
+      if (!mdbtoolsPresent()) {
         datasets <- NULL
         datasetread <- NULL
         dataweeks <- NULL
@@ -448,15 +448,15 @@ read.data.access <- function(i.file,
           mysep <- separators[which.max(stringr::str_count(firstline, separators))]
           restlines <- paste(readLines(filecsv, encoding = myencoding)[-1], collapse = "")
           decimals <- c(".", ",")
-          mydec <- decimals[which.max(stringr::str_count(gsub(mysep, "", restlines, fixed = T), stringr::fixed(decimals)))]
-          datasetread <- read.delim(filecsv, header = T, sep = mysep, dec = mydec, row.names = NULL, fill = T, colClasses = "numeric", as.is = T, encoding = myencoding)
+          mydec <- decimals[which.max(stringr::str_count(gsub(mysep, "", restlines, fixed = TRUE), stringr::fixed(decimals)))]
+          datasetread <- read.delim(filecsv, header = TRUE, sep = mysep, dec = mydec, row.names = NULL, fill = TRUE, colClasses = "numeric", as.is = TRUE, encoding = myencoding)
           names(datasetread) <- vnames
           # Remove na lines
           nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
           if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
           # Detect format year, week, rate
           columnsn <- tolower(names(datasetread))
-          if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+          if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
             datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
             cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
             names(datasetread) <- tolower(names(datasetread))
@@ -468,7 +468,7 @@ read.data.access <- function(i.file,
               datalog <- paste0(datalog, "Note: First column is the week name\n")
               cat("read_data> Note: First column is the week name\n")
             } else {
-              rownames(datasetread) <- 1:NROW(datasetread)
+              rownames(datasetread) <- seq_len(NROW(datasetread))
             }
           }
           dataweeks <- as.numeric(row.names(datasetread))
@@ -487,7 +487,7 @@ read.data.access <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.text <- function(i.file,
+importDataText <- function(i.file,
                            i.file.name = NA,
                            i.dataset = NA,
                            i.range.x = NA) {
@@ -539,18 +539,18 @@ read.data.text <- function(i.file,
       mysep <- separators[which.max(str_count(firstline, separators))]
       restlines <- paste(readLines(i.file, encoding = myencoding)[-1], collapse = "")
       decimals <- c(".", ",")
-      mydec <- decimals[which.max(str_count(gsub(mysep, "", restlines, fixed = T), fixed(decimals)))]
+      mydec <- decimals[which.max(str_count(gsub(mysep, "", restlines, fixed = TRUE), fixed(decimals)))]
       datalog <- paste0(datalog, "Separator is ", mysep, "\tDecimal point is ", mydec, "\n")
       cat("read_data> Separator is ", mysep, "\tDecimal point is ", mydec, "\n", sep = "")
-      temp1 <- as.character(read.delim(i.file, header = F, sep = mysep, nrows = 1, colClasses = "character", as.is = T, encoding = myencoding))
-      datasetread <- read.delim(i.file, header = T, sep = mysep, dec = mydec, row.names = NULL, fill = T, colClasses = "numeric", as.is = T, encoding = myencoding)
+      temp1 <- as.character(read.delim(i.file, header = FALSE, sep = mysep, nrows = 1, colClasses = "character", as.is = TRUE, encoding = myencoding))
+      datasetread <- read.delim(i.file, header = TRUE, sep = mysep, dec = mydec, row.names = NULL, fill = TRUE, colClasses = "numeric", as.is = TRUE, encoding = myencoding)
       names(datasetread) <- temp1
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -562,7 +562,7 @@ read.data.text <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -573,7 +573,7 @@ read.data.text <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.rds <- function(i.file,
+importDataRds <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
@@ -618,7 +618,7 @@ read.data.rds <- function(i.file,
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -630,7 +630,7 @@ read.data.rds <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else if (!all(as.numeric(rownames(datasetread)) %in% 1:53)) {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -641,7 +641,7 @@ read.data.rds <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.rdata <- function(i.file,
+importDataRdata <- function(i.file,
                             i.file.name = NA,
                             i.dataset = NA,
                             i.range.x = NA) {
@@ -689,7 +689,7 @@ read.data.rdata <- function(i.file,
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -701,7 +701,7 @@ read.data.rdata <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else if (!all(as.numeric(rownames(datasetread)) %in% 1:53)) {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -712,12 +712,12 @@ read.data.rdata <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.dbf <- function(i.file,
+importDataDbf <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("foreign" %in% rownames(installed.packages()))){
+  if (!("foreign" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -763,7 +763,7 @@ read.data.dbf <- function(i.file,
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -775,7 +775,7 @@ read.data.dbf <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -786,12 +786,12 @@ read.data.dbf <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.sav <- function(i.file,
+importDataSav <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("foreign" %in% rownames(installed.packages()))){
+  if (!("foreign" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -831,13 +831,13 @@ read.data.sav <- function(i.file,
     } else {
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
-      datasetread <- foreign::read.spss(i.file, to.data.frame = T)
+      datasetread <- foreign::read.spss(i.file, to.data.frame = TRUE)
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -849,7 +849,7 @@ read.data.sav <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -860,12 +860,12 @@ read.data.sav <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.dta <- function(i.file,
+importDataDta <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("foreign" %in% rownames(installed.packages()))){
+  if (!("foreign" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -911,7 +911,7 @@ read.data.dta <- function(i.file,
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -923,7 +923,7 @@ read.data.dta <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -934,12 +934,12 @@ read.data.dta <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.sas <- function(i.file,
+importDataSas <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("haven" %in% rownames(installed.packages()))){
+  if (!("haven" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -980,13 +980,13 @@ read.data.sas <- function(i.file,
       datalog <- paste0(datalog, "Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n")
       cat("read_data> Number of datasets: ", n.datasets, "\tReading dataset: ", i.dataset, "\n", sep = "")
       datasetread <- as.data.frame(haven::read_sas(i.file))
-      for (i in 1:NCOL(datasetread)) names(datasetread)[i] <- attr(datasetread[[i]], "label")
+      for (i in seq_len(NCOL(datasetread))) names(datasetread)[i] <- attr(datasetread[[i]], "label")
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -998,7 +998,7 @@ read.data.sas <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -1009,12 +1009,12 @@ read.data.sas <- function(i.file,
   list(datasets = datasets, datasetread = datasetread, dataweeks = dataweeks, datalog = datalog)
 }
 
-read.data.ods <- function(i.file,
+importDataOds <- function(i.file,
                           i.file.name = NA,
                           i.dataset = NA,
                           i.range.x = NA) {
   datalog <- character()
-  if (!("readODS" %in% rownames(installed.packages()))){
+  if (!("readODS" %in% rownames(installed.packages()))) {
     datasets <- NULL
     datasetread <- NULL
     dataweeks <- NULL
@@ -1059,7 +1059,7 @@ read.data.ods <- function(i.file,
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn & "week" %in% columnsn & NCOL(datasetread) == 3) {
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
         datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
         cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
         names(datasetread) <- tolower(names(datasetread))
@@ -1072,7 +1072,7 @@ read.data.ods <- function(i.file,
           datalog <- paste0(datalog, "Note: First column is the week name\n")
           cat("read_data> Note: First column is the week name\n")
         } else {
-          rownames(datasetread) <- 1:NROW(datasetread)
+          rownames(datasetread) <- seq_len(NROW(datasetread))
         }
       }
       dataweeks <- as.numeric(row.names(datasetread))
@@ -1085,21 +1085,21 @@ read.data.ods <- function(i.file,
 
 # Function to select the seasons to use MEM using From, To, Exclude, Use pandemic and Maximum number of seasons fields
 
-select.columns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "", i.pandemic = T, i.seasons = NA) {
+selectColumns <- function(i.names, i.from, i.to, i.exclude = "", i.include = "", i.pandemic = TRUE, i.seasons = NA) {
   if (is.null(i.from)) i.from <- ""
   if (is.null(i.to)) i.to <- ""
   if (is.na(i.from)) i.from <- ""
   if (is.na(i.to)) i.to <- ""
 
-  indexes <- 1:length(i.names)
+  indexes <- seq_len(length(i.names))
   toinclude <- indexes[i.names %in% i.include]
-  if (!(i.from == "") & (i.from %in% i.names)) from <- grep(i.from, i.names, fixed = T) else from <- 1
-  if (!(i.to == "") & (i.to %in% i.names)) to <- grep(i.to, i.names, fixed = T) else to <- length(i.names)
+  if (!(i.from == "") && (i.from %in% i.names)) from <- grep(i.from, i.names, fixed = TRUE) else from <- 1
+  if (!(i.to == "") && (i.to %in% i.names)) to <- grep(i.to, i.names, fixed = TRUE) else to <- length(i.names)
   if (to < from) to <- from
   if (length(i.names) > 1) {
-    seasons <- data.frame(i.names, matrix(stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"), nrow = length(i.names), byrow = F)[, -1], stringsAsFactors = F)
+    seasons <- data.frame(i.names, matrix(stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?"), nrow = length(i.names), byrow = FALSE)[, -1], stringsAsFactors = FALSE)
   } else {
-    seasons <- data.frame(t(c(i.names, stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])), stringsAsFactors = F)
+    seasons <- data.frame(t(c(i.names, stringr::str_match(i.names, "(\\d{4})(?:.*(\\d{4}))?(?:.*\\(.*(\\d{1,}).*\\))?")[-1])), stringsAsFactors = FALSE)
   }
   names(seasons) <- c("season.original", "anioi", "aniof", "aniow")
   seasons[is.na(seasons)] <- ""
@@ -1108,11 +1108,11 @@ select.columns <- function(i.names, i.from, i.to, i.exclude = "", i.include = ""
   seasonsname[seasons$aniof != ""] <- paste(seasonsname[seasons$aniof != ""], seasons$aniof[seasons$aniof != ""], sep = "/")
   seasonsname[seasons$aniow != ""] <- paste(seasonsname[seasons$aniow != ""], "(", seasons$aniow[seasons$aniow != ""], ")", sep = "")
   seasons$season <- seasonsname
-  pandemic <- grep("2009", seasons$anioi, fixed = T)
+  pandemic <- grep("2009", seasons$anioi, fixed = TRUE)
   indexes <- from:to
-  if (!is.null(i.pandemic)) if (!i.pandemic & length(pandemic) > 0) indexes <- indexes[pandemic != indexes]
+  if (!is.null(i.pandemic)) if (!i.pandemic && length(pandemic) > 0) indexes <- indexes[pandemic != indexes]
   if (length(indexes) > 0) {
-    if (!is.null(i.exclude)) if (any(i.exclude != "") & any(!is.na(i.exclude))) indexes <- indexes[!(i.names[indexes] %in% i.exclude)]
+    if (!is.null(i.exclude)) if (any(i.exclude != "") && any(!is.na(i.exclude))) indexes <- indexes[!(i.names[indexes] %in% i.exclude)]
     if (!is.null(i.seasons)) if (!is.na(i.seasons)) indexes <- indexes[(max(length(indexes) - i.seasons + 1, 1)):length(indexes)]
   }
   if (length(toinclude) > 0) indexes <- unique(c(indexes, toinclude))
@@ -1120,57 +1120,23 @@ select.columns <- function(i.names, i.from, i.to, i.exclude = "", i.include = ""
   return(indexes)
 }
 
-# Find tickmarks for a given range of the y-axis that best fit an optimal number of tickmarks
-# you decide. f.i: what if i want to have a graph with 8 tickmarks in a range of 34 to 345
-
-# Note: I've included this function in mem package
-
-# optimal.tickmarks<-function(i.min,i.max,i.number.ticks=10,
-#                             i.valid.ticks=apply(expand.grid(c(1,2,2.5,5), 10^(-10:10)), 1, FUN = function(x) {x[1] * x[2]}),
-#                             i.include.min=F,i.include.max=F){
-#   # Y ahora calculo el tickmark que más se acerca a esos 10 tickmarks objetivo.
-#   if (i.include.min) dif0<-i.min else dif0<-0
-#   e.min=i.min-dif0
-#   e.max=i.max-dif0
-#   ticks.min<-floor(e.min/i.valid.ticks)
-#   ticks.max<-ceiling(e.max/i.valid.ticks)
-#   ticks.maxmin<-ticks.max-ticks.min+1
-#   n.valid.ticks<-length(i.valid.ticks)
-#   posicion.ticks<-(1:n.valid.ticks)[min(abs(ticks.maxmin-i.number.ticks))==abs(ticks.maxmin-i.number.ticks)][1]
-#   ini<-(ticks.min*i.valid.ticks)[posicion.ticks]+dif0
-#   fin<-(ticks.max*i.valid.ticks)[posicion.ticks]+dif0
-#   salto<-i.valid.ticks[posicion.ticks]
-#   # Tickmarks
-#   tickmarks<-seq(ini,fin,salto)
-#   # Number of ticks
-#   numero.ticks<-length(tickmarks)
-#   if (i.include.max) {
-#     fin<-i.max
-#     tickmarks[numero.ticks] <- i.max
-#   }
-#   # Rank
-#   range.y<-c(ini,fin)
-#   # Returning
-#   return(list(by=salto,number=numero.ticks,range=range.y,tickmarks=tickmarks))
-# }
-
 # Fix plotly graphs
 
-fixplotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i.weeklabels) {
+fixPlotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i.weeklabels) {
   nlabels <- length(i.labels)
   nlists <- length(i.plotly$x$data)
   if (nlists != 2 * nlabels) {
     return(i.plotly)
   }
   # Show all labels
-  for (i in 1:nlists) i.plotly$x$data[[i]]$showlegend <- T
+  for (i in 1:nlists) i.plotly$x$data[[i]]$showlegend <- TRUE
   # Fix x.axis labels
   a <- strsplit(as.character(i.plotly$x$layout$xaxis$ticktext), "\\\n")
   a.len <- max(sapply(a, length))
   a.corrected <- lapply(a, function(x) {
     c(x, rep("", a.len - length(x)))
   })
-  divideit <- matrix(unlist(a.corrected), nrow = length(i.plotly$x$layout$xaxis$ticktext), byrow = T)
+  divideit <- matrix(unlist(a.corrected), nrow = length(i.plotly$x$layout$xaxis$ticktext), byrow = TRUE)
   i.plotly$x$layout$margin$b <- (NCOL(divideit)) * i.plotly$x$layout$margin$b
   i.plotly$x$layout$xaxis$ticktext <- apply(divideit, 1, paste, collapse = "<br />")
   # Fix labels names
@@ -1179,7 +1145,7 @@ fixplotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i
   # Fix text to showup
   for (i in 1:nlists) {
     if (length(grep(i.yname, i.plotly$x$data[[i]]$text)) > 0) {
-      dividetext <- matrix(unlist(strsplit(i.plotly$x$data[[i]]$text, "<br>|<br />")), nrow = length(i.plotly$x$data[[i]]$text), byrow = T)
+      dividetext <- matrix(unlist(strsplit(i.plotly$x$data[[i]]$text, "<br>|<br />")), nrow = length(i.plotly$x$data[[i]]$text), byrow = TRUE)
       i.plotly$x$data[[i]]$text <- paste(i.xname, ": ", i.weeklabels, "<br />", sub(i.yname, i.labels[sequ[i]], dividetext[, 2]), sep = "")
     }
   }
@@ -1187,7 +1153,7 @@ fixplotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i
   pandl <- i.points & i.lines
   index.pandl <- (1:nlabels)[pandl]
   if (length(index.pandl) > 0) {
-    for (i in 1:length(index.pandl)) {
+    for (i in seq_len(length(index.pandl))) {
       i.plotly$x$data[[index.pandl[i]]]$mode <- "lines+markers"
       i.plotly$x$data[[index.pandl[i]]]$marker <- i.plotly$x$data[[index.pandl[i] + nlabels]]$marker
     }
@@ -1198,44 +1164,46 @@ fixplotly <- function(i.plotly, i.labels, i.lines, i.points, i.xname, i.yname, i
   nopal <- !i.points & i.lines
   index.nopal <- (1:nlabels)[nopal]
   toremove <- c(index.pandl + nlabels, index.panol, index.nopal + nlabels)
-  toremove <- toremove[order(toremove, decreasing = T)]
+  toremove <- toremove[order(toremove, decreasing = TRUE)]
   # in reverse order, since removing changes order
-  for (i in 1:length(toremove)) i.plotly$x$data[[toremove[i]]] <- NULL
+  for (i in seq_len(length(toremove))) i.plotly$x$data[[toremove[i]]] <- NULL
   if (.Platform$OS.type == "windows") i.plotly <- fixlatin(i.plotly)
   return(i.plotly)
 }
 
 fixlatin <- function(i.plotly) {
   o.plotly <- i.plotly
-  for (i in 1:length(i.plotly$x$data)) {
+  for (i in seq_len(length(i.plotly$x$data))) {
     o.plotly$x$data[[i]]$text <- iconv(i.plotly$x$data[[i]]$text, from = "UTF-8", to = "LATIN1")
   }
   o.plotly
 }
 
-fixed_color_bar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, ...) {
-  formattable::formatter("span", style = function(x) ifelse(is.na(x),
+fixedColorBar <- function(color = "lightgray", fixedWidth = 150, alpha = 0.5, ...) {
+  formattable::formatter("span", style = function(x) {
+    ifelse(is.na(x),
       formattable::style(color = "white"),
       formattable::style(
         display = "inline-block",
         direction = "rtl",
         `border-radius` = "4px",
         `padding-right` = "2px",
-        `background-color` = formattable::csscolor(add.alpha.to.color(color, alpha)),
-        width = paste(fixedWidth * formattable::proportion(x, na.rm = T), "px", sep = ""),
+        `background-color` = formattable::csscolor(addAlphaColor(color, alpha)),
+        width = paste(fixedWidth * formattable::proportion(x, na.rm = TRUE), "px", sep = ""),
         ...
       )
-    ))
+    )
+  })
 }
 
-add.alpha.to.color <- function(col, alpha = 1) {
+addAlphaColor <- function(col, alpha = 1) {
   if (missing(col)) stop("Please provide a vector of colours.")
   apply(sapply(col, col2rgb) / 255, 2, function(x) rgb(x[1], x[2], x[3], alpha = alpha))
 }
 
 # export functions
 
-export.mydata <- function(i.data, i.file, i.sheet = NA, i.rownames = NA, i.format = "xlsx") {
+exportData <- function(i.data, i.file, i.sheet = NA, i.rownames = NA, i.format = "xlsx") {
   if (is.na(i.sheet)) i.sheet <- "data"
   if (!is.na(i.rownames)) {
     i.data$dummy <- row.names(i.data)
@@ -1260,7 +1228,7 @@ export.mydata <- function(i.data, i.file, i.sheet = NA, i.rownames = NA, i.forma
 
 # Configure a zip extractor in the system, required for openxlsx saving, it is installed with Rtools
 
-set.rzip <- function() {
+setRzip <- function() {
   cat("function/setupzip> begin\n")
   if (.Platform$OS.type == "windows") {
     cat("function/setupzip> Windows system detected\n")
@@ -1273,8 +1241,9 @@ set.rzip <- function() {
         temp2 <- as.numeric(gregexpr("rtools", tolower(temp1))[[1]])
         temp3 <- c(0, as.numeric(gregexpr(";", temp1)[[1]]), nchar(temp1) + 1)
         temp6 <- unlist(lapply(temp2, function(x) {
-          temp4 <- (1:length(temp3))[temp3[temp3 >= x][1] == temp3]
+          temp4 <- (seq_len(length(temp3)))[temp3[temp3 >= x][1] == temp3]
           temp5 <- substr(temp1, temp3[temp4 - 1] + 1, temp3[temp4] - 1)
+          temp5
         }))
         temp7 <- unlist(lapply(temp6, function(x) {
           file.exists(paste(x, "\\zip.exe", sep = ""))
@@ -1311,128 +1280,128 @@ set.rzip <- function() {
 
 # extract path, filename and extension
 
-extract.pfe <- function(i.file) {
+extractPfe <- function(i.file) {
   if (is.na(i.file)) {
-    extract.pfe.output <- NULL
+    extractPfe.output <- NULL
   } else {
-    temp1 <- gsub("\\", "/", i.file, fixed = T)
+    temp1 <- gsub("\\", "/", i.file, fixed = TRUE)
     temp2 <- stringr::str_match(temp1, "^(?:(.*/))?([^[/\\.]]*)(?:(\\.([^\\.]*)))?$")
     temp2[is.na(temp2)] <- ""
-    extract.pfe.output <- list()
-    extract.pfe.output$param.file <- temp2[1, 1]
-    if (substring(temp2[1, 2], nchar(temp2[1, 2]), nchar(temp2[1, 2])) == "/") extract.pfe.output$path <- substring(temp2[1, 2], 1, nchar(temp2[1, 2]) - 1) else extract.pfe.output$path <- temp2[1, 2]
-    extract.pfe.output$name <- temp2[1, 3]
-    extract.pfe.output$extension <- temp2[1, 5]
+    extractPfe.output <- list()
+    extractPfe.output$param.file <- temp2[1, 1]
+    if (substring(temp2[1, 2], nchar(temp2[1, 2]), nchar(temp2[1, 2])) == "/") extractPfe.output$path <- substring(temp2[1, 2], 1, nchar(temp2[1, 2]) - 1) else extractPfe.output$path <- temp2[1, 2]
+    extractPfe.output$name <- temp2[1, 3]
+    extractPfe.output$extension <- temp2[1, 5]
   }
   rm("temp1", "temp2")
-  extract.pfe.output
+  extractPfe.output
 }
 
 # check if a zip extractor is installed
 
-zip.present <- function() file.exists(Sys.getenv("R_ZIPCMD"))
+zipPresent <- function() file.exists(Sys.getenv("R_ZIPCMD"))
 
-mdbtools.present <- function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
+mdbtoolsPresent <- function() file.exists("/usr/bin/mdb-tables") | file.exists("/usr/local/bin/mdb-tables")
 
-openxlsx.present <- function(){
-	"openxlsx" %in% rownames(installed.packages())
+openxlsxPresent <- function() {
+  "openxlsx" %in% rownames(installed.packages())
 }
 
 # check what animation method has to be used
 
-animation.method <- function() {
-  cat("function/animation.method> begin\n")
+animationMethod <- function() {
+  cat("function/animationMethod> begin\n")
   if (.Platform$OS.type == "windows") {
-    cat("function/animation.method> Windows system detected\n")
+    cat("function/animationMethod> Windows system detected\n")
     path.env <- tolower(Sys.getenv("PATH"))
-    if ("animation" %in% rownames(installed.packages()) & grepl("graphicsmagick", path.env, fixed = T)) {
+    if ("animation" %in% rownames(installed.packages()) && grepl("graphicsmagick", path.env, fixed = TRUE)) {
       # GraphicsMagick program + animation package
-      cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
-      animation.method <- 1
-    } else if ("animation" %in% rownames(installed.packages()) & grepl("imagemagick", path.env, fixed = T)) {
+      cat("function/animationMethod> GraphicsMagick+animation detected. Using animation package\n")
+      animationMethod <- 1
+    } else if ("animation" %in% rownames(installed.packages()) && grepl("imagemagick", path.env, fixed = TRUE)) {
       # ImageMagick program + animation package
-      cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
-      animation.method <- 2
+      cat("function/animationMethod> ImageMagick+animation detected. Using animation package\n")
+      animationMethod <- 2
     } else if ("magick" %in% rownames(installed.packages())) {
       # magick package
-      cat("function/animation.method> magick detected. Using magick package\n")
-      animation.method <- 3
+      cat("function/animationMethod> magick detected. Using magick package\n")
+      animationMethod <- 3
     } else {
-      cat("function/animation.method> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
-      animation.method <- 4
+      cat("function/animationMethod> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      animationMethod <- 4
     }
   } else if (.Platform$OS.type == "unix") {
-    cat("function/animation.method> *nix system detected\n")
-    if ("animation" %in% rownames(installed.packages()) & (file.exists("/usr/bin/gm") | file.exists("/usr/local/bin/gm"))) {
+    cat("function/animationMethod> *nix system detected\n")
+    if ("animation" %in% rownames(installed.packages()) && (file.exists("/usr/bin/gm") || file.exists("/usr/local/bin/gm"))) {
       # GraphicsMagick program + animation package
-      cat("function/animation.method> GraphicsMagick+animation detected. Using animation package\n")
-      animation.method <- 1
-    } else if ("animation" %in% rownames(installed.packages()) & (file.exists("/usr/bin/convert") | file.exists("/usr/local/bin/convert"))) {
+      cat("function/animationMethod> GraphicsMagick+animation detected. Using animation package\n")
+      animationMethod <- 1
+    } else if ("animation" %in% rownames(installed.packages()) && (file.exists("/usr/bin/convert") || file.exists("/usr/local/bin/convert"))) {
       # ImageMagick program + animation package
-      cat("function/animation.method> ImageMagick+animation detected. Using animation package\n")
-      animation.method <- 2
+      cat("function/animationMethod> ImageMagick+animation detected. Using animation package\n")
+      animationMethod <- 2
     } else if ("magick" %in% rownames(installed.packages())) {
       # magick package
-      cat("function/animation.method> magick detected. Using magick package\n")
-      animation.method <- 3
+      cat("function/animationMethod> magick detected. Using magick package\n")
+      animationMethod <- 3
     } else {
-      cat("function/animation.method> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
-      animation.method <- 4
+      cat("function/animationMethod> No GraphicsMagick+animation nor ImageMagick+animation nor magick detected. No animation\n")
+      animationMethod <- 4
     }
   } else {
-    cat("function/animation.method> No windows or *nix system detected\n")
-    animation.method <- 4
+    cat("function/animationMethod> No windows or *nix system detected\n")
+    animationMethod <- 4
   }
-  cat("function/animation.method> end\n")
-  return(animation.method)
+  cat("function/animationMethod> end\n")
+  return(animationMethod)
 }
 
 # functions for the optimize plots
 
-tail.order <- function(i.data, i.n, i.order) {
+tailOrder <- function(i.data, i.n, i.order) {
   res <- tail(i.data, n = i.n)
-  res <- res[order(res[,i.order]), ]
-  res$id.tail <- 1:NROW(res)
+  res <- res[order(res[, i.order]), ]
+  res$id.tail <- seq_len(NROW(res))
   res
 }
 
-extract.two <- function(i.data, i.order, i.column) {
+extractTwo <- function(i.data, i.order, i.column) {
   data <- i.data
-  results <- do.call("rbind", by(data, data[i.column], tail.order, i.n = 2, i.order = i.order))
+  results <- do.call("rbind", by(data, data[i.column], tailOrder, i.n = 2, i.order = i.order))
   return(results)
 }
 
 # locale funcions
 
-translation.dir <- function() {
+translationDir <- function() {
   translation.loc <- c("lang", "inst/shinyapp/lang", file.path(.libPaths(), "/memapp/shinyapp/lang"))
   utils::head(translation.loc[dir.exists(translation.loc)], 1)
 }
 
-manual.dir <- function() {
+manualDir <- function() {
   manual.loc <- c("manual", "inst/manual", file.path(.libPaths(), "/memapp/manual"))
   utils::head(manual.loc[dir.exists(manual.loc)], 1)
 }
 
-get.languages <- function() {
-  langfiles <- data.frame(filename = tools::file_path_sans_ext(list.files(translation.dir(), ".*\\.txt")), stringsAsFactors = F)
-  locales <- read.locales.table()
+getLanguages <- function() {
+  langfiles <- data.frame(filename = tools::file_path_sans_ext(list.files(translationDir(), ".*\\.txt")), stringsAsFactors = FALSE)
+  locales <- readLocales()
   languages <- dplyr::inner_join(locales, langfiles, by = "filename")
   # fix for linux locales
   if (.Platform$OS.type == "unix") {
     languages <- languages %>%
       select(-localelinux) %>%
-      left_join(select(get.linux.locales(), -encoding), by = c("language.iso_639_1", "country.iso_3166")) %>%
+      left_join(select(getLinuxLocales(), -encoding), by = c("language.iso_639_1", "country.iso_3166")) %>%
       mutate(localelinux = if_else(is.na(localelinux), "", localelinux))
   }
   languages
 }
 
-read.locales.table <- function() {
-  locales <- utils::read.delim(paste0(translation.dir(), "/localestable.txt"), header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T) %>%
+readLocales <- function() {
+  locales <- utils::read.delim(paste0(translationDir(), "/localestable.txt"), header = TRUE, sep = ";", row.names = NULL, fill = TRUE, colClasses = "character", as.is = TRUE) %>%
     tidyr::extract(filename,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
-      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
+      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = FALSE
     ) %>%
     select(-v1, -v2, -v3) %>%
     dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
@@ -1441,13 +1410,14 @@ read.locales.table <- function() {
       language.iso_639_1 = if_else(is.na(language.iso_639_1), "", tolower(language.iso_639_1)),
       country.iso_3166 = if_else(is.na(country.iso_3166), "", toupper(country.iso_3166))
     )
+  locales
 }
 
-get.linux.locales <- function() {
-  locales <- data.frame(localelinux = system("locale -a ", intern = TRUE), stringsAsFactors = F) %>%
+getLinuxLocales <- function() {
+  locales <- data.frame(localelinux = system("locale -a ", intern = TRUE), stringsAsFactors = FALSE) %>%
     tidyr::extract(localelinux,
       into = c("language.iso_639_1", "v1", "country.iso_3166", "v2", "v3", "encoding"),
-      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = F
+      "^([[:alpha:]]{2})(_([[:alpha:]]{2}))?(([\\.]+)([^\\.]+))?$", remove = FALSE
     ) %>%
     select(-v1, -v2, -v3) %>%
     dplyr::filter(!(is.na(language.iso_639_1) & is.na(country.iso_3166))) %>%
@@ -1465,18 +1435,16 @@ get.linux.locales <- function() {
   locales
 }
 
-
-read.language <- function(i.filename) {
-  langs <- get.languages()
-  lfile <- paste0(translation.dir(), "/", i.filename, ".txt")
+readLanguage <- function(i.filename) {
+  lfile <- paste0(translationDir(), "/", i.filename, ".txt")
   if (file.exists(lfile)) {
-    lines <- paste(readLines(lfile, n = -1, warn = F), collapse = "")
+    lines <- paste(readLines(lfile, n = -1, warn = FALSE), collapse = "")
     if (stringi::stri_enc_isascii(lines)) {
       myencoding <- "ASCII"
     } else {
       myencoding <- stringi::stri_enc_detect(lines)[[1]]$`Encoding`[1]
     }
-    translation <- utils::read.delim(lfile, header = T, sep = ";", row.names = NULL, fill = T, colClasses = "character", as.is = T, encoding = myencoding)
+    translation <- utils::read.delim(lfile, header = TRUE, sep = ";", row.names = NULL, fill = TRUE, colClasses = "character", as.is = TRUE, encoding = myencoding)
     names(translation) <- c("original", "translated")
     translation$filename <- i.filename
   } else {
@@ -1485,49 +1453,46 @@ read.language <- function(i.filename) {
   translation
 }
 
-build.languages <- function() {
-  cat("function/build.languages> begin\n")
-  translation.fil <- paste0(translation.dir(), "/translation.bin")
-  langs <- get.languages()
-  cat("function/build.languages> List of available languages:\n", paste0(paste0(langs$filename, "\t", langs$lang_name), collapse = "\n"), "\n")
-  translationContent <- do.call(rbind, lapply(langs$filename, function(x) read.language(x)))
+buildLanguages <- function() {
+  cat("function/buildLanguages> begin\n")
+  translation.fil <- paste0(translationDir(), "/translation.bin")
+  langs <- getLanguages()
+  cat("function/buildLanguages> List of available languages:\n", paste0(paste0(langs$filename, "\t", langs$lang_name), collapse = "\n"), "\n")
+  translationContent <- do.call(rbind, lapply(langs$filename, function(x) readLanguage(x)))
   # To avoid R cmd check as for original, lang, translated as dplyr:select accept verbatim variable as input (not character)
   original <- filename <- translated <- NULL
   translation <- translationContent %>%
     dplyr::select(original, filename, translated) %>%
     tidyr::spread(filename, translated, drop = FALSE, fill = NA)
   save(translation, file = translation.fil)
-  cat(paste0("function/build.languages> Translation file saved to: ", tools::file_path_as_absolute(translation.fil), " (", NROW(translation), " items)"), "\n")
-  cat("function/build.languages> Language file built\n")
-  cat("function/build.languages> end\n")
+  cat(paste0("function/buildLanguages> Translation file saved to: ", tools::file_path_as_absolute(translation.fil), " (", NROW(translation), " items)"), "\n")
+  cat("function/buildLanguages> Language file built\n")
+  cat("function/buildLanguages> end\n")
 }
 
-set.default.language <- function(i.lang) {
-  cat("function/set.default.language> begin\n")
-  default.fil <- paste0(translation.dir(), "/defaultlanguage.txt")
-  default.language <- i.lang
-  langs <- get.languages()
-  if (!(default.language %in% langs$filename)) default.language <- "en_GB"
-  writeLines(default.language, default.fil)
-  cat(paste0("function/set.default.language> Default language written to: ", default.language, "\n"))
-  cat("function/set.default.language> end\n")
+setLanguage <- function(i.lang) {
+  cat("function/setLanguage> begin\n")
+  default_file <- paste0(translationDir(), "/defaultlanguage.txt")
+  default_language <- i.lang
+  langs <- getLanguages()
+  if (!(default_language %in% langs$filename)) default_language <- "en_GB"
+  writeLines(default_language, default_file)
+  cat(paste0("function/setLanguage> Default language written to: ", default_language, "\n"))
+  cat("function/setLanguage> end\n")
 }
 
-get.default.language <- function() {
-  cat("function/get.default.language> begin\n")
-  default.fil <- paste0(translation.dir(), "/defaultlanguage.txt")
-  default.language <- readLines(default.fil, 1, warn=F)
-  langs <- get.languages()
-  if (!(default.language %in% langs$filename)) default.language <- "en_GB"
-  cat(paste0("function/get.default.language> Default language is: ", default.language, "\n"))
-  cat("function/get.default.language> end\n")
-  default.language
+defaultLanguage <- function() {
+  cat("function/defaultLanguage> begin\n")
+  default_file <- paste0(translationDir(), "/defaultlanguage.txt")
+  default_language <- readLines(default_file, 1, warn = FALSE)
+  langs <- getLanguages()
+  if (!(default_language %in% langs$filename)) default_language <- "en_GB"
+  cat(paste0("function/defaultLanguage> Default language is: ", default_language, "\n"))
+  cat("function/defaultLanguage> end\n")
+  default_language
 }
 
-# set.default.language("fr_FR")
-# get.default.language()
-
-get.r.versions <- function() {
+getVersions <- function() {
   list(
     r = as.character(R.version$version.string),
     platform = as.character(R.version$platform),
