@@ -106,6 +106,7 @@ shinyUI(
       # All credits of the busy-indicator goes to AnalytixWare/ShinySky,
       # I was forced to include the code here because the package does
       # not have a CRAN release.
+      tags$head(tags$script(src = "resize.js")),
       tags$body(inlineCSS(list(".shinysky-busy-indicator" = "position: absolute !important; z-index:800; "))),
       tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}"),
       uiOutput("uiTitle"),
