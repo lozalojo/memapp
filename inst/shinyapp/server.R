@@ -2292,15 +2292,30 @@ shinyServer(function(input, output, session) {
             }
           }
           if (imgfileok) {
-            fluidRow(
-              plotOutput(outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"), click = paste0("tbmOptimizeM_", as.character(s), "_click"), width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1)),
-              tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table")),
-              imageOutput(paste0("tbmOptimizeM_", as.character(s), "_image"))
+            fluidPage(
+              fluidRow(
+                column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(11, plotOutput(outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"), click = paste0("tbmOptimizeM_", as.character(s), "_click"), width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1)))
+              ),
+              fluidRow(
+                column(1, h4(trloc("main.model.optimize.manual.clicks"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(11, tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table")))
+              ),
+              fluidRow(
+                column(1, h4(trloc("main.model.optimize.manual.results"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(11, imageOutput(paste0("tbmOptimizeM_", as.character(s), "_image")))
+              )
             )
           } else {
-            fluidRow(
-              plotOutput(outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"), click = paste0("tbmOptimizeM_", as.character(s), "_click"), width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1)),
-              tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table"))
+            fluidPage(
+              fluidRow(
+                column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(11, plotOutput(outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"), click = paste0("tbmOptimizeM_", as.character(s), "_click"), width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1)))
+              ),
+              fluidRow(
+                column(1, h4(trloc("main.model.optimize.manual.clicks"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+                column(11, tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table")))
+              )
             )
           }
         })
