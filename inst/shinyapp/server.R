@@ -16,7 +16,7 @@ shinyServer(function(input, output, session) {
 
   values <- reactiveValues(
     origdata = NULL, plotdata = NULL, clickdata = NULL, idscreated = NULL,
-    optimizegraphs = NULL, locale = Sys.getlocale()
+    optimizegraphs = NULL, locale = Sys.getlocale(), gwidth1 = 800, gheight1 = 600, gwidth2 = 800, gheight2 = 450, mwidth1 = 533, mheight1 = 400, mwidth2 = 711, mheight2 = 400
   )
 
   default_values <- list(
@@ -48,9 +48,9 @@ shinyServer(function(input, output, session) {
     levelother = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
     centering = -1,
     showadvanced = TRUE,
-    advanced = FALSE,
+    advanced = TRUE,
     showexperimental = TRUE,
-    experimental = FALSE,
+    experimental = TRUE,
     processdata = FALSE,
     usetdistribution = FALSE,
     preepidemicthr = FALSE,
@@ -472,7 +472,7 @@ shinyServer(function(input, output, session) {
       }
 
       labels <- c(trloc("graphs.weeklydata"), trloc("graphs.preepidemic"), trloc("graphs.preepidemicmiss"), trloc("graphs.epidemic"), trloc("graphs.epidemicmiss"), trloc("graphs.postepidemic"), trloc("graphs.postepidemicmiss"), trloc("graphs.prethreshold.short"), trloc("graphs.mediumthreshold.short"), trloc("graphs.highthreshold.short"), trloc("graphs.veryhighthreshold.short"), trloc("graphs.postthreshold.short"))
-      haspoints <- c(ifelse(i.plot.timing,FALSE, TRUE), TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
+      haspoints <- c(ifelse(i.plot.timing, FALSE, TRUE), TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
       haslines <- c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE)
       shapes <- c(21, 21, 24, 21, 24, 21, 24, NA, NA, NA, NA, NA)
       colors <- c(rep(i.colObservedLines, 7), i.colThresholds)
@@ -1243,20 +1243,18 @@ shinyServer(function(input, output, session) {
     nu.seasons <- (seq_len(no.seasons))[se.seasons]
     na.seasons <- (names(good$param.data))[se.seasons]
     lapply(data.frame(rbind(nu.seasons, na.seasons)), function(s) {
-      output[[paste0("tbmGoodnessGraphs_", as.character(s[2]))]] <- renderImage({
-        graph.file <- paste(good$param.output, "/", good$param.prefix, " Goodness ", s[1], " (", format(round(input$param, 1), digits = 3, nsmall = 1), ").png", sep = "")
-        if (!file.exists(graph.file)) {
-          gfile <- NULL
-        } else {
-          gfile <- list(
-            src = graph.file,
-            contentType = "image/png",
-            width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
-            alt = "No image found"
-          )
-        }
-        gfile
-      })
+      output[[paste0("tbmGoodnessGraphs_", as.character(s[2]))]] <- renderImage(
+        {
+          graph.file <- paste(good$param.output, "/", good$param.prefix, " Goodness ", s[1], " (", format(round(input$param, 1), digits = 3, nsmall = 1), ").png", sep = "")
+          if (!file.exists(graph.file)) {
+            gfile <- NULL
+          } else {
+            gfile <- list(src = graph.file, contentType = "image/png", width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1), alt = "No image found")
+          }
+          gfile
+        },
+        deleteFile = FALSE
+      )
     })
     cat("reactive/data_good_model> end\n")
     good
@@ -1312,20 +1310,18 @@ shinyServer(function(input, output, session) {
     nu.seasons <- (seq_len(no.seasons))[se.seasons]
     na.seasons <- (names(good$param.data))[se.seasons]
     lapply(data.frame(rbind(nu.seasons, na.seasons)), function(s) {
-      output[[paste0("tbdGoodnessGraphs_", as.character(s[2]))]] <- renderImage({
-        graph.file <- paste(good$param.output, "/", good$param.prefix, " Goodness ", s[1], " (", format(round(input$param, 1), digits = 3, nsmall = 1), ").png", sep = "")
-        if (!file.exists(graph.file)) {
-          gfile <- NULL
-        } else {
-          gfile <- list(
-            src = graph.file,
-            contentType = "image/png",
-            width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
-            alt = "No image found"
-          )
-        }
-        gfile
-      })
+      output[[paste0("tbdGoodnessGraphs_", as.character(s[2]))]] <- renderImage(
+        {
+          graph.file <- paste(good$param.output, "/", good$param.prefix, " Goodness ", s[1], " (", format(round(input$param, 1), digits = 3, nsmall = 1), ").png", sep = "")
+          if (!file.exists(graph.file)) {
+            gfile <- NULL
+          } else {
+            gfile <- list(src = graph.file, contentType = "image/png", width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1), alt = "No image found")
+          }
+          gfile
+        },
+        deleteFile = FALSE
+      )
     })
     cat("reactive/data_good_global> end\n")
     good
@@ -1744,21 +1740,21 @@ shinyServer(function(input, output, session) {
             fluidPage(
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_plot"), width = "auto", height = "auto"))
               ),
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing.map"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_map"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_map"), width = "auto", height = "auto"))
               ),
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing.slope"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_slope"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_slope"), width = "auto", height = "auto"))
               )
             )
           } else {
             fluidRow(
               column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-              column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+              column(11, plotlyOutput(paste0("tbdTiming_", as.character(s), "_plot"), width = "auto", height = "auto"))
             )
           }
         })
@@ -1817,7 +1813,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -1859,7 +1855,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -1902,7 +1898,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -1916,21 +1912,21 @@ shinyServer(function(input, output, session) {
             fluidPage(
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_plot"), width = "auto", height = "auto"))
               ),
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing.map"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_map"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_map"), width = "auto", height = "auto"))
               ),
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing.slope"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_slope"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_slope"), width = "auto", height = "auto"))
               )
             )
           } else {
             fluidRow(
               column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-              column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+              column(11, plotlyOutput(paste0("tbvTiming_", as.character(s), "_plot"), width = "auto", height = "auto"))
             )
           }
         })
@@ -1989,7 +1985,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -2032,7 +2028,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -2075,7 +2071,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -2115,21 +2111,21 @@ shinyServer(function(input, output, session) {
             fluidPage(
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_plot"), width = "auto", height = "auto"))
               ),
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing.map"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_map"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_map"), width = "auto", height = "auto"))
               ),
               fluidRow(
                 column(1, h4(trloc("main.checkdescribe.timing.slope"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-                column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_slope"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+                column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_slope"), width = "auto", height = "auto"))
               )
             )
           } else {
             fluidRow(
               column(1, h4(trloc("main.checkdescribe.timing"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
-              column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_plot"), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+              column(11, plotlyOutput(paste0("tbmTiming_", as.character(s), "_plot"), width = "auto", height = "auto"))
             )
           }
         })
@@ -2188,7 +2184,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -2231,7 +2227,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -2274,7 +2270,7 @@ shinyServer(function(input, output, session) {
             if (is.null(p)) {
               zfix <- NULL
             } else {
-              z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+              z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
               zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
             }
           }
@@ -2297,21 +2293,13 @@ shinyServer(function(input, output, session) {
           }
           if (imgfileok) {
             fluidRow(
-              plotOutput(
-                outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"),
-                click = paste0("tbmOptimizeM_", as.character(s), "_click"),
-                width = as.numeric(input$dwidth), height = as.numeric(input$dheight)
-              ),
+              plotOutput(outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"), click = paste0("tbmOptimizeM_", as.character(s), "_click"), width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1)),
               tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table")),
               imageOutput(paste0("tbmOptimizeM_", as.character(s), "_image"))
             )
           } else {
             fluidRow(
-              plotOutput(
-                outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"),
-                click = paste0("tbmOptimizeM_", as.character(s), "_click"),
-                width = as.numeric(input$dwidth), height = as.numeric(input$dheight)
-              ),
+              plotOutput(outputId = paste0("tbmOptimizeM_", as.character(s), "_plot"), click = paste0("tbmOptimizeM_", as.character(s), "_click"), width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1)),
               tableOutput(paste0("tbmOptimizeM_", as.character(s), "_table"))
             )
           }
@@ -2334,25 +2322,23 @@ shinyServer(function(input, output, session) {
       })
       cat("observeEvent/data_model> updating manual optimization plots... goodness image\n")
       lapply(modseasons, function(s) {
-        output[[paste0("tbmOptimizeM_", as.character(s), "_image")]] <- renderImage({
-          imgfile <- ""
-          if (NROW(values$optimizegraphs) > 0) {
-            imgtmp <- values$optimizegraphs
-            imgtmp2 <- subset(imgtmp, imgtmp$season == as.character(s))
-            if (NROW(imgtmp2) > 0) {
-              if (file.exists(imgtmp2$file)) {
-                imgfile <- imgtmp2$file
+        output[[paste0("tbmOptimizeM_", as.character(s), "_image")]] <- renderImage(
+          {
+            imgfile <- ""
+            if (NROW(values$optimizegraphs) > 0) {
+              imgtmp <- values$optimizegraphs
+              imgtmp2 <- subset(imgtmp, imgtmp$season == as.character(s))
+              if (NROW(imgtmp2) > 0) {
+                if (file.exists(imgtmp2$file)) {
+                  imgfile <- imgtmp2$file
+                }
               }
             }
-          }
-          gfile <- list(
-            src = imgfile,
-            contentType = "image/png",
-            width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
-            alt = "No image found"
-          )
-          gfile
-        })
+            gfile <- list(src = imgfile, contentType = "image/png", width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1), alt = "No image found")
+            gfile
+          },
+          deleteFile = FALSE
+        )
       })
       cat("observeEvent/data_model> updating manual optimization plots... seasons plots\n")
       lapply(modseasons, function(s) {
@@ -2529,6 +2515,32 @@ shinyServer(function(input, output, session) {
     cat("observeEvent/applyOptimParam> end\n")
   })
 
+  observeEvent(input$dimension, {
+    cat("observeEvent/dimension> begin\n")
+    # Formato 4x3
+    gfactor <- 0.65
+    gwidth1 <- round(gfactor * input$dimension[1], digits = 0)
+    gwidth2 <- gwidth1
+    gheight1 <- round(gfactor * input$dimension[1] / 4 * 3, digits = 0)
+    # Formato 16x9
+    gheight2 <- round(gfactor * input$dimension[1] / 16 * 9, digits = 0)
+    # Max height 400
+    mheight1 <- min(400, gheight1)
+    mwidth1 <- round(mheight1 / 3 * 4, digits = 0)
+    mheight2 <- min(400, gheight2)
+    mwidth2 <- round(mheight2 / 9 * 16, digits = 0)
+    cat("observeEvent/dimension> updating dimensions\t", gwidth1, "x", gheight1, "\t", gwidth2, "x", gheight2, "\t", mwidth1, "x", mheight1, "\t", mwidth2, "x", mheight2, "\n")
+    values$gwidth1 <- gwidth1
+    values$gheight1 <- gheight1
+    values$gwidth2 <- gwidth2
+    values$gheight2 <- gheight2
+    values$mwidth1 <- mwidth1
+    values$mheight1 <- mheight1
+    values$mwidth2 <- mwidth2
+    values$mheight2 <- mheight2
+    cat("observeEvent/dimension> end\n")
+  })
+
   #####################################
   ### DEFINING TABS STRUCTURE
   #####################################
@@ -2566,8 +2578,8 @@ shinyServer(function(input, output, session) {
               column(2, downloadButton("tbdData_c", "csv"))
             )
           ),
-          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbdSeasons", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbdSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbdSeasons", width = "auto", height = "auto")),
+          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbdSeries", width = "auto", height = "auto")),
           tabPanel(trloc("main.checkdescribe.timing"), uiOutput("tbdTiming")),
           tabPanel(trloc("main.checkdescribe.evolution"), uiOutput("tbdEvolution")),
           tabPanel(trloc("main.checkdescribe.stability"), uiOutput("tbdStability")),
@@ -2597,8 +2609,8 @@ shinyServer(function(input, output, session) {
               column(2, downloadButton("tbdData_c", "csv"))
             )
           ),
-          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbdSeasons", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbdSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbdSeasons", width = "auto", height = "auto")),
+          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbdSeries", width = "auto", height = "auto")),
           tabPanel(trloc("main.checkdescribe.timing"), uiOutput("tbdTiming")),
           tabPanel(trloc("main.checkdescribe.evolution"), uiOutput("tbdEvolution")),
           tabPanel(trloc("main.checkdescribe.stability"), uiOutput("tbdStability"))
@@ -2612,11 +2624,11 @@ shinyServer(function(input, output, session) {
       fluidPage(
         fluidRow(
           column(6, verbatimTextOutput("tbdFileTxt")),
-          column(6, plotOutput("tbdFilePlot1", width = as.numeric(input$dwidth) / 2, height = as.numeric(input$dheight) / 2))
+          column(6, plotOutput("tbdFilePlot1", width = "auto", height = "auto"))
         ),
         fluidRow(
-          column(6, plotOutput("tbdFilePlot2", width = as.numeric(input$dwidth) / 2, height = as.numeric(input$dheight) / 2)),
-          column(6, plotOutput("tbdFilePlot3", width = as.numeric(input$dwidth) / 2, height = as.numeric(input$dheight) / 2))
+          column(6, plotOutput("tbdFilePlot2", width = "auto", height = "auto")),
+          column(6, plotOutput("tbdFilePlot3", width = "auto", height = "auto"))
         )
       )
     } else {
@@ -2793,7 +2805,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+          z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
           zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
@@ -2861,7 +2873,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+          z <- ggplotly(p$plot, width = as.numeric(values$gwidth2), height = as.numeric(values$gheight2))
           zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
@@ -2892,7 +2904,7 @@ shinyServer(function(input, output, session) {
         lapply(tabnames, function(s) {
           ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
           ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-          call("tabPanel", s, call("uiOutput", outputId = paste0("tbdTiming_", s), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+          call("tabPanel", s, call("uiOutput", outputId = paste0("tbdTiming_", s), width = "auto", height = "auto"))
         })
       )
     }
@@ -2905,10 +2917,10 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("main.checkdescribe.evolution.duration"), plotlyOutput("tbdEduration", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.checkdescribe.evolution.start"), plotlyOutput("tbdEstart", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.checkdescribe.evolution.epidemicperc"), plotlyOutput("tbdEpercentage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.checkdescribe.evolution.thresholds"), plotlyOutput("tbdEthresholds", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+        tabPanel(trloc("main.checkdescribe.evolution.duration"), plotlyOutput("tbdEduration", width = "auto", height = "auto")),
+        tabPanel(trloc("main.checkdescribe.evolution.start"), plotlyOutput("tbdEstart", width = "auto", height = "auto")),
+        tabPanel(trloc("main.checkdescribe.evolution.epidemicperc"), plotlyOutput("tbdEpercentage", width = "auto", height = "auto")),
+        tabPanel(trloc("main.checkdescribe.evolution.thresholds"), plotlyOutput("tbdEthresholds", width = "auto", height = "auto")),
         tabPanel(trloc("main.checkdescribe.evolution.scheme"), formattable::formattableOutput("tbdEscheme")),
         tabPanel(
           trloc("main.checkdescribe.evolution.detailed"),
@@ -2972,7 +2984,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3027,7 +3039,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3081,7 +3093,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3133,7 +3145,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3228,10 +3240,10 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("main.checkdescribe.evolution.duration"), plotlyOutput("tbdSduration", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.checkdescribe.evolution.start"), plotlyOutput("tbdSstart", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.checkdescribe.evolution.epidemicperc"), plotlyOutput("tbdSpercentage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.checkdescribe.evolution.thresholds"), plotlyOutput("tbdSthresholds", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+        tabPanel(trloc("main.checkdescribe.evolution.duration"), plotlyOutput("tbdSduration", width = "auto", height = "auto")),
+        tabPanel(trloc("main.checkdescribe.evolution.start"), plotlyOutput("tbdSstart", width = "auto", height = "auto")),
+        tabPanel(trloc("main.checkdescribe.evolution.epidemicperc"), plotlyOutput("tbdSpercentage", width = "auto", height = "auto")),
+        tabPanel(trloc("main.checkdescribe.evolution.thresholds"), plotlyOutput("tbdSthresholds", width = "auto", height = "auto")),
         tabPanel(trloc("main.checkdescribe.evolution.scheme"), formattable::formattableOutput("tbdSscheme")),
         tabPanel(
           trloc("main.checkdescribe.evolution.detailed"),
@@ -3292,7 +3304,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3344,7 +3356,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3396,7 +3408,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3446,7 +3458,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(
           z,
           names(datfile.plot),
@@ -3812,7 +3824,7 @@ shinyServer(function(input, output, session) {
       do.call(
         tabsetPanel,
         lapply(na.seasons, function(s) {
-          call("tabPanel", s, call("imageOutput", outputId = paste0("tbdGoodnessGraphs_", s), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+          call("tabPanel", s, call("imageOutput", outputId = paste0("tbdGoodnessGraphs_", s), width = "auto", height = "auto"))
         })
       )
     }
@@ -3850,8 +3862,8 @@ shinyServer(function(input, output, session) {
               column(2, downloadButton("tbmData_c", "csv"))
             )
           ),
-          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbmSeasons", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbmSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbmSeasons", width = "auto", height = "auto")),
+          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbmSeries", width = "auto", height = "auto")),
           tabPanel(trloc("main.checkdescribe.timing"), uiOutput("tbmTiming")),
           tabPanel(trloc("main.model.mem"), uiOutput("tbmMem")),
           tabPanel(trloc("main.checkdescribe.goodness"), uiOutput("tbmGoodness")),
@@ -3879,8 +3891,8 @@ shinyServer(function(input, output, session) {
               column(2, downloadButton("tbmData_c", "csv"))
             )
           ),
-          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbmSeasons", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbmSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbmSeasons", width = "auto", height = "auto")),
+          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbmSeries", width = "auto", height = "auto")),
           tabPanel(trloc("main.checkdescribe.timing"), uiOutput("tbmTiming")),
           tabPanel(trloc("main.model.mem"), uiOutput("tbmMem")),
           tabPanel(trloc("main.checkdescribe.goodness"), uiOutput("tbmGoodness")),
@@ -3984,7 +3996,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
@@ -4046,7 +4058,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth2), height = as.numeric(values$gheight2))
         zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
@@ -4066,7 +4078,7 @@ shinyServer(function(input, output, session) {
         lapply(tabnames, function(s) {
           ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
           ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-          call("tabPanel", s, call("uiOutput", outputId = paste0("tbmTiming_", s), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+          call("tabPanel", s, call("uiOutput", outputId = paste0("tbmTiming_", s), width = "auto", height = "auto"))
         })
       )
     }
@@ -4137,8 +4149,8 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("main.model.mem.graphs.moving"), plotlyOutput("tbmMemGraphMoving", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-        tabPanel(trloc("main.model.mem.graphs.average"), plotlyOutput("tbmMemGraphAverage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+        tabPanel(trloc("main.model.mem.graphs.moving"), plotlyOutput("tbmMemGraphMoving", width = "auto", height = "auto")),
+        tabPanel(trloc("main.model.mem.graphs.average"), plotlyOutput("tbmMemGraphAverage", width = "auto", height = "auto"))
       )
     }
   })
@@ -4213,7 +4225,7 @@ shinyServer(function(input, output, session) {
             xintercept = datamodel$centered.start + datamodel$centered.length - 1 + 0.5,
             col = colors.palette$colEpidemicStop, linetype = "longdash", size = 0.5
           )
-        z <- ggplotly(p0, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p0, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         # Change Average curve to: more width and dot stype
         z$x$data[[NCOL(datfile.plot)]]$line$width <- 2 * z$x$data[[NCOL(datfile.plot)]]$line$width
         z$x$data[[NCOL(datfile.plot)]]$line$dash <- "dot"
@@ -4291,7 +4303,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
@@ -4496,7 +4508,8 @@ shinyServer(function(input, output, session) {
       do.call(
         tabsetPanel,
         lapply(na.seasons, function(s) {
-          call("tabPanel", s, call("imageOutput", outputId = paste0("tbmGoodnessGraphs_", s), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+          cat("reactive/data_good_model> generating ", paste0("tbmGoodnessGraphs_", s), "\n")
+          call("tabPanel", s, call("imageOutput", outputId = paste0("tbmGoodnessGraphs_", s), width = "auto", height = "auto"))
         })
       )
     }
@@ -4912,25 +4925,23 @@ shinyServer(function(input, output, session) {
           }
 
           lapply(nombre.anios, function(s) {
-            output[[paste0("tbmOptimizeM_", as.character(s), "_image")]] <- renderImage({
-              imgfile <- ""
-              if (NROW(all.graph.names) > 0) {
-                imgtmp <- all.graph.names
-                imgtmp2 <- subset(imgtmp, imgtmp$season == as.character(s))
-                if (NROW(imgtmp2) > 0) {
-                  if (file.exists(imgtmp2$file)) {
-                    imgfile <- imgtmp2$file
+            output[[paste0("tbmOptimizeM_", as.character(s), "_image")]] <- renderImage(
+              {
+                imgfile <- ""
+                if (NROW(all.graph.names) > 0) {
+                  imgtmp <- all.graph.names
+                  imgtmp2 <- subset(imgtmp, imgtmp$season == as.character(s))
+                  if (NROW(imgtmp2) > 0) {
+                    if (file.exists(imgtmp2$file)) {
+                      imgfile <- imgtmp2$file
+                    }
                   }
                 }
-              }
-              gfile <- list(
-                src = imgfile,
-                contentType = "image/png",
-                width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
-                alt = "No image found"
-              )
-              gfile
-            })
+                gfile <- list(src = imgfile, contentType = "image/png", width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1), alt = "No image found")
+                gfile
+              },
+              deleteFile = FALSE
+            )
           })
 
           optim <- memgoodness(datfile.plot,
@@ -5033,7 +5044,7 @@ shinyServer(function(input, output, session) {
             column(2, downloadButton("tbmOptimizeADetail_c", "csv"))
           )
         ),
-        tabPanel(trloc("main.model.optimize.graphs"), plotlyOutput("tbmOptimizeAGraph", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+        tabPanel(trloc("main.model.optimize.graphs"), plotlyOutput("tbmOptimizeAGraph", width = "auto", height = "auto"))
       )
     }
   })
@@ -5171,7 +5182,7 @@ shinyServer(function(input, output, session) {
         theme_light() +
         theme(plot.title = element_text(hjust = 0.5))
 
-      z <- ggplotly(p, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+      z <- ggplotly(p, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
       # fix popup values
       for (i in seq_len(length(z$x$data))) {
         z$x$data[[i]]$text <- gsub("Parameter", trloc("main.model.optimize.automatic.parameter"), z$x$data[[i]]$text, fixed = TRUE)
@@ -5238,7 +5249,7 @@ shinyServer(function(input, output, session) {
       return(NULL)
     } else {
       tabsetPanel(
-        tabPanel(trloc("main.surveillance.surveillance.week"), plotlyOutput("tbsSurveillanceWeek", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+        tabPanel(trloc("main.surveillance.surveillance.week"), plotlyOutput("tbsSurveillanceWeek", width = "auto", height = "auto")),
         if (animationmethod < 4) {
           tabPanel(trloc("main.surveillance.surveillance.animated"), imageOutput("tbsSurveillanceAnimated"))
         } else {
@@ -5248,7 +5259,7 @@ shinyServer(function(input, output, session) {
         },
         tabPanel(
           trloc("main.surveillance.surveillance.average"),
-          plotlyOutput("tbsSurveillanceAverage", width = as.numeric(input$dwidth), height = as.numeric(input$dheight)),
+          plotlyOutput("tbsSurveillanceAverage", width = "auto", height = "auto"),
           fluidRow(
             column(8),
             column(
@@ -5335,7 +5346,7 @@ shinyServer(function(input, output, session) {
       if (is.null(p)) {
         zfix <- NULL
       } else {
-        z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+        z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
         zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
       }
     }
@@ -5423,14 +5434,14 @@ shinyServer(function(input, output, session) {
           cat("animated gif> using animation package with GraphicsMagic\n")
           requireNamespace("animation", quietly = TRUE)
           cat(paste0("animated gif> creating\t\t", imgfilegif, "\n"))
-          animation::saveGIF(for (i in seq_len(n.surveillance.week)) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(input$dwidth), ani.height = as.numeric(input$dheight), loop = TRUE, convert = "gm convert")
+          animation::saveGIF(for (i in seq_len(n.surveillance.week)) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(values$gwidth1), ani.height = as.numeric(values$gheight1), loop = TRUE, convert = "gm convert")
           cat(paste0("animated gif> saving\t\t", imgfilegif, "\n"))
           cat("animated gif> end\n")
         } else if (animationmethod == 2) {
           cat("animated gif> using animation package with ImageMagic\n")
           requireNamespace("animation", quietly = TRUE)
           cat(paste0("animated gif> creating\t\t", imgfilegif, "\n"))
-          animation::saveGIF(for (i in seq_len(n.surveillance.week)) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(input$dwidth), ani.height = as.numeric(input$dheight), loop = TRUE)
+          animation::saveGIF(for (i in seq_len(n.surveillance.week)) print(plot.list[[i]]), movie.name = imgfilegif, interval = 0.5, autobrowse = FALSE, ani.width = as.numeric(values$gwidth1), ani.height = as.numeric(values$gheight1), loop = TRUE)
           cat(paste0("animated gif> saving\t\t", imgfilegif, "\n"))
           cat("animated gif> end\n")
         } else if (animationmethod == 3) {
@@ -5438,7 +5449,7 @@ shinyServer(function(input, output, session) {
           requireNamespace("magick", quietly = TRUE)
           for (i in seq_len(n.surveillance.week)) {
             imgfile <- paste(tempdir(), "/animatedplot_", i, ".png", sep = "")
-            ggsave(imgfile, plot = plot.list[[i]], width = 8, height = 6, dpi = 150)
+            ggsave(imgfile, plot = plot.list[[i]], width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1), units = "px", dpi = 150)
             if (i == 1) imgfilem <- magick::image_read(imgfile) else imgfilem <- c(imgfilem, magick::image_read(imgfile))
             cat(paste0("animated gif> image\t", i, "/", n.surveillance.week, "\t", imgfile, "\n"))
           }
@@ -5448,12 +5459,7 @@ shinyServer(function(input, output, session) {
           magick::image_write(anim, path = imgfilegif)
           cat("animated gif> end\n")
         }
-        outdistAnimated <- list(
-          src = imgfilegif,
-          contentType = "image/gif",
-          width = as.numeric(input$dwidth), height = as.numeric(input$dheight),
-          alt = "This is alternate text"
-        )
+        outdistAnimated <- list(src = imgfilegif, contentType = "image/gif", width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1), alt = "This is alternate text")
       }
       outdistAnimated
     },
@@ -5539,7 +5545,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+          z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
           zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
@@ -5767,8 +5773,8 @@ shinyServer(function(input, output, session) {
       if (length(selectedcolumns) > 0) {
         tabsetPanel(
           tabPanel(trloc("main.checkdescribe.data"), DT::dataTableOutput("tbvData")),
-          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbvSeasons", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
-          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbvSeries", width = as.numeric(input$dwidth), height = as.numeric(input$dheight))),
+          tabPanel(trloc("main.checkdescribe.seasons"), plotlyOutput("tbvSeasons", width = "auto", height = "auto")),
+          tabPanel(trloc("main.checkdescribe.series"), plotlyOutput("tbvSeries", width = "auto", height = "auto")),
           tabPanel(trloc("main.checkdescribe.timing"), uiOutput("tbvTiming"))
         )
       } else {
@@ -5876,7 +5882,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+          z <- ggplotly(p$plot, width = as.numeric(values$gwidth1), height = as.numeric(values$gheight1))
           zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
@@ -5958,7 +5964,7 @@ shinyServer(function(input, output, session) {
         if (is.null(p)) {
           zfix <- NULL
         } else {
-          z <- ggplotly(p$plot, width = as.numeric(input$dwidth), height = as.numeric(input$dheight))
+          z <- ggplotly(p$plot, width = as.numeric(values$gwidth2), height = as.numeric(values$gheight2))
           zfix <- fixPlotly(z, p$labels, p$haslines, p$haspoints, trloc("graphs.week"), "value", p$weeklabels)
         }
       }
@@ -5977,7 +5983,7 @@ shinyServer(function(input, output, session) {
         lapply(tabnames, function(s) {
           ## Populate the tabPanel with a dataTableOutput layout, with ID specific to the sample.
           ## Can also accommodate additional layout parts by adding additional call() to call("tabPanel")
-          call("tabPanel", s, call("uiOutput", outputId = paste0("tbvTiming_", s), width = as.numeric(input$dwidth), height = as.numeric(input$dheight)))
+          call("tabPanel", s, call("uiOutput", outputId = paste0("tbvTiming_", s), width = "auto", height = "auto"))
         })
       )
     }
@@ -6307,7 +6313,7 @@ shinyServer(function(input, output, session) {
 
   output$uiProcedures <- renderUI({
     tabBox(
-      title = h3(trloc("main.procedures"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "800px",
+      title = h3(trloc("main.procedures"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), width = 12, height = "auto",
       tabPanel(h4(trloc("main.checkdescribe.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.checkdescribe.hint"), uiOutput("tbData")),
       tabPanel(h4(trloc("main.model.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.model.hint"), uiOutput("tbModel")),
       tabPanel(h4(trloc("main.surveillance.label"), tags$style(type = "text/css", "#q1 {font-weight: bold;}")), trloc("main.surveillance.hint"), uiOutput("tbSurveillance")),
