@@ -139,8 +139,6 @@ options.graphs.epidemicend.hint;Couleur du point de marquage de fin de l’épid
 options.graphs.epidemicend.label;Fin épidémie
 options.graphs.epidemicstart.hint;Couleur du point de marquage de début de l’ épidémie
 options.graphs.epidemicstart.label;Début épidémie
-options.graphs.height.hint;Hauteur des graphes
-options.graphs.height.label;Hauteur des graphes
 options.graphs.levelspalette.hint;Palette utilisée pour générer la couleur des niveaux d’intensité
 options.graphs.levelspalette.label;Palette des niveaux
 options.graphs.observedline.hint;Couleur de la ligne de données observées
@@ -154,8 +152,6 @@ options.graphs.thresholdspalette.hint;Palette utilisée pour générer la couleu
 options.graphs.thresholdspalette.label;Palette de seuils
 options.graphs.timingpalette.hint;Palette utilisée pour générer les couleurs des points des marqueurs pre et post -épidemiques  dans les graphiques temporels
 options.graphs.timingpalette.label;Palette des temporalités
-options.graphs.width.hint;Largeur des graphes
-options.graphs.width.label;Largeur des graphes
 options.graphs.yaxis0.hint;Forcer l’axe des y à commencer à 0 pour tous les graphiques
 options.graphs.yaxis0.label;L’axe y commence à 0
 options.language.hint;Changer la langue de l’application

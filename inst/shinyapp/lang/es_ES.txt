@@ -139,8 +139,6 @@ options.graphs.epidemicend.hint;Color del punto que marca el fin de la epidemia
 options.graphs.epidemicend.label;Fin epidemia
 options.graphs.epidemicstart.hint;Color del punto que marca el inicio de la epidemia
 options.graphs.epidemicstart.label;Inicio epidemia
-options.graphs.height.hint;Alto de los gráficos generados por la aplicación
-options.graphs.height.label;Alto gráficos
 options.graphs.levelspalette.hint;Paleta que se usa para generar los colores de los niveles de intensidad
 options.graphs.levelspalette.label;Paleta niveles
 options.graphs.observedline.hint;Color de la línea de datos observados
@@ -154,8 +152,6 @@ options.graphs.thresholdspalette.hint;Paleta que se usa para generar los colores
 options.graphs.thresholdspalette.label;Paleta umbrales
 options.graphs.timingpalette.hint;Paleta usada para generar los colores de los puntos pre, pos y epidémicos en los gráficos de localización
 options.graphs.timingpalette.label;Paleta localización
-options.graphs.width.hint;Ancho de los gráficos generados por la aplicación
-options.graphs.width.label;Ancho gráficos
 options.graphs.yaxis0.hint;Fuerza que el eje-y comience en el valor 0 en todos los gráficos
 options.graphs.yaxis0.label;Eje-Y comienza en 0
 options.language.hint;Cambia el idioma de la aplicación
@@ -350,3 +346,7 @@ options.mem.other.levelother.hint;Niveles de los intervales de confianza que se 
 options.mem.other.levelother.level;Nivel otros
 selections.timing.label;Localización
 selections.timing.hint;Mostrar la localización de la epidemia en los gráficos
+selections.dataset.wavesdetection.multiple.summary;Resumen
+selections.dataset.wavesdetection.multiple.iteration;Ondas múltiples
+selections.dataset.wavesdetection.multiple.epidemics;Epidemias
+selections.dataset.wavesdetection.multiple.location;Serie

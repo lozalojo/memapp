@@ -139,8 +139,6 @@ options.graphs.epidemicend.hint;Color of the point of the epidemic end marker
 options.graphs.epidemicend.label;Epidemic end
 options.graphs.epidemicstart.hint;Color of the point of the epidemic start marker
 options.graphs.epidemicstart.label;Epidemic start
-options.graphs.height.hint;Height of applications graphs
-options.graphs.height.label;Graphs height
 options.graphs.levelspalette.hint;Palette used to generate color for intensity levels
 options.graphs.levelspalette.label;Levels palette
 options.graphs.observedline.hint;Color of the line of observed data
@@ -154,8 +152,6 @@ options.graphs.thresholdspalette.hint;Palette used to generate color for epidemi
 options.graphs.thresholdspalette.label;Thresholds palette
 options.graphs.timingpalette.hint;Palette used to generate the colors of the points of pre, epidemic and post markers in timing graphs
 options.graphs.timingpalette.label;Timing palette
-options.graphs.width.hint;Width of applications graphs
-options.graphs.width.label;Graphs width
 options.graphs.yaxis0.hint;Force y-axis to start at 0 for all plots
 options.graphs.yaxis0.label;y-axis starts at 0
 options.language.hint;Change the language of the application
@@ -350,3 +346,7 @@ options.mem.other.levelother.hint;Level of the confidence interval used to calcu
 options.mem.other.levelother.level;Other level
 selections.timing.label;Timing
 selections.timing.hint;Plot timing in graphs
+selections.dataset.wavesdetection.multiple.summary;Summary
+selections.dataset.wavesdetection.multiple.iteration;Multiple waves
+selections.dataset.wavesdetection.multiple.epidemics;Epidemics
+selections.dataset.wavesdetection.multiple.location;Series

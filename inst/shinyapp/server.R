@@ -68,9 +68,7 @@ shinyServer(function(input, output, session) {
     wavesparam2 = list(value = 2, min = 0.5, max = 10, step = 0.1),
     smregressionoptimum = TRUE,
     smregressionsmoothing = list(min = 0.1, max = 5, value = 1, step = 0.1),
-    transfpositive = FALSE,
-    dwidth = 800,
-    dheight = 600
+    transfpositive = FALSE
   )
 
   #####################################
@@ -1701,8 +1699,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "colSeasons", selected = default_values$colSeasons)
     updateSelectInput(session, "colEpidemic", selected = default_values$colEpidemic)
     updatePrettyCheckbox(session, "yaxis0", value = default_values$yaxis0)
-    updateNumericInput(session, "dwidth", value = default_values$dwidth)
-    updateNumericInput(session, "dheight", value = default_values$dheight)
     # MEM options
     updateSelectInput(session, "method", selected = default_values$method)
     updateNumericInput(session, "param", value = default_values$param$value, min = default_values$param$min, max = default_values$param$max, step = default_values$param$step)
@@ -2486,8 +2482,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "colSeasons", selected = default_values$colSeasons)
     updateSelectInput(session, "colEpidemic", selected = default_values$colEpidemic)
     updateCheckboxInput(session, "yaxis0", value = default_values$yaxis0)
-    updateNumericInput(session, "dwidth", value = default_values$dwidth)
-    updateNumericInput(session, "dheight", value = default_values$dheight)
     cat("observeEvent/resetuiGraphoptions> end\n")
   })
 
@@ -2601,7 +2595,6 @@ shinyServer(function(input, output, session) {
           tabPanel(trloc("main.checkdescribe.goodness"), uiOutput("tbdGoodness"))
         )
       } else {
-        # tabsetPanel(tabPanel(trloc("main.checkdescribe.file"), verbatimTextOutput("tbdFile")),
         tabsetPanel(
           tabPanel(trloc("main.checkdescribe.file"), uiOutput("tbdFile")),
           tabPanel(
@@ -2638,12 +2631,39 @@ shinyServer(function(input, output, session) {
     if (as.numeric(input$waves) == 4) {
       fluidPage(
         fluidRow(
-          column(6, verbatimTextOutput("tbdFileTxt")),
-          column(6, plotOutput("tbdFilePlot1", width = "auto", height = "auto"))
+          column(
+            12, h5(
+              trloc("selections.dataset.wavesdetection.multiple.summary"),
+              tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}")
+            ),
+            verbatimTextOutput("tbdFileTxt")
+          )
         ),
         fluidRow(
-          column(6, plotOutput("tbdFilePlot2", width = "auto", height = "auto")),
-          column(6, plotOutput("tbdFilePlot3", width = "auto", height = "auto"))
+          column(
+            12, h5(
+              trloc("selections.dataset.wavesdetection.multiple.iteration"),
+              tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}")
+            ),
+            plotlyOutput("tbdFilePlot1", width = "auto", height = "auto")
+          )
+        ),
+
+        fluidRow(
+          column(
+            6, h5(
+              trloc("selections.dataset.wavesdetection.multiple.epidemics"),
+              tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}")
+            ),
+            plotlyOutput("tbdFilePlot2", width = "auto", height = "auto")
+          ),
+          column(
+            6, h5(
+              trloc("selections.dataset.wavesdetection.multiple.location"),
+              tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}")
+            ),
+            plotlyOutput("tbdFilePlot3", width = "auto", height = "auto")
+          )
         )
       )
     } else {
@@ -2668,34 +2688,37 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$tbdFilePlot1 <- renderPlot({
+  output$tbdFilePlot1 <- renderPlotly({
     readdata <- read_data()
     plots <- readdata$plots
     if (is.null(plots)) {
-      NULL
+      zfix <- NULL
     } else {
-      tail(plots$p3, 1)
+      zfix <- ggplotly(plots$p3[[length(plots$p3)]], width = as.numeric(values$gwidth2), height = as.numeric(values$gheight2))
     }
+    zfix
   })
 
-  output$tbdFilePlot2 <- renderPlot({
+  output$tbdFilePlot2 <- renderPlotly({
     readdata <- read_data()
     plots <- readdata$plots
     if (is.null(plots)) {
-      NULL
+      zfix <- NULL
     } else {
-      plots$p4[[2]]
+      zfix <- ggplotly(plots$p4[[2]], width = as.numeric(values$gwidth1) / 2, height = as.numeric(values$gheight1) / 2)
     }
+    zfix
   })
 
-  output$tbdFilePlot3 <- renderPlot({
+  output$tbdFilePlot3 <- renderPlotly({
     readdata <- read_data()
     plots <- readdata$plots
     if (is.null(plots)) {
-      NULL
+      zfix <- NULL
     } else {
-      plots$p5[[2]]
+      zfix <- ggplotly(plots$p5[[2]], width = as.numeric(values$gwidth1) / 2, height = as.numeric(values$gheight1) / 2)
     }
+    zfix
   })
 
   output$tbdData <- DT::renderDataTable(
@@ -6466,22 +6489,6 @@ shinyServer(function(input, output, session) {
                 shape = "curve"
               ),
               title = trloc("options.graphs.yaxis0.label"), content = trloc("options.graphs.yaxis0.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-            )
-          )
-        ),
-        fluidRow(
-          column(
-            6,
-            popify(
-              numericInput("dwidth", h6(trloc("options.graphs.width.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$dwidth),
-              title = trloc("options.graphs.width.label"), content = trloc("options.graphs.width.hint"), placement = "left", trigger = "focus", options = list(container = "body")
-            )
-          ),
-          column(
-            6,
-            popify(
-              numericInput("dheight", h6(trloc("options.graphs.height.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$dheight),
-              title = trloc("options.graphs.height.label"), content = trloc("options.graphs.height.hint"), placement = "left", trigger = "focus", options = list(container = "body")
             )
           )
         )
