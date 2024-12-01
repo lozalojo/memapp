@@ -347,6 +347,9 @@ options.mem.other.levelother.level;Nivel otros
 selections.timing.label;Localización
 selections.timing.hint;Mostrar la localización de la epidemia en los gráficos
 selections.dataset.wavesdetection.multiple.summary;Resumen
-selections.dataset.wavesdetection.multiple.iteration;Ondas múltiples
 selections.dataset.wavesdetection.multiple.epidemics;Epidemias
 selections.dataset.wavesdetection.multiple.location;Serie
+selections.dataset.wavesdetection.multiple.iteration;Iteración
+selections.dataset.wavesdetection.multiple.merged;Epidemias combinadas
+selections.dataset.wavesdetection.multiple.artificial;Serie dividida en las temporadas artificiales
+selections.dataset.wavesdetection.multiple.memepidemics;Serie dividida y epidemias MEM

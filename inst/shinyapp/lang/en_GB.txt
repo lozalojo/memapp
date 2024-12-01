@@ -347,6 +347,9 @@ options.mem.other.levelother.level;Other level
 selections.timing.label;Timing
 selections.timing.hint;Plot timing in graphs
 selections.dataset.wavesdetection.multiple.summary;Summary
-selections.dataset.wavesdetection.multiple.iteration;Multiple waves
 selections.dataset.wavesdetection.multiple.epidemics;Epidemics
 selections.dataset.wavesdetection.multiple.location;Series
+selections.dataset.wavesdetection.multiple.iteration;Iteration
+selections.dataset.wavesdetection.multiple.merged;Merged epidemics
+selections.dataset.wavesdetection.multiple.artificial;Series separated in artificial seasons
+selections.dataset.wavesdetection.multiple.memepidemics;Series separated and MEM epidemics

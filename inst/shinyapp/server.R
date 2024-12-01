@@ -1535,7 +1535,10 @@ shinyServer(function(input, output, session) {
             i.intra.param = as.numeric(input$wavesparam1),
             i.inter.param = as.numeric(input$wavesparam2),
             i.method = as.numeric(input$method),
-            i.param = as.numeric(input$param)
+            i.param = as.numeric(input$param),
+            i.p3titles = c(trloc("selections.dataset.wavesdetection.multiple.iteration"), trloc("selections.surveillance.week.label"), trloc("main.checkdescribe.data")),
+            i.p4titles = c(trloc("selections.dataset.wavesdetection.multiple.merged"), trloc("selections.dataset.wavesdetection.multiple.separation.label"), trloc("selections.dataset.wavesdetection.multiple.iteration"), trloc("selections.surveillance.week.label"), trloc("main.checkdescribe.data")),
+            i.p5titles = c(trloc("selections.dataset.wavesdetection.multiple.artificial"), trloc("selections.dataset.wavesdetection.multiple.memepidemics"), trloc("selections.surveillance.week.label"), trloc("main.checkdescribe.data"))
           )
           datalog <- paste0(datalog, "Note: Description of dummy seasons created\n\t", trloc("selections.surveillance.season.label"), "\t", trloc("selections.model.from.label"), "\t", trloc("selections.model.to.label"), "\n", paste0(apply(temp1$season.desc, 1, function(x) paste0("\t", paste0(as.character(x), collapse = "\t"))), collapse = "\n"))
           datasetread <- temp1$data.final
@@ -2642,13 +2645,12 @@ shinyServer(function(input, output, session) {
         fluidRow(
           column(
             12, h5(
-              trloc("selections.dataset.wavesdetection.multiple.iteration"),
+              trloc("selections.dataset.wavesdetection.multiple"),
               tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}")
             ),
             plotlyOutput("tbdFilePlot1", width = "auto", height = "auto")
           )
         ),
-
         fluidRow(
           column(
             6, h5(
