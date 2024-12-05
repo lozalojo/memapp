@@ -353,3 +353,7 @@ selections.dataset.wavesdetection.multiple.iteration;Iteración
 selections.dataset.wavesdetection.multiple.merged;Epidemias combinadas
 selections.dataset.wavesdetection.multiple.artificial;Serie dividida en las temporadas artificiales
 selections.dataset.wavesdetection.multiple.memepidemics;Serie dividida y epidemias MEM
+options.mem.goodness.optimization.minsensitivity.label;Sensibilidad mínima
+options.mem.goodness.optimization.minsensitivity.hint;Establece un valor mínimo para la sensibilidad al optimizar
+options.mem.goodness.optimization.minspecificity.label;Especificidad mínima
+options.mem.goodness.optimization.minspecificity.hint;Establece un valor mínimo para la especificidad al optimizar

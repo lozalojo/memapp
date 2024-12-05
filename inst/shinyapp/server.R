@@ -42,6 +42,8 @@ shinyServer(function(input, output, session) {
     validation = "cross",
     optimmethod = "matthews",
     paramrange = list(value = c(1, 5), min = 0.1, max = 10, step = 0.1),
+    minsensitivity = list(value = 0, min = 0, max = 1, step = 0.05),
+    minspecificity = list(value = 0, min = 0, max = 1, step = 0.05),
     typeaveragecurve = 2,
     typeother = 3,
     levelaveragecurve = list(value = 95.0, min = 0.5, max = 99.5, step = 0.5),
@@ -1358,7 +1360,9 @@ shinyServer(function(input, output, session) {
           i.level.other = as.numeric(input$levelother) / 100,
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
           i.n.max = as.numeric(input$nvalues),
-          i.goodness.method = as.character(input$validation)
+          i.goodness.method = as.character(input$validation),
+          i.min.sensitivity = as.numeric(input$minsensitivity),
+          i.min.specificity = as.numeric(input$minspecificity)
         )
       }
     }
@@ -1716,6 +1720,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "validation", selected = default_values$validation)
     updateSelectInput(session, "optimmethod", selected = default_values$optimmethod)
     updateSliderInput(session, "paramrange", value = default_values$paramrange$value, min = default_values$paramrange$min, max = default_values$paramrange$max, step = default_values$paramrange$step)
+    updateNumericInput(session, "minsensitivity", value = default_values$minsensitivity$value, min = default_values$minsensitivity$min, max = default_values$minsensitivity$max, step = default_values$minsensitivity$step)
+    updateNumericInput(session, "minspecificity", value = default_values$minspecificity$value, min = default_values$minspecificity$min, max = default_values$minspecificity$max, step = default_values$minspecificity$step)
     updateSelectInput(session, "typeaveragecurve", selected = default_values$typeaveragecurve)
     updateSelectInput(session, "typeother", selected = default_values$typeother)
     updateNumericInput(session, "levelaveragecurve", value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step = default_values$levelaveragecurve$step)
@@ -2504,6 +2510,8 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "validation", selected = default_values$validation)
     updateSelectInput(session, "optimmethod", selected = default_values$optimmethod)
     updateSliderInput(session, "paramrange", value = default_values$paramrange$value, min = default_values$paramrange$min, max = default_values$paramrange$max, step = default_values$paramrange$step)
+    updateNumericInput(session, "minsensitivity", value = default_values$minsensitivity$value, min = default_values$minsensitivity$min, max = default_values$minsensitivity$max, step = default_values$minsensitivity$step)
+    updateNumericInput(session, "minspecificity", value = default_values$minspecificity$value, min = default_values$minspecificity$min, max = default_values$minspecificity$max, step = default_values$minspecificity$step)
     updateSelectInput(session, "typeaveragecurve", selected = default_values$typeaveragecurve)
     updateSelectInput(session, "typeother", selected = default_values$typeother)
     updateNumericInput(session, "levelaveragecurve", value = default_values$levelaveragecurve$value, min = default_values$levelaveragecurve$min, max = default_values$levelaveragecurve$max, step = default_values$levelaveragecurve$step)
@@ -6638,6 +6646,25 @@ shinyServer(function(input, output, session) {
         popify(
           sliderInput("paramrange", label = h6(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.mem.goodness.optimization.paramrange.label")), value = default_values$paramrange$value, min = default_values$paramrange$min, max = default_values$paramrange$max, step = default_values$paramrange$step),
           title = trloc("options.mem.goodness.optimization.paramrange.label"), content = trloc("options.mem.goodness.optimization.paramrange.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+        ),
+        conditionalPanel(
+          condition = "input.showadvanced",
+          fluidRow(
+            column(
+              6,
+              popify(
+                numericInput("minsensitivity", h6(trloc("options.mem.goodness.optimization.minsensitivity.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$minsensitivity$value, min = default_values$minsensitivity$min, max = default_values$minsensitivity$max, step = default_values$minsensitivity$step),
+                title = trloc("options.mem.goodness.optimization.minsensitivity.label"), content = trloc("options.mem.goodness.optimization.minsensitivity.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+              )
+            ),
+            column(
+              6,
+              popify(
+                numericInput("minspecificity", h6(trloc("options.mem.goodness.optimization.minspecificity.label"), tags$style(type = "text/css", "#q1 {vertical-align: top;}")), value = default_values$minspecificity$value, min = default_values$minspecificity$min, max = default_values$minspecificity$max, step = default_values$minspecificity$step),
+                title = trloc("options.mem.goodness.optimization.minspecificity.label"), content = trloc("options.mem.goodness.optimization.minspecificity.hint"), placement = "left", trigger = "focus", options = list(container = "body")
+              )
+            )
+          )
         ),
         h4(tags$style(type = "text/css", "#q1 {vertical-align: top;}"), trloc("options.mem.other")),
         fluidRow(
