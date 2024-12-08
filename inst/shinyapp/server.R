@@ -1233,7 +1233,19 @@ shinyServer(function(input, output, session) {
           i.param = as.numeric(input$param),
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
           i.n.max = as.numeric(input$nvalues),
-          i.goodness.method = as.character(input$validation)
+          i.goodness.method = as.character(input$validation),
+          i.labels.axis = c(trloc("graphs.week"), trloc("graphs.weeklydata")),
+          i.labels.periods = c(trloc("graphs.preepidemic"), trloc("graphs.epidemic"), trloc("graphs.postepidemic")),
+          i.labels.intensities = c(trloc("graphs.prethreshold.short"), trloc("graphs.mediumthreshold.short"), trloc("graphs.highthreshold.short"), trloc("graphs.veryhighthreshold.short")),
+          i.labels.details = c(
+            trloc("options.mem.goodness.graphs.algorithm"),
+            trloc("options.mem.goodness.graphs.threshold"),
+            trloc("options.mem.goodness.graphs.method"),
+            trloc("options.mem.goodness.graphs.detail1"),
+            trloc("options.mem.goodness.graphs.detail2"),
+            trloc("graphs.sensitivity"),
+            trloc("graphs.specificity")
+          )
         )
       }
     }
@@ -1300,7 +1312,19 @@ shinyServer(function(input, output, session) {
           i.detection.values = seq(input$paramrange[1], input$paramrange[2], by = 0.1),
           i.n.max = as.numeric(input$nvalues),
           i.goodness.method = as.character(input$validation),
-          i.calculation.method = "threshold"
+          i.calculation.method = "threshold",
+          i.labels.axis = c(trloc("graphs.week"), trloc("graphs.weeklydata")),
+          i.labels.periods = c(trloc("graphs.preepidemic"), trloc("graphs.epidemic"), trloc("graphs.postepidemic")),
+          i.labels.intensities = c(trloc("graphs.prethreshold.short"), trloc("graphs.mediumthreshold.short"), trloc("graphs.highthreshold.short"), trloc("graphs.veryhighthreshold.short")),
+          i.labels.details = c(
+            trloc("options.mem.goodness.graphs.algorithm"),
+            trloc("options.mem.goodness.graphs.threshold"),
+            trloc("options.mem.goodness.graphs.method"),
+            trloc("options.mem.goodness.graphs.detail1"),
+            trloc("options.mem.goodness.graphs.detail2"),
+            trloc("graphs.sensitivity"),
+            trloc("graphs.specificity")
+          )
         )
       }
     }
@@ -3003,6 +3027,7 @@ shinyServer(function(input, output, session) {
       indicators <- c("durationll", "duration", "durationul")
       datfile.plot <- dataevolution[indicators]
       names(datfile.plot) <- c(trloc("graphs.durationlower"), trloc("graphs.duration"), trloc("graphs.durationupper"))
+      row.names(datfile.plot)[row.names(datfile.plot) == "next"] <- trloc("graphs.next")
       # by inserting \n instead of /, the fixPlotly function assign twice the space for the x-axis labs
       colors.palette <- generatePalette(
         i.number.series = 3,
@@ -3057,6 +3082,7 @@ shinyServer(function(input, output, session) {
       indicators <- c("startll", "start", "startul")
       datfile.plot <- dataevolution[indicators]
       names(datfile.plot) <- c(trloc("graphs.startlower"), trloc("graphs.start"), trloc("graphs.startupper"))
+      row.names(datfile.plot)[row.names(datfile.plot) == "next"] <- trloc("graphs.next")
       # by inserting \n instead of /, the fixPlotly function assign twice the space for the x-axis labs
       colors.palette <- generatePalette(
         i.number.series = 3,
@@ -3112,6 +3138,7 @@ shinyServer(function(input, output, session) {
       indicators <- c("percentagell", "percentage", "percentageul")
       datfile.plot <- dataevolution[indicators]
       names(datfile.plot) <- c(trloc("graphs.epidemicpercentagelower"), trloc("graphs.epidemicpercentage"), trloc("graphs.epidemicpercentageupper"))
+      row.names(datfile.plot)[row.names(datfile.plot) == "next"] <- trloc("graphs.next")
       # by inserting \n instead of /, the fixPlotly function assign twice the space for the x-axis labs
       colors.palette <- generatePalette(
         i.number.series = 3,
@@ -3164,6 +3191,7 @@ shinyServer(function(input, output, session) {
       indicators <- c("epidemic", "medium", "high", "veryhigh", "postepidemic")
       datfile.plot <- dataevolution[indicators]
       names(datfile.plot) <- c(trloc("graphs.prethreshold"), trloc("graphs.mediumthreshold.short"), trloc("graphs.highthreshold.short"), trloc("graphs.veryhighthreshold.short"), trloc("graphs.postthreshold"))
+      row.names(datfile.plot)[row.names(datfile.plot) == "next"] <- trloc("graphs.next")
       colors.palette <- generatePalette(
         i.number.series = NCOL(datfile.plot),
         i.colObservedLines = input$colObservedLines,
@@ -4821,8 +4849,8 @@ shinyServer(function(input, output, session) {
               i.timing.2 <- mem:::calcular.optimo(curva.map, 2, i.param.deteccion)$resultados[4:5]
               resultado.j <- mem:::calcular.indicadores.2.timings(cur, i.timing.1.i,
                 i.timing.2,
-                i.timing.labels = c("inspection", i.param.deteccion.label),
-                i.graph.title = "Comparing",
+                i.timing.labels = c(trloc("options.mem.goodness.optimization.inspection"), paste0(trloc("main.model.optimize.automatic.parameter"), " (", i.param.deteccion.label, ")")),
+                i.graph.title = trloc("options.mem.goodness.optimization.comparing"),
                 i.graph.file = FALSE
               )$indicadores
               resultados.i[i, , j] <- as.numeric(resultado.j)
@@ -4960,12 +4988,17 @@ shinyServer(function(input, output, session) {
               i.param.deteccion <- optimum$matthews
               i.param.deteccion.label <- format(round(i.param.deteccion, 1), digits = 3, nsmall = 1)
               i.timing.2 <- mem:::calcular.optimo(curva.map, 2, i.param.deteccion)$resultados[4:5]
-              dummmmyyyy <- mem:::calcular.indicadores.2.timings(cur, i.timing.1.i, i.timing.2,
-                i.timing.labels = c("inspection", i.param.deteccion.label),
+              dummmmyyyy <- mem:::calcular.indicadores.2.timings(cur,
+                i.timing.1.i,
+                i.timing.2,
+                i.timing.labels = c(trloc("options.mem.goodness.optimization.inspection"), paste0(trloc("main.model.optimize.automatic.parameter"), " (", i.param.deteccion.label, ")")),
                 i.output = i.output,
                 i.graph.title = graph.title,
                 i.graph.file = i.graph.file,
-                i.graph.file.name = paste(graph.name, " - ", i, sep = "")
+                i.graph.file.name = paste(graph.name, " - ", i, sep = ""),
+                i.labels.axis = c(trloc("graphs.week"), trloc("graphs.weeklydata")),
+                i.labels.periods = c(trloc("graphs.preepidemic"), trloc("graphs.epidemic"), trloc("graphs.postepidemic")),
+                i.labels.details = c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("options.mem.goodness.graphs.detail3"))
               )
             }
 
@@ -5018,45 +5051,53 @@ shinyServer(function(input, output, session) {
 
           fluidPage(
             fluidRow(
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Specificity"], 2), nsmall = 2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Positive predictive value"], 2), nsmall = 2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
-              column(width = 3, shinydashboard::valueBox(format(round(optim["Negative predictive value"], 2), nsmall = 2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
+              column(1, h4(trloc("main.checkdescribe.goodness.indicators"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(
+                11, fluidRow(
+                  column(width = 3, shinydashboard::valueBox(format(round(optim["Sensitivity"], 2), nsmall = 2), trloc("graphs.sensitivity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+                  column(width = 3, shinydashboard::valueBox(format(round(optim["Specificity"], 2), nsmall = 2), trloc("graphs.specificity"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+                  column(width = 3, shinydashboard::valueBox(format(round(optim["Positive predictive value"], 2), nsmall = 2), trloc("graphs.ppv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow")),
+                  column(width = 3, shinydashboard::valueBox(format(round(optim["Negative predictive value"], 2), nsmall = 2), trloc("graphs.npv"), icon = icon("fas fa-heartbeat"), width = 12, color = "yellow"))
+                ),
+                fluidRow(
+                  column(width = 4, shinydashboard::valueBox(format(round(optim["Percent agreement"], 2), nsmall = 2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+                  column(width = 4, shinydashboard::valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall = 2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
+                  column(width = 4, shinydashboard::valueBox(format(round(optim["Youdens Index"], 2), nsmall = 2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
+                ),
+                fluidRow(
+                  column(width = 5, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("main.model.optimize.automatic.currentparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
+                  column(width = 5, shinydashboard::valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("main.model.optimize.automatic.optimumparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive")),
+                  column(width = 2, popify(title = trloc("main.model.optimize.apply.label"), content = trloc("main.model.optimize.apply.hint"), placement = "rigth", actionButton("applyOptimParam", trloc("main.model.optimize.apply.label"))))
+                )
+              )
             ),
             fluidRow(
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Percent agreement"], 2), nsmall = 2), trloc("graphs.percent"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Matthews correlation coefficient"], 2), nsmall = 2), trloc("graphs.matthews"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua")),
-              column(width = 4, shinydashboard::valueBox(format(round(optim["Youdens Index"], 2), nsmall = 2), trloc("graphs.youden"), icon = icon("fas fa-heartbeat"), width = 12, color = "aqua"))
-            ),
-            fluidRow(
-              column(width = 5, shinydashboard::valueBox(format(round(input$param, 2), nsmall = 1), trloc("main.model.optimize.automatic.currentparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "red")),
-              column(width = 5, shinydashboard::valueBox(format(round(as.numeric(optimum.by.inspection.output$optimum[as.character(input$optimmethod)]), 2), nsmall = 1), trloc("main.model.optimize.automatic.optimumparam"), icon = icon("fas fa-heartbeat"), width = 12, color = "olive")),
-              column(width = 2, popify(title = trloc("main.model.optimize.apply.label"), content = trloc("main.model.optimize.apply.hint"), placement = "rigth", actionButton("applyOptimParam", trloc("main.model.optimize.apply.label"))))
-            ),
-            fluidRow(
-              column(width = 12, formattable::renderFormattable({
-                if (!is.null(optimum.by.inspection.output$insp.data)) {
-                  temp1 <- optimum.by.inspection.output$insp.data
-                  temp1 <- temp1[c("value", "sensitivity", "specificity", "positive.predictive.value", "negative.predictive.value", "percent.agreement", "matthews.correlation.coefficient", "youdens.index")]
-                  names(temp1) <- c("Parameter", "Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")
-                  rownames(temp1) <- NULL
-                  opt.table <- formattable::formattable(temp1, list(
-                    "Sensitivity" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
-                    "Specificity" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
-                    "Positive predictive value" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
-                    "Negative predictive value" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
-                    "Percent agreement" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
-                    "Matthews correlation coefficient" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
-                    "Youdens Index" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
-                  ), digits = 2, format = "f")
-                  names(opt.table) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
-                  names(attr(opt.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
-                } else {
-                  temp1 <- data.frame(Error = trloc("ui.columnstwo"), row.names = NULL)
-                  opt.table <- formattable::formattable(temp1)
-                }
-                opt.table
-              }))
+              column(1, h4(trloc("main.model.optimize.detailed"), tags$style(type = "text/css", "#q1 {font-weight: bold;float:right;}"))),
+              column(11, fluidRow(
+                column(width = 12, formattable::renderFormattable({
+                  if (!is.null(optimum.by.inspection.output$insp.data)) {
+                    temp1 <- optimum.by.inspection.output$insp.data
+                    temp1 <- temp1[c("value", "sensitivity", "specificity", "positive.predictive.value", "negative.predictive.value", "percent.agreement", "matthews.correlation.coefficient", "youdens.index")]
+                    names(temp1) <- c("Parameter", "Sensitivity", "Specificity", "Positive predictive value", "Negative predictive value", "Percent agreement", "Matthews correlation coefficient", "Youdens Index")
+                    rownames(temp1) <- NULL
+                    opt.table <- formattable::formattable(temp1, list(
+                      "Sensitivity" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
+                      "Specificity" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
+                      "Positive predictive value" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
+                      "Negative predictive value" = fixedColorBar(color = "#FFBBFF", fixedWidth = 100, alpha = 0.5),
+                      "Percent agreement" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
+                      "Matthews correlation coefficient" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
+                      "Youdens Index" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
+                    ), digits = 2, format = "f")
+                    names(opt.table) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
+                    names(attr(opt.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
+                  } else {
+                    temp1 <- data.frame(Error = trloc("ui.columnstwo"), row.names = NULL)
+                    opt.table <- formattable::formattable(temp1)
+                  }
+                  opt.table
+                }))
+              ))
             )
           )
         }

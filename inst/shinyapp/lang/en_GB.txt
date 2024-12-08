@@ -357,3 +357,11 @@ options.mem.goodness.optimization.minsensitivity.label;Minimum sensitivity
 options.mem.goodness.optimization.minsensitivity.hint;Sets a minimum value for sensitivity when optimizing
 options.mem.goodness.optimization.minspecificity.label;Minimum specificity
 options.mem.goodness.optimization.minspecificity.hint;Sets a minimum value for specificity when optimizing
+options.mem.goodness.graphs.algorithm;algorithm
+options.mem.goodness.graphs.threshold;threshold
+options.mem.goodness.graphs.method;Method used
+options.mem.goodness.graphs.detail1;weeks above/below the threshold
+options.mem.goodness.graphs.detail2;week(s) above the threshold
+options.mem.goodness.graphs.detail3;First row represents real and second row observed pos/neg values
+options.mem.goodness.optimization.inspection;Inspection
+options.mem.goodness.optimization.comparing;Comparing

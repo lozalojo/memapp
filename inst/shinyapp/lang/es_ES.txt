@@ -357,3 +357,11 @@ options.mem.goodness.optimization.minsensitivity.label;Sensibilidad mínima
 options.mem.goodness.optimization.minsensitivity.hint;Establece un valor mínimo para la sensibilidad al optimizar
 options.mem.goodness.optimization.minspecificity.label;Especificidad mínima
 options.mem.goodness.optimization.minspecificity.hint;Establece un valor mínimo para la especificidad al optimizar
+options.mem.goodness.graphs.algorithm;algoritmo
+options.mem.goodness.graphs.threshold;umbral
+options.mem.goodness.graphs.method;Método usado
+options.mem.goodness.graphs.detail1;semanas por encima/debajo del umbral
+options.mem.goodness.graphs.detail2;semana(s) por encima del umbral
+options.mem.goodness.graphs.detail3;La primera línea representa lo realmente sucedido, la segunda los valores positivos/negativos observados
+options.mem.goodness.optimization.inspection;Inspección
+options.mem.goodness.optimization.comparing;Comparando
