@@ -3707,7 +3707,7 @@ shinyServer(function(input, output, session) {
         "Percent agreement" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Matthews correlation coefficient" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Youdens Index" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
-      ), digits = 2, format = "f")
+      ), digits = 4, format = "f")
       names(good.table) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
       names(attr(good.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
     } else {
@@ -4189,9 +4189,10 @@ shinyServer(function(input, output, session) {
         ),
         fluidRow(
           column(width = 3, shinydashboard::valueBox(format(round(datamodel$pre.post.intervals[1, 3], 2), nsmall = 1), trloc("options.mem.thresholds.epidemic.label"), icon = icon("fas fa-thermometer-empty"), width = 12, color = "green")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[1, 4], 2), nsmall = 1), trloc("graphs.mediumthreshold"), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[2, 4], 2), nsmall = 1), trloc("graphs.highthreshold"), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
-          column(width = 3, shinydashboard::valueBox(format(round(datamodel$epi.intervals[3, 4], 2), nsmall = 1), trloc("graphs.veryhighthreshold"), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
+          column(width = 3, shinydashboard::valueBox(format(round(datamodel$pre.post.intervals[2, 3], 2), nsmall = 1), trloc("selections.thresholds.post.label"), icon = icon("fas fa-thermometer-empty"), width = 12, color = "olive")),
+          column(width = 2, shinydashboard::valueBox(format(round(datamodel$epi.intervals[1, 4], 2), nsmall = 1), trloc("graphs.mediumthreshold"), icon = icon("fas fa-thermometer-quarter"), width = 12, color = "yellow")),
+          column(width = 2, shinydashboard::valueBox(format(round(datamodel$epi.intervals[2, 4], 2), nsmall = 1), trloc("graphs.highthreshold"), icon = icon("fas fa-thermometer-half"), width = 12, color = "orange")),
+          column(width = 2, shinydashboard::valueBox(format(round(datamodel$epi.intervals[3, 4], 2), nsmall = 1), trloc("graphs.veryhighthreshold"), icon = icon("fas fa-thermometer-three-quarters"), width = 12, color = "red"))
         )
       )
     }
@@ -4522,7 +4523,7 @@ shinyServer(function(input, output, session) {
         "Percent agreement" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Matthews correlation coefficient" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Youdens Index" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
-      ), digits = 2, format = "f")
+      ), digits = 4, format = "f")
       names(good.table) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
       names(attr(good.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
     } else {
@@ -5088,7 +5089,7 @@ shinyServer(function(input, output, session) {
                       "Percent agreement" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
                       "Matthews correlation coefficient" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
                       "Youdens Index" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
-                    ), digits = 2, format = "f")
+                    ), digits = 4, format = "f")
                     names(opt.table) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
                     names(attr(opt.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
                   } else {
@@ -5181,7 +5182,7 @@ shinyServer(function(input, output, session) {
         "Percent agreement" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Matthews correlation coefficient" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5),
         "Youdens Index" = fixedColorBar(color = "#A5DBEB", fixedWidth = 100, alpha = 0.5)
-      ), digits = 2, format = "f")
+      ), digits = 4, format = "f")
       names(roca.table) <- c(trloc("main.model.optimize.automatic.parameter"), trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
       names(attr(roca.table, "formattable")$format[[1]]) <- c(trloc("graphs.sensitivity"), trloc("graphs.specificity"), trloc("graphs.ppv"), trloc("graphs.npv"), trloc("graphs.percent"), trloc("graphs.matthews"), trloc("graphs.youden"))
     } else {

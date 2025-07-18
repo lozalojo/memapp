@@ -150,6 +150,8 @@ With a text editor, translate the second column to your language and send it to 
 
 [memapp *official server*](http://memapp.iecscyl.com:8080/ "official server")
 
+[memapp *official backup server*](http://memapp.ddns.net/ "official backup server")
+
 ## References
 
 Vega T, Lozano JE, Ortiz de Lejarazu R, Gutierrez Perez M. Modelling influenza epidemic—can we detect the beginning and predict the intensity and duration? Int Congr Ser. 2004 Jun;1263:281–3. 
