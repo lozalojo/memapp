@@ -5,7 +5,7 @@ on:
     branches: [master, development]
   pull_request:
 
-name: coverage status
+name: coverage-status
 
 permissions: read-all
 
