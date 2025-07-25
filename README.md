@@ -1,12 +1,14 @@
 # The Moving Epidemic Method Shiny Web Application
 
-[![Travis Build Status](https://travis-ci.org/lozalojo/memapp.svg?branch=master)](https://travis-ci.org/lozalojo/memapp)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/lozalojo/memapp/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lozalojo/memapp/actions/workflows/R-CMD-check.yaml)
 [![Coverage Status](https://img.shields.io/codecov/c/github/lozalojo/memapp/master.svg)](https://codecov.io/github/lozalojo/memapp?branch=master)
 [![DOI](https://zenodo.org/badge/90709196.svg)](https://zenodo.org/badge/latestdoi/90709196)
 [![monthly](http://cranlogs.r-pkg.org/badges/memapp)](https://www.rpackages.io/package/memapp) 
 [![total](http://cranlogs.r-pkg.org/badges/grand-total/memapp)](https://www.rpackages.io/package/memapp)
 [![CRAN](http://www.r-pkg.org/badges/version/memapp?color=009999)](https://cran.r-project.org/package=memapp)
 [![License](https://img.shields.io/badge/license-GPL%20%28%3E=%202%29-lightgrey.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+<!-- badges: end -->
 
 ## Overview
 
