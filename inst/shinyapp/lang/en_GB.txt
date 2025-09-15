@@ -290,6 +290,10 @@ selections.dataset.wavesdetection.multiple.param2.hint;Multiple waves algorith p
 selections.dataset.wavesdetection.multiple.param2.label;Param. 2
 selections.dataset.wavesdetection.multiple.separation.hint;Minimum separation between two seasons to be considered different
 selections.dataset.wavesdetection.multiple.separation.label;Separation
+selections.dataset.wavesdetection.multiple.forcesmoothmultiple.hint;Force smoothing before applying multiple waves algorithm
+selections.dataset.wavesdetection.multiple.forcesmoothmultiple.label;Smoothing
+selections.dataset.wavesdetection.multiple.forceconcavemultiple.hint;Force concativy hull in newly detected waves
+selections.dataset.wavesdetection.multiple.forceconcavemultiple.label;Concativy
 selections.dataset.wavesdetection.one;One wave/season
 selections.dataset.wavesdetection.twoexpected;Two waves/season (expected)
 selections.dataset.wavesdetection.twoobserved;Two waves/season (observed)

@@ -54,6 +54,8 @@ shinyServer(function(input, output, session) {
     showexperimental = TRUE,
     experimental = TRUE,
     processdata = FALSE,
+    forcesmoothmultiple = TRUE,
+    forceconcavemultiple = TRUE,
     usetdistribution = FALSE,
     preepidemicthr = FALSE,
     postepidemicthr = FALSE,
@@ -1562,6 +1564,8 @@ shinyServer(function(input, output, session) {
             i.min.separation = as.numeric(input$wavesseparation),
             i.intra.param = as.numeric(input$wavesparam1),
             i.inter.param = as.numeric(input$wavesparam2),
+			i.force.smooth = input$forcesmoothmultiple,
+			i.force.concave = input$forceconcavemultiple,
             i.method = as.numeric(input$method),
             i.param = as.numeric(input$param),
             i.p3titles = c(trloc("selections.dataset.wavesdetection.multiple.iteration"), trloc("selections.surveillance.week.label"), trloc("main.checkdescribe.data")),
@@ -1715,6 +1719,8 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "wavesseparation", min = default_values$wavesseparation$min, max = default_values$wavesseparation$max, step = default_values$wavesseparation$step, value = default_values$wavesseparation$value)
       updateNumericInput(session, "wavesparam1", min = default_values$wavesparam1$min, max = default_values$wavesparam1$max, step = default_values$wavesparam1$step, value = default_values$wavesparam1$value)
       updateNumericInput(session, "wavesparam2", min = default_values$wavesparam2$min, max = default_values$wavesparam2$max, step = default_values$wavesparam2$step, value = default_values$wavesparam2$value)
+      updateMaterialSwitch(session, "forcesmoothmultiple", value = default_values$forcesmoothmultiple)
+      updateMaterialSwitch(session, "forceconcavemultiple", value = default_values$forceconcavemultiple)
     }
     # Text options
     updateTextInput(session, "textMain", value = trloc("options.text.main.label"))
@@ -6213,6 +6219,22 @@ shinyServer(function(input, output, session) {
       ),
       conditionalPanel(
         condition = "input.waves == 4 & input.experimental & input.advanced & input.processdata",
+		fluidRow(
+          column(
+            6,
+            popify(
+				shinyWidgets::materialSwitch(inputId = "forcesmoothmultiple", label = trloc("selections.dataset.wavesdetection.multiple.forcesmoothmultiple.label"), value = default_values$forcesmoothmultiple, right = TRUE, status = "info"),
+				title = trloc("selections.dataset.wavesdetection.multiple.forcesmoothmultiple.label"), content = trloc("selections.dataset.wavesdetection.multiple.forcesmoothmultiple.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+			)
+          ),
+		  column(
+            6,
+            popify(
+				shinyWidgets::materialSwitch(inputId = "forceconcavemultiple", label = trloc("selections.dataset.wavesdetection.multiple.forceconcavemultiple.label"), value = default_values$forceconcavemultiple, right = TRUE, status = "info"),
+				title = trloc("selections.dataset.wavesdetection.multiple.forceconcavemultiple.label"), content = trloc("selections.dataset.wavesdetection.multiple.forceconcavemultiple.hint"), placement = "right", trigger = "focus", options = list(container = "body")
+			)
+          )
+        ),		
         fluidRow(
           column(
             6,

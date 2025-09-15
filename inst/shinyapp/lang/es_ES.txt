@@ -290,6 +290,10 @@ selections.dataset.wavesdetection.multiple.param2.hint;Parámetro 2 del algoritm
 selections.dataset.wavesdetection.multiple.param2.label;Parám. 2
 selections.dataset.wavesdetection.multiple.separation.hint;Separación mínima entre dos temporadas para que sean consideradas distintas
 selections.dataset.wavesdetection.multiple.separation.label;Separación
+selections.dataset.wavesdetection.multiple.forcesmoothmultiple.hint;Suaviza los datos antes de aplicar el algoritmo de múltiples ondas
+selections.dataset.wavesdetection.multiple.forcesmoothmultiple.label;Suavizar
+selections.dataset.wavesdetection.multiple.forceconcavemultiple.hint;Fuerza la concavidad en las ondas que se van detectando en cada iteración
+selections.dataset.wavesdetection.multiple.forceconcavemultiple.label;Concavidad
 selections.dataset.wavesdetection.one;Una onda/temporada
 selections.dataset.wavesdetection.twoexpected;Dos ondas/temporada (esperados)
 selections.dataset.wavesdetection.twoobserved;Dos ondas/temporada (observados)
