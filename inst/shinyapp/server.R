@@ -67,7 +67,7 @@ shinyServer(function(input, output, session) {
     waves = 1,
     twowavesproportion = list(min = 0, max = 100, value = 15, step = 5),
     numberwaves = list(value = 0, min = 0, max = NA, step = 1),
-    wavesseparation = list(value = 1, min = 0, max = NA, step = 1),
+    wavesseparation = list(value = 0, min = 0, max = 4, step = 1),
     wavesparam1 = list(value = 3, min = 0.5, max = 10, step = 0.1),
     wavesparam2 = list(value = 2, min = 0.5, max = 10, step = 0.1),
     smregressionoptimum = TRUE,

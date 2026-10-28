@@ -300,13 +300,22 @@ importDataExcel <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         # First column is the week name
         if (all(datasetread[, 1] %in% 1:53)) {
@@ -379,13 +388,22 @@ importDataAccess <- function(i.file,
           # Remove na lines
           nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
           if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+          # Remove na columns
+          nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+          if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
           # Detect format year, week, rate
           columnsn <- tolower(names(datasetread))
-          if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-            datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-            cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+          if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+            if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+              datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+            }else{
+              datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+            }
+            namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+            datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+            cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
             names(datasetread) <- tolower(names(datasetread))
-            datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+            datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
           } else {
             if (all(datasetread[, 1] %in% 1:53)) {
               rownames(datasetread) <- as.character(datasetread[, 1])
@@ -454,13 +472,22 @@ importDataAccess <- function(i.file,
           # Remove na lines
           nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
           if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+          # Remove na columns
+          nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+          if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
           # Detect format year, week, rate
           columnsn <- tolower(names(datasetread))
-          if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-            datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-            cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+          if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+            if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+              datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+            }else{
+              datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+            }
+            namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+            datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+            cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
             names(datasetread) <- tolower(names(datasetread))
-            datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+            datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
           } else {
             if (all(datasetread[, 1] %in% 1:53)) {
               rownames(datasetread) <- as.character(datasetread[, 1])
@@ -548,13 +575,22 @@ importDataText <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -616,13 +652,22 @@ importDataRds <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -687,13 +732,22 @@ importDataRdata <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -761,13 +815,22 @@ importDataDbf <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -835,13 +898,22 @@ importDataSav <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -909,13 +981,22 @@ importDataDta <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -984,13 +1065,22 @@ importDataSas <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         if (all(datasetread[, 1] %in% 1:53)) {
           rownames(datasetread) <- as.character(datasetread[, 1])
@@ -1057,13 +1147,22 @@ importDataOds <- function(i.file,
       # Remove na lines
       nalines <- apply(datasetread, 1, function(x) all(is.na(x)))
       if (sum(nalines) > 0) datasetread <- datasetread[!nalines, ]
+      # Remove na columns
+      nacolumns <- apply(datasetread, 2, function(x) all(is.na(x)))
+      if (sum(nacolumns) > 0) datasetread <- datasetread[!nacolumns]
       # Detect format year, week, rate
       columnsn <- tolower(names(datasetread))
-      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) == 3) {
-        datalog <- paste0(datalog, "Note: Format of the input file is year, week, rate, transforming\n")
-        cat("read_data> Note: Format of the input file is year, week, rate, transforming\n")
+      if ("year" %in% columnsn && "week" %in% columnsn && NCOL(datasetread) >= 3) {
+        if (any(c("value", "rate", "cases", "positives") %in% columnsn)){
+          datasetread <- datasetread[columnsn %in% c("value", "rate", "cases", "positives", "year", "week")]
+        }else{
+          datasetread <- datasetread[c("year", "week", columnsn[!(columnsn %in% c("year", "week"))][1])]
+        }
+        namecolumnvalue = columnsn[!(columnsn %in% c("week", "year"))][1]
+        datalog <- paste0(datalog, "Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
+        cat("read_data> Note: Format of the input file is year, week, value (",namecolumnvalue,"), transforming\n")
         names(datasetread) <- tolower(names(datasetread))
-        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = columnsn[!(columnsn %in% c("week", "year"))][1])$data
+        datasetread <- transformdata(datasetread, i.range.x = i.range.x, i.name = namecolumnvalue)$data
       } else {
         # First column is the week name
         if (all(datasetread[, 1] %in% 1:53)) {

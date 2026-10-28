@@ -23,22 +23,22 @@ The stable package can be installed from the official R repositories (*CRAN*) us
 install.packages("memapp")
 ```
 
-Or from the official repository using the *devtools* package:
+Or from the official repository using the *pak* package:
 
 ```
-if(!require("devtools")) install.packages("devtools")
-library("devtools")
+if(!require("pak")) install.packages("pak")
+library("pak")
 # install the memapp stable version from GitHub
-install_github("lozalojo/memapp", ref = "master")
+pak::pkg_install("lozalojo/memapp@master")
 ```
 
 To install the development version of *memapp* for lastest features:
 
 ```
-if(!require("devtools")) install.packages("devtools")
-library("devtools")
+if(!require("pak")) install.packages("pak")
+library("pak")
 # install the memapp development version from GitHub
-install_github("lozalojo/memapp", ref = "development")
+pak::pkg_install("lozalojo/memapp@development")
 ```
 
 When installing this version also you are intalling development versions of some sensitive packages that are used by *memapp* (including the *mem* package).
